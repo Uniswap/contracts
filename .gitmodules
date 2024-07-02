@@ -7,3 +7,12 @@
 [submodule "lib/forge-gas-snapshot"]
 	path = lib/forge-gas-snapshot
 	url = https://github.com/marktoda/forge-gas-snapshot
+[submodule "src/pkgs/v2-core"]
+	path = src/pkgs/v2-core
+	url = https://github.com/Uniswap/v2-core
+[submodule "src/pkgs/v2-periphery"]
+	path = src/pkgs/v2-periphery
+	url = https://github.com/Uniswap/v2-periphery
+[submodule "lib/solidity-lib"]
+	path = lib/solidity-lib
+	url = https://github.com/Uniswap/solidity-lib

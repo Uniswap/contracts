@@ -1,0 +1,3 @@
+forge-std=lib/forge-std/src
+@uniswap/v2-core=src/pkgs/v2-core
+@uniswap/lib=lib/solidity-lib
