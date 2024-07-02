@@ -1,0 +1,21 @@
+# checks that pre-commit hooks pass before allowing to merge a PR
+
+name: pre-commit
+on:
+  pull_request:
+    branches: [main, master, staging, dev, feat/**, fix/**]
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v2
+        with:
+          submodules: recursive
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+      - name: Install pre-commit
+        run: pip install pre-commit
+      - name: Run pre-commit
+        run: pre-commit run --all-files

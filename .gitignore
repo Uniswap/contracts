@@ -1,0 +1,13 @@
+/target
+/out
+/cache
+/coverage
+/report
+lcov.info
+.DS_Store
+.env
+.vscode
+.password
+
+broadcast/*/31337
+deployments/**/31337.*
