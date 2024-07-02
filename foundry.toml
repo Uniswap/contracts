@@ -12,6 +12,8 @@ fs_permissions = [
   { access = "read", path = "script/" }
 ]
 
+skip = ["src/pkgs/v3-core/audits/**"]
+
 [profile.default.fuzz]
 runs = 1000
 
