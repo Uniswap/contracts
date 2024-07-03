@@ -1,3 +1,6 @@
 forge-std=lib/forge-std/src
 @uniswap/v2-core=src/pkgs/v2-core
 @uniswap/lib=lib/solidity-lib
+@uniswap/v3-core=src/pkgs/v3-core
+src/pkgs/v3-periphery:@openzeppelin/contracts=lib/oz-v3.4-solc-0.7/contracts
+src/pkgs/v3-periphery:base64-sol=lib/base64
