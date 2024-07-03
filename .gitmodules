@@ -16,3 +16,12 @@
 [submodule "lib/solidity-lib"]
 	path = lib/solidity-lib
 	url = https://github.com/Uniswap/solidity-lib
+[submodule "src/pkgs/v3-core"]
+	path = src/pkgs/v3-core
+	url = https://github.com/Uniswap/v3-core
+[submodule "src/pkgs/v3-periphery"]
+	path = src/pkgs/v3-periphery
+	url = https://github.com/Uniswap/v3-periphery
+[submodule "lib/base64"]
+	path = lib/base64
+	url = https://github.com/Brechtpd/base64
