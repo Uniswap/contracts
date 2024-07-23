@@ -1,6 +1,15 @@
 forge-std=lib/forge-std/src
-@uniswap/v2-core=src/pkgs/v2-core
 @uniswap/lib=lib/solidity-lib
+@uniswap/v2-core=src/pkgs/v2-core
 @uniswap/v3-core=src/pkgs/v3-core
-src/pkgs/v3-periphery:@openzeppelin/contracts=lib/oz-v3.4-solc-0.7/contracts
+@uniswap/v4-core=src/pkgs/v4-core
+permit2=src/pkgs/permit2
 src/pkgs/v3-periphery:base64-sol=lib/base64
+src/pkgs/v3-periphery:@openzeppelin/contracts=lib/oz-v3.4-solc-0.7/contracts
+src/pkgs/v4-periphery:solmate=lib/solmate-4b47a19/src
+src/pkgs/v4-core:solmate=lib/solmate-4b47a19/src
+src/pkgs/v4-core:@openzeppelin/contracts=lib/oz-v5.0.2/contracts
+src/pkgs/permit2:solmate=lib/solmate-8d910d8
+src/pkgs/permit2:openzeppelin-contracts/contracts=lib/oz-d3ff81b/contracts
+src/pkgs/universal-router:solmate=lib/solmate-8d910d8
+src/pkgs/universal-router:@openzeppelin/contracts=lib/oz-v4.7.0/contracts

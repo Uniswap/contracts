@@ -25,3 +25,15 @@
 [submodule "lib/base64"]
 	path = lib/base64
 	url = https://github.com/Brechtpd/base64
+[submodule "src/pkgs/v4-core"]
+	path = src/pkgs/v4-core
+	url = https://github.com/Uniswap/v4-core/
+[submodule "src/pkgs/v4-periphery"]
+	path = src/pkgs/v4-periphery
+	url = https://github.com/Uniswap/v4-periphery/
+[submodule "src/pkgs/permit2"]
+	path = src/pkgs/permit2
+	url = https://github.com/Uniswap/permit2/
+[submodule "src/pkgs/universal-router"]
+	path = src/pkgs/universal-router
+	url = https://github.com/Uniswap/universal-router
