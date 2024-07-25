@@ -7,3 +7,33 @@
 [submodule "lib/forge-gas-snapshot"]
 	path = lib/forge-gas-snapshot
 	url = https://github.com/marktoda/forge-gas-snapshot
+[submodule "src/pkgs/v2-core"]
+	path = src/pkgs/v2-core
+	url = https://github.com/Uniswap/v2-core
+[submodule "src/pkgs/v2-periphery"]
+	path = src/pkgs/v2-periphery
+	url = https://github.com/Uniswap/v2-periphery
+[submodule "lib/solidity-lib"]
+	path = lib/solidity-lib
+	url = https://github.com/Uniswap/solidity-lib
+[submodule "src/pkgs/v3-core"]
+	path = src/pkgs/v3-core
+	url = https://github.com/Uniswap/v3-core
+[submodule "src/pkgs/v3-periphery"]
+	path = src/pkgs/v3-periphery
+	url = https://github.com/Uniswap/v3-periphery
+[submodule "lib/base64"]
+	path = lib/base64
+	url = https://github.com/Brechtpd/base64
+[submodule "src/pkgs/v4-core"]
+	path = src/pkgs/v4-core
+	url = https://github.com/Uniswap/v4-core/
+[submodule "src/pkgs/v4-periphery"]
+	path = src/pkgs/v4-periphery
+	url = https://github.com/Uniswap/v4-periphery/
+[submodule "src/pkgs/permit2"]
+	path = src/pkgs/permit2
+	url = https://github.com/Uniswap/permit2/
+[submodule "src/pkgs/universal-router"]
+	path = src/pkgs/universal-router
+	url = https://github.com/Uniswap/universal-router
