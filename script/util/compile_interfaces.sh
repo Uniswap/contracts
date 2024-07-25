@@ -41,6 +41,6 @@ compile_and_flatten() {
 pkgs=$(ls src/pkgs/);
 for pkg in $pkgs
 do
-    interface_subpath=$(find src/pkgs/$pkg -type d -name "interfaces" -printf "%P\n")
+    interface_subpath=$(find src/pkgs/$pkg -type d \( -path "src/pkgs/$pkg/lib" -prune \) -o \( -name "interface" -o -name "interfaces" \) -print | sed "s|src/pkgs/$pkg/||")
     compile_and_flatten "src/pkgs" "$pkg" "$interface_subpath"
 done
