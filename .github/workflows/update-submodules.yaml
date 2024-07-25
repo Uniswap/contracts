@@ -23,7 +23,7 @@ jobs:
 
       - name: Update Submodules
         run: |
-          git submodule update --init --remote
+          git submodule update --init --remote src/pkgs
 
       - name: Configure Git
         run: |
