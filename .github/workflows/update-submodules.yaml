@@ -1,0 +1,49 @@
+name: Update Submodules
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - dev
+  schedule:
+    # Run this workflow daily at 03:17 UTC
+    - cron: "17 3 * * *"
+
+jobs:
+  update-submodules:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update Submodules
+        run: |
+          git submodule update --init --remote
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Check for Changes
+        id: git-check
+        run: |
+          echo "::set-output name=changes::$(git status --porcelain)"
+
+      - name: Commit and Push if Changes are Present
+        if: steps.git-check.outputs.changes != ''
+        run: |
+          git remote set-url origin git@github.com:${{ github.repository }}.git
+          git add .
+          git commit -m "Update submodules"
+          git push
