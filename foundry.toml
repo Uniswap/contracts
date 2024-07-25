@@ -12,8 +12,41 @@ fs_permissions = [
   { access = "read-write", path = ".forge-snapshots"},
   { access = "read", path = "script/" }
 ]
+evm_version = "cancun"
 
-skip = ["src/pkgs/v3-core/audits/**"]
+skip = [
+  "src/pkgs/**/audits/**",
+  "src/pkgs/**/certora/**",
+  "*.t.sol",
+  "*.s.sol"
+]
+
+[profile.v2-core]
+src = "src/pkgs/v2-core"
+
+[profile.v2-periphery]
+src = "src/pkgs/v2-periphery"
+
+[profile.v3-core]
+src = "src/pkgs/v3-core"
+
+[profile.v3-periphery]
+src = "src/pkgs/v3-periphery"
+
+[profile.v4-core]
+src = "src/pkgs/v4-core"
+
+[profile.v4-periphery]
+src = "src/pkgs/v4-periphery"
+libs = ["src/pkgs/v4-core", "lib"]
+
+[profile.permit2]
+src = "src/pkgs/permit2"
+via_ir = true
+
+[profile.universal-router]
+src = "src/pkgs/universal-router"
+via_ir = true
 
 [profile.default.fuzz]
 runs = 1000
