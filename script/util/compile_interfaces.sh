@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 rm -rf tmp/ # alt: mktemp -d
-mkdir -p tmp/interfaces
+mkdir -p tmp/
 
 replace_pragma_solidity() {
   local file=$1
@@ -18,7 +18,7 @@ compile_and_flatten() {
 
   local input_dir="$source_path/$project/$subpath"
 
-  local output_dir="tmp/interfaces/$project"
+  local output_dir="tmp/$project/interfaces"
 
   local flatten_command="forge flatten"
 
