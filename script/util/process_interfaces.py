@@ -26,6 +26,22 @@ def parse_code_file(file_path):
 
     return code_blocks
 
+def get_pragma_from_file(file_path):
+    content = []
+    found_pragma = False
+
+    with open(file_path, 'r') as file:
+        for line in file:
+            stripped_line = line.rstrip('\n')
+            content.append(stripped_line)
+
+            if stripped_line.startswith('pragma'):
+                found_pragma = True
+            elif found_pragma and not stripped_line.startswith('pragma'):
+                break
+
+    return '\n'.join(content)
+
 
 def get_relative_path(src_path, dest_path):
     relative_path = os.path.relpath(src_path, os.path.dirname(dest_path))
@@ -58,12 +74,13 @@ def process_file(interface_file, root_directory):
     ext_lib_dir = "external_libs"
 
     code_blocks = parse_code_file(interface_file)
+    pragma = {}
     imports = {}
     blocks = {}
 
     for i, block in enumerate(code_blocks):
         if i==0:
-            pragma = block['content']
+            pragma[interface_file] = block['content']
             continue
 
         source_path = block['source'].replace("// ", "")
@@ -109,10 +126,14 @@ def process_file(interface_file, root_directory):
         if subdir == "interfaces" and dest_path != interface_file:
             continue
         
+        if subdir != "interfaces":
+            pragma[dest_path] = get_pragma_from_file(source_path)
+
         blocks[dest_path] = content
 
+
     for dest_path, block in blocks.items():
-        write_file(dest_path, pragma, imports, block)
+        write_file(dest_path, pragma[dest_path], imports, block)
 
 def process_all_files_in_directory(directory):
     for root, _, files in os.walk(directory):
