@@ -10,6 +10,7 @@ def parse_code_file(file_path):
 
     code_blocks = []
     current_block = {'content': ''}
+    # Read first lines for until first source for license/pragma
     in_block = True
 
     for line in lines:
@@ -26,6 +27,7 @@ def parse_code_file(file_path):
 
     return code_blocks
 
+
 def get_pragma_from_file(file_path):
     content = []
     found_pragma = False
@@ -41,6 +43,47 @@ def get_pragma_from_file(file_path):
                 break
 
     return '\n'.join(content)
+
+
+def parse_content_for_classes(content):
+    classes = []
+    # Define regex patterns for contracts, structs, interfaces, and libraries
+    pattern = r'\b(?:interface|contract|type|library|struct)\s+(\w+)\b'
+
+    # Initialize scope level
+    scope_level = 0
+    in_multiline_comment = False
+
+    for line in content.splitlines():
+        # Handle multi-line comments
+        if in_multiline_comment:
+            if '*/' in line:
+                in_multiline_comment = False
+            continue
+
+        if '/*' in line:
+            in_multiline_comment = True
+            if '*/' in line:
+                in_multiline_comment = False
+            continue
+
+        # Handle single-line comments
+        if line.strip().startswith("//"):
+            continue
+
+        # Only handle top-level definitions
+        if scope_level == 0 and line:
+            match = re.search(pattern, line)
+            if match:
+                classes.append(match.group(1))
+
+        for char in line:
+            if char == '{':
+                scope_level += 1
+            elif char == '}':
+                scope_level -= 1
+
+    return classes
 
 
 def get_relative_path(src_path, dest_path):
@@ -67,10 +110,9 @@ def write_file(path, pragma, imports, block):
 def create_import_statement(class_name, relative_path):
     return f'import {{{class_name}}} from "{relative_path}";\n'
 
+
 def process_file(interface_file, root_directory):
     interface_dir = "interfaces"
-    library_dir = "libraries"
-    type_dir = "types"
     ext_lib_dir = "external_libs"
 
     code_blocks = parse_code_file(interface_file)
@@ -79,7 +121,7 @@ def process_file(interface_file, root_directory):
     blocks = {}
 
     for i, block in enumerate(code_blocks):
-        if i==0:
+        if i == 0:
             pragma[interface_file] = block['content']
             continue
 
@@ -89,51 +131,48 @@ def process_file(interface_file, root_directory):
         match = re.match(
             r'src/pkgs/(.*?)/(src|contracts)/(interface|interfaces)/(.*)', source_path)
         lib_match = re.match(
-            r'src/pkgs/(.*?)/(src|contracts)/(libraries|types)/(.*)', source_path)
+            r'src/pkgs/(.*?)/(src|contracts)/(.*)', source_path)
         rest_match = re.match(r'lib/(.*)', source_path)
         if match:
             subdir = "interfaces"
             package_name = match.group(1)
             rest_of_path = match.group(4)
         elif lib_match:
-            subdir = lib_match.group(3)
+            subdir = "other"
             package_name = lib_match.group(1)
-            rest_of_path = lib_match.group(4)
+            rest_of_path = lib_match.group(3)
         elif rest_match:
             subdir = "external_libs"
             rest_of_path = rest_match.group(1)
 
-            
         content = block['content']
 
-        if subdir == "libraries":
+        if subdir == "other":
             dest_path = os.path.join(
-                root_directory, package_name, library_dir, rest_of_path)
-        elif subdir == "types":
-            dest_path = os.path.join(
-                root_directory, package_name, type_dir, rest_of_path)
+                root_directory, package_name, rest_of_path)
         elif subdir == "external_libs":
             dest_path = os.path.join(
                 root_directory, ext_lib_dir, rest_of_path)
         else:
             dest_path = os.path.join(
                 root_directory, package_name, interface_dir, rest_of_path)
-            
-        class_name = Path(rest_of_path).name.replace(".sol", "")
-        imports[class_name] = dest_path
+
+        class_names = parse_content_for_classes(content)
+        for class_name in class_names:
+            imports[class_name] = dest_path
 
         # Other interfaces already have an own file and will be processed separatly
         if subdir == "interfaces" and dest_path != interface_file:
             continue
-        
+
         if subdir != "interfaces":
             pragma[dest_path] = get_pragma_from_file(source_path)
 
         blocks[dest_path] = content
 
-
     for dest_path, block in blocks.items():
         write_file(dest_path, pragma[dest_path], imports, block)
+
 
 def process_all_files_in_directory(directory):
     for root, _, files in os.walk(directory):
