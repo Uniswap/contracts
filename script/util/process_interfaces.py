@@ -28,7 +28,24 @@ def parse_code_file(file_path):
 
 
 def get_relative_path(src_path, dest_path):
-    return os.path.join(".", os.path.relpath(src_path, os.path.dirname(dest_path)))
+    relative_path = os.path.relpath(src_path, os.path.dirname(dest_path))
+    if not relative_path.startswith('.'):
+        relative_path = os.path.join(".", relative_path)
+    return relative_path
+
+
+def write_file(path, pragma, imports, block):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w') as file:
+        file.write(pragma)
+        for class_name, dest_path in imports.items():
+            if class_name in block and dest_path != path:
+                relative_path = get_relative_path(dest_path, path)
+                import_statement = create_import_statement(
+                    class_name, relative_path)
+                file.write(import_statement)
+
+        file.write(block)
 
 
 def create_import_statement(class_name, relative_path):
@@ -38,10 +55,11 @@ def process_file(interface_file, root_directory):
     interface_dir = "interfaces"
     library_dir = "libraries"
     type_dir = "types"
+    ext_lib_dir = "external_libs"
 
     code_blocks = parse_code_file(interface_file)
-    imports = []
-    own_blocks = []
+    imports = {}
+    blocks = {}
 
     for i, block in enumerate(code_blocks):
         if i==0:
@@ -55,6 +73,7 @@ def process_file(interface_file, root_directory):
             r'src/pkgs/(.*?)/(src|contracts)/(interface|interfaces)/(.*)', source_path)
         lib_match = re.match(
             r'src/pkgs/(.*?)/(src|contracts)/(libraries|types)/(.*)', source_path)
+        rest_match = re.match(r'lib/(.*)', source_path)
         if match:
             subdir = "interfaces"
             package_name = match.group(1)
@@ -63,37 +82,37 @@ def process_file(interface_file, root_directory):
             subdir = lib_match.group(3)
             package_name = lib_match.group(1)
             rest_of_path = lib_match.group(4)
+        elif rest_match:
+            subdir = "external_libs"
+            rest_of_path = rest_match.group(1)
+
             
         content = block['content']
 
-        if not subdir or os.path.join(root_directory, package_name, interface_dir, rest_of_path) == interface_file:
-            own_blocks.append(content)
+        if subdir == "libraries":
+            dest_path = os.path.join(
+                root_directory, package_name, library_dir, rest_of_path)
+        elif subdir == "types":
+            dest_path = os.path.join(
+                root_directory, package_name, type_dir, rest_of_path)
+        elif subdir == "external_libs":
+            dest_path = os.path.join(
+                root_directory, ext_lib_dir, rest_of_path)
         else:
-            if subdir == "libraries":
-                dest_path = os.path.join(
-                    root_directory, package_name, library_dir, rest_of_path)
-                os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-                shutil.copyfile(source_path, dest_path)
-            elif subdir == "types":
-                dest_path = os.path.join(
-                    root_directory, package_name, type_dir, rest_of_path)
-                os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-                shutil.copyfile(source_path, dest_path)
-            else:
-                dest_path = os.path.join(
-                    root_directory, package_name, interface_dir, rest_of_path)
+            dest_path = os.path.join(
+                root_directory, package_name, interface_dir, rest_of_path)
+            
+        class_name = Path(rest_of_path).name.replace(".sol", "")
+        imports[class_name] = dest_path
 
-            relative_path = get_relative_path(dest_path, interface_file)
-            class_name = Path(rest_of_path).name.replace(".sol", "")
-            imports.append(create_import_statement(class_name, relative_path))
+        # Other interfaces already have an own file and will be processed separatly
+        if subdir == "interfaces" and dest_path != interface_file:
+            continue
+        
+        blocks[dest_path] = content
 
-    with open(interface_file, 'w') as file:
-        file.write(pragma)
-        for imp in imports:
-            file.write(imp)
-        for block in own_blocks:
-            file.write(block)
-
+    for dest_path, block in blocks.items():
+        write_file(dest_path, pragma, imports, block)
 
 def process_all_files_in_directory(directory):
     for root, _, files in os.walk(directory):
