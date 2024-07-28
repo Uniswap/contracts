@@ -37,3 +37,6 @@
 [submodule "src/pkgs/universal-router"]
 	path = src/pkgs/universal-router
 	url = https://github.com/Uniswap/universal-router
+[submodule "src/pkgs/uniswapx"]
+	path = src/pkgs/uniswapx
+	url = https://github.com/uniswap/uniswapx
