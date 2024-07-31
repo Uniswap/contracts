@@ -1,5 +1,5 @@
 #!/bin/bash 
-
+git submodule update --init --recursive --depth 1
 forge clean;
 repos=$(ls src/pkgs/);
 for repo in $repos

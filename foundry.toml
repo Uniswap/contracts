@@ -48,6 +48,9 @@ via_ir = true
 src = "src/pkgs/universal-router"
 via_ir = true
 
+[profile.uniswapx]
+src = "src/pkgs/uniswapx"
+
 [profile.default.fuzz]
 runs = 1000
 
