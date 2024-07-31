@@ -17,6 +17,9 @@ evm_version = "cancun"
 skip = [
   "src/pkgs/**/audits/**",
   "src/pkgs/**/certora/**",
+  "src/pkgs/**/lib/**",
+  "src/pkgs/universal-router/permit2/**",
+  "src/pkgs/universal-router/solmate/**",
   "*.t.sol",
   "*.s.sol"
 ]
