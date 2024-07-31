@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - staging
 
 jobs:
   update-interfaces:
@@ -47,7 +46,7 @@ jobs:
           fi
 
       - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
+        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
         with:
           ssh-private-key: ${{ secrets.DEPLOY_KEY_INTERFACES }}
 
