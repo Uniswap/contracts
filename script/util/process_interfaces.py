@@ -1,8 +1,6 @@
 import os
-from pathlib import Path
 import re
-import shutil
-
+import sys
 
 def parse_code_file(file_path):
     with open(file_path, 'r') as file:
@@ -113,7 +111,7 @@ def create_import_statement(class_name, relative_path):
 
 def process_file(interface_file, root_directory):
     interface_dir = "interfaces"
-    ext_lib_dir = "external_libs"
+    ext_lib_dir = "lib-external"
 
     code_blocks = parse_code_file(interface_file)
     pragma = {}
@@ -142,7 +140,7 @@ def process_file(interface_file, root_directory):
             package_name = lib_match.group(1)
             rest_of_path = lib_match.group(3)
         elif rest_match:
-            subdir = "external_libs"
+            subdir = "lib-external"
             rest_of_path = rest_match.group(1)
 
         content = block['content']
@@ -150,7 +148,7 @@ def process_file(interface_file, root_directory):
         if subdir == "other":
             dest_path = os.path.join(
                 root_directory, package_name, rest_of_path)
-        elif subdir == "external_libs":
+        elif subdir == "lib-external":
             dest_path = os.path.join(
                 root_directory, ext_lib_dir, rest_of_path)
         else:
@@ -183,4 +181,5 @@ def process_all_files_in_directory(directory):
 
 
 if __name__ == "__main__":
-    process_all_files_in_directory('tmp')
+    directory = sys.argv[1]
+    process_all_files_in_directory(directory)

@@ -1,7 +1,10 @@
 #!/bin/bash -e
 
-rm -rf tmp/ # alt: mktemp -d
-mkdir -p tmp/
+git submodule update --init --recursive --depth 1
+
+dir=${1:-tmp/}
+rm -rf "$dir"
+mkdir -p "$dir"
 
 replace_pragma_solidity() {
   local file=$1
@@ -18,7 +21,7 @@ compile_and_flatten() {
 
   local input_dir="$source_path/$project/$subpath"
 
-  local output_dir="tmp/$project/interfaces"
+  local output_dir="$dir/$project/interfaces"
 
   local flatten_command="forge flatten"
 
@@ -44,3 +47,8 @@ do
     interface_subpath=$(find src/pkgs/$pkg -type d \( -path "src/pkgs/$pkg/lib" -prune \) -o \( -name "interface" -o -name "interfaces" \) -print | sed "s|src/pkgs/$pkg/||")
     compile_and_flatten "src/pkgs" "$pkg" "$interface_subpath"
 done
+
+python3 script/util/process_interfaces.py "$dir"
+
+forge clean
+forge build -C "$dir"
