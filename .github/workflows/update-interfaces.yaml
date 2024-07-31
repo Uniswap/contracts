@@ -62,4 +62,5 @@ jobs:
           Changes:
           $(git diff --cached --name-status)
           "
+          git pull --rebase origin main
           git push
