@@ -66,6 +66,10 @@ via_ir = true
 
 [profile.uniswapx]
 src = "src/pkgs/uniswapx"
+solc = "0.8.24"
+optimizer_runs = 1000000
+via_ir = false
+# evm_version = todo
 
 [profile.default.fuzz]
 runs = 1000
