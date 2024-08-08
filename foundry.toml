@@ -21,7 +21,7 @@ skip = [
   "src/pkgs/**/lib/**",
   "src/pkgs/universal-router/permit2/**",
   "src/pkgs/universal-router/solmate/**",
-  "*.t.sol",
+  "**/test/**",
   "*.s.sol"
 ]
 
@@ -50,7 +50,11 @@ evm_version = "cancun"
 
 [profile.v4-periphery]
 src = "src/pkgs/v4-periphery"
-libs = ["src/pkgs/v4-core", "lib"]
+libs = ["src/pkgs/v4-core"]
+solc = "0.8.26"
+optimizer_runs = 1_000_000
+via_ir = false
+evm_version = "cancun"
 
 [profile.permit2]
 src = "src/pkgs/permit2"
