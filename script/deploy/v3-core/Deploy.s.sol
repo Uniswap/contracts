@@ -10,21 +10,18 @@ contract Deploy is Script {
 
     function run() public {
         uint256 deployerPrivateKey = vm.envUint('PRIVATE_KEY');
-        string memory input = vm.readFile('./script/deploy/v2-core/input.json');
+        string memory input = vm.readFile('./script/deploy/v3-core/input.json');
         string memory chainIdInput = string(abi.encodePacked('["', vm.toString(block.chainid), '"]'));
-
-        address feeToSetter = input.readAddress(string.concat(chainIdInput, '.feeToSetter'));
 
         vm.startBroadcast(deployerPrivateKey);
 
-        address factory = deployV2Factory(feeToSetter);
+        address factory = deployV3Factory();
 
         vm.stopBroadcast();
     }
 
-    function deployV2Factory(address _feeToSetter) internal returns (address factory) {
-        bytes memory args = abi.encode(_feeToSetter);
-        bytes memory bytecode = abi.encodePacked(vm.getCode('out/UniswapV2Factory.sol/UniswapV2Factory.json'), args);
+    function deployV3Factory() internal returns (address factory) {
+        bytes memory bytecode = abi.encodePacked(vm.getCode('out/UniswapV3Factory.sol/UniswapV3Factory.json'));
         assembly {
             factory := create(0, add(bytecode, 32), mload(bytecode))
         }
