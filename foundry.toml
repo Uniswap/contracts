@@ -44,9 +44,17 @@ via_ir = false
 
 [profile.v3-core]
 src = "src/pkgs/v3-core"
+solc = "0.7.6"
+optimizer_runs = 800
+via_ir = false
+evm_version = "istanbul"
 
 [profile.v3-periphery]
 src = "src/pkgs/v3-periphery"
+solc = "0.7.6"
+optimizer_runs = 1_000_000
+via_ir = false
+evm_version = "istanbul"
 
 [profile.v4-core]
 src = "src/pkgs/v4-core"
