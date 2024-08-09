@@ -66,7 +66,11 @@ via_ir = true
 
 [profile.universal-router]
 src = "src/pkgs/universal-router"
+libs = ["src/pkgs/universal-router/lib"]
+solc = "0.8.17"
+optimizer_runs = 1_000_000
 via_ir = true
+# evm_version = todo
 
 [profile.uniswapx]
 src = "src/pkgs/uniswapx"
