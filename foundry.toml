@@ -2,18 +2,14 @@
 src = "src/main"
 out = "out"
 libs = ["lib"]
-optimizer = true
-optimizer_runs = 800
 bytecode_hash = "none"
-via_ir = false
 verbosity = 2
-ffi = true
+
 fs_permissions = [
   { access = "read-write", path = ".forge-snapshots"},
   { access = "read", path = "script/" },
   { access = "read", path = "out/" }
 ]
-evm_version = "cancun"
 
 skip = [
   "src/pkgs/**/audits/**",
@@ -22,6 +18,7 @@ skip = [
   "src/pkgs/universal-router/permit2/**",
   "src/pkgs/universal-router/solmate/**",
   "**/test/**",
+  "*.t.sol",
   "*.s.sol"
 ]
 
@@ -34,6 +31,7 @@ solc = "0.5.16"
 optimizer_runs = 999999
 via_ir = false
 # evm_version = todo
+bytecode_hash = "none"
 
 [profile.v2-periphery]
 src = "src/pkgs/v2-periphery"
@@ -41,6 +39,7 @@ solc = "0.6.6"
 optimizer_runs = 999999
 via_ir = false
 # evm_version = todo
+bytecode_hash = "none"
 
 [profile.v3-core]
 src = "src/pkgs/v3-core"
@@ -48,6 +47,7 @@ solc = "0.7.6"
 optimizer_runs = 800
 via_ir = false
 evm_version = "istanbul"
+bytecode_hash = "none"
 
 [profile.v3-periphery]
 src = "src/pkgs/v3-periphery"
@@ -55,6 +55,7 @@ solc = "0.7.6"
 optimizer_runs = 1_000_000
 via_ir = false
 evm_version = "istanbul"
+bytecode_hash = "none"
 
 [profile.v4-core]
 src = "src/pkgs/v4-core"
@@ -63,14 +64,16 @@ solc = "0.8.26"
 optimizer_runs = 44444444
 via_ir = true
 evm_version = "cancun"
+bytecode_hash = "none"
 
 [profile.v4-periphery]
 src = "src/pkgs/v4-periphery"
 libs = ["src/pkgs/v4-core"]
 solc = "0.8.26"
-optimizer_runs = 1_000_000
+optimizer_runs = 1000000
 via_ir = false
 evm_version = "cancun"
+bytecode_hash = "none"
 
 [profile.permit2]
 src = "src/pkgs/permit2"
@@ -79,14 +82,16 @@ solc = "0.8.17"
 optimizer_runs = 1000000
 via_ir = true
 # evm_version = todo
+bytecode_hash = "none"
 
 [profile.universal-router]
 src = "src/pkgs/universal-router"
 libs = ["src/pkgs/universal-router/lib"]
 solc = "0.8.17"
-optimizer_runs = 1_000_000
+optimizer_runs = 1000000
 via_ir = true
 # evm_version = todo
+bytecode_hash = "none"
 
 [profile.uniswapx]
 src = "src/pkgs/uniswapx"
@@ -94,6 +99,7 @@ solc = "0.8.24"
 optimizer_runs = 1000000
 via_ir = false
 # evm_version = todo
+bytecode_hash = "none"
 
 [fmt]
 line_length = 120
