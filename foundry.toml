@@ -30,6 +30,9 @@ skip = []
 
 [profile.v2-core]
 src = "src/pkgs/v2-core"
+solc = "0.5.16"
+optimizer_runs = 999999
+# evm_version = todo
 
 [profile.v2-periphery]
 src = "src/pkgs/v2-periphery"
