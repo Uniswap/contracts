@@ -83,6 +83,15 @@ def parse_content_for_classes(content):
 
     return classes
 
+def replace_bytecode_path_in_content(content, root_directory):
+    # Define the regex pattern to match
+    pattern = r"vm\.getCode\('out\/(.*?)'"
+
+    # Replace 'out/' with 'src/bytecode/'
+    replacement = f"vm.getCode('{root_directory}bytecode/\\1'"
+    replaced_content = re.sub(pattern, replacement, content)
+
+    return replaced_content
 
 def get_relative_path(src_path, dest_path):
     relative_path = os.path.relpath(src_path, os.path.dirname(dest_path))
@@ -112,6 +121,7 @@ def create_import_statement(class_name, relative_path):
 def process_file(interface_file, root_directory):
     interface_dir = "interfaces"
     ext_lib_dir = "lib-external"
+    deployers_dir = "deployers"
 
     code_blocks = parse_code_file(interface_file)
     pragma = {}
@@ -130,6 +140,8 @@ def process_file(interface_file, root_directory):
             r'src/pkgs/(.*?)/(src|contracts)/(interface|interfaces)/(.*)', source_path)
         lib_match = re.match(
             r'src/pkgs/(.*?)/(src|contracts)/(.*)', source_path)
+        deployer_match = re.match(
+            r'src/main/deployers/(.*)', source_path)
         rest_match = re.match(r'lib/(.*)', source_path)
         if match:
             subdir = "interfaces"
@@ -139,6 +151,9 @@ def process_file(interface_file, root_directory):
             subdir = "other"
             package_name = lib_match.group(1)
             rest_of_path = lib_match.group(3)
+        elif deployer_match:
+            subdir = "deployers"
+            rest_of_path = deployer_match.group(1)
         elif rest_match:
             subdir = "lib-external"
             rest_of_path = rest_match.group(1)
@@ -151,6 +166,9 @@ def process_file(interface_file, root_directory):
         elif subdir == "lib-external":
             dest_path = os.path.join(
                 root_directory, ext_lib_dir, rest_of_path)
+        elif subdir == "deployers":
+            dest_path = os.path.join(
+                root_directory, deployers_dir, rest_of_path)
         else:
             dest_path = os.path.join(
                 root_directory, package_name, interface_dir, rest_of_path)
@@ -165,6 +183,9 @@ def process_file(interface_file, root_directory):
 
         if subdir != "interfaces":
             pragma[dest_path] = get_pragma_from_file(source_path)
+
+        if subdir == "deployers":
+            content = replace_bytecode_path_in_content(content, root_directory)
 
         blocks[dest_path] = content
 
@@ -182,4 +203,7 @@ def process_all_files_in_directory(directory):
 
 if __name__ == "__main__":
     directory = sys.argv[1]
+    if not directory.endswith('/'):
+        directory += '/'
+
     process_all_files_in_directory(directory)

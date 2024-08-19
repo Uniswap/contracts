@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-git submodule update --init --recursive --depth 1
+./build.sh
 
 dir=${1:-tmp/}
 rm -rf "$dir"
@@ -40,6 +40,29 @@ compile_and_flatten() {
   echo ""
 }
 
+compile_and_flatten_deployers() {
+  local source_path=$1
+
+  local input_dir="$source_path"
+
+  local output_dir="$dir/deployers"
+
+  local flatten_command="forge flatten"
+
+  echo "processing deployers"
+  echo ""
+
+  find "$input_dir" -type f -name "*.sol" | while read -r sol_file; do
+    relative_path=$(echo "$sol_file" | sed -E "s|$input_dir||")
+    output_file="$output_dir$relative_path"
+
+    echo "flattening $sol_file"
+    $flatten_command "$sol_file" -o "$output_file"
+  done
+
+  echo ""
+}
+
 # packages
 pkgs=$(ls src/pkgs/);
 for pkg in $pkgs
@@ -48,7 +71,9 @@ do
     compile_and_flatten "src/pkgs" "$pkg" "$interface_subpath"
 done
 
+# deployers
+compile_and_flatten_deployers "src/main/deployers"
+
 python3 script/util/process_interfaces.py "$dir"
 
-forge clean
-forge build -C "$dir"
+cp out/ "$dir"/bytecode -r
