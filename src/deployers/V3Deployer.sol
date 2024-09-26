@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.7.0;
 
-import {IUniswapV3Factory} from '../../pkgs/v3-core/contracts/interfaces/IUniswapV3Factory.sol';
-import {INonfungiblePositionManager} from '../../pkgs/v3-periphery/contracts/interfaces/INonfungiblePositionManager.sol';
-import {ISwapRouter} from '../../pkgs/v3-periphery/contracts/interfaces/ISwapRouter.sol';
+import {IUniswapV3Factory} from '../pkgs/v3-core/contracts/interfaces/IUniswapV3Factory.sol';
+import {INonfungiblePositionManager} from '../pkgs/v3-periphery/contracts/interfaces/INonfungiblePositionManager.sol';
+import {ISwapRouter} from '../pkgs/v3-periphery/contracts/interfaces/ISwapRouter.sol';
 import {Vm} from 'forge-std/Vm.sol';
 
 library V3Deployer {

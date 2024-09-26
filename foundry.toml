@@ -17,9 +17,9 @@ skip = [
   "src/pkgs/**/lib/**",
   "src/pkgs/universal-router/permit2/**",
   "src/pkgs/universal-router/solmate/**",
+  "src/**/*.s.sol",
   "**/test/**",
   "*.t.sol",
-  "*.s.sol"
 ]
 
 additional_compiler_profiles = [
@@ -52,10 +52,6 @@ compilation_restrictions = [
   { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
   { paths = "src/pkgs/universal-router/contracts/**", via_ir = true },
 ]
-
-[profile.deploy]
-src = "src/main"
-skip = []
 
 [fmt]
 line_length = 120

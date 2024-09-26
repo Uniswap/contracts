@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {IUniswapV2Router01, IUniswapV2Router02, V2Deployer} from '../../../src/main/deployers/V2Deployer.sol';
+import {IUniswapV2Router01, IUniswapV2Router02, V2Deployer} from '../../../src/deployers/V2Deployer.sol';
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 
 contract Test {}

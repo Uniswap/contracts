@@ -1,0 +1,27 @@
+{
+    "v2": {
+        "deploy": false,
+        "UniswapV2Factory": {
+            "deploy": true,
+            "address": "0x0000000000000000000000000000000000000000",
+            "params": {
+                "feeToSetter": "0x0000000000000000000000000000000000000000"
+            }
+        },
+        "UniswapV2Router02": {
+            "deploy": true,
+            "params": {
+                "factory": "0x0000000000000000000000000000000000000000"
+            }
+        }
+    },
+    "v3": {
+        "deploy": false
+    },
+    "utils": {
+        "deploy": false
+    },
+    "external_dependencies": {
+        "weth": "0x0000000000000000000000000000000000000000"
+    }
+}

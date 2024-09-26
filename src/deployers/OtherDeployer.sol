@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import {IPermit2} from '../../pkgs/permit2/src/interfaces/IPermit2.sol';
-import {IUniversalRouter} from '../../pkgs/universal-router/contracts/interfaces/IUniversalRouter.sol';
+import {IPermit2} from '../pkgs/permit2/src/interfaces/IPermit2.sol';
+import {IUniversalRouter} from '../pkgs/universal-router/contracts/interfaces/IUniversalRouter.sol';
 import {Vm} from 'forge-std/Vm.sol';
 
 library V4Deployer {

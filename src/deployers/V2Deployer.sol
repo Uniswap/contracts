@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import {IUniswapV2Factory} from '../../pkgs/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
-import {IUniswapV2Router01} from '../../pkgs/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol';
-import {IUniswapV2Router02} from '../../pkgs/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol';
+import {IUniswapV2Factory} from '../pkgs/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
+import {IUniswapV2Router01} from '../pkgs/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol';
+import {IUniswapV2Router02} from '../pkgs/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol';
 import {Vm} from 'forge-std/Vm.sol';
 
 library V2Deployer {

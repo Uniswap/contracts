@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0;
 
-import {IPermit2} from '../../pkgs/permit2/src/interfaces/IPermit2.sol';
-import {IPoolManager} from '../../pkgs/v4-core/src/interfaces/IPoolManager.sol';
-import {IPositionManager} from '../../pkgs/v4-periphery/src/interfaces/IPositionManager.sol';
-import {IQuoter} from '../../pkgs/v4-periphery/src/interfaces/IQuoter.sol';
+import {IPermit2} from '../pkgs/permit2/src/interfaces/IPermit2.sol';
+import {IPoolManager} from '../pkgs/v4-core/src/interfaces/IPoolManager.sol';
+import {IPositionManager} from '../pkgs/v4-periphery/src/interfaces/IPositionManager.sol';
+import {IQuoter} from '../pkgs/v4-periphery/src/interfaces/IQuoter.sol';
 import {Vm} from 'forge-std/Vm.sol';
 
 library V4Deployer {

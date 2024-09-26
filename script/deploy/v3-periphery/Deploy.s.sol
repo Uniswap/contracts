@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.7.6;
 
-import {INonfungiblePositionManager, ISwapRouter, V3Deployer} from '../../../src/main/deployers/V3Deployer.sol';
+import {INonfungiblePositionManager, ISwapRouter, V3Deployer} from '../../../src/deployers/V3Deployer.sol';
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 
 contract Test {}

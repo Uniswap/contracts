@@ -2,11 +2,8 @@
 pragma solidity 0.8.26;
 
 import {
-    IUniswapV2Factory,
-    IUniswapV2Router01,
-    IUniswapV2Router02,
-    V2Deployer
-} from '../../../src/main/deployers/V2Deployer.sol';
+    IUniswapV2Factory, IUniswapV2Router01, IUniswapV2Router02, V2Deployer
+} from '../../src/deployers/V2Deployer.sol';
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {console2} from 'forge-std/console2.sol';
 

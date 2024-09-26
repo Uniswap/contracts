@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {IPositionManager, IQuoter, V4Deployer} from '../../../src/main/deployers/V4Deployer.sol';
+import {IPositionManager, IQuoter, V4Deployer} from '../../../src/deployers/V4Deployer.sol';
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 
 contract Test {}
