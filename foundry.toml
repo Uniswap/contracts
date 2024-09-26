@@ -53,6 +53,10 @@ compilation_restrictions = [
   { paths = "src/pkgs/universal-router/contracts/**", via_ir = true },
 ]
 
+[profile.deploy]
+src = "src/main"
+skip = []
+
 [fmt]
 line_length = 120
 tab_width = 4
