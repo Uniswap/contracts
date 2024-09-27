@@ -1,4 +1,4 @@
-/target
+target/
 /out
 /cache
 /coverage
@@ -11,3 +11,6 @@ lcov.info
 .password
 broadcast/*/31337
 deployments/**/31337.*
+
+debug/
+Cargo.lock
