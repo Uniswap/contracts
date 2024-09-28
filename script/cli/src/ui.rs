@@ -114,38 +114,6 @@ pub fn render_ascii_title(buffer: &mut Buffer) -> Result<()> {
     Ok(())
 }
 
-pub fn render_menu(buffer: &mut Buffer, options: &[&str], selected: usize) -> Result<()> {
-    for (i, option) in options.iter().enumerate() {
-        let color = if i == selected {
-            Color::Rgb {
-                r: 255,
-                g: 20,
-                b: 147,
-            }
-        } else {
-            Color::Reset
-        };
-        let prefix = if i == selected { "> " } else { "  " };
-        let row: Vec<(char, Color)> = prefix
-            .chars()
-            .chain(option.chars())
-            .map(|ch| (ch, color))
-            .collect();
-        buffer.append_row(row);
-    }
-
-    Ok(())
-}
-
-pub fn render_instructions(buffer: &mut Buffer) -> Result<()> {
-    buffer.append_row_text_color(
-        "\nUse ↑↓ arrows to navigate, Enter to select, 'q' to quit",
-        Color::Yellow,
-    );
-
-    Ok(())
-}
-
 fn rgb(x: u16, y: u16) -> Color {
     let frequency = 0.1;
     let speed = 1.0; // Reduced speed for a slower color change
