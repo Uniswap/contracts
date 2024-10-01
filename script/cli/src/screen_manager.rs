@@ -31,8 +31,8 @@ impl ScreenManager {
         self.current_screen.render_title(buffer);
         self.current_screen.render_description(buffer);
         self.current_screen.render_content(buffer);
-        self.current_screen.render_error(buffer);
         self.current_screen.render_warning(buffer);
+        self.current_screen.render_error(buffer);
         self.current_screen.render_instructions(buffer);
     }
 

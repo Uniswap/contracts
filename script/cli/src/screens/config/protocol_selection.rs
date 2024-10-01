@@ -36,13 +36,13 @@ impl Screen for ProtocolSelectionScreen {
 
     fn render_description(&self, _: &mut Buffer) {}
 
-    fn render_error(&self, _: &mut Buffer) {}
-
     fn render_warning(&self, _: &mut Buffer) {}
+
+    fn render_error(&self, _: &mut Buffer) {}
 
     fn render_instructions(&self, buffer: &mut Buffer) {
         buffer.append_row_text_color(
-            "\nUse ↑↓ arrows to navigate, Space to select, Enter to confirm, 'q' to quit",
+            "\nUse ↑↓ arrows to navigate, 'Space' to select, 'Enter' to confirm, 'Escape' to quit",
             Color::Blue,
         );
     }

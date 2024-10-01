@@ -24,19 +24,20 @@ impl Buffer {
         }
     }
 
-    pub fn append_row_text(&mut self, text: &str) {
-        self.append_row_text_color(text, Color::Reset);
+    pub fn append_row_text(&mut self, text: &str) -> usize {
+        self.append_row_text_color(text, Color::Reset)
     }
 
-    pub fn append_row_text_color(&mut self, text: &str, color: Color) {
+    pub fn append_row_text_color(&mut self, text: &str, color: Color) -> usize {
         let lines: Vec<String> = text.split('\n').map(String::from).collect();
         for line in lines {
             let row: Vec<(char, Color)> = line.chars().map(|ch| (ch, color)).collect();
             self.append_row(row);
         }
+        self.content.len() - 1
     }
 
-    pub fn append_row(&mut self, row: Vec<(char, Color)>) {
+    pub fn append_row(&mut self, row: Vec<(char, Color)>) -> usize {
         // when appending a row, if it's too long, cut it off, else pad it with spaces
         if row.len() > self.width {
             self.content.push(row[..self.width].to_vec());
@@ -45,6 +46,7 @@ impl Buffer {
             padded_row.resize(self.width, (' ', Color::Reset));
             self.content.push(padded_row);
         }
+        self.content.len() - 1
     }
 
     pub fn draw(&mut self, stdout: &mut impl Write) -> Result<()> {
