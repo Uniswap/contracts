@@ -8,6 +8,8 @@ use crossterm::{
 use std::io::Write;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+// The buffer is responsible for rendering the UI. It's a 2D vector of characters and colors that will be rendered to the terminal. The height and width are fetched from the terminal size every cycle, this way the UI can always be redrawn correctly if the terminal size changes. Screens append rows to the buffer line by line and the buffer is rendered to the terminal in its entirety every cycle. At the start of the render cycle the buffer is reset to make sure it's empty.
+
 pub struct Buffer {
     content: Vec<Vec<(char, Color)>>,
     width: usize,
@@ -118,9 +120,9 @@ pub fn render_ascii_title(buffer: &mut Buffer) -> Result<()> {
 
 fn rgb(x: u16, y: u16) -> Color {
     let frequency = 0.1;
-    let speed = 1.0; // Reduced speed for a slower color change
+    let speed = 1.0;
 
-    // Get the current time since UNIX_EPOCH
+    // Get the current time since UNIX_EPOCH and use it to calculate the color change
     let time = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap()

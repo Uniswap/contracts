@@ -2,11 +2,15 @@ use super::screens;
 use super::ui::Buffer;
 use crossterm::event::Event;
 
+// The screen manager is called by the main thread to handle the rendering and input handling of the current screen, as well as switching between screens and workflows.
+
+// Screens are steps within a workflow. When rendering a screen, a screen implementation appends rows of text to the buffer. Pre-made components found in `screens/types` can be used to render common UI elements like input fields or selection menus.
 pub trait Screen: Send {
     fn handle_input(&mut self, event: Event) -> Option<Vec<Box<dyn Workflow>>>;
     fn render_content(&self, buffer: &mut Buffer);
 }
 
+// Workflows are sequences of screens that are executed in order. When a workflow completes, it returns to the home screen and the state is reset. A screen can spawn new sub-workflows that are integrated into the current workflow until they complete. For example the protocol selection screen can spawn new workflows depending on the selected protocols to enter information required to deploy the selected protocols.
 pub trait Workflow: Send {
     fn next_screen(&mut self, new_workflows: Vec<Box<dyn Workflow>>) -> Option<Box<dyn Screen>>;
 }
@@ -22,10 +26,6 @@ impl ScreenManager {
             current_screen: Box::new(screens::home::HomeScreen::new()),
             active_workflow: None,
         }
-    }
-
-    pub fn set_screen(&mut self, new_screen: Box<dyn Screen>) {
-        self.current_screen = new_screen;
     }
 
     pub fn render(&self, buffer: &mut Buffer) {
@@ -60,5 +60,9 @@ impl ScreenManager {
                 }
             }
         }
+    }
+
+    fn set_screen(&mut self, new_screen: Box<dyn Screen>) {
+        self.current_screen = new_screen;
     }
 }

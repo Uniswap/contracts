@@ -1,6 +1,8 @@
 use std::collections::HashMap;
 use std::sync::Mutex;
 
+// The state manager is responsible for managing the state of the application. All screens and workflows share the same state and use the singleton instance to read and write to the state.
+
 #[derive(Default, Clone)]
 
 pub struct Currency {
@@ -27,6 +29,9 @@ pub struct AppState {
     pub rpc_url: Option<String>,
 }
 
+// The chains.json file is downloaded from here: https://chainid.network/chains.json
+// The build.sh script automatically downloads the latest file and includes it in the binary.
+// this json in the file is automatically parsed and populated into the state manager to provide chain information such as rpcs, explorers, etc.
 const JSON_DATA: &str = include_str!("./assets/chains.json");
 
 impl AppState {

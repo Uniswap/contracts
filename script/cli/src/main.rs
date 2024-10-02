@@ -70,6 +70,7 @@ fn run_main_menu() -> Result<()> {
     let mut buffer = Buffer::new();
     let mut screen_manager = ScreenManager::new();
 
+    // run the main loop, render the current screen, afterwards handle any user input and update the screen accordingly
     loop {
         render_ascii_title(&mut buffer)?;
         screen_manager.render(&mut buffer);
@@ -78,6 +79,7 @@ fn run_main_menu() -> Result<()> {
         if poll(Duration::from_millis(16))? {
             let event = read()?;
             if let Event::Key(key_event) = event {
+                // if the user presses escape or control c the program will exit
                 match (key_event.modifiers, key_event.code) {
                     (KeyModifiers::NONE, KeyCode::Esc) => break,
                     (KeyModifiers::CONTROL, KeyCode::Char('c')) => break,

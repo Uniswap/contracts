@@ -6,6 +6,7 @@ use crate::ui::Buffer;
 use crate::workflows::create_config::create_config::CreateConfigWorkflow;
 use crossterm::{event::Event, style::Color};
 
+// The home screen is the first screen that is shown to the user. It provides a menu to select a workflow to execute. After a workflow completes, the user is returned to the home screen.
 pub struct HomeScreen {
     select_screen: SelectScreen,
 }
