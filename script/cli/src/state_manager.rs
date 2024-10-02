@@ -1,4 +1,6 @@
 use std::collections::HashMap;
+use std::sync::Mutex;
+
 #[derive(Default, Clone)]
 
 pub struct Currency {
@@ -20,12 +22,34 @@ pub struct Chain {
     pub currency: Currency,
 }
 
-pub struct StateManager {
+pub struct AppState {
     pub chain_id: Option<String>,
-    pub chains: HashMap<String, Chain>,
+    pub rpc_url: Option<String>,
 }
 
 const JSON_DATA: &str = include_str!("./assets/chains.json");
+
+impl AppState {
+    pub fn new() -> Self {
+        AppState {
+            chain_id: None,
+            rpc_url: None,
+        }
+    }
+
+    pub fn set_chain_id(&mut self, chain_id: String) {
+        self.chain_id = Some(chain_id);
+    }
+
+    pub fn reset(&mut self) {
+        *self = AppState::new();
+    }
+}
+
+pub struct StateManager {
+    pub app_state: Mutex<AppState>,
+    pub chains: HashMap<String, Chain>,
+}
 
 impl StateManager {
     pub fn new() -> Self {
@@ -109,13 +133,9 @@ impl StateManager {
             }
         }
         StateManager {
-            chain_id: None,
+            app_state: Mutex::new(AppState::new()),
             chains,
         }
-    }
-
-    pub fn set_chain_id(&mut self, chain_id: String) {
-        self.chain_id = Some(chain_id);
     }
 
     pub fn get_chain(&self, chain_id: String) -> Option<&Chain> {
@@ -123,7 +143,7 @@ impl StateManager {
     }
 }
 
-// Create a global instance of SharedStateManager
+// Create a global instance of StateManager
 lazy_static::lazy_static! {
     pub static ref STATE_MANAGER: StateManager = StateManager::new();
 }

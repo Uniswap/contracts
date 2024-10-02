@@ -1,5 +1,4 @@
-use crate::screen_manager::Screen;
-use crate::screens::config::protocol_selection::ProtocolSelectionScreen;
+use crate::screen_manager::{Screen, Workflow};
 use crate::screens::types::text_input::TextInputScreen;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
@@ -11,7 +10,6 @@ pub struct ChainIdScreen {
 
 impl ChainIdScreen {
     pub fn new() -> Self {
-        // let chain_ids = Self::fetch_chain_ids();
         ChainIdScreen {
             text_input: TextInputScreen::new(false, ChainIdScreen::validate_input),
         }
@@ -28,18 +26,21 @@ impl ChainIdScreen {
 
 impl Screen for ChainIdScreen {
     fn render_content(&self, buffer: &mut Buffer) {
+        self.render_title(buffer);
         self.text_input.render(buffer);
+        render_instructions(buffer);
     }
 
-    fn handle_input(&mut self, event: Event) -> Vec<Box<dyn Screen>> {
-        let index = self.text_input.handle_input(event);
-        if index != None {
-            // STATE_MANAGER.set_chain_id(self.text_input.text.clone());
-            return vec![Box::new(ProtocolSelectionScreen::new())];
+    fn handle_input(&mut self, event: Event) -> Option<Vec<Box<dyn Workflow>>> {
+        let chain_id = self.text_input.handle_input(event);
+        if chain_id != None && !chain_id.unwrap().is_empty() {
+            return Some(vec![]);
         }
-        vec![]
+        None
     }
+}
 
+impl ChainIdScreen {
     fn render_title(&self, buffer: &mut Buffer) {
         let chain_id = self.text_input.text.clone();
         if chain_id.is_empty() {
@@ -53,14 +54,8 @@ impl Screen for ChainIdScreen {
         }
         buffer.append_row_text(&format!("Selected network: {}\n", chain_name.unwrap().name));
     }
+}
 
-    fn render_description(&self, _: &mut Buffer) {}
-
-    fn render_warning(&self, _: &mut Buffer) {}
-
-    fn render_error(&self, _: &mut Buffer) {}
-
-    fn render_instructions(&self, buffer: &mut Buffer) {
-        buffer.append_row_text_color("\nUse 'Enter' to select, 'Escape' to quit", Color::Blue);
-    }
+fn render_instructions(buffer: &mut Buffer) {
+    buffer.append_row_text_color("\nUse 'Enter' to select, 'Escape' to quit", Color::Blue);
 }

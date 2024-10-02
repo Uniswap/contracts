@@ -1,7 +1,9 @@
 use crate::screen_manager::Screen;
-use crate::screens::chain_id::ChainIdScreen;
+use crate::screen_manager::Workflow;
 use crate::screens::types::select::SelectScreen;
+use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
+use crate::workflows::create_config::create_config::CreateConfigWorkflow;
 use crossterm::{event::Event, style::Color};
 
 pub struct HomeScreen {
@@ -10,6 +12,8 @@ pub struct HomeScreen {
 
 impl HomeScreen {
     pub fn new() -> Self {
+        // reset the app state when returning to the home screen to ensure a clean state
+        STATE_MANAGER.app_state.lock().unwrap().reset();
         let options = vec![
             "Create Config".to_string(),
             "Verify Deployment".to_string(),
@@ -24,31 +28,27 @@ impl HomeScreen {
 
 impl Screen for HomeScreen {
     fn render_content(&self, buffer: &mut Buffer) {
+        render_title(buffer);
         self.select_screen.render(buffer);
+        render_instructions(buffer);
     }
 
-    fn handle_input(&mut self, event: Event) -> Vec<Box<dyn Screen>> {
+    fn handle_input(&mut self, event: Event) -> Option<Vec<Box<dyn Workflow>>> {
         let index = self.select_screen.handle_input(event);
-        if index == 0 {
-            return vec![Box::new(ChainIdScreen::new())];
+        match index {
+            0 => Some(vec![Box::new(CreateConfigWorkflow::new())]),
+            _ => None,
         }
-        vec![]
     }
+}
 
-    fn render_title(&self, buffer: &mut Buffer) {
-        buffer.append_row_text("Welcome to the Uniswap Deploy CLI! What do you want to do?\n");
-    }
+fn render_title(buffer: &mut Buffer) {
+    buffer.append_row_text("Welcome to the Uniswap Deploy CLI! What do you want to do?\n");
+}
 
-    fn render_description(&self, _: &mut Buffer) {}
-
-    fn render_warning(&self, _: &mut Buffer) {}
-
-    fn render_error(&self, _: &mut Buffer) {}
-
-    fn render_instructions(&self, buffer: &mut Buffer) {
-        buffer.append_row_text_color(
-            "\nUse ↑↓ arrows to navigate, 'Enter' to select, 'Escape' to quit",
-            Color::Blue,
-        );
-    }
+fn render_instructions(buffer: &mut Buffer) {
+    buffer.append_row_text_color(
+        "\nUse ↑↓ arrows to navigate, 'Enter' to select, 'Escape' to quit",
+        Color::Blue,
+    );
 }

@@ -2,6 +2,7 @@ mod screen_manager;
 mod screens;
 mod state_manager;
 mod ui;
+mod workflows;
 
 use crossterm::{
     cursor::{Hide, MoveTo, Show},
@@ -13,6 +14,7 @@ use crossterm::{
     },
     Result,
 };
+use screen_manager::ScreenManager;
 use signal_hook::{
     consts::{SIGINT, SIGTERM},
     iterator::Signals,
@@ -66,7 +68,7 @@ fn clean_terminal() -> Result<()> {
 fn run_main_menu() -> Result<()> {
     let mut stdout = stdout();
     let mut buffer = Buffer::new();
-    let mut screen_manager = screen_manager::ScreenManager::new();
+    let mut screen_manager = ScreenManager::new();
 
     loop {
         render_ascii_title(&mut buffer)?;
