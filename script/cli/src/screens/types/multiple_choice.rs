@@ -18,6 +18,13 @@ impl MultipleChoiceScreen {
         }
     }
 
+    pub fn render_default_instructions(&self, buffer: &mut Buffer) {
+        buffer.append_row_text_color(
+            "\nUse ↑↓ arrows to navigate, 'Space' to select, 'Enter' to confirm",
+            Color::Blue,
+        );
+    }
+
     pub fn render(&self, buffer: &mut Buffer) {
         for (i, option) in self.options.iter().enumerate() {
             let color = if self.hovered_index == i {

@@ -42,8 +42,21 @@ impl AppState {
         }
     }
 
+    pub fn print_state(&self) {
+        if let Some(chain_id) = &self.chain_id {
+            println!("Chain ID: {}", chain_id);
+        }
+        if let Some(rpc_url) = &self.rpc_url {
+            println!("RPC URL: {}", rpc_url);
+        }
+    }
+
     pub fn set_chain_id(&mut self, chain_id: String) {
         self.chain_id = Some(chain_id);
+    }
+
+    pub fn set_rpc_url(&mut self, rpc_url: String) {
+        self.rpc_url = Some(rpc_url);
     }
 
     pub fn reset(&mut self) {
@@ -74,7 +87,9 @@ impl StateManager {
                         .as_array()
                         .map(|arr| {
                             arr.iter()
-                                .filter_map(|v| v.as_str().map(String::from))
+                                .filter_map(|v| v.as_str())
+                                .filter(|url| url.starts_with("http"))
+                                .map(String::from)
                                 .collect()
                         })
                         .unwrap_or_default();

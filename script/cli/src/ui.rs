@@ -90,8 +90,8 @@ pub fn render_ascii_title(buffer: &mut Buffer) -> Result<()> {
     let title = vec![
         "  *                       ",
         "   **                     ",
-        "     **                   ",
-        "     ***  ****      *     ",
+        "    **                    ",
+        "     ***  ****            ",
         "      * **************    ",
         "       ******  ********     _   _      _                       ___           _             ___ _    ___ ",
         "       ****     *******    | | | |_ _ (_)____ __ ____ _ _ __  |   \\ ___ _ __| |___ _  _   / __| |  |_ _|",
@@ -100,8 +100,8 @@ pub fn render_ascii_title(buffer: &mut Buffer) -> Result<()> {
         "    ****         ********                              |_|             |_|         |__/                 ",
         "    ******   ****  *****  ",
         "     ***********     ***  ",
-        "      *  ********    **   ",
-        "             *  **        ",
+        "       **********    **   ",
+        "             *****        ",
         ""
     ];
 
@@ -118,6 +118,15 @@ pub fn render_ascii_title(buffer: &mut Buffer) -> Result<()> {
     Ok(())
 }
 
+pub fn get_spinner_frame() -> char {
+    let frames = vec!["_", "_", "_", "-", "`", "`", "'", "´", "-", "_", "_", "_"];
+    let time = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap()
+        .as_millis();
+    let index = (time as usize / 70) % frames.len();
+    frames[index].chars().next().unwrap()
+}
 fn rgb(x: u16, y: u16) -> Color {
     let frequency = 0.1;
     let speed = 1.0;

@@ -21,6 +21,10 @@ impl TextInputScreen {
         }
     }
 
+    pub fn render_default_instructions(&self, buffer: &mut Buffer) {
+        buffer.append_row_text_color("\nUse 'Enter' to select", Color::Blue);
+    }
+
     pub fn render(&self, buffer: &mut Buffer) {
         let color = Color::Reset;
         let cursor_position = self.cursor_position;
@@ -48,7 +52,8 @@ impl TextInputScreen {
     pub fn handle_input(&mut self, event: Event) -> Option<String> {
         if let Event::Key(key_event) = event {
             match (key_event.modifiers, key_event.code) {
-                (KeyModifiers::NONE, KeyCode::Char(c)) => {
+                (KeyModifiers::NONE, KeyCode::Char(c))
+                | (KeyModifiers::SHIFT, KeyCode::Char(c)) => {
                     self.text.insert(self.cursor_position, c);
                     let new_text = (self.validate_input)(self.text.clone());
                     if new_text.len() == self.text.len() {

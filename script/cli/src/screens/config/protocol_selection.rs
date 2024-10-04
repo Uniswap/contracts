@@ -1,7 +1,7 @@
 use crate::screen_manager::{Screen, Workflow};
 use crate::screens::types::multiple_choice::MultipleChoiceScreen;
 use crate::ui::Buffer;
-use crossterm::{event::Event, style::Color};
+use crossterm::event::Event;
 
 pub struct ProtocolSelectionScreen {
     multiple_choice_screen: MultipleChoiceScreen,
@@ -18,13 +18,22 @@ impl ProtocolSelectionScreen {
             multiple_choice_screen: MultipleChoiceScreen::new(options),
         }
     }
+
+    fn render_title(&self, buffer: &mut Buffer) {
+        buffer.append_row_text("Which protocols do you want to deploy?\n");
+    }
+
+    fn render_instructions(&self, buffer: &mut Buffer) {
+        self.multiple_choice_screen
+            .render_default_instructions(buffer);
+    }
 }
 
 impl Screen for ProtocolSelectionScreen {
     fn render_content(&self, buffer: &mut Buffer) {
-        render_title(buffer);
+        self.render_title(buffer);
         self.multiple_choice_screen.render(buffer);
-        render_instructions(buffer);
+        self.render_instructions(buffer);
     }
 
     fn handle_input(&mut self, event: Event) -> Option<Vec<Box<dyn Workflow>>> {
@@ -34,15 +43,8 @@ impl Screen for ProtocolSelectionScreen {
         }
         None
     }
-}
 
-fn render_title(buffer: &mut Buffer) {
-    buffer.append_row_text("Which protocols do you want to deploy?\n");
-}
-
-fn render_instructions(buffer: &mut Buffer) {
-    buffer.append_row_text_color(
-        "\nUse ↑↓ arrows to navigate, 'Space' to select, 'Enter' to confirm, 'Escape' to quit",
-        Color::Blue,
-    );
+    fn execute(&mut self) {
+        // nothing to execute
+    }
 }

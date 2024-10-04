@@ -5,7 +5,7 @@ use crossterm::{
 };
 
 pub struct SelectScreen {
-    options: Vec<String>,
+    pub options: Vec<String>,
     selected_index: usize,
 }
 
@@ -15,6 +15,13 @@ impl SelectScreen {
             options,
             selected_index: 0,
         }
+    }
+
+    pub fn render_default_instructions(&self, buffer: &mut Buffer) {
+        buffer.append_row_text_color(
+            "\nUse ↑↓ arrows to navigate, 'Enter' to select",
+            Color::Blue,
+        );
     }
 
     pub fn render(&self, buffer: &mut Buffer) {
@@ -33,7 +40,7 @@ impl SelectScreen {
         }
     }
 
-    pub fn handle_input(&mut self, event: Event) -> i32 {
+    pub fn handle_input(&mut self, event: Event) -> Option<usize> {
         if let Event::Key(key_event) = event {
             match key_event.code {
                 KeyCode::Up => {
@@ -47,11 +54,11 @@ impl SelectScreen {
                     }
                 }
                 KeyCode::Enter => {
-                    return self.selected_index as i32;
+                    return Some(self.selected_index);
                 }
                 _ => {}
             }
         }
-        -1
+        None
     }
 }

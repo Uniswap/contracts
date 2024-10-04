@@ -1,7 +1,7 @@
 use crate::screen_manager::{Screen, Workflow};
 use crate::screens::config::protocol_selection::ProtocolSelectionScreen;
 use crate::screens::shared::chain_id::ChainIdScreen;
-
+use crate::screens::shared::rpc_url::RpcUrlScreen;
 pub struct CreateConfigWorkflow {
     current_screen: usize,
 }
@@ -17,7 +17,8 @@ impl Workflow for CreateConfigWorkflow {
         self.current_screen += 1;
         match self.current_screen {
             1 => Some(Box::new(ChainIdScreen::new())),
-            2 => Some(Box::new(ProtocolSelectionScreen::new())),
+            2 => Some(Box::new(RpcUrlScreen::new())),
+            3 => Some(Box::new(ProtocolSelectionScreen::new())),
             _ => None,
         }
     }
