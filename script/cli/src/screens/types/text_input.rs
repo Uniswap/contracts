@@ -7,15 +7,17 @@ use crossterm::{
 
 pub struct TextInputScreen {
     pub text: String,
+    default_text: String,
     hidden: bool,
     cursor_position: usize,
     validate_input: fn(String) -> String,
 }
 
 impl TextInputScreen {
-    pub fn new(hidden: bool, validate_input: fn(String) -> String) -> Self {
+    pub fn new(hidden: bool, default_text: String, validate_input: fn(String) -> String) -> Self {
         TextInputScreen {
             text: String::new(),
+            default_text,
             hidden,
             cursor_position: 0,
             validate_input,
@@ -33,6 +35,11 @@ impl TextInputScreen {
         } else {
             self.text.clone() + " "
         };
+        if self.text.is_empty() && !self.default_text.is_empty() {
+            text = self.default_text.clone();
+            buffer.append_row_text_color(&text, constants::GREY_COLOR);
+            return;
+        }
         // Create an inverted cursor
         let cursor_char = self.text[cursor_position..].chars().next().unwrap_or(' ');
         let inverted_cursor = format!(
@@ -117,6 +124,9 @@ impl TextInputScreen {
                     self.cursor_position = self.text.len();
                 }
                 (KeyModifiers::NONE, KeyCode::Enter) => {
+                    if self.text.is_empty() {
+                        return Some(self.default_text.clone());
+                    }
                     return Some(self.text.clone());
                 }
                 _ => {}

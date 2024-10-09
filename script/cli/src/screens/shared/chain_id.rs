@@ -11,7 +11,7 @@ pub struct ChainIdScreen {
 impl ChainIdScreen {
     pub fn new() -> Self {
         ChainIdScreen {
-            text_input: TextInputScreen::new(false, ChainIdScreen::validate_input),
+            text_input: TextInputScreen::new(false, "".to_string(), ChainIdScreen::validate_input),
         }
     }
 
