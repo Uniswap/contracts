@@ -24,10 +24,16 @@ impl Workflow for DefaultWorkflow {
     }
 
     fn previous_screen(&mut self) -> WorkflowResult {
+        if !self.child_workflows.is_empty() {
+            return self.child_workflows[0].previous_screen();
+        }
         return WorkflowResult::NextScreen(Box::new(HomeScreen::new()));
     }
 
-    fn handle_error(&mut self, _: Box<dyn std::error::Error>) -> WorkflowResult {
+    fn handle_error(&mut self, error: Box<dyn std::error::Error>) -> WorkflowResult {
+        if !self.child_workflows.is_empty() {
+            return self.child_workflows[0].handle_error(error);
+        }
         return WorkflowResult::NextScreen(Box::new(HomeScreen::new()));
     }
 }

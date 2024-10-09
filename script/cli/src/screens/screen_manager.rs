@@ -1,6 +1,7 @@
 use crate::errors;
 use crate::screens;
 use crate::ui::Buffer;
+use crate::workflows::default_workflow::DefaultWorkflow;
 use crate::workflows::workflow_manager::{Workflow, WorkflowResult};
 use crossterm::event::{Event, KeyCode, KeyModifiers};
 
@@ -8,7 +9,6 @@ use crossterm::event::{Event, KeyCode, KeyModifiers};
 // Screens are steps within a workflow. When rendering a screen, a screen implementation appends rows of text to the buffer. Pre-made components found in `screens/types` can be used to render common UI elements like input fields or selection menus.
 pub enum ScreenResult {
     Continue,
-    StartWorkflow(Box<dyn Workflow>),
     NextScreen(Option<Vec<Box<dyn Workflow>>>),
     PreviousScreen,
     Reset,
@@ -22,14 +22,14 @@ pub trait Screen: Send {
 
 pub struct ScreenManager {
     current_screen: Box<dyn Screen>,
-    active_workflow: Option<Box<dyn Workflow>>,
+    active_workflow: Box<dyn Workflow>,
 }
 
 impl ScreenManager {
     pub fn new() -> Self {
         ScreenManager {
             current_screen: Box::new(screens::home::HomeScreen::new()),
-            active_workflow: None,
+            active_workflow: Box::new(DefaultWorkflow::new()),
         }
     }
 
@@ -42,10 +42,8 @@ impl ScreenManager {
         if let Event::Key(key_event) = event {
             match (key_event.modifiers, key_event.code) {
                 (KeyModifiers::CONTROL, KeyCode::Char('b')) => {
-                    if self.active_workflow.is_some() {
-                        let result = self.active_workflow.as_mut().unwrap().previous_screen();
-                        self.handle_workflow_result(result);
-                    }
+                    let result = self.active_workflow.as_mut().previous_screen();
+                    self.handle_workflow_result(result);
                 }
                 (KeyModifiers::NONE, KeyCode::Esc) => self.reset(),
                 _ => {}
@@ -57,42 +55,29 @@ impl ScreenManager {
         if result.is_ok() {
             match result.unwrap() {
                 ScreenResult::Continue => {}
-                ScreenResult::StartWorkflow(workflow) => {
-                    self.active_workflow = Some(workflow);
-                    let result = self.active_workflow.as_mut().unwrap().next_screen(None);
-                    self.handle_workflow_result(result);
-                }
                 ScreenResult::NextScreen(new_workflows) => {
                     // a screen has returned an instruction to move to the next screen. If the screen has returned additional workflows in the vector, these will be passed to the current workflow to handle. An example for additional workflows is in the create_config workflow when the user can select multiple protocols to deploy and the create config workflow will insert additional screens based on the selected protocols.
-                    let result = self
-                        .active_workflow
-                        .as_mut()
-                        .unwrap()
-                        .next_screen(new_workflows);
+                    let result = self.active_workflow.next_screen(new_workflows);
                     self.handle_workflow_result(result);
                 }
                 ScreenResult::Reset => {
                     self.reset();
                 }
                 ScreenResult::PreviousScreen => {
-                    if self.active_workflow.is_some() {
-                        self.active_workflow.as_mut().unwrap().previous_screen();
-                    }
+                    let result = self.active_workflow.previous_screen();
+                    self.handle_workflow_result(result);
                 }
             }
         } else {
             let error = result.err().unwrap();
             errors::log(&error.to_string());
-            if self.active_workflow.is_some() {
-                let workflow_result = self.active_workflow.as_mut().unwrap().handle_error(error);
-                self.handle_workflow_result(workflow_result);
-            }
+            let workflow_result = self.active_workflow.handle_error(error);
+            self.handle_workflow_result(workflow_result);
         }
     }
 
     pub fn reset(&mut self) {
-        self.active_workflow = None;
-        self.set_screen(Box::new(screens::home::HomeScreen::new()));
+        self.active_workflow = Box::new(DefaultWorkflow::new());
     }
 
     fn set_screen(&mut self, new_screen: Box<dyn Screen>) {

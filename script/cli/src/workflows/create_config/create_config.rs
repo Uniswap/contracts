@@ -31,7 +31,7 @@ impl Workflow for CreateConfigWorkflow {
     }
 
     fn previous_screen(&mut self) -> WorkflowResult {
-        if self.current_screen > 0 {
+        if self.current_screen > 1 {
             self.current_screen -= 1;
         }
         return self.get_screen();

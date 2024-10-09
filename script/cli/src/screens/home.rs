@@ -50,9 +50,9 @@ impl Screen for HomeScreen {
         let index = self.select_screen.handle_input(event);
         if index.is_some() {
             return match index.unwrap() {
-                0 => Ok(ScreenResult::StartWorkflow(Box::new(
+                0 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
                     CreateConfigWorkflow::new(),
-                ))),
+                )]))),
                 _ => Ok(ScreenResult::Continue),
             };
         }
