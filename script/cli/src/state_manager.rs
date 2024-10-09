@@ -42,21 +42,12 @@ impl AppState {
         }
     }
 
-    pub fn print_state(&self) {
-        if let Some(chain_id) = &self.chain_id {
-            println!("Chain ID: {}", chain_id);
-        }
-        if let Some(rpc_url) = &self.rpc_url {
-            println!("RPC URL: {}", rpc_url);
-        }
-    }
-
     pub fn set_chain_id(&mut self, chain_id: String) {
         self.chain_id = Some(chain_id);
     }
 
-    pub fn set_rpc_url(&mut self, rpc_url: String) {
-        self.rpc_url = Some(rpc_url);
+    pub fn set_rpc_url(&mut self, rpc_url: Option<String>) {
+        self.rpc_url = rpc_url;
     }
 
     pub fn reset(&mut self) {

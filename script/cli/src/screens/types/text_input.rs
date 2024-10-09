@@ -1,7 +1,8 @@
+use crate::constants;
 use crate::ui::Buffer;
 use crossterm::{
     event::{Event, KeyCode, KeyModifiers},
-    style::{Attribute, Color, SetAttribute},
+    style::{Attribute, SetAttribute},
 };
 
 pub struct TextInputScreen {
@@ -22,11 +23,10 @@ impl TextInputScreen {
     }
 
     pub fn render_default_instructions(&self, buffer: &mut Buffer) {
-        buffer.append_row_text_color("\nUse 'Enter' to select", Color::Blue);
+        buffer.append_row_text_color("\nUse 'Enter' to select", constants::INSTRUCTIONS_COLOR);
     }
 
     pub fn render(&self, buffer: &mut Buffer) {
-        let color = Color::Reset;
         let cursor_position = self.cursor_position;
         let mut text = if self.hidden {
             "*".repeat(self.text.len()) + " "
@@ -46,7 +46,7 @@ impl TextInputScreen {
             self.cursor_position..self.cursor_position + 1,
             &inverted_cursor,
         );
-        buffer.append_row_text_color(&text, color);
+        buffer.append_row_text_color(&text, constants::DEFAULT_COLOR);
     }
 
     pub fn handle_input(&mut self, event: Event) -> Option<String> {

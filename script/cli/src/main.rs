@@ -1,5 +1,6 @@
+mod constants;
+mod errors;
 mod libs;
-mod screen_manager;
 mod screens;
 mod state_manager;
 mod ui;
@@ -15,12 +16,11 @@ use crossterm::{
     },
     Result,
 };
-use screen_manager::ScreenManager;
+use screens::screen_manager::ScreenManager;
 use signal_hook::{
     consts::{SIGINT, SIGTERM},
     iterator::Signals,
 };
-use state_manager::STATE_MANAGER;
 use std::io::{stdout, Write};
 use std::panic;
 use std::thread;
@@ -43,9 +43,9 @@ async fn main() -> Result<()> {
         }
     });
 
-    enable_raw_mode()?;
     let mut stdout = stdout();
     execute!(stdout, EnterAlternateScreen, Hide,)?;
+    enable_raw_mode()?;
 
     let result = run_main_menu();
 
@@ -55,6 +55,7 @@ async fn main() -> Result<()> {
 
 fn clean_terminal() -> Result<()> {
     let mut stdout = stdout();
+    let result = disable_raw_mode();
     execute!(
         stdout,
         LeaveAlternateScreen,
@@ -62,7 +63,6 @@ fn clean_terminal() -> Result<()> {
         Clear(ClearType::All),
         MoveTo(0, 0),
     )?;
-    let result = disable_raw_mode();
     stdout.flush()?;
 
     result
@@ -74,9 +74,9 @@ fn run_main_menu() -> Result<()> {
     let mut debug_mode = false;
     // run the main loop, render the current screen, afterwards handle any user input and update the screen accordingly
     loop {
+        render_ascii_title(&mut buffer)?;
+        screen_manager.render(&mut buffer);
         if !debug_mode {
-            render_ascii_title(&mut buffer)?;
-            screen_manager.render(&mut buffer);
             buffer.draw(&mut stdout())?;
         }
 
@@ -86,7 +86,6 @@ fn run_main_menu() -> Result<()> {
             if let Event::Key(key_event) = event {
                 // if the user presses escape or control c the program will exit
                 match (key_event.modifiers, key_event.code) {
-                    (KeyModifiers::NONE, KeyCode::Esc) => break,
                     (KeyModifiers::CONTROL, KeyCode::Char('c')) => break,
                     (KeyModifiers::CONTROL, KeyCode::Char('d')) => {
                         // Toggle debug mode

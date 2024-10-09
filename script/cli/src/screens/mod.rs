@@ -7,3 +7,5 @@ pub mod config;
 
 // home screen
 pub mod home;
+
+pub mod screen_manager;

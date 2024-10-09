@@ -1,4 +1,4 @@
-use crate::screen_manager::{Screen, Workflow};
+use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::screens::types::multiple_choice::MultipleChoiceScreen;
 use crate::ui::Buffer;
 use crossterm::event::Event;
@@ -36,12 +36,12 @@ impl Screen for ProtocolSelectionScreen {
         self.render_instructions(buffer);
     }
 
-    fn handle_input(&mut self, event: Event) -> Option<Vec<Box<dyn Workflow>>> {
+    fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let result = self.multiple_choice_screen.handle_input(event);
         if result.is_some() && !result.unwrap().is_empty() {
-            return Some(vec![]);
+            return Ok(ScreenResult::NextScreen(None));
         }
-        None
+        Ok(ScreenResult::Continue)
     }
 
     fn execute(&mut self) {

@@ -1,8 +1,6 @@
+use crate::constants;
 use crate::ui::Buffer;
-use crossterm::{
-    event::{Event, KeyCode},
-    style::Color,
-};
+use crossterm::event::{Event, KeyCode};
 
 pub struct MultipleChoiceScreen {
     options: Vec<String>,
@@ -21,20 +19,16 @@ impl MultipleChoiceScreen {
     pub fn render_default_instructions(&self, buffer: &mut Buffer) {
         buffer.append_row_text_color(
             "\nUse ↑↓ arrows to navigate, 'Space' to select, 'Enter' to confirm",
-            Color::Blue,
+            constants::INSTRUCTIONS_COLOR,
         );
     }
 
     pub fn render(&self, buffer: &mut Buffer) {
         for (i, option) in self.options.iter().enumerate() {
             let color = if self.hovered_index == i {
-                Color::Rgb {
-                    r: 255,
-                    g: 20,
-                    b: 147,
-                }
+                constants::SELECTION_COLOR
             } else {
-                Color::Reset
+                constants::DEFAULT_COLOR
             };
             let prefix = if self.selected_indices.contains(&i) {
                 "● "

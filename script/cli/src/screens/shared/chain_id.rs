@@ -1,4 +1,4 @@
-use crate::screen_manager::{Screen, Workflow};
+use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::screens::types::text_input::TextInputScreen;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
@@ -49,7 +49,7 @@ impl Screen for ChainIdScreen {
         self.render_instructions(buffer);
     }
 
-    fn handle_input(&mut self, event: Event) -> Option<Vec<Box<dyn Workflow>>> {
+    fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let chain_id = self.text_input.handle_input(event);
         if chain_id != None && !chain_id.clone().unwrap().is_empty() {
             STATE_MANAGER
@@ -57,9 +57,9 @@ impl Screen for ChainIdScreen {
                 .lock()
                 .unwrap()
                 .set_chain_id(chain_id.unwrap());
-            return Some(vec![]);
+            return Ok(ScreenResult::NextScreen(None));
         }
-        None
+        Ok(ScreenResult::Continue)
     }
 
     fn execute(&mut self) {

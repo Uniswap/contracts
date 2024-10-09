@@ -1,5 +1,5 @@
-use crate::screen_manager::Screen;
-use crate::screen_manager::Workflow;
+use crate::constants;
+use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::screens::types::select::SelectScreen;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
@@ -32,6 +32,10 @@ impl HomeScreen {
 
     pub fn render_instructions(&self, buffer: &mut Buffer) {
         self.select_screen.render_default_instructions(buffer);
+        buffer.append_row_text_color(
+            "Press 'Esc' to return to the home screen, 'Ctrl+B' to go back to the previous screen",
+            constants::INSTRUCTIONS_COLOR,
+        );
     }
 }
 
@@ -42,15 +46,17 @@ impl Screen for HomeScreen {
         self.render_instructions(buffer);
     }
 
-    fn handle_input(&mut self, event: Event) -> Option<Vec<Box<dyn Workflow>>> {
+    fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let index = self.select_screen.handle_input(event);
         if index.is_some() {
             return match index.unwrap() {
-                0 => Some(vec![Box::new(CreateConfigWorkflow::new())]),
-                _ => None,
+                0 => Ok(ScreenResult::StartWorkflow(Box::new(
+                    CreateConfigWorkflow::new(),
+                ))),
+                _ => Ok(ScreenResult::Continue),
             };
         }
-        None
+        Ok(ScreenResult::Continue)
     }
 
     fn execute(&mut self) {

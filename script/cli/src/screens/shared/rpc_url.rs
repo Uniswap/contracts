@@ -1,7 +1,9 @@
 use std::borrow::Borrow;
 
+use crate::constants;
+use crate::errors::ConnectionError;
 use crate::libs::web3::Web3Lib;
-use crate::screen_manager::{Screen, Workflow};
+use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::screens::types::select::SelectScreen;
 use crate::screens::types::text_input::TextInputScreen;
 use crate::state_manager::STATE_MANAGER;
@@ -11,6 +13,17 @@ use regex::Regex;
 use std::io::Write;
 use std::sync::{Arc, Mutex};
 
+// Sets the rpc url for further operations
+// If there are default options, show to the user to select one, user has an option to enter manually
+// If there are no default options, user is prompted to enter the rpc url manually automatically
+// After the rpc url is set, check whether the url contains a placeholder for an environment variable
+// If it does, check a .env file for the variable first, if not found, check the system environment variables
+// If the variable is found, prompt the user to confirm whether to use it
+// If the user denies or the variable is not found, they are prompted to enter the variable manually
+// After the variable is entered, offer the user to save the variable to the .env file
+// After the rpc url + optional environment variable is set, test the connection by getting the chain id
+// If the chain id matches the entered chain id from the previous step, the connection is successful, return to workflow
+// If the chain id does not match or the connection fails, display an error and move to the home screen
 pub struct RpcUrlScreen {
     rpc_input: TextInputScreen,
     env_var_input: TextInputScreen,
@@ -86,21 +99,23 @@ impl RpcUrlScreen {
         {
             if let Some(env_var_name) = captures.get(1) {
                 // found an environment variable in the rpc url
+                // read from file first, if not found, read from system environment
                 self.env_var_name = env_var_name.as_str().to_string();
-                let env_var = std::env::var(&self.env_var_name);
-                if env_var.is_ok() && !env_var.clone().unwrap().is_empty() {
-                    // found in system environment
-                    self.env_var = env_var.unwrap();
+                self.env_var = find_in_env_file(&self.env_var_name).unwrap_or("".to_string());
+
+                if !self.env_var.is_empty() {
+                    // found in .env file
                     self.current_step = Step::ConfirmEnvVar;
                 } else {
-                    // not found in system environment, check .env file
-                    self.env_var = find_in_env_file(&self.env_var_name).unwrap_or("".to_string());
-                    if self.env_var.is_empty() {
+                    // not found in file, check system environment
+                    let env_var = std::env::var(&self.env_var_name);
+                    if env_var.is_ok() && !env_var.clone().unwrap().is_empty() {
+                        // found in .env file
+                        self.env_var = env_var.unwrap();
+                        self.current_step = Step::ConfirmEnvVar;
+                    } else {
                         // not found in .env file, prompt user to enter it manually
                         self.current_step = Step::EnterEnvVar;
-                    } else {
-                        // found in .env file
-                        self.current_step = Step::ConfirmEnvVar;
                     }
                 }
             } else {
@@ -148,17 +163,25 @@ impl Screen for RpcUrlScreen {
                 buffer.append_row_text(&format!("RPC URL: {}\n", self.selected_rpc));
             } else if *self.connection_status.lock().unwrap() == ConnectionStatus::Success {
                 buffer.append_row_text("Connection successful\n");
+                buffer.append_row_text_color(
+                    &"> Press any key to continue\n",
+                    constants::SELECTION_COLOR,
+                );
             } else if *self.connection_status.lock().unwrap() == ConnectionStatus::Failed {
                 buffer.append_row_text("Connection failed\n");
                 buffer.append_row_text(&format!(
                     "Error: {}\n",
                     self.connection_error_message.lock().unwrap().clone()
                 ));
+                buffer.append_row_text_color(
+                    &"> Press any key to try again",
+                    constants::SELECTION_COLOR,
+                );
             }
         }
     }
 
-    fn handle_input(&mut self, event: Event) -> Option<Vec<Box<dyn Workflow>>> {
+    fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         // if there are no default options or the user has selected to enter the rpc manually, render the rpc input
         if self.current_step == Step::EnterManually {
             let rpc_url = self.rpc_input.handle_input(event.clone());
@@ -206,24 +229,28 @@ impl Screen for RpcUrlScreen {
             }
         } else if self.current_step == Step::TestConnection {
             if *self.connection_status.lock().unwrap() == ConnectionStatus::Success {
-                // set connection status to success
-                return Some(vec![]);
+                // continue to the next screen
+                return Ok(ScreenResult::NextScreen(None));
             } else if *self.connection_status.lock().unwrap() == ConnectionStatus::Failed {
-                // set connection status to failed
-                // TODO: add abort workflow that redirects to the home screen
-                // TODO: add retry workflow that redirects to the first screen
-                return Some(vec![]);
+                // abort the workflow
+                return Err(Box::new(ConnectionError(
+                    self.connection_error_message.lock().unwrap().clone(),
+                )));
             }
         }
 
-        None
+        Ok(ScreenResult::Continue)
     }
 
     fn execute(&mut self) {
         if self.current_step == Step::TestConnection
             && *self.connection_status.lock().unwrap() == ConnectionStatus::New
         {
-            STATE_MANAGER.app_state.lock().unwrap().rpc_url = Some(self.selected_rpc.clone());
+            STATE_MANAGER
+                .app_state
+                .lock()
+                .unwrap()
+                .set_rpc_url(Some(self.selected_rpc.clone()));
             *self.connection_status.lock().unwrap() = ConnectionStatus::Pending;
             let mut web3_lib = Web3Lib::new();
 
@@ -248,7 +275,6 @@ impl Screen for RpcUrlScreen {
                     }
                 } else {
                     *connection_status.lock().unwrap() = ConnectionStatus::Failed;
-                    println!("chain_id_result: {:?}", chain_id_result);
                     *connection_error_message.lock().unwrap() = "Connection failed".to_string();
                 }
             });

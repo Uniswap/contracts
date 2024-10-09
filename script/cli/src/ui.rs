@@ -5,6 +5,7 @@ use crossterm::{
     terminal, Result,
 };
 
+use crate::constants;
 use std::io::Write;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -20,14 +21,14 @@ impl Buffer {
     pub fn new() -> Self {
         let (width, height) = terminal::size().unwrap();
         Buffer {
-            content: vec![vec![(' ', Color::Reset); 0]; 0],
+            content: vec![vec![(' ', constants::DEFAULT_COLOR); 0]; 0],
             width: width as usize,
             height: height as usize,
         }
     }
 
     pub fn append_row_text(&mut self, text: &str) -> usize {
-        self.append_row_text_color(text, Color::Reset)
+        self.append_row_text_color(text, constants::DEFAULT_COLOR)
     }
 
     pub fn append_row_text_color(&mut self, text: &str, color: Color) -> usize {
@@ -45,7 +46,7 @@ impl Buffer {
             self.content.push(row[..self.width].to_vec());
         } else {
             let mut padded_row = row;
-            padded_row.resize(self.width, (' ', Color::Reset));
+            padded_row.resize(self.width, (' ', constants::DEFAULT_COLOR));
             self.content.push(padded_row);
         }
         self.content.len() - 1
@@ -57,14 +58,15 @@ impl Buffer {
             self.content.drain(0..(self.content.len() - self.height));
         } else {
             let empty_rows = self.height - self.content.len();
-            let mut new_content = vec![vec![(' ', Color::Reset); self.width]; empty_rows];
+            let mut new_content =
+                vec![vec![(' ', constants::DEFAULT_COLOR); self.width]; empty_rows];
             new_content.append(&mut self.content);
             self.content = new_content;
         }
 
         for (y, row) in self.content.iter().enumerate() {
             execute!(stdout, MoveTo(0, y as u16))?;
-            let mut current_color = Color::Reset;
+            let mut current_color = constants::DEFAULT_COLOR;
             for &(ch, color) in row {
                 if color != current_color {
                     execute!(stdout, SetForegroundColor(color))?;
@@ -80,7 +82,7 @@ impl Buffer {
 
     fn reset(&mut self) {
         let (width, height) = terminal::size().unwrap();
-        self.content = vec![vec![(' ', Color::Reset); 0]; 0];
+        self.content = vec![vec![(' ', constants::DEFAULT_COLOR); 0]; 0];
         self.width = width as usize;
         self.height = height as usize;
     }
