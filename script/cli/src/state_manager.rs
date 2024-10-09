@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::path::PathBuf;
 use std::sync::Mutex;
 
 // The state manager is responsible for managing the state of the application. All screens and workflows share the same state and use the singleton instance to read and write to the state.
@@ -27,6 +28,7 @@ pub struct Chain {
 pub struct AppState {
     pub chain_id: Option<String>,
     pub rpc_url: Option<String>,
+    pub working_directory: PathBuf,
 }
 
 // The chains.json file is downloaded from here: https://chainid.network/chains.json
@@ -39,6 +41,7 @@ impl AppState {
         AppState {
             chain_id: None,
             rpc_url: None,
+            working_directory: PathBuf::from(""),
         }
     }
 
