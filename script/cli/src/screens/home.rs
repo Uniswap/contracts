@@ -1,6 +1,6 @@
 use crate::constants;
 use crate::screens::screen_manager::{Screen, ScreenResult};
-use crate::screens::types::select::SelectScreen;
+use crate::screens::types::select::SelectComponent;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
 use crate::workflows::{
@@ -11,7 +11,7 @@ use crossterm::event::Event;
 
 // The home screen is the first screen that is shown to the user. It provides a menu to select a workflow to execute. After a workflow completes, the user is returned to the home screen.
 pub struct HomeScreen {
-    select_screen: SelectScreen,
+    select_screen: SelectComponent,
 }
 
 impl HomeScreen {
@@ -25,7 +25,7 @@ impl HomeScreen {
             "Register Existing Contract".to_string(),
         ];
         HomeScreen {
-            select_screen: SelectScreen::new(options),
+            select_screen: SelectComponent::new(options),
         }
     }
 

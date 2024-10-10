@@ -5,7 +5,7 @@ use crossterm::{
     style::{Attribute, SetAttribute},
 };
 
-pub struct TextInputScreen {
+pub struct TextInputComponent {
     pub text: String,
     default_text: String,
     hidden: bool,
@@ -13,13 +13,13 @@ pub struct TextInputScreen {
     validate_input: fn(String, usize) -> String,
 }
 
-impl TextInputScreen {
+impl TextInputComponent {
     pub fn new(
         hidden: bool,
         default_text: String,
         validate_input: fn(String, usize) -> String,
     ) -> Self {
-        TextInputScreen {
+        TextInputComponent {
             text: String::new(),
             default_text,
             hidden,

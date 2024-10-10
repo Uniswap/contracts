@@ -1,18 +1,18 @@
 use crate::screens::screen_manager::{Screen, ScreenResult};
-use crate::screens::types::text_input::TextInputScreen;
+use crate::screens::types::text_input::TextInputComponent;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
 use crate::util::screen_util::validate_address;
 use crossterm::event::Event;
 
 pub struct EnterAddressScreen {
-    text_input: TextInputScreen,
+    text_input: TextInputComponent,
 }
 
 impl EnterAddressScreen {
     pub fn new() -> Self {
         EnterAddressScreen {
-            text_input: TextInputScreen::new(false, "".to_string(), validate_address),
+            text_input: TextInputComponent::new(false, "".to_string(), validate_address),
         }
     }
 

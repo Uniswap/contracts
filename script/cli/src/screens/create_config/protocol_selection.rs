@@ -1,10 +1,10 @@
 use crate::screens::screen_manager::{Screen, ScreenResult};
-use crate::screens::types::multiple_choice::MultipleChoiceScreen;
+use crate::screens::types::multiple_choice::MultipleChoiceComponent;
 use crate::ui::Buffer;
 use crossterm::event::Event;
 
 pub struct ProtocolSelectionScreen {
-    multiple_choice_screen: MultipleChoiceScreen,
+    multiple_choice_screen: MultipleChoiceComponent,
 }
 
 impl ProtocolSelectionScreen {
@@ -15,7 +15,7 @@ impl ProtocolSelectionScreen {
             "Permit 2".to_string(),
         ];
         ProtocolSelectionScreen {
-            multiple_choice_screen: MultipleChoiceScreen::new(options),
+            multiple_choice_screen: MultipleChoiceComponent::new(options),
         }
     }
 

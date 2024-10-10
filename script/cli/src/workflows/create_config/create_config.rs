@@ -2,6 +2,7 @@ use crate::errors;
 use crate::screens::create_config::protocol_selection::ProtocolSelectionScreen;
 use crate::screens::shared::chain_id::ChainIdScreen;
 use crate::screens::shared::rpc_url::RpcUrlScreen;
+use crate::screens::shared::test_connection::TestConnectionScreen;
 use crate::state_manager::STATE_MANAGER;
 use crate::workflows::workflow_manager::{process_nested_workflows, Workflow, WorkflowResult};
 
@@ -40,9 +41,10 @@ impl Workflow for CreateConfigWorkflow {
     fn handle_error(&mut self, error: Box<dyn std::error::Error>) -> WorkflowResult {
         errors::log(self.current_screen.to_string());
         match self.current_screen {
-            2 => {
+            3 => {
                 if error.downcast_ref::<errors::ConnectionError>().is_some() {
                     STATE_MANAGER.app_state.lock().unwrap().set_rpc_url(None);
+                    self.current_screen = 2;
                     return WorkflowResult::NextScreen(Box::new(RpcUrlScreen::new()));
                 }
                 return WorkflowResult::Finished;
@@ -57,7 +59,8 @@ impl CreateConfigWorkflow {
         match self.current_screen {
             1 => return WorkflowResult::NextScreen(Box::new(ChainIdScreen::new())),
             2 => return WorkflowResult::NextScreen(Box::new(RpcUrlScreen::new())),
-            3 => return WorkflowResult::NextScreen(Box::new(ProtocolSelectionScreen::new())),
+            3 => return WorkflowResult::NextScreen(Box::new(TestConnectionScreen::new())),
+            4 => return WorkflowResult::NextScreen(Box::new(ProtocolSelectionScreen::new())),
             _ => return WorkflowResult::Finished,
         }
     }

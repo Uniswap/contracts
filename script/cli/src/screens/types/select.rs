@@ -2,14 +2,14 @@ use crate::constants;
 use crate::ui::Buffer;
 use crossterm::event::{Event, KeyCode};
 
-pub struct SelectScreen {
+pub struct SelectComponent {
     pub options: Vec<String>,
     selected_index: usize,
 }
 
-impl SelectScreen {
+impl SelectComponent {
     pub fn new(options: Vec<String>) -> Self {
-        SelectScreen {
+        SelectComponent {
             options,
             selected_index: 0,
         }

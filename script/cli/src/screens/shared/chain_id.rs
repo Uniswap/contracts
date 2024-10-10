@@ -1,18 +1,18 @@
 use crate::screens::screen_manager::{Screen, ScreenResult};
-use crate::screens::types::text_input::TextInputScreen;
+use crate::screens::types::text_input::TextInputComponent;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
 use crate::util::screen_util::validate_number;
 use crossterm::event::Event;
 
 pub struct ChainIdScreen {
-    text_input: TextInputScreen,
+    text_input: TextInputComponent,
 }
 
 impl ChainIdScreen {
     pub fn new() -> Self {
         ChainIdScreen {
-            text_input: TextInputScreen::new(false, "".to_string(), validate_number),
+            text_input: TextInputComponent::new(false, "".to_string(), validate_number),
         }
     }
 

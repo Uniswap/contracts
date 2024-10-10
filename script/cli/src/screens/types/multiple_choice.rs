@@ -2,14 +2,14 @@ use crate::constants;
 use crate::ui::Buffer;
 use crossterm::event::{Event, KeyCode};
 
-pub struct MultipleChoiceScreen {
+pub struct MultipleChoiceComponent {
     options: Vec<String>,
     hovered_index: usize,
     selected_indices: Vec<usize>,
 }
-impl MultipleChoiceScreen {
+impl MultipleChoiceComponent {
     pub fn new(options: Vec<String>) -> Self {
-        MultipleChoiceScreen {
+        MultipleChoiceComponent {
             options,
             hovered_index: 0,
             selected_indices: Vec::new(),
