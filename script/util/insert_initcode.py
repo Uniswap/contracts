@@ -7,11 +7,9 @@ def update_initcode(sol_file_path, bytecode):
     with open(sol_file_path, 'r') as sol_file:
         content = sol_file.read()
 
-    new_initcode = f"""
-    function initcode() internal pure returns (bytes memory) {{
+    new_initcode = f"""function initcode() internal pure returns (bytes memory) {{
         return hex'{bytecode[2:]}';
-    }}
-    """
+    }}"""
 
     updated_content = re.sub(
         r'function initcode\(\) internal pure returns \(bytes memory\) \{[^}]*\}',

@@ -1,6 +1,6 @@
 {
     "v2": {
-        "deploy": false,
+        "deploy": true,
         "UniswapV2Factory": {
             "deploy": true,
             "address": "0x0000000000000000000000000000000000000000",
@@ -16,9 +16,28 @@
         }
     },
     "v3": {
-        "deploy": false,
+        "deploy": true,
         "UniswapV3Factory": {
             "deploy": true
+        },
+        "NonfungiblePositonManager": {
+            "deploy": true,
+            "params": {
+                "factory": "0x0000000000000000000000000000000000000000",
+                "tokenDescriptor": "0x0000000000000000000000000000000000000000"
+            }
+        },
+        "SwapRouter": {
+            "deploy": true,
+            "params": {
+                "factory": "0x0000000000000000000000000000000000000000"
+            }
+        }
+    },
+    "permit2": {
+        "deploy": true,
+        "params": {
+            "salt": "0x0000000000000000000000000000000000000000d3af2663da51c10215000000"
         }
     },
     "utils": {

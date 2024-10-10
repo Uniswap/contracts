@@ -1,8 +1,6 @@
 #!/bin/bash -e
 
-./build.sh
-
-dir=${1:-tmp/}
+dir=${1:-autogen/}
 rm -rf "$dir"
 mkdir -p "$dir"
 
@@ -58,12 +56,16 @@ compile_and_flatten_deployers() {
 
     echo "flattening $sol_file"
     $flatten_command "$sol_file" -o "$output_file"
+    replace_pragma_solidity "$output_file" ">=0.6.2"
   done
 
   echo ""
 }
 
-# packages
+forge build --skip script/deploy/**
+cp out/ "$dir/bytecode" -r
+
+# flatten packages
 pkgs=$(ls src/pkgs/);
 for pkg in $pkgs
 do
@@ -71,9 +73,10 @@ do
     compile_and_flatten "src/pkgs" "$pkg" "$interface_subpath"
 done
 
-# deployers
-compile_and_flatten_deployers "src/main/deployers"
+# insert initcode in deployers
+python3 script/util/insert_initcode.py "src/deployers" "$dir/bytecode" 
+
+# flatten deployers
+compile_and_flatten_deployers "src/deployers"
 
 python3 script/util/process_interfaces.py "$dir"
-
-cp out/ "$dir"/bytecode -r

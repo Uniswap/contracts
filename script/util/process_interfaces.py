@@ -12,6 +12,9 @@ def parse_code_file(file_path):
     in_block = True
 
     for line in lines:
+        # Some files are not flattened correctly and still have (unnecessary) import statements, ignore those
+        if line.startswith("import {") or line.startswith("import \""):
+            continue
         if line.startswith("// src") or line.startswith("// lib"):
             if in_block:
                 code_blocks.append(current_block)
@@ -83,16 +86,6 @@ def parse_content_for_classes(content):
 
     return classes
 
-def replace_bytecode_path_in_content(content, root_directory):
-    # Define the regex pattern to match
-    pattern = r"vm\.getCode\('out\/(.*?)'"
-
-    # Replace 'out/' with 'src/bytecode/'
-    replacement = f"vm.getCode('{root_directory}bytecode/\\1'"
-    replaced_content = re.sub(pattern, replacement, content)
-
-    return replaced_content
-
 def get_relative_path(src_path, dest_path):
     relative_path = os.path.relpath(src_path, os.path.dirname(dest_path))
     if not relative_path.startswith('.'):
@@ -124,13 +117,12 @@ def process_file(interface_file, root_directory):
     deployers_dir = "deployers"
 
     code_blocks = parse_code_file(interface_file)
-    pragma = {}
     imports = {}
     blocks = {}
 
     for i, block in enumerate(code_blocks):
         if i == 0:
-            pragma[interface_file] = block['content']
+            pragma = block['content']
             continue
 
         source_path = block['source'].replace("// ", "")
@@ -141,7 +133,7 @@ def process_file(interface_file, root_directory):
         lib_match = re.match(
             r'src/pkgs/(.*?)/(src|contracts)/(.*)', source_path)
         deployer_match = re.match(
-            r'src/main/deployers/(.*)', source_path)
+            r'src/deployers/(.*)', source_path)
         rest_match = re.match(r'lib/(.*)', source_path)
         if match:
             subdir = "interfaces"
@@ -181,16 +173,10 @@ def process_file(interface_file, root_directory):
         if subdir == "interfaces" and dest_path != interface_file:
             continue
 
-        if subdir != "interfaces":
-            pragma[dest_path] = get_pragma_from_file(source_path)
-
-        if subdir == "deployers":
-            content = replace_bytecode_path_in_content(content, root_directory)
-
         blocks[dest_path] = content
 
     for dest_path, block in blocks.items():
-        write_file(dest_path, pragma[dest_path], imports, block)
+        write_file(dest_path, pragma, imports, block)
 
 
 def process_all_files_in_directory(directory):

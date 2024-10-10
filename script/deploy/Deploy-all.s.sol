@@ -1,16 +1,24 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {IUniswapV2Factory, UniswapV2FactoryDeployer} from '../../src/deployers/v2-core/UniswapV2FactoryDeployer.sol';
+import {
+    IUniswapV3Factory, UniswapV3FactoryDeployer
+} from '../../autogen/deployers/v3-core/UniswapV3FactoryDeployer.sol';
+
+import {IPermit2, Permit2Deployer} from '../../autogen/deployers/permit2/Permit2Deployer.sol';
+import {
+    IUniswapV2Factory, UniswapV2FactoryDeployer
+} from '../../autogen/deployers/v2-core/UniswapV2FactoryDeployer.sol';
 import {
     IUniswapV2Router02,
     UniswapV2Router02Deployer
-} from '../../src/deployers/v2-periphery/UniswapV2Router02Deployer.sol';
-import {IUniswapV3Factory, UniswapV3FactoryDeployer} from '../../src/deployers/v3-core/UniswapV3FactoryDeployer.sol';
+} from '../../autogen/deployers/v2-periphery/UniswapV2Router02Deployer.sol';
 import {
     INonfungiblePositionManager,
     NonfungiblePositionManagerDeployer
-} from '../../src/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
+} from '../../autogen/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
+
+import {ISwapRouter, SwapRouterDeployer} from '../../autogen/deployers/v3-periphery/SwapRouterDeployer.sol';
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {console2} from 'forge-std/console2.sol';
 
@@ -25,6 +33,7 @@ contract Deploy is Script {
 
         bool deployV2 = config.readBool('.v2.deploy');
         bool deployV3 = config.readBool('.v3.deploy');
+        bool deployPermit2 = config.readBool('.permit2.deploy');
 
         vm.startBroadcast(deployerPrivateKey);
         if (deployV2) {
@@ -34,6 +43,11 @@ contract Deploy is Script {
         if (deployV3) {
             deployV3Contracts(config);
         }
+
+        if (deployPermit2) {
+            deployPermit2Contracts(config);
+        }
+
         vm.stopBroadcast();
 
         uint256 timestamp = vm.getBlockTimestamp();
@@ -69,6 +83,7 @@ contract Deploy is Script {
     function deployV3Contracts(string memory config) private {
         bool deployUniswapV3Factory = config.readBool('.v3.UniswapV3Factory.deploy');
         bool deployNonfungiblePositonManager = config.readBool('.v3.NonfungiblePositonManager.deploy');
+        bool deploySwapRouter = config.readBool('.v3.SwapRouter.deploy');
 
         // Params
         address v3Factory;
@@ -84,7 +99,20 @@ contract Deploy is Script {
             if (!deployUniswapV3Factory) {
                 v3Factory = config.readAddress('.v3.NonfungiblePositonManager.params.factory');
             }
-            NonfungiblePositonManagerDeployer.deploy(factory, weth9, tokenDescriptor);
+            NonfungiblePositionManagerDeployer.deploy(v3Factory, weth9, tokenDescriptor);
         }
+
+        if (deploySwapRouter) {
+            weth9 = config.readAddress('.external_dependencies.weth9');
+            if (!deployUniswapV3Factory) {
+                v3Factory = config.readAddress('.v3.SwapRouter.params.factory');
+            }
+            SwapRouterDeployer.deploy(v3Factory, weth9);
+        }
+    }
+
+    function deployPermit2Contracts(string memory config) private {
+        bytes32 salt = bytes32(config.readUint('.permit2.params.salt'));
+        Permit2Deployer.deploy(salt);
     }
 }

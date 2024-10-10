@@ -52,10 +52,6 @@ compilation_restrictions = [
   { paths = "src/pkgs/v4-periphery/src/[!i]|[!l]*.sol", version = "0.8.26", via_ir = true, min_evm_version = "cancun", max_optimizer_runs = 1000000 },
   { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
   { paths = "src/pkgs/universal-router/contracts/**", via_ir = true },
-  { paths = "src/deployers/v2-core/**", version = "0.5.16"},
-  { paths = "src/deployers/v2-periphery/**", version = "0.6.6"},
-  { paths = "src/deployers/v3-core/**", version = "0.7.6"},
-  { paths = "src/deployers/v3-periphery/**", version ="0.7.6"},
 ]
 
 [fmt]

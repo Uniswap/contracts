@@ -4,6 +4,7 @@ target/
 /coverage
 /report
 /tmp
+/autogen
 lcov.info
 .DS_Store
 .env
