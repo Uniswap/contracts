@@ -2,6 +2,7 @@ use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::screens::types::text_input::TextInputScreen;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
+use crate::util::screen_util::validate_number;
 use crossterm::event::Event;
 
 pub struct ChainIdScreen {
@@ -11,7 +12,7 @@ pub struct ChainIdScreen {
 impl ChainIdScreen {
     pub fn new() -> Self {
         ChainIdScreen {
-            text_input: TextInputScreen::new(false, "".to_string(), ChainIdScreen::validate_input),
+            text_input: TextInputScreen::new(false, "".to_string(), validate_number),
         }
     }
 
@@ -31,14 +32,6 @@ impl ChainIdScreen {
 
     fn render_instructions(&self, buffer: &mut Buffer) {
         self.text_input.render_default_instructions(buffer);
-    }
-
-    pub fn validate_input(input: String) -> String {
-        let cleaned = input.chars().filter(|c| c.is_digit(10)).collect::<String>();
-        if cleaned.is_empty() {
-            return "".to_string();
-        }
-        cleaned
     }
 }
 

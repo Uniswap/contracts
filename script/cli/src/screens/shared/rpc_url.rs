@@ -76,8 +76,8 @@ impl RpcUrlScreen {
             current_step = Step::SelectFromList;
         }
         RpcUrlScreen {
-            rpc_input: TextInputScreen::new(false, "".to_string(), |input| input),
-            env_var_input: TextInputScreen::new(false, "".to_string(), |input| input),
+            rpc_input: TextInputScreen::new(false, "".to_string(), |input, _| input),
+            env_var_input: TextInputScreen::new(false, "".to_string(), |input, _| input),
             rpc_list: SelectScreen::new(pre_selected_rpcs),
             env_save: SelectScreen::new(vec!["Yes".to_string(), "No".to_string()]),
             env_confirm: SelectScreen::new(vec!["Yes".to_string(), "No".to_string()]),

@@ -3,7 +3,10 @@ use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::screens::types::select::SelectScreen;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
-use crate::workflows::create_config::create_config::CreateConfigWorkflow;
+use crate::workflows::{
+    create_config::create_config::CreateConfigWorkflow,
+    register_contract::register_contract::RegisterContractWorkflow,
+};
 use crossterm::event::Event;
 
 // The home screen is the first screen that is shown to the user. It provides a menu to select a workflow to execute. After a workflow completes, the user is returned to the home screen.
@@ -33,7 +36,7 @@ impl HomeScreen {
     pub fn render_instructions(&self, buffer: &mut Buffer) {
         self.select_screen.render_default_instructions(buffer);
         buffer.append_row_text_color(
-            "Press 'Esc' to return to the home screen, 'Ctrl+B' to go back to the previous screen",
+            "Press 'Esc' to return to the home screen, 'Ctrl+Z' to go back to the previous screen",
             constants::INSTRUCTIONS_COLOR,
         );
     }
@@ -52,6 +55,9 @@ impl Screen for HomeScreen {
             return match index.unwrap() {
                 0 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
                     CreateConfigWorkflow::new(),
+                )]))),
+                3 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
+                    RegisterContractWorkflow::new(),
                 )]))),
                 _ => Ok(ScreenResult::Continue),
             };

@@ -10,11 +10,15 @@ pub struct TextInputScreen {
     default_text: String,
     hidden: bool,
     cursor_position: usize,
-    validate_input: fn(String) -> String,
+    validate_input: fn(String, usize) -> String,
 }
 
 impl TextInputScreen {
-    pub fn new(hidden: bool, default_text: String, validate_input: fn(String) -> String) -> Self {
+    pub fn new(
+        hidden: bool,
+        default_text: String,
+        validate_input: fn(String, usize) -> String,
+    ) -> Self {
         TextInputScreen {
             text: String::new(),
             default_text,
@@ -61,13 +65,14 @@ impl TextInputScreen {
             match (key_event.modifiers, key_event.code) {
                 (KeyModifiers::NONE, KeyCode::Char(c))
                 | (KeyModifiers::SHIFT, KeyCode::Char(c)) => {
-                    self.text.insert(self.cursor_position, c);
-                    let new_text = (self.validate_input)(self.text.clone());
-                    if new_text.len() == self.text.len() {
-                        self.cursor_position += 1
+                    let mut new_text = self.text.clone();
+                    new_text.insert(self.cursor_position, c);
+                    new_text = (self.validate_input)(new_text, self.cursor_position + 1);
+                    if new_text.len() > self.text.len() {
+                        self.cursor_position += 1;
                     }
-                    if self.cursor_position > self.text.len() {
-                        self.cursor_position = self.text.len();
+                    if self.cursor_position > new_text.len() {
+                        self.cursor_position = new_text.len();
                     }
                     self.text = new_text;
                 }
@@ -80,23 +85,49 @@ impl TextInputScreen {
                 (KeyModifiers::CONTROL, KeyCode::Char('h'))
                 | (KeyModifiers::CONTROL, KeyCode::Char('w')) => {
                     let next_delimiter = self.find_next_delimiter(true);
-                    self.text.drain(next_delimiter..self.cursor_position);
+                    let mut new_text = self.text.clone();
+                    new_text.drain(next_delimiter..self.cursor_position);
                     self.cursor_position = next_delimiter;
+                    new_text = (self.validate_input)(new_text, self.cursor_position);
+                    if self.cursor_position > self.text.len() {
+                        self.cursor_position = self.text.len();
+                    }
+                    self.text = new_text;
                 }
                 // Control + Delete
                 (KeyModifiers::ALT, KeyCode::Char('d')) => {
+                    let mut new_text = self.text.clone();
                     let next_delimiter = self.find_next_delimiter(false);
-                    self.text.drain(self.cursor_position..next_delimiter);
+                    new_text.drain(self.cursor_position..next_delimiter);
+                    new_text = (self.validate_input)(new_text, self.cursor_position);
+                    if self.cursor_position > new_text.len() {
+                        self.cursor_position = new_text.len();
+                    }
+                    self.text = new_text;
                 }
                 (KeyModifiers::NONE, KeyCode::Delete) => {
+                    let mut new_text = self.text.clone();
                     if self.cursor_position < self.text.len() {
-                        self.text.remove(self.cursor_position);
+                        new_text.remove(self.cursor_position);
+                        new_text = (self.validate_input)(new_text, self.cursor_position);
                     }
+                    if self.cursor_position > new_text.len() {
+                        self.cursor_position = new_text.len();
+                    }
+                    self.text = new_text;
                 }
                 (KeyModifiers::NONE, KeyCode::Backspace) => {
-                    if self.text.len() > 0 {
-                        self.text.remove(self.cursor_position - 1);
-                        self.cursor_position -= 1;
+                    if self.text.len() > 0 && self.cursor_position > 0 {
+                        let mut new_text = self.text.clone();
+                        new_text.remove(self.cursor_position - 1);
+                        if self.cursor_position > 0 {
+                            self.cursor_position -= 1;
+                        }
+                        new_text = (self.validate_input)(new_text, self.cursor_position);
+                        if self.cursor_position > new_text.len() {
+                            self.cursor_position = new_text.len();
+                        }
+                        self.text = new_text;
                     }
                 }
                 (KeyModifiers::NONE, KeyCode::Left) => {
@@ -124,7 +155,7 @@ impl TextInputScreen {
                     self.cursor_position = self.text.len();
                 }
                 (KeyModifiers::NONE, KeyCode::Enter) => {
-                    if self.text.is_empty() {
+                    if self.text.is_empty() && !self.default_text.is_empty() {
                         return Some(self.default_text.clone());
                     }
                     return Some(self.text.clone());

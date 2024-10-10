@@ -5,6 +5,7 @@ mod screens;
 mod state_manager;
 mod ui;
 mod workflows;
+mod util;
 
 use crossterm::{
     cursor::{Hide, MoveTo, MoveToColumn, Show},

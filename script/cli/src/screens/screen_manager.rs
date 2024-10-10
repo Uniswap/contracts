@@ -41,7 +41,7 @@ impl ScreenManager {
     pub fn handle_input(&mut self, event: Event) {
         if let Event::Key(key_event) = event {
             match (key_event.modifiers, key_event.code) {
-                (KeyModifiers::CONTROL, KeyCode::Char('b')) => {
+                (KeyModifiers::CONTROL, KeyCode::Char('z')) => {
                     let result = self.active_workflow.as_mut().previous_screen();
                     self.handle_workflow_result(result);
                 }
@@ -70,7 +70,7 @@ impl ScreenManager {
             }
         } else {
             let error = result.err().unwrap();
-            errors::log(&error.to_string());
+            errors::log(error.to_string());
             let workflow_result = self.active_workflow.handle_error(error);
             self.handle_workflow_result(workflow_result);
         }
@@ -78,6 +78,8 @@ impl ScreenManager {
 
     pub fn reset(&mut self) {
         self.active_workflow = Box::new(DefaultWorkflow::new());
+        let result = self.active_workflow.next_screen(None);
+        self.handle_workflow_result(result);
     }
 
     fn set_screen(&mut self, new_screen: Box<dyn Screen>) {

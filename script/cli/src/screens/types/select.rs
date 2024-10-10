@@ -38,12 +38,16 @@ impl SelectScreen {
         if let Event::Key(key_event) = event {
             match key_event.code {
                 KeyCode::Up => {
-                    if self.selected_index > 0 {
+                    if self.selected_index == 0 {
+                        self.selected_index = self.options.len() - 1;
+                    } else {
                         self.selected_index -= 1;
                     }
                 }
                 KeyCode::Down => {
-                    if self.selected_index < self.options.len() - 1 {
+                    if self.selected_index == self.options.len() - 1 {
+                        self.selected_index = 0;
+                    } else {
                         self.selected_index += 1;
                     }
                 }

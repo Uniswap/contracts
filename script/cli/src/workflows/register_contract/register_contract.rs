@@ -1,25 +1,25 @@
 use crate::errors;
-use crate::screens::create_config::protocol_selection::ProtocolSelectionScreen;
+use crate::screens::register_contract::enter_address::EnterAddressScreen;
 use crate::screens::shared::chain_id::ChainIdScreen;
 use crate::screens::shared::rpc_url::RpcUrlScreen;
 use crate::state_manager::STATE_MANAGER;
 use crate::workflows::workflow_manager::{process_nested_workflows, Workflow, WorkflowResult};
 
-pub struct CreateConfigWorkflow {
+pub struct RegisterContractWorkflow {
     current_screen: usize,
     child_workflows: Vec<Box<dyn Workflow>>,
 }
 
-impl CreateConfigWorkflow {
+impl RegisterContractWorkflow {
     pub fn new() -> Self {
-        CreateConfigWorkflow {
+        RegisterContractWorkflow {
             current_screen: 0,
             child_workflows: vec![],
         }
     }
 }
 
-impl Workflow for CreateConfigWorkflow {
+impl Workflow for RegisterContractWorkflow {
     fn next_screen(&mut self, new_workflows: Option<Vec<Box<dyn Workflow>>>) -> WorkflowResult {
         match process_nested_workflows(&mut self.child_workflows, new_workflows) {
             WorkflowResult::NextScreen(screen) => return WorkflowResult::NextScreen(screen),
@@ -52,12 +52,12 @@ impl Workflow for CreateConfigWorkflow {
     }
 }
 
-impl CreateConfigWorkflow {
+impl RegisterContractWorkflow {
     fn get_screen(&self) -> WorkflowResult {
         match self.current_screen {
             1 => return WorkflowResult::NextScreen(Box::new(ChainIdScreen::new())),
             2 => return WorkflowResult::NextScreen(Box::new(RpcUrlScreen::new())),
-            3 => return WorkflowResult::NextScreen(Box::new(ProtocolSelectionScreen::new())),
+            3 => return WorkflowResult::NextScreen(Box::new(EnterAddressScreen::new())),
             _ => return WorkflowResult::Finished,
         }
     }
