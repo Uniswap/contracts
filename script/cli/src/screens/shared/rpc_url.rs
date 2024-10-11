@@ -37,8 +37,9 @@ impl RpcUrlScreen {
 }
 
 impl Screen for RpcUrlScreen {
-    fn render_content(&self, buffer: &mut Buffer) {
+    fn render_content(&self, buffer: &mut Buffer) -> Result<(), Box<dyn std::error::Error>> {
         self.select_or_enter.render(buffer);
+        Ok(())
     }
 
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
@@ -50,5 +51,7 @@ impl Screen for RpcUrlScreen {
         Ok(ScreenResult::Continue)
     }
 
-    fn execute(&mut self) {}
+    fn execute(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        Ok(())
+    }
 }

@@ -30,10 +30,11 @@ impl ProtocolSelectionScreen {
 }
 
 impl Screen for ProtocolSelectionScreen {
-    fn render_content(&self, buffer: &mut Buffer) {
+    fn render_content(&self, buffer: &mut Buffer) -> Result<(), Box<dyn std::error::Error>> {
         self.render_title(buffer);
         self.multiple_choice_screen.render(buffer);
         self.render_instructions(buffer);
+        Ok(())
     }
 
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
@@ -44,7 +45,7 @@ impl Screen for ProtocolSelectionScreen {
         Ok(ScreenResult::Continue)
     }
 
-    fn execute(&mut self) {
-        // nothing to execute
+    fn execute(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        Ok(())
     }
 }

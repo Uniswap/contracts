@@ -9,10 +9,9 @@ use std::sync::{Arc, Mutex};
 
 // Tests the connection to the rpc url, fails if the connection is not successful or the chain id doesn't match the expected chain id
 // chain id and rpc url MUST be set before this screen is rendered
-pub struct TestConnectionScreen {
+pub struct GetContractInfoScreen {
     connection_status: Arc<Mutex<ConnectionStatus>>,
     connection_error_message: Arc<Mutex<String>>,
-    rpc_url: String,
 }
 
 #[derive(PartialEq, Debug)]
@@ -22,47 +21,24 @@ enum ConnectionStatus {
     Failed,
 }
 
-impl TestConnectionScreen {
+impl GetContractInfoScreen {
     pub fn new() -> Self {
-        let rpc_url = STATE_MANAGER
-            .app_state
-            .lock()
-            .unwrap()
-            .rpc_url
-            .clone()
-            .unwrap_or("".to_string());
-
-        let test_connection_screen = TestConnectionScreen {
+        let test_connection_screen = GetContractInfoScreen {
             connection_status: Arc::new(Mutex::new(ConnectionStatus::Pending)),
             connection_error_message: Arc::new(Mutex::new("".to_string())),
-            rpc_url,
         };
 
         let mut web3_lib = Web3Lib::new();
         let connection_status = Arc::clone(&test_connection_screen.connection_status);
         let connection_error_message = Arc::clone(&test_connection_screen.connection_error_message);
-        let expected_chain_id = STATE_MANAGER
-            .app_state
-            .lock()
-            .unwrap()
-            .chain_id
-            .clone()
-            .unwrap();
 
-        // get chain id call in a new thread
         tokio::spawn(async move {
-            let chain_id_result = web3_lib.get_chain_id().await;
-            if chain_id_result.is_ok() {
-                if chain_id_result.unwrap() == expected_chain_id {
-                    *connection_status.lock().unwrap() = ConnectionStatus::Success;
-                } else {
-                    *connection_status.lock().unwrap() = ConnectionStatus::Failed;
-                    *connection_error_message.lock().unwrap() = "Chain id mismatch".to_string();
-                }
+            let result = web3_lib.get_chain_id().await;
+            if result.is_ok() {
+                *connection_status.lock().unwrap() = ConnectionStatus::Success;
             } else {
                 *connection_status.lock().unwrap() = ConnectionStatus::Failed;
-                *connection_error_message.lock().unwrap() =
-                    chain_id_result.err().unwrap().to_string();
+                *connection_error_message.lock().unwrap() = result.err().unwrap().to_string();
             }
         });
 
@@ -70,17 +46,19 @@ impl TestConnectionScreen {
     }
 }
 
-impl Screen for TestConnectionScreen {
+impl Screen for GetContractInfoScreen {
     fn render_content(&self, buffer: &mut Buffer) -> Result<(), Box<dyn std::error::Error>> {
         if *self.connection_status.lock().unwrap() == ConnectionStatus::Pending {
-            buffer.append_row_text(&format!("{} Testing connection\n", get_spinner_frame()));
-            buffer.append_row_text(&format!("RPC URL: {}\n", self.rpc_url));
+            buffer.append_row_text(&format!(
+                "{} Generating deployment data\n",
+                get_spinner_frame()
+            ));
         } else if *self.connection_status.lock().unwrap() == ConnectionStatus::Success {
-            buffer.append_row_text("Connection successful\n");
+            buffer.append_row_text("Deployment data generated successfully\n");
             buffer
                 .append_row_text_color(&"> Press any key to continue", constants::SELECTION_COLOR);
         } else if *self.connection_status.lock().unwrap() == ConnectionStatus::Failed {
-            buffer.append_row_text("Connection failed\n");
+            buffer.append_row_text("An error occurred\n");
             buffer.append_row_text(&format!(
                 "Error: {}\n",
                 self.connection_error_message.lock().unwrap().clone()

@@ -26,29 +26,28 @@ impl EnterAddressScreen {
 }
 
 impl Screen for EnterAddressScreen {
-    fn render_content(&self, buffer: &mut Buffer) {
+    fn render_content(&self, buffer: &mut Buffer) -> Result<(), Box<dyn std::error::Error>> {
         self.render_title(buffer);
         self.text_input.render(buffer);
         self.render_instructions(buffer);
+        Ok(())
     }
 
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let address = self.text_input.handle_input(event);
-        if address.is_some() && address.unwrap().len() == 42 {
+        if address.clone().is_some() && address.clone().unwrap().len() == 42 {
+            STATE_MANAGER
+                .app_state
+                .lock()
+                .unwrap()
+                .register_contract_data
+                .address = Some(address.unwrap());
             return Ok(ScreenResult::NextScreen(None));
         }
-        // if chain_id != None && !chain_id.clone().unwrap().is_empty() {
-        //     STATE_MANAGER
-        //         .app_state
-        //         .lock()
-        //         .unwrap()
-        //         .set_chain_id(chain_id.unwrap());
-        //     return Ok(ScreenResult::NextScreen(None));
-        // }
         Ok(ScreenResult::Continue)
     }
 
-    fn execute(&mut self) {
-        // nothing to execute
+    fn execute(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        Ok(())
     }
 }

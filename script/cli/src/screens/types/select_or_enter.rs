@@ -1,3 +1,4 @@
+use crate::screens::types::enter_env_var::{find_in_env_file, save_env_var};
 use crate::screens::types::select::SelectComponent;
 use crate::screens::types::text_input::TextInputComponent;
 use crate::ui::Buffer;
@@ -191,46 +192,4 @@ fn replace_env_var(text: &str, env_var_name: &str, env_var: &str) -> String {
     // replace the ${env_var_name} in the text with the env_var
     let re = Regex::new(&format!(r"\$\{{{}}}", env_var_name)).unwrap();
     re.replace(text, env_var).to_string()
-}
-
-fn find_in_env_file(env_var_name: &str) -> Option<String> {
-    if let Ok(env_content) = std::fs::read_to_string(".env") {
-        for line in env_content.lines() {
-            if let Some((key, value)) = line.split_once('=') {
-                if key.trim() == env_var_name {
-                    return Some(value.trim().to_string());
-                }
-            }
-        }
-    }
-    None
-}
-
-fn save_env_var(env_var_name: &str, env_var: &str) {
-    // if the env_var_name already exists, try replacing it with the new value
-    if !std::path::Path::new(".env").exists() {
-        // Create .env file if it doesn't exist
-        std::fs::File::create(".env").unwrap();
-    } else {
-        // file does not exist, search for the env_var_name
-        let env_content = std::fs::read_to_string(".env").unwrap();
-        let pattern = format!(r"(?m)^{}=.*$", regex::escape(env_var_name));
-        let replaced_env_content = Regex::new(&pattern)
-            .unwrap()
-            .replace_all(&env_content, format!("{}={}", env_var_name, env_var))
-            .to_string();
-        // the strings are different so the env_var was replaced, write file and return
-        if replaced_env_content != env_content {
-            std::fs::write(".env", replaced_env_content).unwrap();
-            return;
-        }
-    }
-    // if env_var_name does not exist, add it to the end of the file
-    let env_content = format!("{}={}\n", env_var_name, env_var);
-    std::fs::OpenOptions::new()
-        .append(true)
-        .open(".env")
-        .unwrap()
-        .write_all(env_content.as_bytes())
-        .unwrap();
 }

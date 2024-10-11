@@ -1,19 +1,20 @@
 mod constants;
+mod debug;
 mod errors;
 mod libs;
 mod screens;
 mod state_manager;
 mod ui;
-mod workflows;
 mod util;
+mod workflows;
 
 use crossterm::{
     cursor::{Hide, MoveTo, MoveToColumn, Show},
     event::{poll, read, Event, KeyCode, KeyModifiers},
     execute,
     terminal::{
-        disable_raw_mode, enable_raw_mode, Clear, ClearType, EnterAlternateScreen,
-        LeaveAlternateScreen,
+        disable_raw_mode, enable_raw_mode, is_raw_mode_enabled, Clear, ClearType,
+        EnterAlternateScreen, LeaveAlternateScreen,
     },
     Result,
 };
@@ -49,6 +50,10 @@ async fn main() -> Result<()> {
 
     check_for_foundry_toml();
 
+    if debug::run().await {
+        return Ok(());
+    }
+
     let mut stdout = stdout();
     execute!(stdout, EnterAlternateScreen, Hide,)?;
     enable_raw_mode()?;
@@ -61,23 +66,27 @@ async fn main() -> Result<()> {
 
 fn clean_terminal() -> Result<()> {
     let mut stdout = stdout();
-    let result = disable_raw_mode();
-    execute!(
-        stdout,
-        LeaveAlternateScreen,
-        Show,
-        Clear(ClearType::All),
-        MoveTo(0, 0),
-    )?;
-    stdout.flush()?;
-
-    result
+    if is_raw_mode_enabled().unwrap() {
+        let result = disable_raw_mode();
+        execute!(
+            stdout,
+            LeaveAlternateScreen,
+            Show,
+            Clear(ClearType::All),
+            MoveTo(0, 0),
+        )?;
+        stdout.flush()?;
+        result
+    } else {
+        Ok(())
+    }
 }
 
 fn run_main_menu() -> Result<()> {
     let mut buffer = Buffer::new();
     let mut screen_manager = ScreenManager::new();
     let mut debug_mode = false;
+
     // run the main loop, render the current screen, afterwards handle any user input and update the screen accordingly
     loop {
         render_ascii_title(&mut buffer)?;
@@ -102,10 +111,9 @@ fn run_main_menu() -> Result<()> {
                             execute!(stdout(), EnterAlternateScreen, Hide, Clear(ClearType::All),)?;
                         }
                     }
-                    _ => {}
+                    _ => screen_manager.handle_input(event),
                 }
             }
-            screen_manager.handle_input(event);
         }
     }
 
@@ -115,14 +123,14 @@ fn run_main_menu() -> Result<()> {
 fn check_for_foundry_toml() {
     // check if foundry.toml file exists in the current directory
     let mut current_dir = env::current_dir().unwrap();
-    let default_dir = current_dir.clone().join("foundry.toml");
-    if !default_dir.exists() {
+    let default_dir = current_dir.clone();
+    if !default_dir.join("foundry.toml").exists() {
         // check for constructor argument: --dir <directory>
         let args: Vec<String> = env::args().collect();
         if args.len() > 2 && args[1] == "--dir" {
             let dir = &args[2];
-            current_dir = current_dir.join(dir).join("foundry.toml");
-            if !current_dir.exists() {
+            current_dir = current_dir.join(dir);
+            if !current_dir.join("foundry.toml").exists() {
                 println!("{} does not exist.", current_dir.to_str().unwrap());
                 process::exit(1);
             }

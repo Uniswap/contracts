@@ -36,10 +36,11 @@ impl ChainIdScreen {
 }
 
 impl Screen for ChainIdScreen {
-    fn render_content(&self, buffer: &mut Buffer) {
+    fn render_content(&self, buffer: &mut Buffer) -> Result<(), Box<dyn std::error::Error>> {
         self.render_title(buffer);
         self.text_input.render(buffer);
         self.render_instructions(buffer);
+        Ok(())
     }
 
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
@@ -55,7 +56,7 @@ impl Screen for ChainIdScreen {
         Ok(ScreenResult::Continue)
     }
 
-    fn execute(&mut self) {
-        // nothing to execute
+    fn execute(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+        Ok(())
     }
 }

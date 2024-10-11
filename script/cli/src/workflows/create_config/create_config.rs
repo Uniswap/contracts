@@ -4,6 +4,7 @@ use crate::screens::shared::chain_id::ChainIdScreen;
 use crate::screens::shared::rpc_url::RpcUrlScreen;
 use crate::screens::shared::test_connection::TestConnectionScreen;
 use crate::state_manager::STATE_MANAGER;
+use crate::workflows::error_workflow::ErrorWorkflow;
 use crate::workflows::workflow_manager::{process_nested_workflows, Workflow, WorkflowResult};
 
 pub struct CreateConfigWorkflow {
@@ -35,6 +36,9 @@ impl Workflow for CreateConfigWorkflow {
         if self.current_screen > 1 {
             self.current_screen -= 1;
         }
+        if self.current_screen == 3 {
+            self.current_screen = 2;
+        }
         return self.get_screen();
     }
 
@@ -45,11 +49,11 @@ impl Workflow for CreateConfigWorkflow {
                 if error.downcast_ref::<errors::ConnectionError>().is_some() {
                     STATE_MANAGER.app_state.lock().unwrap().set_rpc_url(None);
                     self.current_screen = 2;
-                    return WorkflowResult::NextScreen(Box::new(RpcUrlScreen::new()));
+                    return self.get_screen();
                 }
-                return WorkflowResult::Finished;
+                return self.display_error(error.to_string());
             }
-            _ => WorkflowResult::Finished,
+            _ => return self.display_error(error.to_string()),
         }
     }
 }
@@ -63,5 +67,11 @@ impl CreateConfigWorkflow {
             4 => return WorkflowResult::NextScreen(Box::new(ProtocolSelectionScreen::new())),
             _ => return WorkflowResult::Finished,
         }
+    }
+
+    fn display_error(&mut self, error_message: String) -> WorkflowResult {
+        self.child_workflows = vec![Box::new(ErrorWorkflow::new(error_message))];
+        self.current_screen = 1000000;
+        return self.child_workflows[0].next_screen(None);
     }
 }

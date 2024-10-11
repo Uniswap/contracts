@@ -1,6 +1,4 @@
-use crate::errors::log;
-
-pub fn validate_address(input: String, mut cursor_position: usize) -> String {
+pub fn validate_address(input: String, cursor_position: usize) -> String {
     if input.len() > 42 && cursor_position < input.len() {
         // if the cursor is not at the end of the input, remove the new input at the cursor position if the length of the address is greater than 42
         // remove next character at cursor position

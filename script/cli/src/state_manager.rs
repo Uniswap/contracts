@@ -1,4 +1,5 @@
-use crate::util::parse_chain_config::{parse_chain_config, Chain};
+use crate::util::chain_config::{parse_chain_config, Chain, Explorer};
+use crate::util::register_contract::RegisterContractData;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Mutex;
@@ -7,8 +8,10 @@ use std::sync::Mutex;
 pub struct AppState {
     pub chain_id: Option<String>,
     pub rpc_url: Option<String>,
+    pub block_explorer: Option<Explorer>,
     pub working_directory: PathBuf,
-    pub deployment_history: HashMap<String, String>,
+    pub register_contract_data: RegisterContractData,
+    // pub deployment_history: HashMap<String, String>,
 }
 
 impl AppState {
@@ -17,7 +20,9 @@ impl AppState {
             chain_id: None,
             rpc_url: None,
             working_directory: PathBuf::from(""),
-            deployment_history: HashMap::new(),
+            // deployment_history: HashMap::new(),
+            block_explorer: None,
+            register_contract_data: RegisterContractData { address: None },
         }
     }
 

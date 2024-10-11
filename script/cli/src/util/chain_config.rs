@@ -7,12 +7,15 @@ pub struct Currency {
     pub decimals: u8,
 }
 
+#[derive(Default, Clone)]
 pub struct Explorer {
     pub name: String,
     pub url: String,
     pub standard: String,
+    pub api_key: Option<String>,
 }
 
+#[derive(Default, Clone)]
 pub struct Chain {
     pub name: String,
     pub rpc_url: Vec<String>,
@@ -72,6 +75,7 @@ pub fn parse_chain_config() -> HashMap<String, Chain> {
                                             .and_then(|s| s.as_str())
                                             .unwrap_or("")
                                             .to_string(),
+                                        api_key: None,
                                     })
                                 } else {
                                     None

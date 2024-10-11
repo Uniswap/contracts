@@ -16,15 +16,14 @@ impl fmt::Display for ConnectionError {
 impl StdError for ConnectionError {}
 
 pub fn log(message: String) {
-    let _ = disable_raw_mode();
-    let _ = execute!(stdout(), LeaveAlternateScreen,);
+    let raw_mode_enabled = crossterm::terminal::is_raw_mode_enabled().unwrap();
+    if raw_mode_enabled {
+        let _ = disable_raw_mode();
+        let _ = execute!(stdout(), LeaveAlternateScreen,);
+    }
     println!("{}", message);
-    let _ = execute!(stdout(), EnterAlternateScreen);
-    // let _ = execute!(
-    //     stdout(),
-    //     LeaveAlternateScreen,
-    //     Print(format!("{}\n", message)),
-    //     EnterAlternateScreen
-    // );
-    let _ = enable_raw_mode();
+    if raw_mode_enabled {
+        let _ = execute!(stdout(), EnterAlternateScreen);
+        let _ = enable_raw_mode();
+    }
 }

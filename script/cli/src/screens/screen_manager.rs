@@ -16,8 +16,8 @@ pub enum ScreenResult {
 
 pub trait Screen: Send {
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>>;
-    fn render_content(&self, buffer: &mut Buffer);
-    fn execute(&mut self);
+    fn render_content(&self, buffer: &mut Buffer) -> Result<(), Box<dyn std::error::Error>>;
+    fn execute(&mut self) -> Result<(), Box<dyn std::error::Error>>;
 }
 
 pub struct ScreenManager {
@@ -34,8 +34,20 @@ impl ScreenManager {
     }
 
     pub fn render(&mut self, buffer: &mut Buffer) {
-        self.current_screen.execute();
-        self.current_screen.render_content(buffer);
+        match self.current_screen.execute() {
+            Ok(_) => {}
+            Err(error) => {
+                errors::log(format!("Execution error: {}", error.to_string()));
+                self.handle_error(error);
+            }
+        }
+        match self.current_screen.render_content(buffer) {
+            Ok(_) => {}
+            Err(error) => {
+                errors::log(format!("Render error: {}", error.to_string()));
+                self.handle_error(error);
+            }
+        }
     }
 
     pub fn handle_input(&mut self, event: Event) {
@@ -70,9 +82,8 @@ impl ScreenManager {
             }
         } else {
             let error = result.err().unwrap();
-            errors::log(error.to_string());
-            let workflow_result = self.active_workflow.handle_error(error);
-            self.handle_workflow_result(workflow_result);
+            errors::log(format!("Input error: {}", error.to_string()));
+            self.handle_error(error);
         }
     }
 
@@ -80,6 +91,11 @@ impl ScreenManager {
         self.active_workflow = Box::new(DefaultWorkflow::new());
         let result = self.active_workflow.next_screen(None);
         self.handle_workflow_result(result);
+    }
+
+    fn handle_error(&mut self, error: Box<dyn std::error::Error>) {
+        let workflow_result = self.active_workflow.handle_error(error);
+        self.handle_workflow_result(workflow_result);
     }
 
     fn set_screen(&mut self, new_screen: Box<dyn Screen>) {
