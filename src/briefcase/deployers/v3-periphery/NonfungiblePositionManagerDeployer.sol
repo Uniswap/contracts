@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.7.0;
 
-import {INonfungiblePositionManager} from '../../pkgs/v3-periphery/contracts/interfaces/INonfungiblePositionManager.sol';
+import {INonfungiblePositionManager} from '../../protocols/v3-periphery/interfaces/INonfungiblePositionManager.sol';
 
 library NonfungiblePositionManagerDeployer {
     function deploy(address factory, address weth9, address tokenDescriptor)

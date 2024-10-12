@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.5.0;
 
-import {IUniswapV2Factory} from '../../pkgs/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
+import {IUniswapV2Factory} from '../../protocols/v2-core/interfaces/IUniswapV2Factory.sol';
 
 library UniswapV2FactoryDeployer {
     function deploy(address feeToSetter) internal returns (IUniswapV2Factory factory) {

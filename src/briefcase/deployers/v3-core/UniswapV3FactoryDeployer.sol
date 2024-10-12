@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.7.0;
 
-import {IUniswapV3Factory} from '../../pkgs/v3-core/contracts/interfaces/IUniswapV3Factory.sol';
+import {IUniswapV3Factory} from '../../protocols/v3-core/interfaces/IUniswapV3Factory.sol';
 
 library UniswapV3FactoryDeployer {
     function deploy() internal returns (IUniswapV3Factory factory) {

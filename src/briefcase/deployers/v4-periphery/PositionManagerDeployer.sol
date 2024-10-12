@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >= 0.7.0;
+pragma solidity >= 0.8.0;
 
-import {IPermit2} from '../../pkgs/permit2/src/interfaces/IPermit2.sol';
-import {IPoolManager} from '../../pkgs/v4-core/src/interfaces/IPoolManager.sol';
-import {IPositionManager} from '../../pkgs/v4-periphery/src/interfaces/IPositionManager.sol';
+import {IPermit2} from '../../protocols/permit2/interfaces/IPermit2.sol';
+import {IPoolManager} from '../../protocols/v4-core/interfaces/IPoolManager.sol';
+import {IPositionManager} from '../../protocols/v4-periphery/interfaces/IPositionManager.sol';
 
 library PositionManagerDeployer {
     function deploy(address poolManagerAddress, address permit2Address) internal returns (IPositionManager manager) {

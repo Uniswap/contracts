@@ -2,23 +2,25 @@
 pragma solidity 0.8.26;
 
 import {
-    IUniswapV3Factory, UniswapV3FactoryDeployer
-} from '../../autogen/deployers/v3-core/UniswapV3FactoryDeployer.sol';
+    IUniswapV3Factory,
+    UniswapV3FactoryDeployer
+} from '../../src/briefcase/deployers/v3-core/UniswapV3FactoryDeployer.sol';
 
-import {IPermit2, Permit2Deployer} from '../../autogen/deployers/permit2/Permit2Deployer.sol';
+import {IPermit2, Permit2Deployer} from '../../src/briefcase/deployers/permit2/Permit2Deployer.sol';
 import {
-    IUniswapV2Factory, UniswapV2FactoryDeployer
-} from '../../autogen/deployers/v2-core/UniswapV2FactoryDeployer.sol';
+    IUniswapV2Factory,
+    UniswapV2FactoryDeployer
+} from '../../src/briefcase/deployers/v2-core/UniswapV2FactoryDeployer.sol';
 import {
     IUniswapV2Router02,
     UniswapV2Router02Deployer
-} from '../../autogen/deployers/v2-periphery/UniswapV2Router02Deployer.sol';
+} from '../../src/briefcase/deployers/v2-periphery/UniswapV2Router02Deployer.sol';
 import {
     INonfungiblePositionManager,
     NonfungiblePositionManagerDeployer
-} from '../../autogen/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
+} from '../../src/briefcase/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
 
-import {ISwapRouter, SwapRouterDeployer} from '../../autogen/deployers/v3-periphery/SwapRouterDeployer.sol';
+import {ISwapRouter, SwapRouterDeployer} from '../../src/briefcase/deployers/v3-periphery/SwapRouterDeployer.sol';
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {console2} from 'forge-std/console2.sol';
 

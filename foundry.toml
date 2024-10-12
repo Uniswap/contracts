@@ -21,6 +21,7 @@ skip = [
   "src/**/*.s.sol",
   "**/test/**",
   "*.t.sol",
+  "src/briefcase/protocols/**",
 ]
 
 additional_compiler_profiles = [

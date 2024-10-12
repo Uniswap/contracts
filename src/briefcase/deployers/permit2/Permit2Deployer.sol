@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.8.0;
 
-import {IPermit2} from '../../pkgs/permit2/src/interfaces/IPermit2.sol';
+import {IPermit2} from '../../protocols/permit2/interfaces/IPermit2.sol';
 
 library Permit2Deployer {
     function deploy(bytes32 salt) internal returns (IPermit2 permit2) {

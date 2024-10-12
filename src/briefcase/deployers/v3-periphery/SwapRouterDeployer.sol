@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.7.0;
 
-import {ISwapRouter} from '../../pkgs/v3-periphery/contracts/interfaces/ISwapRouter.sol';
+import {ISwapRouter} from '../../protocols/v3-periphery/interfaces/ISwapRouter.sol';
 
 library SwapRouterDeployer {
     function deploy(address factory, address weth9) internal returns (ISwapRouter manager) {

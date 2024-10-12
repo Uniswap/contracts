@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.5.0;
 
-import {IUniswapV2Router01} from '../../pkgs/v2-periphery/contracts/interfaces/IUniswapV2Router01.sol';
+import {IUniswapV2Router01} from '../../protocols/v2-periphery/interfaces/IUniswapV2Router01.sol';
 
 library UniswapV2Router02Deployer {
     function deploy(address factory, address weth) internal returns (IUniswapV2Router01 router01) {

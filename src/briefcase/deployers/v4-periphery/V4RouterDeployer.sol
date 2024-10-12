@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >= 0.7.0;
+pragma solidity >= 0.8.0;
 
-import {IPoolManager} from '../../pkgs/v4-core/src/interfaces/IPoolManager.sol';
-import {IV4Router} from '../../pkgs/v4-periphery/src/interfaces/IV4Router.sol';
+import {IPoolManager} from '../../protocols/v4-core/interfaces/IPoolManager.sol';
+import {IV4Router} from '../../protocols/v4-periphery/interfaces/IV4Router.sol';
 
 library V4RouterDeployer {
     function deploy(address poolManagerAddress) internal returns (IV4Router router) {

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >= 0.7.0;
+pragma solidity >= 0.8.0;
 
-import {IPoolManager} from '../../pkgs/v4-core/src/interfaces/IPoolManager.sol';
+import {IPoolManager} from '../../protocols/v4-core/interfaces/IPoolManager.sol';
 
 library PoolManagerDeployer {
     function deploy(uint256 controllerGasLimit) internal returns (IPoolManager manager) {
