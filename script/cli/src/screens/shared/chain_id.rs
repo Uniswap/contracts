@@ -45,12 +45,8 @@ impl Screen for ChainIdScreen {
 
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let chain_id = self.text_input.handle_input(event);
-        if chain_id != None && !chain_id.clone().unwrap().is_empty() {
-            STATE_MANAGER
-                .app_state
-                .lock()
-                .unwrap()
-                .set_chain_id(chain_id.unwrap());
+        if chain_id.is_some() && !chain_id.clone().unwrap().is_empty() {
+            STATE_MANAGER.workflow_state.lock()?.chain_id = chain_id;
             return Ok(ScreenResult::NextScreen(None));
         }
         Ok(ScreenResult::Continue)

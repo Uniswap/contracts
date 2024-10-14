@@ -2,6 +2,7 @@ use crate::errors;
 use crate::screens;
 use crate::ui::Buffer;
 use crate::workflows::default_workflow::DefaultWorkflow;
+use crate::workflows::error_workflow::ErrorWorkflow;
 use crate::workflows::workflow_manager::{Workflow, WorkflowResult};
 use crossterm::event::{Event, KeyCode, KeyModifiers};
 
@@ -102,16 +103,25 @@ impl ScreenManager {
         self.current_screen = new_screen;
     }
 
-    fn handle_workflow_result(&mut self, result: WorkflowResult) {
-        match result {
-            WorkflowResult::NextScreen(screen) => {
-                // if a new screen is returned by the workflow, set it as the current screen
-                self.set_screen(screen);
+    fn handle_workflow_result(
+        &mut self,
+        result: Result<WorkflowResult, Box<dyn std::error::Error>>,
+    ) {
+        if result.is_ok() {
+            match result.unwrap() {
+                WorkflowResult::NextScreen(screen) => {
+                    // if a new screen is returned by the workflow, set it as the current screen
+                    self.set_screen(screen);
+                }
+                WorkflowResult::Finished => {
+                    // the workflow has completed. We reset the active workflow and set the current screen to the home screen.
+                    self.reset();
+                }
             }
-            WorkflowResult::Finished => {
-                // the workflow has completed. We reset the active workflow and set the current screen to the home screen.
-                self.reset();
-            }
+        } else {
+            let error = result.err().unwrap();
+            errors::log(format!("Workflow error: {}", error.to_string()));
+            self.active_workflow = Box::new(ErrorWorkflow::new(error.to_string()));
         }
     }
 }

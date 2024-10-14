@@ -11,6 +11,7 @@ lazy_static = "1.4.0"
 signal-hook = "0.3"
 regex = "1.11.0"
 tokio = { version = "1.40.0", features = ["full"] }
-alloy = { version = "0.4.2", features = ["full"] }
+alloy = { version = "0.4.2", features = ["full", "rpc-types-trace", "rpc-types-debug"] }
 eyre = "0.6.12"
 reqwest = "0.12.8"
+

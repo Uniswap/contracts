@@ -22,17 +22,20 @@ impl CreateConfigWorkflow {
 }
 
 impl Workflow for CreateConfigWorkflow {
-    fn next_screen(&mut self, new_workflows: Option<Vec<Box<dyn Workflow>>>) -> WorkflowResult {
-        match process_nested_workflows(&mut self.child_workflows, new_workflows) {
-            WorkflowResult::NextScreen(screen) => return WorkflowResult::NextScreen(screen),
+    fn next_screen(
+        &mut self,
+        new_workflows: Option<Vec<Box<dyn Workflow>>>,
+    ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
+        match process_nested_workflows(&mut self.child_workflows, new_workflows)? {
+            WorkflowResult::NextScreen(screen) => return Ok(WorkflowResult::NextScreen(screen)),
             WorkflowResult::Finished => {
                 self.current_screen += 1;
-                self.get_screen()
+                return self.get_screen();
             }
         }
     }
 
-    fn previous_screen(&mut self) -> WorkflowResult {
+    fn previous_screen(&mut self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         if self.current_screen > 1 {
             self.current_screen -= 1;
         }
@@ -42,12 +45,15 @@ impl Workflow for CreateConfigWorkflow {
         return self.get_screen();
     }
 
-    fn handle_error(&mut self, error: Box<dyn std::error::Error>) -> WorkflowResult {
+    fn handle_error(
+        &mut self,
+        error: Box<dyn std::error::Error>,
+    ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         errors::log(self.current_screen.to_string());
         match self.current_screen {
             3 => {
                 if error.downcast_ref::<errors::ConnectionError>().is_some() {
-                    STATE_MANAGER.app_state.lock().unwrap().set_rpc_url(None);
+                    STATE_MANAGER.workflow_state.lock()?.web3 = None;
                     self.current_screen = 2;
                     return self.get_screen();
                 }
@@ -59,17 +65,28 @@ impl Workflow for CreateConfigWorkflow {
 }
 
 impl CreateConfigWorkflow {
-    fn get_screen(&self) -> WorkflowResult {
+    fn get_screen(&self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match self.current_screen {
-            1 => return WorkflowResult::NextScreen(Box::new(ChainIdScreen::new())),
-            2 => return WorkflowResult::NextScreen(Box::new(RpcUrlScreen::new())),
-            3 => return WorkflowResult::NextScreen(Box::new(TestConnectionScreen::new())),
-            4 => return WorkflowResult::NextScreen(Box::new(ProtocolSelectionScreen::new())),
-            _ => return WorkflowResult::Finished,
+            1 => return Ok(WorkflowResult::NextScreen(Box::new(ChainIdScreen::new()))),
+            2 => return Ok(WorkflowResult::NextScreen(Box::new(RpcUrlScreen::new()))),
+            3 => {
+                return Ok(WorkflowResult::NextScreen(Box::new(
+                    TestConnectionScreen::new()?,
+                )))
+            }
+            4 => {
+                return Ok(WorkflowResult::NextScreen(Box::new(
+                    ProtocolSelectionScreen::new(),
+                )))
+            }
+            _ => return Ok(WorkflowResult::Finished),
         }
     }
 
-    fn display_error(&mut self, error_message: String) -> WorkflowResult {
+    fn display_error(
+        &mut self,
+        error_message: String,
+    ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         self.child_workflows = vec![Box::new(ErrorWorkflow::new(error_message))];
         self.current_screen = 1000000;
         return self.child_workflows[0].next_screen(None);

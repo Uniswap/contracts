@@ -1,54 +1,50 @@
+use crate::libs::web3::Web3Lib;
 use crate::util::chain_config::{parse_chain_config, Chain, Explorer};
 use crate::util::register_contract::RegisterContractData;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Mutex;
+use std::{env, process};
 
 // The state manager is responsible for managing the state of the application. All screens and workflows share the same state and use the singleton instance to read and write to the state.
-pub struct AppState {
+pub struct WorkflowState {
     pub chain_id: Option<String>,
-    pub rpc_url: Option<String>,
+    pub web3: Option<Web3Lib>,
+    pub explorer_api_key: Option<String>,
     pub block_explorer: Option<Explorer>,
-    pub working_directory: PathBuf,
     pub register_contract_data: RegisterContractData,
     // pub deployment_history: HashMap<String, String>,
 }
 
-impl AppState {
+impl WorkflowState {
     pub fn new() -> Self {
-        AppState {
+        WorkflowState {
             chain_id: None,
-            rpc_url: None,
-            working_directory: PathBuf::from(""),
+            web3: None,
+            explorer_api_key: None,
             // deployment_history: HashMap::new(),
             block_explorer: None,
             register_contract_data: RegisterContractData { address: None },
         }
     }
 
-    pub fn set_chain_id(&mut self, chain_id: String) {
-        self.chain_id = Some(chain_id);
-    }
-
-    pub fn set_rpc_url(&mut self, rpc_url: Option<String>) {
-        self.rpc_url = rpc_url;
-    }
-
     pub fn reset(&mut self) {
-        *self = AppState::new();
+        *self = WorkflowState::new();
     }
 }
 
 pub struct StateManager {
-    pub app_state: Mutex<AppState>,
+    pub workflow_state: Mutex<WorkflowState>,
     pub chains: HashMap<String, Chain>,
+    pub working_directory: PathBuf,
 }
 
 impl StateManager {
     pub fn new() -> Self {
         StateManager {
-            app_state: Mutex::new(AppState::new()),
+            workflow_state: Mutex::new(WorkflowState::new()),
             chains: parse_chain_config(),
+            working_directory: check_for_foundry_toml(),
         }
     }
 
@@ -60,4 +56,29 @@ impl StateManager {
 // Create a global instance of StateManager
 lazy_static::lazy_static! {
     pub static ref STATE_MANAGER: StateManager = StateManager::new();
+}
+
+fn check_for_foundry_toml() -> PathBuf {
+    // check if foundry.toml file exists in the current directory
+    let mut current_dir = env::current_dir().unwrap();
+    let default_dir = current_dir.clone();
+    if !default_dir.join("foundry.toml").exists() {
+        // check for constructor argument: --dir <directory>
+        let args: Vec<String> = env::args().collect();
+        if args.len() > 2 && args[1] == "--dir" {
+            let dir = &args[2];
+            current_dir = current_dir.join(dir);
+            if !current_dir.join("foundry.toml").exists() {
+                println!("{} does not exist.", current_dir.to_str().unwrap());
+                process::exit(1);
+            }
+        } else {
+            println!("No foundry.toml file found in the current directory. Use the --dir <directory> argument to provide a relative path to your foundry directory containing the foundry.toml file. Example: ./deploy-cli --dir ../path/to/your/foundry_project");
+            process::exit(1);
+        }
+    } else {
+        current_dir = default_dir;
+    }
+
+    return current_dir;
 }

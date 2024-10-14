@@ -22,18 +22,18 @@ enum ConnectionStatus {
 }
 
 impl GetContractInfoScreen {
-    pub fn new() -> Self {
+    pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
         let test_connection_screen = GetContractInfoScreen {
             connection_status: Arc::new(Mutex::new(ConnectionStatus::Pending)),
             connection_error_message: Arc::new(Mutex::new("".to_string())),
         };
 
-        let mut web3_lib = Web3Lib::new();
+        let mut web3 = STATE_MANAGER.workflow_state.lock()?.web3.clone().unwrap();
         let connection_status = Arc::clone(&test_connection_screen.connection_status);
         let connection_error_message = Arc::clone(&test_connection_screen.connection_error_message);
 
         tokio::spawn(async move {
-            let result = web3_lib.get_chain_id().await;
+            let result = web3.get_chain_id().await;
             if result.is_ok() {
                 *connection_status.lock().unwrap() = ConnectionStatus::Success;
             } else {
@@ -42,7 +42,7 @@ impl GetContractInfoScreen {
             }
         });
 
-        test_connection_screen
+        Ok(test_connection_screen)
     }
 }
 

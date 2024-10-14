@@ -17,7 +17,7 @@ pub struct HomeScreen {
 impl HomeScreen {
     pub fn new() -> Self {
         // reset the app state when returning to the home screen to ensure a clean state
-        STATE_MANAGER.app_state.lock().unwrap().reset();
+        STATE_MANAGER.workflow_state.lock().unwrap().reset();
         let options = vec![
             "Create Config".to_string(),
             "Verify Deployment".to_string(),

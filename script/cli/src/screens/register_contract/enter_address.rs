@@ -35,13 +35,13 @@ impl Screen for EnterAddressScreen {
 
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let address = self.text_input.handle_input(event);
-        if address.clone().is_some() && address.clone().unwrap().len() == 42 {
+        if address.is_some() && address.clone().unwrap().len() == 42 {
             STATE_MANAGER
-                .app_state
+                .workflow_state
                 .lock()
                 .unwrap()
                 .register_contract_data
-                .address = Some(address.unwrap());
+                .address = address;
             return Ok(ScreenResult::NextScreen(None));
         }
         Ok(ScreenResult::Continue)

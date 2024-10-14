@@ -16,21 +16,27 @@ impl ErrorWorkflow {
 }
 
 impl Workflow for ErrorWorkflow {
-    fn next_screen(&mut self, _: Option<Vec<Box<dyn Workflow>>>) -> WorkflowResult {
+    fn next_screen(
+        &mut self,
+        _: Option<Vec<Box<dyn Workflow>>>,
+    ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         if !self.error_displayed {
             self.error_displayed = true;
-            return WorkflowResult::NextScreen(Box::new(ErrorScreen::new(
+            return Ok(WorkflowResult::NextScreen(Box::new(ErrorScreen::new(
                 self.error_message.clone(),
-            )));
+            ))));
         }
-        return WorkflowResult::Finished;
+        return Ok(WorkflowResult::Finished);
     }
 
-    fn previous_screen(&mut self) -> WorkflowResult {
-        return WorkflowResult::Finished;
+    fn previous_screen(&mut self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
+        return Ok(WorkflowResult::Finished);
     }
 
-    fn handle_error(&mut self, _: Box<dyn std::error::Error>) -> WorkflowResult {
-        return WorkflowResult::Finished;
+    fn handle_error(
+        &mut self,
+        _: Box<dyn std::error::Error>,
+    ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
+        return Ok(WorkflowResult::Finished);
     }
 }

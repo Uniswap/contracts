@@ -14,26 +14,32 @@ impl DefaultWorkflow {
 }
 
 impl Workflow for DefaultWorkflow {
-    fn next_screen(&mut self, new_workflows: Option<Vec<Box<dyn Workflow>>>) -> WorkflowResult {
-        match process_nested_workflows(&mut self.child_workflows, new_workflows) {
-            WorkflowResult::NextScreen(screen) => return WorkflowResult::NextScreen(screen),
+    fn next_screen(
+        &mut self,
+        new_workflows: Option<Vec<Box<dyn Workflow>>>,
+    ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
+        match process_nested_workflows(&mut self.child_workflows, new_workflows)? {
+            WorkflowResult::NextScreen(screen) => return Ok(WorkflowResult::NextScreen(screen)),
             WorkflowResult::Finished => {
-                return WorkflowResult::NextScreen(Box::new(HomeScreen::new()));
+                return Ok(WorkflowResult::NextScreen(Box::new(HomeScreen::new())));
             }
         }
     }
 
-    fn previous_screen(&mut self) -> WorkflowResult {
+    fn previous_screen(&mut self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         if !self.child_workflows.is_empty() {
             return self.child_workflows[0].previous_screen();
         }
-        return WorkflowResult::NextScreen(Box::new(HomeScreen::new()));
+        return Ok(WorkflowResult::NextScreen(Box::new(HomeScreen::new())));
     }
 
-    fn handle_error(&mut self, error: Box<dyn std::error::Error>) -> WorkflowResult {
+    fn handle_error(
+        &mut self,
+        error: Box<dyn std::error::Error>,
+    ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         if !self.child_workflows.is_empty() {
             return self.child_workflows[0].handle_error(error);
         }
-        return WorkflowResult::NextScreen(Box::new(HomeScreen::new()));
+        return Ok(WorkflowResult::NextScreen(Box::new(HomeScreen::new())));
     }
 }

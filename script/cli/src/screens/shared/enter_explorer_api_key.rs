@@ -11,21 +11,16 @@ pub struct EnterExplorerApiKeyScreen {
 }
 
 impl EnterExplorerApiKeyScreen {
-    pub fn new() -> Self {
-        let explorer = STATE_MANAGER
-            .app_state
-            .lock()
-            .unwrap()
-            .block_explorer
-            .clone();
+    pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
+        let explorer = STATE_MANAGER.workflow_state.lock()?.block_explorer.clone();
         let mut env_var_name = "".to_string();
         if explorer.is_some() {
             env_var_name = explorer.unwrap().name.clone().to_uppercase() + "_API_KEY";
         }
-        EnterExplorerApiKeyScreen {
+        Ok(EnterExplorerApiKeyScreen {
             env_var_name: env_var_name.clone(),
             enter_env_var: EnterEnvVarComponent::new(env_var_name, |input, _| input),
-        }
+        })
     }
 }
 
@@ -38,14 +33,7 @@ impl Screen for EnterExplorerApiKeyScreen {
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let result = self.enter_env_var.handle_input(event);
         if result.is_some() {
-            STATE_MANAGER
-                .app_state
-                .lock()
-                .unwrap()
-                .block_explorer
-                .as_mut()
-                .unwrap()
-                .api_key = Some(result.unwrap());
+            STATE_MANAGER.workflow_state.lock()?.explorer_api_key = result;
             return Ok(ScreenResult::NextScreen(None));
         }
         Ok(ScreenResult::Continue)

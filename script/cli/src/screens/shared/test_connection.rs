@@ -10,9 +10,9 @@ use std::sync::{Arc, Mutex};
 // Tests the connection to the rpc url, fails if the connection is not successful or the chain id doesn't match the expected chain id
 // chain id and rpc url MUST be set before this screen is rendered
 pub struct TestConnectionScreen {
+    rpc_url: String,
     connection_status: Arc<Mutex<ConnectionStatus>>,
     connection_error_message: Arc<Mutex<String>>,
-    rpc_url: String,
 }
 
 #[derive(PartialEq, Debug)]
@@ -23,35 +23,27 @@ enum ConnectionStatus {
 }
 
 impl TestConnectionScreen {
-    pub fn new() -> Self {
-        let rpc_url = STATE_MANAGER
-            .app_state
-            .lock()
-            .unwrap()
-            .rpc_url
-            .clone()
-            .unwrap_or("".to_string());
-
+    pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
+        let mut web3 = STATE_MANAGER.workflow_state.lock()?.web3.clone().unwrap();
+        let rpc_url = web3.rpc_url.clone();
         let test_connection_screen = TestConnectionScreen {
+            rpc_url,
             connection_status: Arc::new(Mutex::new(ConnectionStatus::Pending)),
             connection_error_message: Arc::new(Mutex::new("".to_string())),
-            rpc_url,
         };
 
-        let mut web3_lib = Web3Lib::new();
         let connection_status = Arc::clone(&test_connection_screen.connection_status);
         let connection_error_message = Arc::clone(&test_connection_screen.connection_error_message);
         let expected_chain_id = STATE_MANAGER
-            .app_state
-            .lock()
-            .unwrap()
+            .workflow_state
+            .lock()?
             .chain_id
             .clone()
             .unwrap();
 
         // get chain id call in a new thread
         tokio::spawn(async move {
-            let chain_id_result = web3_lib.get_chain_id().await;
+            let chain_id_result = web3.get_chain_id().await;
             if chain_id_result.is_ok() {
                 if chain_id_result.unwrap() == expected_chain_id {
                     *connection_status.lock().unwrap() = ConnectionStatus::Success;
@@ -66,7 +58,7 @@ impl TestConnectionScreen {
             }
         });
 
-        test_connection_screen
+        Ok(test_connection_screen)
     }
 }
 

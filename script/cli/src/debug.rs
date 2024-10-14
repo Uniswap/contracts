@@ -1,89 +1,99 @@
 use crate::errors::log;
+use crate::libs::explorer::ExplorerApiLib;
+use crate::libs::web3::Web3Lib;
 use crate::state_manager::STATE_MANAGER;
 use crate::util::chain_config::Explorer;
 use alloy::{
-    dyn_abi::{DynSolType, DynSolValue, JsonAbiExt},
+    dyn_abi::JsonAbiExt,
     eips::BlockNumberOrTag,
     hex::FromHex,
-    json_abi::{Constructor, JsonAbi, Param},
-    primitives::{hex, FixedBytes},
-    providers::{Provider, ProviderBuilder},
+    json_abi::{Constructor, JsonAbi},
+    primitives::{hex, utils::keccak256, Address, Bytes, FixedBytes},
+    providers::{ext::DebugApi, Provider, ProviderBuilder, RootProvider},
+    rpc::types::trace::geth::{
+        GethDebugBuiltInTracerType, GethDebugTracerType, GethDebugTracingOptions,
+        GethDefaultTracingOptions,
+    },
+    rpc::types::{trace::geth::CallFrame, Filter},
+    transports::http::Http,
 };
-
 use reqwest;
+use reqwest::Client;
+use serde::Serialize;
+use serde_json::json;
 
-pub async fn run() -> bool {
-    // return false;
+// this allows to run test code during development so it's not necessary to click through a bunch of screens over and over again. Return false to continue with the normal program flow and show the main menu. Return true to abort the program after the code from this function has been executed. On errors this function will also automatically exit the program. By default this function should be empty and just return false.
+pub async fn run() -> Result<bool, Box<dyn std::error::Error>> {
+    // return Ok(false);
     let infura_api_key = std::env::var("INFURA_API_KEY").unwrap();
+    let alchemy_api_key = std::env::var("ALCHEMY_API_KEY").unwrap();
     let etherscan_api_key = std::env::var("ETHERSCAN_API_KEY").unwrap();
 
-    STATE_MANAGER.app_state.lock().unwrap().chain_id = Some("1".to_string());
-    STATE_MANAGER.app_state.lock().unwrap().rpc_url =
-        Some(format!("https://mainnet.infura.io/v3/{}", infura_api_key));
-    STATE_MANAGER.app_state.lock().unwrap().block_explorer = Some(Explorer {
+    STATE_MANAGER.workflow_state.lock()?.chain_id = Some("1".to_string());
+    // STATE_MANAGER.workflow_state.lock()?.rpc_url = Some(format!(
+    //     "https://eth-mainnet.g.alchemy.com/v2/{}",
+    //     alchemy_api_key
+    // ));
+    // STATE_MANAGER.workflow_state.lock()?.rpc_url =
+    //     Some(format!("https://mainnet.infura.io/v3/{}", infura_api_key));
+    STATE_MANAGER.workflow_state.lock()?.web3 =
+        Some(Web3Lib::new(std::env::var("RPC_URL").unwrap())?);
+    STATE_MANAGER.workflow_state.lock()?.block_explorer = Some(Explorer {
         name: "etherscan".to_string(),
         url: "https://etherscan.io".to_string(),
         standard: "EIP3091".to_string(),
-        api_key: Some(etherscan_api_key),
     });
 
     let chain_id = STATE_MANAGER
-        .app_state
-        .lock()
-        .unwrap()
+        .workflow_state
+        .lock()?
         .chain_id
         .clone()
         .unwrap();
 
-    let mut rpc_url = STATE_MANAGER.app_state.lock().unwrap().rpc_url.clone();
+    let working_dir = STATE_MANAGER.working_directory.clone();
+
+    // check if deployments/chainid.json exists, if yes load it
+    let deployments_file = working_dir
+        .join("deployments")
+        .join(format!("{}.json", chain_id));
+    let deployments_json;
+    let mut deployments = if deployments_file.exists() {
+        let contents = std::fs::read_to_string(&deployments_file)
+            .expect("Should have been able to read the file");
+        deployments_json = serde_json::from_str(&contents).expect("JSON was not well-formatted");
+    } else {
+        deployments_json = serde_json::json!({
+            "chainId": chain_id,
+            "latest": {},
+            "history": []
+        });
+    };
+
+    println!("{:?}", deployments_json);
 
     let explorer = STATE_MANAGER
-        .app_state
-        .lock()
-        .unwrap()
+        .workflow_state
+        .lock()?
         .block_explorer
         .clone()
         .unwrap();
 
-    let working_dir = STATE_MANAGER
-        .app_state
-        .lock()
-        .unwrap()
-        .working_directory
-        .clone();
+    let explorer_api = ExplorerApiLib::new(explorer, etherscan_api_key)?;
 
-    let explorer_url = if explorer.name.contains("blockscout") {
-        explorer.url + "/api"
-    } else if explorer.name.contains("scan") {
-        explorer.url.replace("https://", "https://api.")
-    } else {
-        explorer.url
-    };
+    // let contract_address = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f".parse::<Address>()?; // v2 factory
 
-    let address = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f";
+    // let contract_address = "0x1F98431c8aD98523631AE4a59f267346ea31F984".parse::<Address>()?; // v3 factory
 
-    let mut url = format!(
-        "{}/api?module=contract&action=getsourcecode&address={}&apikey={}",
-        explorer_url,
-        address,
-        explorer.api_key.as_ref().unwrap()
-    );
+    let contract_address = "0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B".parse::<Address>()?; // universal router
 
-    let mut contract_name = "UniswapV2Factory".to_string();
-    let mut constructor_arguments =
-        "000000000000000000000000c0a4272bb5df52134178df25d77561cfb17ce407".to_string();
-    let mut constructor_inputs: Option<Constructor> = None;
+    // let mut contract_name = "UniswapV2Factory".to_string();
+    // let mut constructor_arguments =
+    //     "000000000000000000000000c0a4272bb5df52134178df25d77561cfb17ce407".to_string();
+    // let mut constructor_inputs: Option<Constructor> = None;
 
-    match get_contract_data(&url).await {
-        Ok((contract_name_, constructor_arguments_, constructor_inputs_)) => {
-            contract_name = contract_name_;
-            constructor_arguments = constructor_arguments_;
-            constructor_inputs = constructor_inputs_;
-        }
-        Err(e) => {
-            println!("Error: {:?}", e);
-        }
-    }
+    let (contract_name, constructor_arguments, constructor_inputs) =
+        explorer_api.get_contract_data(contract_address).await?;
 
     println!("Contract name: {}", contract_name);
     println!("Constructor arguments: {}", constructor_arguments);
@@ -97,42 +107,81 @@ pub async fn run() -> bool {
     if local_out_path.exists() {
         println!("File exists: {}", local_out_path.display());
 
-        let mut url = format!(
-            "{}/api?module=contract&action=getcontractcreation&contractaddresses={}&apikey={}",
-            explorer_url,
-            address,
-            explorer.api_key.as_ref().unwrap()
-        );
+        let tx_hash = explorer_api
+            .get_creation_transaction_hash(contract_address)
+            .await?;
 
-        let tx_hash = get_creation_transaction_hash(&url).await.unwrap();
         println!("Transaction hash: {}", tx_hash);
 
-        let provider = ProviderBuilder::new().on_http(rpc_url.unwrap().parse().unwrap());
-        let block_number = provider
-            .get_transaction_receipt(FixedBytes::<32>::from_hex(tx_hash).unwrap())
-            .await
-            .unwrap()
-            .unwrap()
-            .block_number
-            .unwrap();
-        let timestamp = provider
-            .get_block_by_number(BlockNumberOrTag::Number(block_number), false)
-            .await
-            .unwrap()
-            .unwrap()
-            .header
-            .timestamp;
+        let mut web3 = STATE_MANAGER.workflow_state.lock()?.web3.clone().unwrap();
+
+        let block_number = web3
+            .get_block_number_by_transaction_hash(FixedBytes::<32>::from_hex(tx_hash.as_str())?)
+            .await?;
+
+        let timestamp = web3
+            .get_block_timestamp_by_block_number(block_number)
+            .await?;
+
         println!("Timestamp: {:?}", timestamp);
         let args = constructor_inputs
             .unwrap()
-            .abi_decode_input(&hex::decode(constructor_arguments).unwrap(), false);
+            .abi_decode_input(&hex::decode(constructor_arguments).unwrap(), true);
 
         println!("{:?}", args);
+
+        if contract_name == "UniswapV2Factory" {
+            web3.get_v2_pool_init_code_hash(contract_address, block_number)
+                .await
+                .unwrap();
+            // let (first_pool_deploy_tx, first_pool) =
+            //     get_v2_pool(provider.clone(), contract_address.to_string(), block_number).await;
+            // get_init_code_hash(provider, first_pool, first_pool_deploy_tx).await;
+        } else if contract_name == "UniswapV3Factory" {
+            web3.get_v3_pool_init_code_hash(contract_address, block_number)
+                .await
+                .unwrap();
+            // let (first_pool_deploy_tx, first_pool) =
+            //     get_v3_pool(provider.clone(), contract_address.to_string(), block_number).await;
+            // get_init_code_hash(provider, first_pool, first_pool_deploy_tx).await;
+        }
     } else {
         println!("File does not exist: {}", local_out_path.display());
     }
 
-    return true;
+    // let mut contract_data = json!({
+    //     "contracts": {
+    //         contract_name: {
+    //             "address": contract_address,
+    //             "proxy": false,
+    //             "deploymentTxn": tx_hash,
+    //             "input": {
+    //                 "constructor": {}
+    //             }
+    //         }
+    //     },
+    //     "timestamp": timestamp
+    // });
+
+    // parse data into the following json:
+    // {
+    //    contracts: {
+    //      [contract_name]: {
+    //        address: contract_address,
+    //        deploymentTxn: tx_hash,
+    //        poolInitCodeHash: init_code_hash, // optional if v2 or v3 factory
+    //        input: {
+    //          constructor: {
+    //            argument1: value1,
+    //            argument2: value2,
+    //            ...
+    //          }
+    //        }
+    //      }
+    //    },
+    //    timestamp: timestamp,
+    // }
+    return Ok(true);
 }
 
 async fn pretty_print_request(url: &str) -> Result<(), Box<dyn std::error::Error>> {
@@ -151,98 +200,4 @@ async fn pretty_print_request(url: &str) -> Result<(), Box<dyn std::error::Error
             Err(e.into())
         }
     }
-}
-
-async fn get_creation_transaction_hash(url: &str) -> Result<String, Box<dyn std::error::Error>> {
-    Ok(get_etherscan_result(url).await?["txHash"]
-        .as_str()
-        .unwrap()
-        .to_string())
-}
-
-async fn get_contract_data(
-    url: &str,
-) -> Result<(String, String, Option<Constructor>), Box<dyn std::error::Error>> {
-    match get_etherscan_result(url).await {
-        Ok(result) => {
-            if let (Some(constructor_arguments), Some(contract_name), Some(abi)) = (
-                result["ConstructorArguments"].as_str(),
-                result["ContractName"].as_str(),
-                result["ABI"].as_str(),
-            ) {
-                Ok((
-                    contract_name.to_string(),
-                    constructor_arguments.to_string(),
-                    get_constructor_inputs(abi),
-                ))
-            } else {
-                return Err(
-                    "ConstructorArguments or ContractName not found in the response".into(),
-                );
-            }
-        }
-        Err(e) => {
-            return Err(e);
-        }
-    }
-}
-
-async fn get_etherscan_result(url: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
-    match reqwest::get(url).await {
-        Ok(response) => {
-            let json_response: serde_json::Value = response.json().await.unwrap();
-            if let Some(message) = json_response["message"].as_str() {
-                if message == "OK" {
-                    if let Some(result) = json_response["result"].as_array() {
-                        return Ok(result.first().unwrap().clone());
-                    }
-                }
-            }
-            log(format!(
-                "Invalid response from etherscan: {:?}",
-                json_response
-            ));
-            return Err("Invalid response from etherscan".into());
-        }
-        Err(e) => {
-            log(format!("Error getting etherscan result: {:?}", e));
-            return Err("An error occurred during the etherscan request".into());
-        }
-    }
-}
-
-fn get_constructor_inputs(abi: &str) -> Option<Constructor> {
-    let parsed_abi: JsonAbi = serde_json::from_str(abi).unwrap();
-    return parsed_abi.constructor;
-    // if let Some(constructor) = parsed_abi.constructor {
-    //     println!("\n>> Constructor:");
-    //     println!("  Inputs: {:?}", constructor.clone().inputs);
-    //     println!("  State mutability: {:?}", constructor.state_mutability);
-    //     return constructor.inputs;
-    // } else {
-    //     return Vec::new();
-    // }
-    // if let Some(abi_array) = parsed_abi.as_array() {
-    //     for item in abi_array {
-    //         if let Some(item_type) = item["type"].as_str() {
-    //             if item_type == "constructor" {
-    //                 if let Some(inputs) = item["inputs"].as_array() {
-    //                     let inputs_string = format!("{:?}", inputs);
-    //                     log(format!("Constructor inputs: {}", inputs_string));
-    //                     return inputs
-    //                         .iter()
-    //                         .map(|input| {
-    //                             (
-    //                                 input["name"].as_str().unwrap_or("").to_string(),
-    //                                 input["type"].as_str().unwrap_or("").to_string(),
-    //                             )
-    //                         })
-    //                         .collect::<Vec<(String, String)>>();
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-
-    // Vec::new() // Return an empty vector if no constructor inputs are found
 }

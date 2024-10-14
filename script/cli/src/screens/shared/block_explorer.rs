@@ -12,8 +12,8 @@ pub struct BlockExplorerScreen {
 }
 
 impl BlockExplorerScreen {
-    pub fn new() -> Self {
-        let chain_id = STATE_MANAGER.app_state.lock().unwrap().chain_id.clone();
+    pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
+        let chain_id = STATE_MANAGER.workflow_state.lock()?.chain_id.clone();
         let mut pre_selected_explorers = vec![];
         let mut explorers = vec![];
         if chain_id.is_some()
@@ -40,10 +40,10 @@ impl BlockExplorerScreen {
                 .map(|explorer| explorer.url)
                 .collect();
         }
-        BlockExplorerScreen {
+        Ok(BlockExplorerScreen {
             select: SelectComponent::new(pre_selected_explorers),
             explorers,
-        }
+        })
     }
 }
 
@@ -58,7 +58,7 @@ impl Screen for BlockExplorerScreen {
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let result = self.select.handle_input(event);
         if result.is_some() {
-            STATE_MANAGER.app_state.lock().unwrap().block_explorer =
+            STATE_MANAGER.workflow_state.lock()?.block_explorer =
                 Some(self.explorers[result.unwrap()].clone());
             return Ok(ScreenResult::NextScreen(None));
         }

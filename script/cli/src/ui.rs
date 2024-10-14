@@ -6,7 +6,7 @@ use crossterm::{
 };
 
 use crate::constants;
-use std::io::Write;
+use std::io::{stdout, Write};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 // The buffer is responsible for rendering the UI. It's a 2D vector of characters and colors that will be rendered to the terminal. The height and width are fetched from the terminal size every cycle, this way the UI can always be redrawn correctly if the terminal size changes. Screens append rows to the buffer line by line and the buffer is rendered to the terminal in its entirety every cycle. At the start of the render cycle the buffer is reset to make sure it's empty.
@@ -52,7 +52,8 @@ impl Buffer {
         self.content.len() - 1
     }
 
-    pub fn draw(&mut self, stdout: &mut impl Write) -> Result<()> {
+    pub fn draw(&mut self) -> Result<()> {
+        let mut stdout = stdout();
         // cut off the excess rows if content exceeds terminal height, otherwise pad the top, so it's always bottom aligned
         if self.content.len() > self.height {
             self.content.drain(0..(self.content.len() - self.height));
