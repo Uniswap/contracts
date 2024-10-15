@@ -50,8 +50,13 @@ async fn main() -> Result<()> {
 
     check_for_foundry_toml();
 
-    if debug::run().await.unwrap_or(true) {
-        return Ok(());
+    match debug::run().await {
+        Ok(true) => process::exit(0),
+        Ok(false) => (),
+        Err(e) => {
+            println!("Error: {}", e);
+            process::exit(1);
+        }
     }
 
     let mut stdout = stdout();

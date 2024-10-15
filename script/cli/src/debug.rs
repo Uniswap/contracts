@@ -31,8 +31,8 @@ pub async fn run() -> Result<bool, Box<dyn std::error::Error>> {
     STATE_MANAGER.workflow_state.lock()?.web3 =
         Some(Web3Lib::new(std::env::var("RPC_URL").unwrap())?);
     STATE_MANAGER.workflow_state.lock()?.block_explorer = Some(Explorer {
-        name: "etherscan".to_string(),
-        url: "https://etherscan.io".to_string(),
+        name: "blockscout".to_string(),
+        url: "https://eth.blockscout.com".to_string(),
         standard: "EIP3091".to_string(),
     });
 
@@ -75,9 +75,9 @@ pub async fn run() -> Result<bool, Box<dyn std::error::Error>> {
 
     // let contract_address = "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f".parse::<Address>()?; // v2 factory
 
-    let contract_address = "0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B".parse::<Address>()?; // universal router
+    // let contract_address = "0xEf1c6E67703c7BD7107eed8303Fbe6EC2554BF6B".parse::<Address>()?; // universal router
 
-    // let contract_address = "0x1F98431c8aD98523631AE4a59f267346ea31F984".parse::<Address>()?; // v3 factory
+    let contract_address = "0x1F98431c8aD98523631AE4a59f267346ea31F984".parse::<Address>()?; // v3 factory
 
     // let mut contract_name = "UniswapV2Factory".to_string();
     // let mut constructor_arguments =

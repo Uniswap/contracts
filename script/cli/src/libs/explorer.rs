@@ -79,27 +79,32 @@ impl ExplorerApiLib {
         &self,
         contract_address: Address,
     ) -> Result<(String, String, Option<Constructor>), Box<dyn std::error::Error>> {
-        if self.explorer_type == SupportedExplorerType::Etherscan {
+        if self.explorer_type == SupportedExplorerType::Etherscan
+            || self.explorer_type == SupportedExplorerType::Blockscout
+        {
             let url = format!(
                 "{}/api?module=contract&action=getsourcecode&address={}&apikey={}",
                 self.api_url, contract_address, self.api_key
             );
             match get_etherscan_result(&url).await {
                 Ok(result) => {
-                    if let (Some(constructor_arguments), Some(contract_name), Some(abi)) = (
-                        result["ConstructorArguments"].as_str(),
-                        result["ContractName"].as_str(),
-                        result["ABI"].as_str(),
-                    ) {
+                    if let (Some(contract_name), Some(abi)) =
+                        (result["ContractName"].as_str(), result["ABI"].as_str())
+                    {
+                        let constructor_arguments = result["ConstructorArguments"]
+                            .as_str()
+                            .unwrap_or("")
+                            .to_string();
+                        println!("{:?}", result);
                         return Ok((
                             contract_name.to_string(),
-                            constructor_arguments.to_string(),
+                            constructor_arguments,
                             get_constructor_inputs(abi),
                         ));
                     } else {
+                        println!("{:?}", result);
                         return Err(Box::new(EtherscanResponseError(
-                            "ConstructorArguments or ContractName not found in the response"
-                                .to_string(),
+                            "ContractName not found in the response".to_string(),
                         )));
                     }
                 }
@@ -118,7 +123,9 @@ impl ExplorerApiLib {
         &self,
         contract_address: Address,
     ) -> Result<String, Box<dyn std::error::Error>> {
-        if self.explorer_type == SupportedExplorerType::Etherscan {
+        if self.explorer_type == SupportedExplorerType::Etherscan
+            || self.explorer_type == SupportedExplorerType::Blockscout
+        {
             let url = format!(
                 "{}/api?module=contract&action=getcontractcreation&contractaddresses={}&apikey={}",
                 self.api_url, contract_address, self.api_key
