@@ -1,9 +1,6 @@
 [submodule "lib/forge-std"]
 	path = lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
-[submodule "lib/forge-chronicles"]
-	path = lib/forge-chronicles
-	url = https://github.com/0xPolygon/forge-chronicles
 [submodule "lib/forge-gas-snapshot"]
 	path = lib/forge-gas-snapshot
 	url = https://github.com/marktoda/forge-gas-snapshot
@@ -40,3 +37,6 @@
 [submodule "src/pkgs/uniswapx"]
 	path = src/pkgs/uniswapx
 	url = https://github.com/uniswap/uniswapx
+[submodule "lib/forge-chronicles"]
+	path = lib/forge-chronicles
+	url = https://github.com/gretzke/forge-chronicles

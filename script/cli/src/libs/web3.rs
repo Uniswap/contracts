@@ -137,10 +137,9 @@ impl Web3Lib {
         let result = self
             .provider
             .debug_trace_transaction(pool_deploy_tx, call_options)
-            .await
-            .unwrap();
+            .await?;
 
-        let calls = result.try_into_call_frame().unwrap().calls;
+        let calls = result.try_into_call_frame()?.calls;
         let init_code = get_init_code_from_calls(calls, factory_address);
         if init_code.is_none() {
             return Err("No init code found".into());
