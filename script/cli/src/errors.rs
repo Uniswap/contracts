@@ -17,42 +17,6 @@ impl fmt::Display for ConnectionError {
 }
 impl StdError for ConnectionError {}
 
-#[derive(Debug)]
-pub struct UnsupportedExplorerError(pub String, pub String);
-impl fmt::Display for UnsupportedExplorerError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Unsupported explorer: {} ({})", self.0, self.1)
-    }
-}
-impl StdError for UnsupportedExplorerError {}
-
-#[derive(Debug)]
-pub struct InvalidEtherscanUrlError(pub String, pub String);
-impl fmt::Display for InvalidEtherscanUrlError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Invalid etherscan url: {} ({})", self.0, self.1)
-    }
-}
-impl StdError for InvalidEtherscanUrlError {}
-
-#[derive(Debug)]
-pub struct EtherscanRequestError(pub Box<dyn StdError>);
-impl fmt::Display for EtherscanRequestError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Etherscan request error: {}", self.0)
-    }
-}
-impl StdError for EtherscanRequestError {}
-
-#[derive(Debug)]
-pub struct EtherscanResponseError(pub String);
-impl fmt::Display for EtherscanResponseError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Etherscan response error: {:?}", self.0)
-    }
-}
-impl StdError for EtherscanResponseError {}
-
 pub fn log(message: String) {
     let raw_mode_enabled = crossterm::terminal::is_raw_mode_enabled().unwrap();
     if raw_mode_enabled {

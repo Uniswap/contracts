@@ -1,6 +1,5 @@
 use crate::constants;
 use crate::errors::ConnectionError;
-use crate::libs::web3::Web3Lib;
 use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::{get_spinner_frame, Buffer};

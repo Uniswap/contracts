@@ -23,9 +23,7 @@ use signal_hook::{
     consts::{SIGINT, SIGTERM},
     iterator::Signals,
 };
-use state_manager::STATE_MANAGER;
 use std::{
-    env,
     io::{stdout, Write},
     panic, process, thread,
     time::Duration,
@@ -47,8 +45,6 @@ async fn main() -> Result<()> {
             let _ = clean_terminal();
         }
     });
-
-    check_for_foundry_toml();
 
     match debug::run().await {
         Ok(true) => process::exit(0),
@@ -123,29 +119,4 @@ fn run_main_menu() -> Result<()> {
     }
 
     Ok(())
-}
-
-fn check_for_foundry_toml() {
-    // // check if foundry.toml file exists in the current directory
-    // let mut current_dir = env::current_dir().unwrap();
-    // let default_dir = current_dir.clone();
-    // if !default_dir.join("foundry.toml").exists() {
-    //     // check for constructor argument: --dir <directory>
-    //     let args: Vec<String> = env::args().collect();
-    //     if args.len() > 2 && args[1] == "--dir" {
-    //         let dir = &args[2];
-    //         current_dir = current_dir.join(dir);
-    //         if !current_dir.join("foundry.toml").exists() {
-    //             println!("{} does not exist.", current_dir.to_str().unwrap());
-    //             process::exit(1);
-    //         }
-    //     } else {
-    //         println!("No foundry.toml file found in the current directory. Use the --dir <directory> argument to provide a relative path to your foundry directory containing the foundry.toml file. Example: ./deploy-cli --dir ../path/to/your/foundry_project");
-    //         process::exit(1);
-    //     }
-    // } else {
-    //     current_dir = default_dir;
-    // }
-
-    // STATE_MANAGER.working_directory = current_dir;
 }

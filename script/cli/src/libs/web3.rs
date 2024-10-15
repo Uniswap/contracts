@@ -1,5 +1,4 @@
 use alloy::eips::BlockNumberOrTag;
-use alloy::hex::{encode, FromHex};
 use alloy::primitives::{utils::keccak256, Address, Bytes, FixedBytes};
 use alloy::providers::{ext::DebugApi, Provider, ProviderBuilder, RootProvider};
 use alloy::rpc::types::trace::geth::{
@@ -95,7 +94,7 @@ impl Web3Lib {
         &self,
         v3_factory: Address,
         from_block: u64,
-    ) -> Result<(FixedBytes<32>), Box<dyn std::error::Error>> {
+    ) -> Result<FixedBytes<32>, Box<dyn std::error::Error>> {
         let step = 1000;
         let mut i = 0;
         loop {
@@ -146,7 +145,6 @@ impl Web3Lib {
         }
 
         let init_code_hash = keccak256(init_code.unwrap());
-        println!("Init code hash: {}", init_code_hash.to_string());
         Ok(init_code_hash)
     }
 }

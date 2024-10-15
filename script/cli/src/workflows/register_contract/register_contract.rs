@@ -1,5 +1,6 @@
 use crate::errors;
 use crate::screens::register_contract::enter_address::EnterAddressScreen;
+use crate::screens::register_contract::get_contract_info::GetContractInfoScreen;
 use crate::screens::shared::block_explorer::BlockExplorerScreen;
 use crate::screens::shared::chain_id::ChainIdScreen;
 use crate::screens::shared::enter_explorer_api_key::EnterExplorerApiKeyScreen;
@@ -88,6 +89,11 @@ impl RegisterContractWorkflow {
             6 => {
                 return Ok(WorkflowResult::NextScreen(Box::new(
                     EnterAddressScreen::new(),
+                )))
+            }
+            7 => {
+                return Ok(WorkflowResult::NextScreen(Box::new(
+                    GetContractInfoScreen::new()?,
                 )))
             }
             _ => return Ok(WorkflowResult::Finished),

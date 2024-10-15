@@ -5,7 +5,6 @@ use crate::ui::Buffer;
 use crossterm::event::Event;
 use regex::Regex;
 use std::borrow::Borrow;
-use std::io::Write;
 
 // Let the user select an option from a list or enter a value manually, handle environment variables
 // If there are default options, show to the user to select one, user has an option to enter manually

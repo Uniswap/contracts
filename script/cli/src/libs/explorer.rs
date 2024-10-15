@@ -1,11 +1,8 @@
-use crate::errors::{
-    log, EtherscanRequestError, EtherscanResponseError, InvalidEtherscanUrlError,
-    UnsupportedExplorerError,
-};
+use crate::errors::log;
 use crate::util::chain_config::Explorer;
 use alloy::{
     json_abi::{Constructor, JsonAbi},
-    primitives::{Address, FixedBytes},
+    primitives::Address,
 };
 
 #[derive(Clone, PartialEq, Eq, Default)]
@@ -62,16 +59,20 @@ impl ExplorerApiLib {
                     explorer_type: SupportedExplorerType::Etherscan,
                 });
             } else {
-                return Err(Box::new(InvalidEtherscanUrlError(
+                return Err(format!(
+                    "Invalid etherscan url: {} ({})",
                     explorer.name.to_string(),
                     explorer.url.to_string(),
-                )));
+                )
+                .into());
             }
         } else {
-            return Err(Box::new(UnsupportedExplorerError(
+            return Err(format!(
+                "Unsupported explorer: {} ({})",
                 explorer.name.to_string(),
                 explorer.url.to_string(),
-            )));
+            )
+            .into());
         }
     }
 
@@ -95,17 +96,16 @@ impl ExplorerApiLib {
                             .as_str()
                             .unwrap_or("")
                             .to_string();
-                        println!("{:?}", result);
                         return Ok((
                             contract_name.to_string(),
                             constructor_arguments,
-                            get_constructor_inputs(abi),
+                            get_constructor_inputs(abi)?,
                         ));
                     } else {
-                        println!("{:?}", result);
-                        return Err(Box::new(EtherscanResponseError(
-                            "ContractName not found in the response".to_string(),
-                        )));
+                        return Err(format!(
+                            "Explorer Error: ContractName not found in the response from the explorer api.",
+                        )
+                        .into());
                     }
                 }
                 Err(e) => {
@@ -113,10 +113,12 @@ impl ExplorerApiLib {
                 }
             }
         }
-        return Err(Box::new(UnsupportedExplorerError(
+        return Err(format!(
+            "Unsupported explorer: {} ({})",
             self.name.to_string(),
             self.url.to_string(),
-        )));
+        )
+        .into());
     }
 
     pub async fn get_creation_transaction_hash(
@@ -136,10 +138,12 @@ impl ExplorerApiLib {
                 .to_string();
             return Ok(tx_hash);
         }
-        return Err(Box::new(UnsupportedExplorerError(
+        return Err(format!(
+            "Unsupported explorer: {} ({})",
             self.name.to_string(),
             self.url.to_string(),
-        )));
+        )
+        .into());
     }
 }
 
@@ -158,17 +162,18 @@ async fn get_etherscan_result(url: &str) -> Result<serde_json::Value, Box<dyn st
                 "Invalid response from etherscan: {:?}",
                 json_response
             ));
-            return Err(Box::new(EtherscanResponseError(
-                "Invalid response from etherscan".to_string(),
-            )));
+            return Err("Invalid response from etherscan".into());
         }
         Err(e) => {
-            return Err(Box::new(EtherscanRequestError(Box::new(e))));
+            return Err(format!("Explorer Request Error: {}", e).into());
         }
     }
 }
 
-fn get_constructor_inputs(abi: &str) -> Option<Constructor> {
-    let parsed_abi: JsonAbi = serde_json::from_str(abi).unwrap();
-    return parsed_abi.constructor;
+fn get_constructor_inputs(abi: &str) -> Result<Option<Constructor>, Box<dyn std::error::Error>> {
+    if abi == "Contract source code not verified" {
+        return Err("Contract source code not verified".into());
+    }
+    let parsed_abi: JsonAbi = serde_json::from_str(abi)?;
+    return Ok(parsed_abi.constructor);
 }
