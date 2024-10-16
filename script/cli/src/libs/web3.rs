@@ -72,13 +72,15 @@ impl Web3Lib {
     ) -> Result<FixedBytes<32>, Box<dyn std::error::Error>> {
         let step = 1000;
         let mut i = 0;
+        // TODO: on optimism the first pool was created 4 million blocks after the deployment of the factory
+        // probably get allPairs(0) and use it to get the init code hash, but for v3 the issue kinda persists. We need to hope that v3 pools are created quickly after v3 factory deployment
         loop {
             let filter: Filter = Filter::new()
                 .address(v2_factory)
                 .event("PairCreated(address,address,address,uint256)")
                 .from_block(from_block + i * step)
                 .to_block(from_block + (i + 1) * step);
-            let logs = self.provider.get_logs(&filter).await.unwrap();
+            let logs = self.provider.get_logs(&filter).await?;
             if !logs.is_empty() {
                 let creation_tx_hash = logs[0].transaction_hash.unwrap();
                 let pool_address = Address::from_slice(&logs[0].data().data[12..32]);
@@ -103,7 +105,7 @@ impl Web3Lib {
                 .event("PoolCreated(address,address,uint24,int24,address)")
                 .from_block(from_block + i * step)
                 .to_block(from_block + (i + 1) * step);
-            let logs = self.provider.get_logs(&filter).await.unwrap();
+            let logs = self.provider.get_logs(&filter).await?;
             if !logs.is_empty() {
                 let creation_tx_hash = logs[0].transaction_hash.unwrap();
                 let pool_address =
