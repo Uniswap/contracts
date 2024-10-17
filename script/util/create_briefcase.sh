@@ -59,4 +59,9 @@ python3 script/util/insert_initcode.py "src/briefcase/deployers" "out"
 echo "Processing source files for briefcase"
 python3 script/util/process_briefcase_files.py "$tmp_dir"
 
+echo "Copying files from temporary directory to briefcase"
 rsync -ah "$tmp_dir/" "$dir/" --delete
+rm -rf "$tmp_dir"
+forge fmt "src/briefcase"
+# NFT Descriptor is causing compile errors
+rm src/briefcase/protocols/v3-periphery/libraries/NFTDescriptor.sol
