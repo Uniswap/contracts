@@ -40,3 +40,9 @@
 [submodule "lib/forge-chronicles"]
 	path = lib/forge-chronicles
 	url = https://github.com/gretzke/forge-chronicles
+[submodule "src/pkgs/view-quoter-v3"]
+	path = src/pkgs/view-quoter-v3
+	url = https://github.com/Uniswap/view-quoter-v3.git
+[submodule "src/pkgs/util-contracts"]
+	path = src/pkgs/util-contracts
+	url = https://github.com/Uniswap/util-contracts.git
