@@ -63,5 +63,3 @@ echo "Copying files from temporary directory to briefcase"
 rsync -ah "$tmp_dir/" "$dir/" --delete
 rm -rf "$tmp_dir"
 forge fmt "src/briefcase"
-# NFT Descriptor is causing compile errors
-rm src/briefcase/protocols/v3-periphery/libraries/NFTDescriptor.sol

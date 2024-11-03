@@ -1,6 +1,5 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+// SPDX-License-Identifier: MIT
 pragma solidity <0.8.0 =0.7.6 >=0.4.0 >=0.5.0 >=0.6.0 >=0.7.0 >=0.7.6 ^0.7.0;
-pragma abicoder v2;
 
 import {Strings} from '../../lib-external/oz-v3.4-solc-0.7/contracts/utils/Strings.sol';
 

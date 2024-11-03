@@ -3,61 +3,46 @@ import re
 import sys
 
 
-def parse_code_file(file_path):
+def parse_flattened_file(file_path):
     with open(file_path, 'r') as file:
         lines = file.readlines()
 
-    license = None
-    main_pragma_version = ""
-    main_pragma_rest = ""
+    main_pragma_version = None
 
     for line in lines:
-        if line.startswith("// SPDX-License-Identifier:"):
-            license = line.strip()
-            continue
-
         # First specified Solidity Version is used for all blocks by default
         if line.startswith("pragma solidity"):
             if not main_pragma_version:
                 main_pragma_version = line.strip()
-            continue
-
-        # Add other pragma lines (like abicoder) to pragma statement
-        if line.startswith("pragma"):
-            if not main_pragma_rest:
-                main_pragma_rest = line.strip()
-            continue
-
-    main_pragma = main_pragma_version + "\n" + main_pragma_rest
+                break
 
     code_blocks = []
-    current_block = {'source': None, 'content': '',
-                     'license': license, 'pragma': main_pragma}
+    current_block = {'source': None, 'content': '', 'pragma': main_pragma_version}
 
     for line in lines:
         # Some files are not flattened correctly and still have (unnecessary) import statements, ignore those
         if line.startswith("import {") or line.startswith("import \"") or line.startswith("import '"):
             continue
 
+        # License is taken from source file, so can be ignored
         if line.startswith("// SPDX-License-Identifier:"):
-            current_block["license"] = line.strip()
             continue
+
 
         # Block has a specified solidity version
         if line.startswith("pragma solidity"):
             current_block["pragma"] = line.strip()
             continue
 
-        # Block has other soldity pragma lines (like abicoder)
+        # Additional pragma lines are also taken from source file, so can be ignored
         if line.startswith("pragma"):
-            current_block["pragma"] += "\n" + line.strip()
             continue
 
         if line.startswith("// src/") or line.startswith("// lib/"):
             if current_block["source"]:
                 code_blocks.append(current_block)
                 current_block = {
-                    'source': line.strip(), 'content': '', 'pragma': main_pragma, 'license': license}
+                    'source': line.strip(), 'content': '', 'pragma': main_pragma_version}
             else:
                 current_block['source'] = line.strip()
 
@@ -68,6 +53,23 @@ def parse_code_file(file_path):
     code_blocks.append(current_block)
 
     return code_blocks
+
+
+def get_additional_pragma_and_license_from_source_file(source_file):
+    additional_pragma_pattern = re.compile(r"^\s*pragma\s+(?!solidity)[^;]+;")
+    license_pattern = re.compile(r"^\s*//\s*SPDX-License-Identifier:\s*([^\s]+)")
+
+    additional_pragma_lines = []
+    license = None
+
+    with open(source_file, 'r') as file:
+        for line in file:
+            if license_pattern.match(line):
+                license = line.strip()
+            if additional_pragma_pattern.match(line):
+                additional_pragma_lines.append(line.strip())
+
+    return additional_pragma_lines, license
 
 
 def get_imported_elements_from_source_file(source_file):
@@ -181,31 +183,29 @@ def create_import_statement(element_names, relative_path):
     return f'import {{{", ".join(element_names)}}} from "{relative_path}";\n'
 
 
-def process_file(source_file, root_directory):
-    code_blocks = parse_code_file(source_file)
+def process_file(flattened_file, root_directory):
+    code_blocks = parse_flattened_file(flattened_file)
+    pragma = {}
+    license = {}
     classes = {}
     functions = {}
     imports = {}
     blocks = {}
 
     for block in code_blocks:
-        pragma = block['pragma']
-        license = block['license']
-
         if block['source']:
-            source_path = block['source'].replace("// ", "")
+            source_file = block['source'].replace("// ", "")
         else:
             break
 
         interface_match = re.match(
-            r'src/pkgs/(.*)/(src|contracts)/(interface|interfaces)/(.*)', source_path)
+            r'src/pkgs/(.*)/(src|contracts)/(interface|interfaces)/(.*)', source_file)
         lib_types_match = re.match(
-            r'src/pkgs/(.*)/(src|contracts)/(libraries|types)/(.*)', source_path)
+            r'src/pkgs/(.*)/(src|contracts)/(libraries|types)/(.*)', source_file)
+        external_lib_match = re.match(r'(.*?)lib/(.*)', source_file)
         other_match = re.match(
-            r'src/pkgs/(.*)/(src|contracts)/(.*)', source_path)
-        external_lib_match = re.match(r'(.*?)lib/(.*)', source_path)
-        other_match = re.match(
-            r'src/pkgs/(.*)/(src|contracts)/(.*)', source_path)
+            r'src/pkgs/(.*)/(src|contracts)/(.*)', source_file)
+        
         if interface_match:
             package_name = interface_match.group(1)
             subdir = "interfaces"
@@ -232,20 +232,24 @@ def process_file(source_file, root_directory):
 
         class_names, function_names = parse_content_for_classes_and_functions(
             content)
-        imported_classes = get_imported_elements_from_source_file(source_path)
+        imported_classes = get_imported_elements_from_source_file(source_file)
+        additional_pragma_from_source, license_from_source = get_additional_pragma_and_license_from_source_file(source_file)
 
         classes[dest_path] = class_names
         functions[dest_path] = function_names
         imports[dest_path] = imported_classes
+        license[dest_path] = license_from_source
+        pragma[dest_path] = block['pragma'] + '\n' + '\n'.join(additional_pragma_from_source)
         # if the current file isn't the recognized source file, it will be/has been processed separately (guaranteed)
-        if interface_match and dest_path != source_file:
+        if interface_match and dest_path != flattened_file:
             continue
 
         blocks[dest_path] = content
 
     for dest_path, block in blocks.items():
-        write_file(dest_path, license, pragma, classes,
-                   functions, imports[dest_path], block)
+        write_file(dest_path, license[dest_path], pragma[dest_path], classes,
+                functions, imports[dest_path], block)
+
 
 
 def process_all_files_in_directory(directory):

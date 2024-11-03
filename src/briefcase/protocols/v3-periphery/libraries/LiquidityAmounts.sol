@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity >=0.6.8 <0.8.0;
+pragma solidity >=0.5.0;
 
 import {FixedPoint96} from '../../v3-core/libraries/FixedPoint96.sol';
 import {FullMath} from '../../v3-core/libraries/FullMath.sol';
