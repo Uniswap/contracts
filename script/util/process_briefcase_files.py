@@ -55,8 +55,11 @@ def parse_flattened_file(file_path):
     return code_blocks
 
 
-def get_additional_pragma_and_license_from_source_file(source_file):
-    additional_pragma_pattern = re.compile(r"^\s*pragma\s+(?!solidity)[^;]+;")
+def get_pragma_and_license_from_source_file(source_file, parse_pragma_versions=False):
+    if parse_pragma_versions:
+        pragma_pattern = re.compile(r"^\s*pragma\s+[^;]+;")
+    else:
+        pragma_pattern = re.compile(r"^\s*pragma\s+(?!solidity)[^;]+;")
     license_pattern = re.compile(r"^\s*//\s*SPDX-License-Identifier:\s*([^\s]+)")
 
     additional_pragma_lines = []
@@ -66,7 +69,7 @@ def get_additional_pragma_and_license_from_source_file(source_file):
         for line in file:
             if license_pattern.match(line):
                 license = line.strip()
-            if additional_pragma_pattern.match(line):
+            if pragma_pattern.match(line):
                 additional_pragma_lines.append(line.strip())
 
     return additional_pragma_lines, license
@@ -192,6 +195,9 @@ def process_file(flattened_file, root_directory):
     imports = {}
     blocks = {}
 
+    flattened_file_match = re.match(
+        r'(.*)/(interface|interfaces|types)/(.*)', flattened_file)
+
     for block in code_blocks:
         if block['source']:
             source_file = block['source'].replace("// ", "")
@@ -233,13 +239,20 @@ def process_file(flattened_file, root_directory):
         class_names, function_names = parse_content_for_classes_and_functions(
             content)
         imported_classes = get_imported_elements_from_source_file(source_file)
-        additional_pragma_from_source, license_from_source = get_additional_pragma_and_license_from_source_file(source_file)
+
+        if flattened_file_match:
+            additional_pragma_from_source, license[dest_path] = get_pragma_and_license_from_source_file(
+                source_file, parse_pragma_versions=False)
+            pragma[dest_path] = block['pragma'] + '\n' + \
+                '\n'.join(additional_pragma_from_source)
+        else:
+            complete_pragma_from_source, license[dest_path] = get_pragma_and_license_from_source_file(
+                source_file, parse_pragma_versions=True)
+            pragma[dest_path] = '\n'.join(complete_pragma_from_source)
 
         classes[dest_path] = class_names
         functions[dest_path] = function_names
         imports[dest_path] = imported_classes
-        license[dest_path] = license_from_source
-        pragma[dest_path] = block['pragma'] + '\n' + '\n'.join(additional_pragma_from_source)
         # if the current file isn't the recognized source file, it will be/has been processed separately (guaranteed)
         if interface_match and dest_path != flattened_file:
             continue
