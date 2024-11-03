@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity ^0.8.0;
+// SPDX-License-Identifier: GPL-2.0-or-later
+pragma solidity ^0.8.24;
 
 import {PoolKey} from '../../v4-core/types/PoolKey.sol';
 

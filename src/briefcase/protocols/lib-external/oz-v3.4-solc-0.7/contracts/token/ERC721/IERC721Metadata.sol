@@ -1,6 +1,5 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
-pragma abicoder v2;
 
 import {IERC721} from './IERC721.sol';
 

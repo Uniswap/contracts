@@ -1,4 +1,5 @@
-pragma solidity >=0.5.0;
+// SPDX-License-Identifier: GPL-3.0-or-later
+pragma solidity >=0.4.0;
 
 import {Babylonian} from './Babylonian.sol';
 import {BitMath} from './BitMath.sol';
