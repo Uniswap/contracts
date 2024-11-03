@@ -14,3 +14,7 @@ src/pkgs/universal-router:solmate=src/pkgs/universal-router/lib/solmate
 src/pkgs/universal-router:@openzeppelin/contracts=lib/oz-v4.7.0/contracts
 src/pkgs/uniswapx:solmate=src/pkgs/uniswapx/lib/solmate
 src/pkgs/uniswapx:openzeppelin-contracts=src/pkgs/uniswapx/lib/openzeppelin-contracts/contracts
+src/pkgs/util-contracts:v2-core=src/pkgs/v2-core/contracts
+src/pkgs/util-contracts:solmate=src/pkgs/util-contracts/lib/solmate/src
+src/pkgs/view-quoter-v3:v3-core=src/pkgs/v3-core
+src/pkgs/view-quoter-v3:v3-periphery=src/pkgs/v3-periphery
