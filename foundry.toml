@@ -54,6 +54,7 @@ compilation_restrictions = [
   { paths = "src/pkgs/universal-router/contracts/**", via_ir = true },
   # Briefcase
   { paths = "src/briefcase/protocols/v2-periphery/libraries/UniswapV2Library.sol", version = "<0.8.0" },
+  { paths = "src/briefcase/protocols/v3-core/libraries/TickBitmap.sol", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/v3-periphery/libraries/**", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/lib-external/solidity-lib/**", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/v4-core/libraries/**", min_evm_version = "cancun" },

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.0;
 
+import {Math} from '../../lib-external/v4-core/lib/openzeppelin-contracts/contracts/utils/math/Math.sol';
+import {BitMath} from './BitMath.sol';
 import {CustomRevert} from './CustomRevert.sol';
 
 /// @title Math library for computing sqrt prices from ticks and vice versa
@@ -15,8 +17,10 @@ library TickMath {
     error InvalidSqrtPrice(uint160 sqrtPriceX96);
 
     /// @dev The minimum tick that may be passed to #getSqrtPriceAtTick computed from log base 1.0001 of 2**-128
+    /// @dev If ever MIN_TICK and MAX_TICK are not centered around 0, the absTick logic in getSqrtPriceAtTick cannot be used
     int24 internal constant MIN_TICK = -887_272;
     /// @dev The maximum tick that may be passed to #getSqrtPriceAtTick computed from log base 1.0001 of 2**128
+    /// @dev If ever MIN_TICK and MAX_TICK are not centered around 0, the absTick logic in getSqrtPriceAtTick cannot be used
     int24 internal constant MAX_TICK = 887_272;
 
     /// @dev The minimum tick spacing value drawn from the range of type int16 that is greater than 0, i.e. min from the range [1, 32767]
@@ -66,6 +70,9 @@ library TickMath {
 
             if (absTick > uint256(int256(MAX_TICK))) InvalidTick.selector.revertWith(tick);
 
+            // The tick is decomposed into bits, and for each bit with index i that is set, the product of 1/sqrt(1.0001^(2^i))
+            // is calculated (using Q128.128). The constants used for this calculation are rounded to the nearest integer
+
             // Equivalent to:
             //     price = absTick & 0x1 != 0 ? 0xfffcb933bd6fad37aa2d162d1a594001 : 0x100000000000000000000000000000000;
             //     or price = int(2**128 / sqrt(1.0001)) if (absTick & 0x1) else 1 << 128
@@ -107,11 +114,11 @@ library TickMath {
         }
     }
 
-    /// @notice Calculates the greatest tick value such that getPriceAtTick(tick) <= price
-    /// @dev Throws in case sqrtPriceX96 < MIN_SQRT_PRICE, as MIN_SQRT_PRICE is the lowest value getPriceAtTick may
+    /// @notice Calculates the greatest tick value such that getSqrtPriceAtTick(tick) <= sqrtPriceX96
+    /// @dev Throws in case sqrtPriceX96 < MIN_SQRT_PRICE, as MIN_SQRT_PRICE is the lowest value getSqrtPriceAtTick may
     /// ever return.
     /// @param sqrtPriceX96 The sqrt price for which to compute the tick as a Q64.96
-    /// @return tick The greatest tick for which the price is less than or equal to the input price
+    /// @return tick The greatest tick for which the getSqrtPriceAtTick(tick) is less than or equal to the input sqrtPriceX96
     function getTickAtSqrtPrice(uint160 sqrtPriceX96) internal pure returns (int24 tick) {
         unchecked {
             // Equivalent: if (sqrtPriceX96 < MIN_SQRT_PRICE || sqrtPriceX96 >= MAX_SQRT_PRICE) revert InvalidSqrtPrice();
@@ -125,47 +132,7 @@ library TickMath {
             uint256 price = uint256(sqrtPriceX96) << 32;
 
             uint256 r = price;
-            uint256 msb = 0;
-
-            assembly ("memory-safe") {
-                let f := shl(7, gt(r, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF))
-                msb := or(msb, f)
-                r := shr(f, r)
-            }
-            assembly ("memory-safe") {
-                let f := shl(6, gt(r, 0xFFFFFFFFFFFFFFFF))
-                msb := or(msb, f)
-                r := shr(f, r)
-            }
-            assembly ("memory-safe") {
-                let f := shl(5, gt(r, 0xFFFFFFFF))
-                msb := or(msb, f)
-                r := shr(f, r)
-            }
-            assembly ("memory-safe") {
-                let f := shl(4, gt(r, 0xFFFF))
-                msb := or(msb, f)
-                r := shr(f, r)
-            }
-            assembly ("memory-safe") {
-                let f := shl(3, gt(r, 0xFF))
-                msb := or(msb, f)
-                r := shr(f, r)
-            }
-            assembly ("memory-safe") {
-                let f := shl(2, gt(r, 0xF))
-                msb := or(msb, f)
-                r := shr(f, r)
-            }
-            assembly ("memory-safe") {
-                let f := shl(1, gt(r, 0x3))
-                msb := or(msb, f)
-                r := shr(f, r)
-            }
-            assembly ("memory-safe") {
-                let f := gt(r, 0x1)
-                msb := or(msb, f)
-            }
+            uint256 msb = BitMath.mostSignificantBit(r);
 
             if (msb >= 128) r = price >> (msb - 127);
             else r = price << (127 - msb);
@@ -256,9 +223,14 @@ library TickMath {
                 log_2 := or(log_2, shl(50, f))
             }
 
-            int256 log_sqrt10001 = log_2 * 255_738_958_999_603_826_347_141; // 128.128 number
+            int256 log_sqrt10001 = log_2 * 255_738_958_999_603_826_347_141; // Q22.128 number
 
+            // Magic number represents the ceiling of the maximum value of the error when approximating log_sqrt10001(x)
             int24 tickLow = int24((log_sqrt10001 - 3_402_992_956_809_132_418_596_140_100_660_247_210) >> 128);
+
+            // Magic number represents the minimum value of the error when approximating log_sqrt10001(x), when
+            // sqrtPrice is from the range (2^-64, 2^64). This is safe as MIN_SQRT_PRICE is more than 2^-64. If MIN_SQRT_PRICE
+            // is changed, this may need to be changed too
             int24 tickHi = int24((log_sqrt10001 + 291_339_464_771_989_622_907_027_621_153_398_088_495) >> 128);
 
             tick = tickLow == tickHi ? tickLow : getSqrtPriceAtTick(tickHi) <= sqrtPriceX96 ? tickHi : tickLow;
