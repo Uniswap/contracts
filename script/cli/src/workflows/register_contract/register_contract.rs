@@ -4,7 +4,7 @@ use crate::screens::register_contract::get_contract_info::GetContractInfoScreen;
 use crate::screens::shared::block_explorer::BlockExplorerScreen;
 use crate::screens::shared::chain_id::ChainIdScreen;
 use crate::screens::shared::enter_explorer_api_key::EnterExplorerApiKeyScreen;
-use crate::screens::shared::rpc_url::RpcUrlScreen;
+use crate::screens::shared::rpc_url::get_rpc_url_screen;
 use crate::screens::shared::test_connection::TestConnectionScreen;
 use crate::state_manager::STATE_MANAGER;
 use crate::workflows::error_workflow::ErrorWorkflow;
@@ -39,9 +39,13 @@ impl Workflow for RegisterContractWorkflow {
     }
 
     fn previous_screen(&mut self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
+        if self.child_workflows.len() > 0 {
+            return self.child_workflows[0].previous_screen();
+        }
         if self.current_screen > 1 {
             self.current_screen -= 1;
         }
+        // if current screen is the test connection screen, go back to the rpc url screen
         if self.current_screen == 3 {
             self.current_screen = 2;
         }
@@ -70,7 +74,7 @@ impl RegisterContractWorkflow {
     fn get_screen(&self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match self.current_screen {
             1 => return Ok(WorkflowResult::NextScreen(Box::new(ChainIdScreen::new()))),
-            2 => return Ok(WorkflowResult::NextScreen(Box::new(RpcUrlScreen::new()))),
+            2 => return get_rpc_url_screen(),
             3 => {
                 return Ok(WorkflowResult::NextScreen(Box::new(
                     TestConnectionScreen::new()?,

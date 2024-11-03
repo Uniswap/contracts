@@ -1,6 +1,7 @@
 use crate::libs::web3::Web3Lib;
 use crate::util::chain_config::{parse_chain_config, Chain, Explorer};
-use crate::util::register_contract::RegisterContractData;
+use crate::util::deployment_log::RegisterContractData;
+use serde_json::Value;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Mutex;
@@ -13,6 +14,7 @@ pub struct WorkflowState {
     pub explorer_api_key: Option<String>,
     pub block_explorer: Option<Explorer>,
     pub register_contract_data: RegisterContractData,
+    pub task: Value,
     // pub deployment_history: HashMap<String, String>,
 }
 
@@ -25,6 +27,7 @@ impl WorkflowState {
             // deployment_history: HashMap::new(),
             block_explorer: None,
             register_contract_data: RegisterContractData { address: None },
+            task: serde_json::json!({}),
         }
     }
 
@@ -34,17 +37,17 @@ impl WorkflowState {
 }
 
 pub struct StateManager {
-    pub workflow_state: Mutex<WorkflowState>,
     pub chains: HashMap<String, Chain>,
     pub working_directory: PathBuf,
+    pub workflow_state: Mutex<WorkflowState>,
 }
 
 impl StateManager {
     pub fn new() -> Self {
         StateManager {
-            workflow_state: Mutex::new(WorkflowState::new()),
             chains: parse_chain_config(),
             working_directory: check_for_foundry_toml(),
+            workflow_state: Mutex::new(WorkflowState::new()),
         }
     }
 

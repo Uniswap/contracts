@@ -7,8 +7,12 @@ use alloy::{
     json_abi::Param,
     primitives::{Address, FixedBytes},
 };
-use serde_json::json;
+use serde_json::{json, Value};
 use std::path::PathBuf;
+
+pub struct RegisterContractData {
+    pub address: Option<String>,
+}
 
 pub async fn generate_deployment_log(
     contract_address: Address,
@@ -23,9 +27,8 @@ pub async fn generate_deployment_log(
         .join("json")
         .join(format!("{}.json", chain_id));
     let mut deployments_json = if deployments_file.exists() {
-        let contents = std::fs::read_to_string(&deployments_file)
-            .expect("Could not read deployments json file");
-        serde_json::from_str(&contents).expect("Deployments JSON was not well-formatted")
+        let contents = std::fs::read_to_string(&deployments_file)?;
+        serde_json::from_str(&contents)?
     } else {
         serde_json::json!({
             "chainId": chain_id,
@@ -147,7 +150,7 @@ pub async fn generate_deployment_log(
 }
 
 fn detect_duplicate(
-    deployments_history: Vec<serde_json::Value>,
+    deployments_history: Vec<Value>,
     address: String,
 ) -> Result<(), Box<dyn std::error::Error>> {
     // TODO: add proxy support
@@ -165,8 +168,8 @@ fn detect_duplicate(
 }
 
 fn post_process_deployments_json(
-    mut deployments_json: serde_json::Value,
-) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+    mut deployments_json: Value,
+) -> Result<Value, Box<dyn std::error::Error>> {
     // sort history by timestamp
     let mut history = deployments_json["history"].as_array().unwrap().clone();
     history.sort_by_key(|k| k["timestamp"].as_u64().unwrap());
@@ -193,7 +196,7 @@ fn post_process_deployments_json(
             }
         }
     }
-    deployments_json["history"] = serde_json::Value::Array(history);
+    deployments_json["history"] = Value::Array(history);
     deployments_json["latest"] = latest;
     Ok(deployments_json)
 }
@@ -201,7 +204,7 @@ fn post_process_deployments_json(
 fn extract_constructor_inputs(
     constructor_params: Vec<Param>,
     args: Vec<DynSolValue>,
-) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+) -> Result<Value, Box<dyn std::error::Error>> {
     let mut result = json!({});
     // constuctor inputs and arguments should always have the same length because the abi encoded constructor args were decoded using the constructor inputs and validated
     for i in 0..constructor_params.len() {
@@ -212,10 +215,7 @@ fn extract_constructor_inputs(
     Ok(result)
 }
 
-fn serialize_value(
-    param: Param,
-    value: DynSolValue,
-) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+fn serialize_value(param: Param, value: DynSolValue) -> Result<Value, Box<dyn std::error::Error>> {
     return match value {
         DynSolValue::Address(a) => Ok(a.to_string().into()),
         DynSolValue::Bool(b) => Ok(b.to_string().into()),

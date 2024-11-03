@@ -1,50 +1,107 @@
 {
-    "v2": {
-        "deploy": true,
-        "UniswapV2Factory": {
-            "deploy": true,
-            "address": "0x0000000000000000000000000000000000000000",
-            "params": {
-                "feeToSetter": "0x0000000000000000000000000000000000000000"
+    "protocols": {
+        "permit2": {
+            "name": "Permit 2",
+            "deploy": false,
+            "contracts": {
+                "permit2": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "salt": {
+                            "type": "bytes32",
+                            "value": "0x0000000000000000000000000000000000000000d3af2663da51c10215000000"
+                        }
+                    }
+                }
             }
         },
-        "UniswapV2Router02": {
-            "deploy": true,
-            "params": {
-                "factory": "0x0000000000000000000000000000000000000000"
+        "v2": {
+            "name": "Uniswap v2",
+            "deploy": false,
+            "contracts": {
+                "UniswapV2Factory": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "feeToSetter": {
+                            "type": "address"
+                        }
+                    },
+                    "lookup": {
+                        "latest": "UniswapV2Factory"
+                    }
+                },
+                "UniswapV2Router02": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "factory": {
+                            "name": "Uniswap v2 factory address",
+                            "pointer": "protocols.v2.contracts.UniswapV2Factory"
+                        }
+                    },
+                    "dependencies": ["weth"]
+                }
             }
-        }
-    },
-    "v3": {
-        "deploy": true,
-        "UniswapV3Factory": {
-            "deploy": true
         },
-        "NonfungiblePositonManager": {
-            "deploy": true,
-            "params": {
-                "factory": "0x0000000000000000000000000000000000000000",
-                "tokenDescriptor": "0x0000000000000000000000000000000000000000"
+        "v3": {
+            "name": "Uniswap v3",
+            "deploy": false,
+            "contracts": {
+                "UniswapV3Factory": {
+                    "deploy": false,
+                    "address": null,
+                    "lookup": {
+                        "latest": "UniswapV3Factory"
+                    }
+                },
+                "NonfungiblePositonManager": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "factory": {
+                            "name": "Uniswap v3 factory address",
+                            "pointer": "protocols.v3.contracts.UniswapV3Factory"
+                        },
+                        "tokenDescriptor": {
+                            "type": "address"
+                        }
+                    },
+                    "dependencies": ["weth"]
+                },
+                "SwapRouter": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "factory": {
+                            "name": "Uniswap v3 factory address",
+                            "pointer": "protocols.v3.contracts.UniswapV3Factory"
+                        }
+                    },
+                    "dependencies": ["weth"]
+                }
             }
         },
-        "SwapRouter": {
-            "deploy": true,
-            "params": {
-                "factory": "0x0000000000000000000000000000000000000000"
+        "utils": {
+            "name": "Utils",
+            "deploy": false
+        }
+    },
+    "dependencies": {
+        "weth": {
+            "type": "address",
+            "lookup": {
+                "history": [
+                    "UniversalRouter.input.constructor.params.weth9",
+                    "QuoterV2.input.constructor._WETH9",
+                    "V3Migrator.input.constructor._WETH9",
+                    "NonfungiblePositonManager.input.constructor._WETH9",
+                    "NonFungibleTokenPositionDescriptor.input.constructor._WETH9",
+                    "SwapRouter.input.constructor._WETH9",
+                    "Quoter.input.constructor._WETH9"
+                ]
             }
         }
-    },
-    "permit2": {
-        "deploy": true,
-        "params": {
-            "salt": "0x0000000000000000000000000000000000000000d3af2663da51c10215000000"
-        }
-    },
-    "utils": {
-        "deploy": false
-    },
-    "external_dependencies": {
-        "weth": "0x0000000000000000000000000000000000000000",
-        "weth9": "0x0000000000000000000000000000000000000000"
     }
 }

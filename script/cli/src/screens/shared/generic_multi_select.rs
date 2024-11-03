@@ -3,24 +3,27 @@ use crate::screens::types::multiple_choice::MultipleChoiceComponent;
 use crate::ui::Buffer;
 use crossterm::event::Event;
 
-pub struct ProtocolSelectionScreen {
+pub struct GenericMultiSelectScreen {
     multiple_choice_screen: MultipleChoiceComponent,
+    title: String,
+    hook: Box<dyn Fn(Vec<usize>) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>,
 }
 
-impl ProtocolSelectionScreen {
-    pub fn new() -> Self {
-        let options = vec![
-            "Uniswap v2".to_string(),
-            "Uniswap v3".to_string(),
-            "Permit 2".to_string(),
-        ];
-        ProtocolSelectionScreen {
+impl GenericMultiSelectScreen {
+    pub fn new(
+        options: Vec<String>,
+        title: String,
+        hook: Box<dyn Fn(Vec<usize>) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>,
+    ) -> Self {
+        GenericMultiSelectScreen {
             multiple_choice_screen: MultipleChoiceComponent::new(options),
+            title,
+            hook,
         }
     }
 
     fn render_title(&self, buffer: &mut Buffer) {
-        buffer.append_row_text("Which protocols do you want to deploy?\n");
+        buffer.append_row_text(&format!("{}\n", self.title));
     }
 
     fn render_instructions(&self, buffer: &mut Buffer) {
@@ -29,7 +32,7 @@ impl ProtocolSelectionScreen {
     }
 }
 
-impl Screen for ProtocolSelectionScreen {
+impl Screen for GenericMultiSelectScreen {
     fn render_content(&self, buffer: &mut Buffer) -> Result<(), Box<dyn std::error::Error>> {
         self.render_title(buffer);
         self.multiple_choice_screen.render(buffer);
@@ -39,8 +42,8 @@ impl Screen for ProtocolSelectionScreen {
 
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let result = self.multiple_choice_screen.handle_input(event);
-        if result.is_some() && !result.unwrap().is_empty() {
-            return Ok(ScreenResult::NextScreen(None));
+        if result.is_some() && !result.clone().unwrap().is_empty() {
+            return (self.hook)(result.unwrap());
         }
         Ok(ScreenResult::Continue)
     }
