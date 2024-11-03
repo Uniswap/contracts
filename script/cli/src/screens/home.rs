@@ -55,7 +55,7 @@ impl Screen for HomeScreen {
         if index.is_some() {
             return match index.unwrap() {
                 0 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
-                    CreateConfigWorkflow::new(),
+                    CreateConfigWorkflow::new()?,
                 )]))),
                 3 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
                     RegisterContractWorkflow::new(),

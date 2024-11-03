@@ -82,9 +82,14 @@ impl EnterEnvVarComponent {
     pub fn handle_input(&mut self, event: Event) -> Option<String> {
         if self.current_step == Step::EnterEnvVar {
             let env_var = self.env_var_input.handle_input(event.clone());
-            if env_var != None && !env_var.clone().unwrap().is_empty() {
-                self.env_var = env_var.unwrap();
-                self.current_step = Step::SaveEnvVar;
+            if env_var != None {
+                if env_var.clone().unwrap().is_empty() {
+                    self.env_var = "".to_string();
+                    self.current_step = Step::Finished;
+                } else {
+                    self.env_var = env_var.unwrap();
+                    self.current_step = Step::SaveEnvVar;
+                }
             }
         } else if self.current_step == Step::SaveEnvVar {
             let index = self.env_save.handle_input(event.clone());

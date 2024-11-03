@@ -90,26 +90,26 @@ contract Deploy is Script {
         // Params
         address v3Factory;
         address tokenDescriptor;
-        address weth9;
+        address weth;
         if (deployUniswapV3Factory) {
             v3Factory = address(UniswapV3FactoryDeployer.deploy());
         }
 
         if (deployNonfungiblePositonManager) {
-            weth9 = config.readAddress('.external_dependencies.weth9');
+            weth = config.readAddress('.external_dependencies.weth');
             tokenDescriptor = config.readAddress('.v3.NonfungiblePositonManager.params.tokenDescriptor');
             if (!deployUniswapV3Factory) {
                 v3Factory = config.readAddress('.v3.NonfungiblePositonManager.params.factory');
             }
-            NonfungiblePositionManagerDeployer.deploy(v3Factory, weth9, tokenDescriptor);
+            NonfungiblePositionManagerDeployer.deploy(v3Factory, weth, tokenDescriptor);
         }
 
         if (deploySwapRouter) {
-            weth9 = config.readAddress('.external_dependencies.weth9');
+            weth = config.readAddress('.external_dependencies.weth');
             if (!deployUniswapV3Factory) {
                 v3Factory = config.readAddress('.v3.SwapRouter.params.factory');
             }
-            SwapRouterDeployer.deploy(v3Factory, weth9);
+            SwapRouterDeployer.deploy(v3Factory, weth);
         }
     }
 

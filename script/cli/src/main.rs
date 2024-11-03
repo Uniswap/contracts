@@ -9,7 +9,7 @@ mod util;
 mod workflows;
 
 use crossterm::{
-    cursor::{Hide, MoveTo, MoveToColumn, Show},
+    cursor::{Hide, MoveToColumn, Show},
     event::{poll, read, Event, KeyCode, KeyModifiers},
     execute,
     terminal::{
@@ -68,15 +68,9 @@ async fn main() -> Result<()> {
 fn clean_terminal() -> Result<()> {
     let mut stdout = stdout();
     if is_raw_mode_enabled().unwrap() {
-        let result = disable_raw_mode();
-        execute!(
-            stdout,
-            LeaveAlternateScreen,
-            Show,
-            Clear(ClearType::All),
-            MoveTo(0, 0),
-        )?;
         stdout.flush()?;
+        let result = disable_raw_mode();
+        execute!(stdout, LeaveAlternateScreen, Show,)?;
         result
     } else {
         Ok(())

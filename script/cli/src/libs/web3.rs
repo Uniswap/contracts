@@ -25,15 +25,6 @@ impl Web3Lib {
     }
 
     pub async fn get_chain_id(&mut self) -> Result<String, Box<dyn std::error::Error>> {
-        // let rpc_url = STATE_MANAGER.app_state.lock()?.rpc_url.clone();
-
-        // if rpc_url.is_none() {
-        //     return Err("RPC URL not set".into());
-        // }
-
-        // // Create a provider with the HTTP transport using the `reqwest` crate.
-        // let provider = ProviderBuilder::new().on_http(rpc_url.unwrap().parse()?);
-
         let chain_id = self.provider.get_chain_id().await?;
         Ok(chain_id.to_string())
     }
