@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-pragma solidity <0.8.0 >=0.4.0 >=0.5.0;
+pragma solidity >=0.5.0 <0.8.0;
 
 import {IUniswapV3Pool} from '../../v3-core/interfaces/IUniswapV3Pool.sol';
 import {FullMath} from '../../v3-core/libraries/FullMath.sol';

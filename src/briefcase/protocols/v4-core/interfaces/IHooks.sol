@@ -7,35 +7,29 @@ import {BeforeSwapDelta} from '../types/BeforeSwapDelta.sol';
 import {PoolKey} from '../types/PoolKey.sol';
 import {IPoolManager} from './IPoolManager.sol';
 
-/// @notice The PoolManager contract decides whether to invoke specific hooks by inspecting the leading bits
-/// of the hooks contract address. For example, a 1 bit in the first bit of the address will
-/// cause the 'before swap' hook to be invoked. See the Hooks library for the full spec.
+/// @notice V4 decides whether to invoke specific hooks by inspecting the least significant bits
+/// of the address that the hooks contract is deployed to.
+/// For example, a hooks contract deployed to address: 0x0000000000000000000000000000000000002400
+/// has the lowest bits '10 0100 0000 0000' which would cause the 'before initialize' and 'after add liquidity' hooks to be used.
+/// See the Hooks library for the full spec.
 /// @dev Should only be callable by the v4 PoolManager.
 interface IHooks {
     /// @notice The hook called before the state of a pool is initialized
     /// @param sender The initial msg.sender for the initialize call
     /// @param key The key for the pool being initialized
     /// @param sqrtPriceX96 The sqrt(price) of the pool as a Q64.96
-    /// @param hookData Arbitrary data handed into the PoolManager by the initializer to be be passed on to the hook
     /// @return bytes4 The function selector for the hook
-    function beforeInitialize(address sender, PoolKey calldata key, uint160 sqrtPriceX96, bytes calldata hookData)
-        external
-        returns (bytes4);
+    function beforeInitialize(address sender, PoolKey calldata key, uint160 sqrtPriceX96) external returns (bytes4);
 
     /// @notice The hook called after the state of a pool is initialized
     /// @param sender The initial msg.sender for the initialize call
     /// @param key The key for the pool being initialized
     /// @param sqrtPriceX96 The sqrt(price) of the pool as a Q64.96
     /// @param tick The current tick after the state of a pool is initialized
-    /// @param hookData Arbitrary data handed into the PoolManager by the initializer to be be passed on to the hook
     /// @return bytes4 The function selector for the hook
-    function afterInitialize(
-        address sender,
-        PoolKey calldata key,
-        uint160 sqrtPriceX96,
-        int24 tick,
-        bytes calldata hookData
-    ) external returns (bytes4);
+    function afterInitialize(address sender, PoolKey calldata key, uint160 sqrtPriceX96, int24 tick)
+        external
+        returns (bytes4);
 
     /// @notice The hook called before liquidity is added
     /// @param sender The initial msg.sender for the add liquidity call
@@ -54,7 +48,8 @@ interface IHooks {
     /// @param sender The initial msg.sender for the add liquidity call
     /// @param key The key for the pool
     /// @param params The parameters for adding liquidity
-    /// @param delta The caller's balance delta after adding liquidity
+    /// @param delta The caller's balance delta after adding liquidity; the sum of principal delta, fees accrued, and hook delta
+    /// @param feesAccrued The fees accrued since the last time fees were collected from this position
     /// @param hookData Arbitrary data handed into the PoolManager by the liquidity provider to be passed on to the hook
     /// @return bytes4 The function selector for the hook
     /// @return BalanceDelta The hook's delta in token0 and token1. Positive: the hook is owed/took currency, negative: the hook owes/sent currency
@@ -63,6 +58,7 @@ interface IHooks {
         PoolKey calldata key,
         IPoolManager.ModifyLiquidityParams calldata params,
         BalanceDelta delta,
+        BalanceDelta feesAccrued,
         bytes calldata hookData
     ) external returns (bytes4, BalanceDelta);
 
@@ -70,7 +66,7 @@ interface IHooks {
     /// @param sender The initial msg.sender for the remove liquidity call
     /// @param key The key for the pool
     /// @param params The parameters for removing liquidity
-    /// @param hookData Arbitrary data handed into the PoolManager by the liquidty provider to be be passed on to the hook
+    /// @param hookData Arbitrary data handed into the PoolManager by the liquidity provider to be be passed on to the hook
     /// @return bytes4 The function selector for the hook
     function beforeRemoveLiquidity(
         address sender,
@@ -83,8 +79,9 @@ interface IHooks {
     /// @param sender The initial msg.sender for the remove liquidity call
     /// @param key The key for the pool
     /// @param params The parameters for removing liquidity
-    /// @param delta The caller's balance delta after removing liquidity
-    /// @param hookData Arbitrary data handed into the PoolManager by the liquidty provider to be be passed on to the hook
+    /// @param delta The caller's balance delta after removing liquidity; the sum of principal delta, fees accrued, and hook delta
+    /// @param feesAccrued The fees accrued since the last time fees were collected from this position
+    /// @param hookData Arbitrary data handed into the PoolManager by the liquidity provider to be be passed on to the hook
     /// @return bytes4 The function selector for the hook
     /// @return BalanceDelta The hook's delta in token0 and token1. Positive: the hook is owed/took currency, negative: the hook owes/sent currency
     function afterRemoveLiquidity(
@@ -92,6 +89,7 @@ interface IHooks {
         PoolKey calldata key,
         IPoolManager.ModifyLiquidityParams calldata params,
         BalanceDelta delta,
+        BalanceDelta feesAccrued,
         bytes calldata hookData
     ) external returns (bytes4, BalanceDelta);
 

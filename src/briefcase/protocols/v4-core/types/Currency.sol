@@ -28,31 +28,29 @@ function greaterThanOrEqualTo(Currency currency, Currency other) pure returns (b
 /// @title CurrencyLibrary
 /// @dev This library allows for transferring and holding native tokens and ERC20 tokens
 library CurrencyLibrary {
-    using CustomRevert for bytes4;
+    /// @notice Additional context for ERC-7751 wrapped error when a native transfer fails
+    error NativeTransferFailed();
 
-    /// @notice Thrown when a native transfer fails
-    /// @param revertReason bubbled up revert reason
-    error NativeTransferFailed(bytes revertReason);
-
-    /// @notice Thrown when an ERC20 transfer fails
-    /// @param revertReason bubbled up revert reason
-    error ERC20TransferFailed(bytes revertReason);
+    /// @notice Additional context for ERC-7751 wrapped error when an ERC20 transfer fails
+    error ERC20TransferFailed();
 
     /// @notice A constant to represent the native currency
-    Currency public constant NATIVE = Currency.wrap(address(0));
+    Currency public constant ADDRESS_ZERO = Currency.wrap(address(0));
 
     function transfer(Currency currency, address to, uint256 amount) internal {
         // altered from https://github.com/transmissions11/solmate/blob/44a9963d4c78111f77caa0e65d677b8b46d6f2e6/src/utils/SafeTransferLib.sol
         // modified custom error selectors
 
         bool success;
-        if (currency.isNative()) {
+        if (currency.isAddressZero()) {
             assembly ("memory-safe") {
                 // Transfer the ETH and revert if it fails.
                 success := call(gas(), to, amount, 0, 0, 0, 0)
             }
             // revert with NativeTransferFailed, containing the bubbled up error as an argument
-            if (!success) NativeTransferFailed.selector.bubbleUpAndRevertWith();
+            if (!success) {
+                CustomRevert.bubbleUpAndRevertWith(to, bytes4(0), NativeTransferFailed.selector);
+            }
         } else {
             assembly ("memory-safe") {
                 // Get a pointer to some free memory.
@@ -81,12 +79,16 @@ library CurrencyLibrary {
                 mstore(add(fmp, 0x40), 0) // 4 bytes of `amount` were stored here
             }
             // revert with ERC20TransferFailed, containing the bubbled up error as an argument
-            if (!success) ERC20TransferFailed.selector.bubbleUpAndRevertWith();
+            if (!success) {
+                CustomRevert.bubbleUpAndRevertWith(
+                    Currency.unwrap(currency), IERC20Minimal.transfer.selector, ERC20TransferFailed.selector
+                );
+            }
         }
     }
 
     function balanceOfSelf(Currency currency) internal view returns (uint256) {
-        if (currency.isNative()) {
+        if (currency.isAddressZero()) {
             return address(this).balance;
         } else {
             return IERC20Minimal(Currency.unwrap(currency)).balanceOf(address(this));
@@ -94,19 +96,15 @@ library CurrencyLibrary {
     }
 
     function balanceOf(Currency currency, address owner) internal view returns (uint256) {
-        if (currency.isNative()) {
+        if (currency.isAddressZero()) {
             return owner.balance;
         } else {
             return IERC20Minimal(Currency.unwrap(currency)).balanceOf(owner);
         }
     }
 
-    function isNative(Currency currency) internal pure returns (bool) {
-        return Currency.unwrap(currency) == Currency.unwrap(NATIVE);
-    }
-
-    function isZero(Currency currency) internal pure returns (bool) {
-        return isNative(currency);
+    function isAddressZero(Currency currency) internal pure returns (bool) {
+        return Currency.unwrap(currency) == Currency.unwrap(ADDRESS_ZERO);
     }
 
     function toId(Currency currency) internal pure returns (uint256) {

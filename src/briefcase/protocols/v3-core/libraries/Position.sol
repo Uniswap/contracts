@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BUSL-1.1
-pragma solidity <0.8.0 >=0.4.0 >=0.5.0;
+pragma solidity >=0.5.0 <0.8.0;
 
 import {FixedPoint128} from './FixedPoint128.sol';
 import {FullMath} from './FullMath.sol';

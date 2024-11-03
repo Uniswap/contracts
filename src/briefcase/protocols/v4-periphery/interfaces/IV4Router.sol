@@ -3,15 +3,17 @@ pragma solidity >=0.6.2;
 
 import {Currency} from '../../v4-core/types/Currency.sol';
 import {PoolKey} from '../../v4-core/types/PoolKey.sol';
+
 import {PathKey} from '../libraries/PathKey.sol';
+import {IImmutableState} from './IImmutableState.sol';
 
 /// @title IV4Router
 /// @notice Interface containing all the structs and errors for different v4 swap types
-interface IV4Router {
+interface IV4Router is IImmutableState {
     /// @notice Emitted when an exactInput swap does not receive its minAmountOut
-    error TooLittleReceived();
+    error V4TooLittleReceived(uint256 minAmountOutReceived, uint256 amountReceived);
     /// @notice Emitted when an exactOutput is asked for more than its maxAmountIn
-    error TooMuchRequested();
+    error V4TooMuchRequested(uint256 maxAmountInRequested, uint256 amountRequested);
 
     /// @notice Parameters for a single-hop exact-input swap
     struct ExactInputSingleParams {
@@ -19,7 +21,6 @@ interface IV4Router {
         bool zeroForOne;
         uint128 amountIn;
         uint128 amountOutMinimum;
-        uint160 sqrtPriceLimitX96;
         bytes hookData;
     }
 
@@ -37,7 +38,6 @@ interface IV4Router {
         bool zeroForOne;
         uint128 amountOut;
         uint128 amountInMaximum;
-        uint160 sqrtPriceLimitX96;
         bytes hookData;
     }
 
