@@ -2,10 +2,10 @@
 pub mod types;
 // shared is a collection of components that are used across multiple workflows
 pub mod shared;
-// screens used by the create config workflow
-pub mod create_config;
 // screens used by the register contract workflow
 pub mod register_contract;
+// screens used by the deploy contracts workflow
+pub mod deploy_contracts;
 
 // home screen
 pub mod home;

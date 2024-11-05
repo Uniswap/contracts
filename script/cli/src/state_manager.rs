@@ -15,7 +15,7 @@ pub struct WorkflowState {
     pub block_explorer: Option<Explorer>,
     pub register_contract_data: RegisterContractData,
     pub task: Value,
-    // pub deployment_history: HashMap<String, String>,
+    pub private_key: Option<String>,
 }
 
 impl WorkflowState {
@@ -28,6 +28,7 @@ impl WorkflowState {
             block_explorer: None,
             register_contract_data: RegisterContractData { address: None },
             task: serde_json::json!({}),
+            private_key: None,
         }
     }
 

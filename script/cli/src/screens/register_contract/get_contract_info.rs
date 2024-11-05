@@ -104,12 +104,18 @@ impl Screen for GetContractInfoScreen {
         } else if *self.execution_status.lock().unwrap() == ExecutionStatus::Success {
             buffer.append_row_text("Deployment data generated successfully\n");
             self.select.render(buffer);
+        } else if *self.execution_status.lock().unwrap() == ExecutionStatus::Failed {
+            buffer.append_row_text(&format!(
+                "Error generating deployment data: {}\n",
+                self.execution_error_message.lock().unwrap()
+            ));
+            self.select.render(buffer);
         }
         Ok(())
     }
 
     fn handle_input(&mut self, e: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
-        if *self.execution_status.lock().unwrap() == ExecutionStatus::Success {
+        if *self.execution_status.lock().unwrap() != ExecutionStatus::Pending {
             let result = self.select.handle_input(e);
             if result.is_some() {
                 if result.unwrap() == 0 {
@@ -124,15 +130,6 @@ impl Screen for GetContractInfoScreen {
     }
 
     fn execute(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        // TODO: add option to return to the previous screen (address entry screen) on failure?
-        if *self.execution_status.lock().unwrap() == ExecutionStatus::Failed {
-            return Err(self
-                .execution_error_message
-                .lock()
-                .unwrap()
-                .to_string()
-                .into());
-        }
         Ok(())
     }
 }

@@ -80,10 +80,10 @@ fn clean_terminal() -> Result<()> {
 fn run_main_menu() -> Result<()> {
     let mut screen_manager = ScreenManager::new();
     let mut debug_mode = false;
+    let mut buffer = Buffer::new();
 
     // run the main loop, render the current screen, afterwards handle any user input and update the screen accordingly
     loop {
-        let mut buffer = Buffer::new();
         render_ascii_title(&mut buffer)?;
         screen_manager.render(&mut buffer);
         if !debug_mode {

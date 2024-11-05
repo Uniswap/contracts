@@ -7,7 +7,7 @@ use crossterm::event::Event;
 
 // Sets the block explorer for further operations
 pub struct BlockExplorerScreen {
-    select: SelectComponent,
+    explorer_select: SelectComponent,
     explorers: Vec<Explorer>,
 }
 
@@ -40,8 +40,11 @@ impl BlockExplorerScreen {
                 .map(|explorer| explorer.url)
                 .collect();
         }
+        if explorers.is_empty() {
+            return Err("No block explorer found".into());
+        }
         Ok(BlockExplorerScreen {
-            select: SelectComponent::new(pre_selected_explorers),
+            explorer_select: SelectComponent::new(pre_selected_explorers),
             explorers,
         })
     }
@@ -50,13 +53,13 @@ impl BlockExplorerScreen {
 impl Screen for BlockExplorerScreen {
     fn render_content(&self, buffer: &mut Buffer) -> Result<(), Box<dyn std::error::Error>> {
         buffer.append_row_text("Select a block explorer\n");
-        self.select.render(buffer);
-        self.select.render_default_instructions(buffer);
+        self.explorer_select.render(buffer);
+        self.explorer_select.render_default_instructions(buffer);
         Ok(())
     }
 
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
-        let result = self.select.handle_input(event);
+        let result = self.explorer_select.handle_input(event);
         if result.is_some() {
             STATE_MANAGER.workflow_state.lock()?.block_explorer =
                 Some(self.explorers[result.unwrap()].clone());
@@ -66,9 +69,6 @@ impl Screen for BlockExplorerScreen {
     }
 
     fn execute(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        if self.explorers.is_empty() {
-            return Err("No block explorer found".into());
-        }
         Ok(())
     }
 }

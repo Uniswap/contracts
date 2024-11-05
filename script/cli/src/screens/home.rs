@@ -3,6 +3,8 @@ use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::screens::types::select::SelectComponent;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
+use crate::workflows::deploy_contracts::deploy_contracts::DeployContractsWorkflow;
+use crate::workflows::error_workflow::ErrorWorkflow;
 use crate::workflows::{
     create_config::create_config::CreateConfigWorkflow,
     register_contract::register_contract::RegisterContractWorkflow,
@@ -19,9 +21,10 @@ impl HomeScreen {
         // reset the app state when returning to the home screen to ensure a clean state
         STATE_MANAGER.workflow_state.lock().unwrap().reset();
         let options = vec![
-            "Create Config".to_string(),
+            "Create Deployment Config".to_string(),
+            "Deploy from Config".to_string(),
+            "Verify Contract on Block Explorer".to_string(),
             "Verify Deployment".to_string(),
-            "Deploy Protocol".to_string(),
             "Register Existing Contract".to_string(),
         ];
         HomeScreen {
@@ -57,7 +60,13 @@ impl Screen for HomeScreen {
                 0 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
                     CreateConfigWorkflow::new()?,
                 )]))),
-                3 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
+                1 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
+                    DeployContractsWorkflow::new(),
+                )]))),
+                2 | 3 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
+                    ErrorWorkflow::new("Coming soon!".to_string()),
+                )]))),
+                4 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
                     RegisterContractWorkflow::new(),
                 )]))),
                 _ => Ok(ScreenResult::Continue),

@@ -1,4 +1,5 @@
 pub mod create_config;
+pub mod deploy_contracts;
 pub mod register_contract;
 
 pub mod default_workflow;

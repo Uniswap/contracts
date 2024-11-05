@@ -7,7 +7,7 @@ use crate::screens::shared::rpc_url::get_rpc_url_screen;
 use crate::screens::shared::test_connection::TestConnectionScreen;
 use crate::screens::shared::text_display_screen::TextDisplayScreen;
 use crate::state_manager::STATE_MANAGER;
-use crate::util::deploy_config_lib::load_template_config;
+use crate::util::deploy_config_lib::{get_config_dir, load_template_config};
 use crate::workflows::error_workflow::ErrorWorkflow;
 use crate::workflows::workflow_manager::{process_nested_workflows, Workflow, WorkflowResult};
 use std::error::Error;
@@ -89,7 +89,6 @@ impl Workflow for CreateConfigWorkflow {
         &mut self,
         error: Box<dyn std::error::Error>,
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
-        errors::log(self.current_screen.to_string());
         match self.current_screen {
             3 => {
                 if error.downcast_ref::<errors::ConnectionError>().is_some() {
@@ -107,7 +106,11 @@ impl Workflow for CreateConfigWorkflow {
 impl CreateConfigWorkflow {
     fn get_screen(&self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match self.current_screen {
-            1 => return Ok(WorkflowResult::NextScreen(Box::new(ChainIdScreen::new()))),
+            1 => {
+                return Ok(WorkflowResult::NextScreen(Box::new(ChainIdScreen::new(
+                    None,
+                ))))
+            }
             2 => return get_rpc_url_screen(),
             3 => {
                 return Ok(WorkflowResult::NextScreen(Box::new(
@@ -134,13 +137,8 @@ impl CreateConfigWorkflow {
                     .chain_id
                     .clone()
                     .unwrap();
-                let working_dir = STATE_MANAGER.working_directory.clone();
-                // write the config to script/deploy/tasks/<chain_id>/task-pending.json
-                let mut task_path = working_dir
-                    .join("script")
-                    .join("deploy")
-                    .join("tasks")
-                    .join(chain_id);
+
+                let mut task_path = get_config_dir(chain_id);
 
                 std::fs::create_dir_all(task_path.clone())?;
                 task_path = task_path.join("task-pending.json");

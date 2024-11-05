@@ -77,12 +77,15 @@ impl TextInputComponent {
                     self.text = new_text;
                 }
                 // Command + Backspace
-                (KeyModifiers::CONTROL, KeyCode::Char('u')) => {
+                (KeyModifiers::SUPER, KeyCode::Backspace)
+                | (KeyModifiers::CONTROL, KeyCode::Char('u')) => {
                     self.text = String::new();
                     self.cursor_position = 0;
                 }
                 // Control + Backspace / Alt + Backspace
-                (KeyModifiers::CONTROL, KeyCode::Char('h'))
+                (KeyModifiers::CONTROL, KeyCode::Backspace)
+                | (KeyModifiers::ALT, KeyCode::Backspace)
+                | (KeyModifiers::CONTROL, KeyCode::Char('h'))
                 | (KeyModifiers::CONTROL, KeyCode::Char('w')) => {
                     let next_delimiter = self.find_next_delimiter(true);
                     let mut new_text = self.text.clone();
@@ -95,7 +98,7 @@ impl TextInputComponent {
                     self.text = new_text;
                 }
                 // Control + Delete
-                (KeyModifiers::ALT, KeyCode::Char('d')) => {
+                (KeyModifiers::ALT, KeyCode::Delete) | (KeyModifiers::ALT, KeyCode::Char('d')) => {
                     let mut new_text = self.text.clone();
                     let next_delimiter = self.find_next_delimiter(false);
                     new_text.drain(self.cursor_position..next_delimiter);
@@ -141,11 +144,11 @@ impl TextInputComponent {
                     }
                 }
                 // Alt + Left
-                (KeyModifiers::ALT, KeyCode::Char('b')) => {
+                (KeyModifiers::ALT, KeyCode::Left) | (KeyModifiers::ALT, KeyCode::Char('b')) => {
                     self.cursor_position = self.find_next_delimiter(true);
                 }
                 // Alt + Right
-                (KeyModifiers::ALT, KeyCode::Char('f')) => {
+                (KeyModifiers::ALT, KeyCode::Right) | (KeyModifiers::ALT, KeyCode::Char('f')) => {
                     self.cursor_position = self.find_next_delimiter(false);
                 }
                 (KeyModifiers::NONE, KeyCode::Home) => {
