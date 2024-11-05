@@ -25,6 +25,7 @@ pub struct SelectOrEnterComponent {
     selected_option: String,
     env_var_name: String,
     env_var: String,
+    hidden: bool,
 }
 
 #[derive(PartialEq, Debug)]
@@ -40,6 +41,7 @@ enum Step {
 impl SelectOrEnterComponent {
     pub fn new(
         title: String,
+        hidden: bool,
         mut options: Vec<String>,
         text_input_validator: fn(String, usize) -> String,
         env_var_input_validator: fn(String, usize) -> String,
@@ -51,8 +53,8 @@ impl SelectOrEnterComponent {
         }
         SelectOrEnterComponent {
             title,
-            text_input: TextInputComponent::new(false, "".to_string(), text_input_validator),
-            env_var_input: TextInputComponent::new(false, "".to_string(), env_var_input_validator),
+            text_input: TextInputComponent::new(hidden, "".to_string(), text_input_validator),
+            env_var_input: TextInputComponent::new(hidden, "".to_string(), env_var_input_validator),
             select: SelectComponent::new(options),
             env_save: SelectComponent::new(vec!["Yes".to_string(), "No".to_string()]),
             env_confirm: SelectComponent::new(vec!["Yes".to_string(), "No".to_string()]),
@@ -60,6 +62,7 @@ impl SelectOrEnterComponent {
             selected_option: "".to_string(),
             env_var: "".to_string(),
             env_var_name: "".to_string(),
+            hidden,
         }
     }
 
@@ -79,14 +82,16 @@ impl SelectOrEnterComponent {
         } else if self.current_step == Step::SaveEnvVar {
             buffer.append_row_text(&format!(
                 "Do you want to save this environment variable?\n\n{}: {}\n",
-                self.env_var_name, self.env_var
+                self.env_var_name,
+                mask_env_var(&self.env_var, self.hidden)
             ));
             self.env_save.render(buffer);
             self.env_save.render_default_instructions(buffer);
         } else if self.current_step == Step::ConfirmEnvVar {
             buffer.append_row_text(&format!(
                 "Environment variable found:\n\n{}: {}\n\nDo you want to use it?\n",
-                self.env_var_name, self.env_var
+                self.env_var_name,
+                mask_env_var(&self.env_var, self.hidden)
             ));
             self.env_confirm.render(buffer);
             self.env_confirm.render_default_instructions(buffer);
@@ -191,4 +196,17 @@ fn replace_env_var(text: &str, env_var_name: &str, env_var: &str) -> String {
     // replace the ${env_var_name} in the text with the env_var
     let re = Regex::new(&format!(r"\$\{{{}}}", env_var_name)).unwrap();
     re.replace(text, env_var).to_string()
+}
+
+fn mask_env_var(env_var: &str, hidden: bool) -> String {
+    if hidden && env_var.len() > 8 {
+        format!(
+            "{}{}{}",
+            &env_var[..4],
+            "*".repeat(env_var.len().saturating_sub(8)),
+            &env_var[env_var.len().saturating_sub(4)..]
+        )
+    } else {
+        env_var.to_string()
+    }
 }

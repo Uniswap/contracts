@@ -28,8 +28,6 @@ contract Deploy is Script {
     using stdJson for string;
 
     function run() public {
-        uint256 deployerPrivateKey = vm.envUint('PRIVATE_KEY');
-
         string memory config =
             vm.readFile(string.concat('./script/deploy/tasks/', vm.toString(block.chainid), '/task-pending.json'));
 
@@ -37,17 +35,18 @@ contract Deploy is Script {
         bool deployV3 = config.readBool('.protocols.v3.deploy');
         bool deployPermit2 = config.readBool('.protocols.permit2.deploy');
 
-        vm.startBroadcast(deployerPrivateKey);
+        vm.startBroadcast();
+
+        if (deployPermit2) {
+            deployPermit2Contracts(config);
+        }
+
         if (deployV2) {
             deployV2Contracts(config);
         }
 
         if (deployV3) {
             deployV3Contracts(config);
-        }
-
-        if (deployPermit2) {
-            deployPermit2Contracts(config);
         }
 
         vm.stopBroadcast();
@@ -68,14 +67,14 @@ contract Deploy is Script {
         address weth;
 
         if (deployUniswapV2Factory) {
-            feeToSetter = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.params.feeToSetter');
+            feeToSetter = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.params.feeToSetter.value');
             v2Factory = address(UniswapV2FactoryDeployer.deploy(feeToSetter));
         }
 
         if (deployUniswapV2Router02) {
             weth = config.readAddress('.dependencies.weth.value');
             if (!deployUniswapV2Factory) {
-                v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Router02.params.factory');
+                v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
             }
 
             UniswapV2Router02Deployer.deploy(v2Factory, weth);
@@ -99,9 +98,9 @@ contract Deploy is Script {
         if (deployNonfungiblePositonManager) {
             weth = config.readAddress('.dependencies.weth.value');
             tokenDescriptor =
-                config.readAddress('.protocols.v3.contracts.NonfungiblePositonManager.params.tokenDescriptor');
+                config.readAddress('.protocols.v3.contracts.NonfungiblePositonManager.params.tokenDescriptor.value');
             if (!deployUniswapV3Factory) {
-                v3Factory = config.readAddress('.protocols.v3.contracts.NonfungiblePositonManager.params.factory');
+                v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
             }
             NonfungiblePositionManagerDeployer.deploy(v3Factory, weth, tokenDescriptor);
         }
@@ -109,14 +108,14 @@ contract Deploy is Script {
         if (deploySwapRouter) {
             weth = config.readAddress('.dependencies.weth.value');
             if (!deployUniswapV3Factory) {
-                v3Factory = config.readAddress('.protocols.v3.contracts.SwapRouter.params.factory');
+                v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
             }
             SwapRouterDeployer.deploy(v3Factory, weth);
         }
     }
 
     function deployPermit2Contracts(string memory config) private {
-        bytes32 salt = bytes32(config.readUint('.protocols.permit2.contracts.permit2.params.salt'));
+        bytes32 salt = bytes32(config.readUint('.protocols.permit2.contracts.permit2.params.salt.value'));
         Permit2Deployer.deploy(salt);
     }
 }

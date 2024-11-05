@@ -26,6 +26,7 @@ pub fn get_rpc_url_screen() -> Result<WorkflowResult, Box<dyn std::error::Error>
             pre_selected_rpcs,
             |input, _| input,
             |input, _| input,
+            false,
             Box::new(handle_rpc_url),
         ),
     )));

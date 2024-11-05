@@ -33,13 +33,18 @@ impl Web3Lib {
         &mut self,
         transaction_hash: FixedBytes<32>,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        let block_number = self
+        let receipt = self
             .provider
             .get_transaction_receipt(transaction_hash)
-            .await?
-            .unwrap()
-            .block_number;
-        Ok(block_number.unwrap())
+            .await?;
+        if receipt.is_none() {
+            return Err(format!(
+                "No receipt found for transaction hash: {}",
+                transaction_hash
+            )
+            .into());
+        }
+        Ok(receipt.unwrap().block_number.unwrap())
     }
 
     pub async fn get_block_timestamp_by_block_number(

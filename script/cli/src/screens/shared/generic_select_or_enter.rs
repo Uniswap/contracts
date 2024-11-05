@@ -14,11 +14,13 @@ impl GenericSelectOrEnterScreen {
         options: Vec<String>,
         text_input_validator: fn(String, usize) -> String,
         env_var_input_validator: fn(String, usize) -> String,
+        hidden: bool,
         hook: Box<dyn Fn(String) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>,
     ) -> Self {
         GenericSelectOrEnterScreen {
             select_or_enter: SelectOrEnterComponent::new(
                 title,
+                hidden,
                 options,
                 text_input_validator,
                 env_var_input_validator,

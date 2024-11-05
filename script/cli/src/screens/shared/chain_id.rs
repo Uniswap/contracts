@@ -7,12 +7,18 @@ use crossterm::event::Event;
 
 pub struct ChainIdScreen {
     text_input: TextInputComponent,
+    hook: Option<Box<dyn Fn(String) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>>,
 }
 
 impl ChainIdScreen {
-    pub fn new() -> Self {
+    pub fn new(
+        hook: Option<
+            Box<dyn Fn(String) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>,
+        >,
+    ) -> Self {
         ChainIdScreen {
             text_input: TextInputComponent::new(false, "".to_string(), validate_number),
+            hook,
         }
     }
 
@@ -46,8 +52,12 @@ impl Screen for ChainIdScreen {
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let chain_id = self.text_input.handle_input(event);
         if chain_id.is_some() && !chain_id.clone().unwrap().is_empty() {
-            STATE_MANAGER.workflow_state.lock()?.chain_id = chain_id;
-            return Ok(ScreenResult::NextScreen(None));
+            STATE_MANAGER.workflow_state.lock()?.chain_id = chain_id.clone();
+            if let Some(hook) = &self.hook {
+                return hook(chain_id.unwrap());
+            } else {
+                return Ok(ScreenResult::NextScreen(None));
+            }
         }
         Ok(ScreenResult::Continue)
     }

@@ -46,6 +46,11 @@ impl ProtocolConfigWorkflow {
             // only one contract to deploy, so we skip the contract selection screen
             handle_selected_contracts(vec![0], protocol.to_string(), &workflows_clone_outer)?;
         } else {
+            let protocol_name = STATE_MANAGER.workflow_state.lock()?.task["protocols"]
+                [_protocol.clone()]["name"]
+                .as_str()
+                .unwrap_or(&_protocol)
+                .to_string();
             screens.lock().unwrap().push(Box::new(move || {
                 let workflows_clone_inner = Arc::clone(&workflows_clone_outer);
                 let protocol_clone_inner = Arc::clone(&protocol_clone_outer);
@@ -60,7 +65,10 @@ impl ProtocolConfigWorkflow {
                         .keys()
                         .cloned()
                         .collect(),
-                    "Which contracts do you want to deploy?".to_string(),
+                    format!(
+                        "Which contracts do you want to deploy for {}?",
+                        protocol_name
+                    ),
                     Box::new(move |selected| {
                         handle_selected_contracts(
                             selected,
@@ -139,7 +147,7 @@ pub fn handle_selected_contracts(
     protocol: String,
     screens: &Mutex<Vec<Box<dyn Fn() -> Box<dyn Screen> + Send>>>,
 ) -> Result<ScreenResult, Box<dyn std::error::Error>> {
-    let task = STATE_MANAGER.workflow_state.lock()?.task.clone();
+    let mut task = STATE_MANAGER.workflow_state.lock()?.task.clone();
     let contracts = task["protocols"][protocol.clone()]["contracts"].clone();
     // map selected to contract names
     let contract_names: Vec<String> = selected
@@ -156,8 +164,8 @@ pub fn handle_selected_contracts(
         .collect();
     for contract_name in contract_names.clone() {
         // set flag to deploy this contract
-        STATE_MANAGER.workflow_state.lock()?.task["protocols"][protocol.clone()]["contracts"]
-            [contract_name.clone()]["deploy"] = Value::Bool(true);
+        task["protocols"][protocol.clone()]["contracts"][contract_name.clone()]["deploy"] =
+            Value::Bool(true);
     }
     let mut pointers = HashSet::new();
     // iterate over all selected contracts
@@ -173,6 +181,7 @@ pub fn handle_selected_contracts(
                 contract_name.clone(),
                 "params".to_string(),
                 param.clone(),
+                "value".to_string(),
             ];
             // get default options to display to the user for this param
             let mut options = HashSet::new();
@@ -255,9 +264,9 @@ pub fn handle_selected_contracts(
             for dependency in dependencies.as_array().unwrap() {
                 let dependency_name = dependency.as_str().unwrap().to_string();
                 let pointer = "dependencies.".to_string() + &dependency_name;
-                if !pointers.contains(&pointer) {
+                let dependency_object = task["dependencies"][dependency_name.clone()].clone();
+                if dependency_object["value"].is_null() && !pointers.contains(&pointer) {
                     pointers.insert(pointer);
-                    let dependency_object = task["dependencies"][dependency_name.clone()].clone();
                     let param_path = vec![
                         "dependencies".to_string(),
                         dependency_name.clone(),
@@ -284,7 +293,7 @@ pub fn handle_selected_contracts(
             }
         }
     }
-
+    STATE_MANAGER.workflow_state.lock()?.task = task;
     Ok(ScreenResult::NextScreen(None))
 }
 
@@ -396,6 +405,7 @@ fn add_screen(
                 options.clone().into_iter().collect(),
                 get_input_validator(&param_type),
                 |s, _| s,
+                false,
                 {
                     let param_type_clone = param_type.clone();
                     let param_path_clone = param_path.clone();

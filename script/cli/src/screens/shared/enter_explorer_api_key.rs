@@ -15,7 +15,17 @@ impl EnterExplorerApiKeyScreen {
         let explorer = STATE_MANAGER.workflow_state.lock()?.block_explorer.clone();
         let mut env_var_name = "".to_string();
         if explorer.is_some() {
-            env_var_name = explorer.unwrap().name.clone().to_uppercase() + "_API_KEY";
+            if explorer
+                .clone()
+                .unwrap()
+                .name
+                .to_lowercase()
+                .contains("scan")
+            {
+                env_var_name = "ETHERSCAN_API_KEY".to_string();
+            } else {
+                env_var_name = explorer.unwrap().name.clone().to_uppercase() + "_API_KEY";
+            }
         }
         Ok(EnterExplorerApiKeyScreen {
             env_var_name: env_var_name.clone(),
