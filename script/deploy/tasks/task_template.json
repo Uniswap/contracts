@@ -12,6 +12,9 @@
                             "type": "bytes32",
                             "value": "0x0000000000000000000000000000000000000000d3af2663da51c10215000000"
                         }
+                    },
+                    "lookup": {
+                        "latest": "Permit2"
                     }
                 }
             }
@@ -54,7 +57,18 @@
                     "address": null,
                     "lookup": {
                         "latest": "UniswapV3Factory"
+                    },
+                    "params": {
+                        "initialOwner": {
+                            "type": "address"
+                        }
                     }
+                },
+                "UniswapInterfaceMulticall": {
+                    "deploy": false
+                },
+                "NFTDescriptor": {
+                    "deploy": false
                 },
                 "NonfungiblePositonManager": {
                     "deploy": false,
@@ -65,7 +79,8 @@
                             "pointer": "protocols.v3.contracts.UniswapV3Factory"
                         },
                         "tokenDescriptor": {
-                            "type": "address"
+                            "name": "NFT Descriptor address",
+                            "pointer": "protocols.v3.contracts.NFTDescriptor"
                         }
                     },
                     "dependencies": ["weth"]
