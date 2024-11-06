@@ -40,6 +40,7 @@ compile_and_flatten() {
   echo ""
 }
 
+forge clean
 forge build --skip script
 
 # flatten packages

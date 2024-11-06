@@ -9,6 +9,7 @@ use std::{env, process};
 
 // The state manager is responsible for managing the state of the application. All screens and workflows share the same state and use the singleton instance to read and write to the state.
 pub struct WorkflowState {
+    pub debug_mode: bool,
     pub chain_id: Option<String>,
     pub web3: Option<Web3Lib>,
     pub explorer_api_key: Option<String>,
@@ -21,6 +22,7 @@ pub struct WorkflowState {
 impl WorkflowState {
     pub fn new() -> Self {
         WorkflowState {
+            debug_mode: false,
             chain_id: None,
             web3: None,
             explorer_api_key: None,

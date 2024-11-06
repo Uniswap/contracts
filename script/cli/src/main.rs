@@ -23,6 +23,7 @@ use signal_hook::{
     consts::{SIGINT, SIGTERM},
     iterator::Signals,
 };
+use state_manager::STATE_MANAGER;
 use std::{
     io::{stdout, Write},
     panic, process, thread,
@@ -79,14 +80,13 @@ fn clean_terminal() -> Result<()> {
 
 fn run_main_menu() -> Result<()> {
     let mut screen_manager = ScreenManager::new();
-    let mut debug_mode = false;
     let mut buffer = Buffer::new();
 
     // run the main loop, render the current screen, afterwards handle any user input and update the screen accordingly
     loop {
         render_ascii_title(&mut buffer)?;
         screen_manager.render(&mut buffer);
-        if !debug_mode {
+        if !STATE_MANAGER.workflow_state.lock().unwrap().debug_mode {
             buffer.draw()?;
         }
 
@@ -99,8 +99,14 @@ fn run_main_menu() -> Result<()> {
                     (KeyModifiers::CONTROL, KeyCode::Char('c')) => break,
                     (KeyModifiers::CONTROL, KeyCode::Char('d')) => {
                         // Toggle debug mode
-                        debug_mode = !debug_mode;
-                        if debug_mode {
+                        let debug_mode = STATE_MANAGER
+                            .workflow_state
+                            .lock()
+                            .unwrap()
+                            .debug_mode
+                            .clone();
+                        STATE_MANAGER.workflow_state.lock().unwrap().debug_mode = !debug_mode;
+                        if !debug_mode {
                             execute!(stdout(), LeaveAlternateScreen, Show, MoveToColumn(0),)?;
                         } else {
                             execute!(stdout(), EnterAlternateScreen, Hide, Clear(ClearType::All),)?;

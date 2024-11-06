@@ -1,8 +1,11 @@
+use crate::constants;
 use crate::libs::explorer::{ExplorerApiLib, SupportedExplorerType};
 use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::{get_spinner_frame, Buffer};
+use crate::util::deploy_config_lib::get_config_dir;
 use crossterm::event::Event;
+use std::io::BufRead;
 use std::process::Command;
 use std::sync::{Arc, Mutex};
 
@@ -11,11 +14,13 @@ pub struct ExecuteDeployScriptScreen {
     execution_error_message: Arc<Mutex<String>>,
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, PartialOrd)]
 enum ExecutionStatus {
-    Pending,
-    Success,
-    Failed,
+    Failed = -1,
+    Pending = 0,
+    DryRunCompleted = 1,
+    DeploymentCompleted = 2,
+    Success = 3,
 }
 
 impl ExecuteDeployScriptScreen {
@@ -30,6 +35,12 @@ impl ExecuteDeployScriptScreen {
         let execution_status = Arc::clone(&screen.execution_status);
         let execution_error_message = Arc::clone(&screen.execution_error_message);
 
+        let chain_id = STATE_MANAGER
+            .workflow_state
+            .lock()?
+            .chain_id
+            .clone()
+            .unwrap();
         let rpc_url = STATE_MANAGER
             .workflow_state
             .lock()?
@@ -77,66 +88,175 @@ impl ExecuteDeployScriptScreen {
                             "etherscan"
                         }
                     ))
-                    .arg(format!("--verifier-url={}", explorer_api.api_url))
-                    .arg(format!("--api-key={}", explorer_api.api_key));
+                    .arg(format!("--verifier-url={}", explorer_api.api_url));
+                if explorer_api.explorer_type == SupportedExplorerType::Etherscan {
+                    command = command.arg(format!("--etherscan-api-key={}", explorer_api.api_key));
+                }
             }
 
-            let output = command
-                .arg("--broadcast")
-                .arg("-vvv")
-                .stdout(std::process::Stdio::piped())
-                .output()
-                .expect("Failed to execute forge script");
-            crate::errors::log(format!(
-                "Process finished with output:\n\n{}\n",
-                String::from_utf8(output.stdout)
-                    .unwrap()
-                    .replace("\\n", "\n")
-                    .replace("\\t", "\t")
-                    .replace("\\\"", "\"")
-            ));
+            match execute_command(&mut command) {
+                Ok(result) => {
+                    *execution_status.lock().unwrap() = ExecutionStatus::DryRunCompleted;
+                    if let Some(error_message) = result {
+                        *execution_error_message.lock().unwrap() = error_message;
+                    }
+                }
+                Err(e) => {
+                    *execution_status.lock().unwrap() = ExecutionStatus::Failed;
+                    *execution_error_message.lock().unwrap() = e.to_string();
+                    return;
+                }
+            }
+
+            match execute_command(&mut command.arg("--broadcast")) {
+                Ok(result) => {
+                    *execution_status.lock().unwrap() = ExecutionStatus::DeploymentCompleted;
+                    if let Some(error_message) = result {
+                        *execution_error_message.lock().unwrap() = error_message;
+                    }
+                }
+                Err(e) => {
+                    *execution_status.lock().unwrap() = ExecutionStatus::Failed;
+                    *execution_error_message.lock().unwrap() = e.to_string();
+                    return;
+                }
+            }
+
+            let mut command = &mut Command::new("node");
+            command = command
+                .arg(working_dir.join("lib").join("forge-chronicles"))
+                .arg("Deploy-all.s.sol")
+                .arg("-c")
+                .arg(chain_id.clone())
+                .arg("--rpc-url")
+                .arg(rpc_url)
+                .arg("--force");
+
+            match execute_command(&mut command) {
+                Ok(result) => {
+                    *execution_status.lock().unwrap() = ExecutionStatus::Success;
+                    if let Some(error_message) = result {
+                        *execution_error_message.lock().unwrap() = error_message;
+                    }
+                }
+                Err(e) => {
+                    *execution_status.lock().unwrap() = ExecutionStatus::Failed;
+                    *execution_error_message.lock().unwrap() = e.to_string();
+                    return;
+                }
+            }
+
+            let _ =
+                std::fs::remove_file(get_config_dir(chain_id.clone()).join("task-pending.json"));
         });
 
         Ok(screen)
+    }
+
+    fn get_status_mark(&self, target_status: ExecutionStatus) -> char {
+        if *self.execution_status.lock().unwrap() == target_status {
+            get_spinner_frame()
+        } else if *self.execution_status.lock().unwrap() < target_status {
+            ' '
+        } else {
+            '✓'
+        }
+    }
+}
+
+fn execute_command(command: &mut Command) -> Result<Option<String>, Box<dyn std::error::Error>> {
+    crate::errors::log(format!("Executing command: {:?}", command));
+    let mut result = command
+        .stdout(std::process::Stdio::piped())
+        .stderr(std::process::Stdio::piped())
+        .spawn()?;
+
+    // Handle stdout
+    let stdout = result.stdout.take().expect("Failed to capture stdout");
+    let stdout_reader = std::io::BufReader::new(stdout);
+    for line in stdout_reader.lines() {
+        let line = line?;
+        crate::errors::log(line);
+    }
+
+    // Handle stderr
+    let stderr = result.stderr.take().expect("Failed to capture stderr");
+    let stderr_reader = std::io::BufReader::new(stderr);
+    let mut error_message = String::new();
+    for line in stderr_reader.lines() {
+        let line = line?;
+        crate::errors::log(line.clone());
+        error_message.push_str(&line);
+        error_message.push_str("\n");
+    }
+    match result.wait() {
+        Ok(status) => {
+            if !status.success() {
+                if error_message.contains("verify") || error_message.contains("verification") {
+                    return Ok(Some("Verification of one or more contracts failed. Check the debug screen for more information".to_string()));
+                } else {
+                    return Err(error_message.into());
+                }
+            }
+            return Ok(None);
+        }
+        Err(e) => {
+            return Err(e.to_string().into());
+        }
     }
 }
 
 impl Screen for ExecuteDeployScriptScreen {
     fn render_content(&self, buffer: &mut Buffer) -> Result<(), Box<dyn std::error::Error>> {
-        if *self.execution_status.lock().unwrap() == ExecutionStatus::Pending {
-            buffer.append_row_text(&format!("{} Deploying contracts\n", get_spinner_frame()));
-        } else if *self.execution_status.lock().unwrap() == ExecutionStatus::Success {
-            buffer.append_row_text("Deployment data generated successfully\n");
-            // self.select.render(buffer);
+        if *self.execution_status.lock().unwrap() == ExecutionStatus::Failed {
+            buffer.append_row_text(&format!(
+                "Deployment failed: {}\n",
+                self.execution_error_message.lock().unwrap()
+            ));
+            buffer
+                .append_row_text_color(&"> Press any key to continue", constants::SELECTION_COLOR);
+        } else {
+            buffer.append_row_text(&format!(
+                "{} Executing dry run\n",
+                self.get_status_mark(ExecutionStatus::Pending)
+            ));
+            buffer.append_row_text(&format!(
+                "{} Deploying contracts\n",
+                self.get_status_mark(ExecutionStatus::DryRunCompleted)
+            ));
+            buffer.append_row_text(&format!(
+                "{} Generating deployment logs\n",
+                self.get_status_mark(ExecutionStatus::DeploymentCompleted)
+            ));
+            if *self.execution_status.lock().unwrap() == ExecutionStatus::Success {
+                buffer.append_row_text("Deployment successful\n");
+                let error_message = self.execution_error_message.lock().unwrap();
+                if !error_message.is_empty() {
+                    buffer.append_row_text(&error_message);
+                }
+                buffer.append_row_text_color(
+                    &"\n> Press any key to continue",
+                    constants::SELECTION_COLOR,
+                );
+            }
+            buffer.append_row_text_color(
+                "\nUse CTRL+D to toggle debug mode and view console output.",
+                constants::INSTRUCTIONS_COLOR,
+            );
         }
         Ok(())
     }
 
-    fn handle_input(&mut self, e: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
-        // if *self.execution_status.lock().unwrap() == ExecutionStatus::Success {
-        // let result = self.select.handle_input(e);
-        // if result.is_some() {
-        //     if result.unwrap() == 0 {
-        //         return Ok(ScreenResult::PreviousScreen);
-        //     } else if result.unwrap() == 1 {
-        //         return Ok(ScreenResult::NextScreen(None));
-        //     }
-        // }
-        // }
-
+    fn handle_input(&mut self, _: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
+        if *self.execution_status.lock().unwrap() == ExecutionStatus::Success {
+            return Ok(ScreenResult::NextScreen(None));
+        } else if *self.execution_status.lock().unwrap() == ExecutionStatus::Failed {
+            return Ok(ScreenResult::Reset);
+        }
         Ok(ScreenResult::Continue)
     }
 
     fn execute(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        // TODO: add option to return to the previous screen (address entry screen) on failure?
-        // if *self.execution_status.lock().unwrap() == ExecutionStatus::Failed {
-        //     return Err(self
-        //         .execution_error_message
-        //         .lock()
-        //         .unwrap()
-        //         .to_string()
-        //         .into());
-        // }
         Ok(())
     }
 }
