@@ -191,9 +191,9 @@ pub fn handle_selected_contracts(
                 // if the deploy flag is set to true for this pointer, the user doesn't need to enter this parameter, it will be fetched from the deployed contract automatically
                 // if the deploy flag is set to false, enter the address field of the pointer contract
                 // if another contract has the same dependency and the deploy flag is set to false, the user will not be prompted to enter this parameter again, instead, the address will be fetched from the value set in the previous step
-                // e.g., NonFungiblePositionManager and SwapRouter have a pointer to UniswapV3Factory
+                // e.g., NonfungiblePositionManager and SwapRouter have a pointer to UniswapV3Factory
                 // if the deploy flag is set to true for UniswapV3Factory, the user doesn't need to enter the factory address
-                // if the deploy flag is set to false for UniswapV3Factory, the user needs to enter the factory address when entering the params for NonFungiblePositionManager
+                // if the deploy flag is set to false for UniswapV3Factory, the user needs to enter the factory address when entering the params for NonfungiblePositionManager
                 // when entering the params for SwapRouter, the factory address will already be set, so the user doesn't need to enter it again
                 let pointer = params_object[param]["pointer"].as_str().unwrap();
 

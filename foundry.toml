@@ -2,7 +2,6 @@
 src = "src"
 out = "out"
 libs = ["lib"]
-bytecode_hash = "none"
 verbosity = 2
 
 fs_permissions = [
@@ -39,12 +38,13 @@ additional_compiler_profiles = [
 ]
 
 compilation_restrictions = [
-  { paths = "src/pkgs/v2-core/contracts/[!i]*.sol", version = "0.5.16", min_optimizer_runs = 999999 },
-  { paths = "src/pkgs/v2-periphery/contracts/[!i]*.sol", version = "0.6.6", min_optimizer_runs = 999999 },
+  { paths = "src/pkgs/v2-core/contracts/[!i]*.sol", version = "0.5.16", min_optimizer_runs = 999999, max_optimizer_runs = 999999 },
+  { paths = "src/pkgs/v2-periphery/contracts/[!i]*.sol", version = "0.6.6", min_optimizer_runs = 999999, max_optimizer_runs = 999999 },
   { paths = "src/pkgs/v3-core/contracts/[!i]|[!l]*.sol", version = "0.7.6", max_optimizer_runs = 800 },
   { paths = "src/pkgs/v3-core/contracts/libraries/TickBitmap.sol", version = "<0.8.0" },
   { paths = "src/pkgs/v3-periphery/contracts/**", version = "0.7.6", via_ir = false },
-  { paths = "src/pkgs/v3-periphery/contracts/NonFungiblePositionManager.sol", version = "0.7.6", min_optimizer_runs = 2000, max_optimizer_runs = 2000, via_ir = false },
+  { paths = "src/pkgs/v3-periphery/contracts/SwapRouter.sol", version = "0.7.6", min_optimizer_runs = 1000000, via_ir = false },
+  { paths = "src/pkgs/v3-periphery/contracts/NonfungiblePositionManager.sol", version = "0.7.6", min_optimizer_runs = 2000, max_optimizer_runs = 2000, via_ir = false },
   { paths = "src/pkgs/v3-periphery/contracts/NonFungibleTokenPositionDescriptor.sol", version = "0.7.6", max_optimizer_runs = 1000, via_ir = false },
   { paths = "src/pkgs/v3-periphery/contracts/libraries/NFTDescriptor.sol", version = "0.7.6", max_optimizer_runs = 1000, via_ir = false },
   { paths = "src/pkgs/v3-periphery/contracts/libraries/**", version = "<0.8.0" },

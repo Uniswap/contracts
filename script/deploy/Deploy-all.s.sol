@@ -52,8 +52,9 @@ contract Deploy is Script {
         vm.stopBroadcast();
 
         uint256 timestamp = vm.getBlockTimestamp();
-        string memory output_filename =
-            string.concat('./script/deploy/tasks/', vm.toString(block.chainid), '/', vm.toString(timestamp), '.json');
+        string memory output_filename = string.concat(
+            './script/deploy/tasks/', vm.toString(block.chainid), '/task-', vm.toString(timestamp), '.json'
+        );
         vm.writeFile(output_filename, config);
     }
 
@@ -116,6 +117,6 @@ contract Deploy is Script {
 
     function deployPermit2Contracts(string memory config) private {
         bytes32 salt = bytes32(config.readUint('.protocols.permit2.contracts.permit2.params.salt.value'));
-        Permit2Deployer.deploy(salt);
+        Permit2Deployer.deploy();
     }
 }
