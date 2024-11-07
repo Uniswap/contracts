@@ -20,6 +20,10 @@ import {
     INonfungiblePositionManager,
     NonfungiblePositionManagerDeployer
 } from '../../src/briefcase/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
+import {
+    INonfungibleTokenPositionDescriptor,
+    NonfungibleTokenPositionDescriptorDeployer
+} from '../../src/briefcase/deployers/v3-periphery/NonfungibleTokenPositionDescriptorDeployer.sol';
 import {ISwapRouter, SwapRouterDeployer} from '../../src/briefcase/deployers/v3-periphery/SwapRouterDeployer.sol';
 import {UniswapInterfaceMulticallDeployer} from
     '../../src/briefcase/deployers/v3-periphery/UniswapInterfaceMulticallDeployer.sol';
@@ -88,12 +92,16 @@ contract Deploy is Script {
         bool deployNFTDescriptor = config.readBool('.protocols.v3.contracts.NFTDescriptor.deploy');
         bool deployNonfungiblePositonManager =
             config.readBool('.protocols.v3.contracts.NonfungiblePositonManager.deploy');
+        bool deployNonfungibleTokenPositionDescriptor =
+            config.readBool('.protocols.v3.contracts.NonfungibleTokenPositionDescriptor.deploy');
         bool deploySwapRouter = config.readBool('.protocols.v3.contracts.SwapRouter.deploy');
 
         // Params
         address v3Factory;
         address nftDescriptor;
         address weth;
+        bytes32 nativeCurrencyLabelBytes;
+
         if (deployUniswapV3Factory) {
             address initialOwner =
                 config.readAddress('.protocols.v3.contracts.UniswapV3Factory.params.initialOwner.value');
@@ -117,6 +125,18 @@ contract Deploy is Script {
                 v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
             }
             NonfungiblePositionManagerDeployer.deploy(v3Factory, weth, nftDescriptor);
+        }
+
+        if (deployNonfungibleTokenPositionDescriptor) {
+            weth = config.readAddress('.dependencies.weth.value');
+            nativeCurrencyLabelBytes = config.readBytes32(
+                '.protocols.v3.contracts.NonfungibleTokenPositionDescriptor.params.nativeCurrencyLabelBytes.value'
+            );
+            if (!deployNFTDescriptor) {
+                nftDescriptor = config.readAddress('.protocols.v3.contracts.NFTDescriptor.address');
+            }
+
+            NonfungibleTokenPositionDescriptorDeployer.deploy(weth, nativeCurrencyLabelBytes, nftDescriptor);
         }
 
         if (deploySwapRouter) {
