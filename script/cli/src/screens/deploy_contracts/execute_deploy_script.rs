@@ -149,8 +149,8 @@ impl ExecuteDeployScriptScreen {
 
             // TODO: add pool init code hashes to v2 and v3 factory deployments
 
-            // let _ =
-            //     std::fs::remove_file(get_config_dir(chain_id.clone()).join("task-pending.json"));
+            let _ =
+                std::fs::remove_file(get_config_dir(chain_id.clone()).join("task-pending.json"));
         });
 
         Ok(screen)
