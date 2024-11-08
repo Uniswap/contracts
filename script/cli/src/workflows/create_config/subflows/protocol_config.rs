@@ -39,46 +39,40 @@ impl ProtocolConfigWorkflow {
             Arc::new(Mutex::new(Vec::new()));
         let protocol = Arc::new(_protocol.clone());
 
-        let num_contracts = contract_selection.len();
         let workflows_clone_outer = Arc::clone(&screens);
         let protocol_clone_outer = Arc::clone(&protocol);
-        if num_contracts == 1 {
-            // only one contract to deploy, so we skip the contract selection screen
-            handle_selected_contracts(vec![0], protocol.to_string(), &workflows_clone_outer)?;
-        } else {
-            let protocol_name = STATE_MANAGER.workflow_state.lock()?.task["protocols"]
-                [_protocol.clone()]["name"]
-                .as_str()
-                .unwrap_or(&_protocol)
-                .to_string();
-            screens.lock().unwrap().push(Box::new(move || {
-                let workflows_clone_inner = Arc::clone(&workflows_clone_outer);
-                let protocol_clone_inner = Arc::clone(&protocol_clone_outer);
-                Box::new(GenericMultiSelectScreen::new(
-                    // we have to fetch the data here again because we can't move `contract_selection` here
-                    STATE_MANAGER.workflow_state.lock().unwrap().task["protocols"]
-                        [protocol_clone_outer.to_string()]["contracts"]
-                        .clone()
-                        .as_object()
-                        .clone()
-                        .unwrap()
-                        .keys()
-                        .cloned()
-                        .collect(),
-                    format!(
-                        "Which contracts do you want to deploy for {}?",
-                        protocol_name
-                    ),
-                    Box::new(move |selected| {
-                        handle_selected_contracts(
-                            selected,
-                            protocol_clone_inner.to_string(),
-                            &workflows_clone_inner,
-                        )
-                    }),
-                )) as Box<dyn Screen>
-            }));
-        }
+        let protocol_name = STATE_MANAGER.workflow_state.lock()?.task["protocols"]
+            [_protocol.clone()]["name"]
+            .as_str()
+            .unwrap_or(&_protocol)
+            .to_string();
+        screens.lock().unwrap().push(Box::new(move || {
+            let workflows_clone_inner = Arc::clone(&workflows_clone_outer);
+            let protocol_clone_inner = Arc::clone(&protocol_clone_outer);
+            Box::new(GenericMultiSelectScreen::new(
+                // we have to fetch the data here again because we can't move `contract_selection` here
+                STATE_MANAGER.workflow_state.lock().unwrap().task["protocols"]
+                    [protocol_clone_outer.to_string()]["contracts"]
+                    .clone()
+                    .as_object()
+                    .clone()
+                    .unwrap()
+                    .keys()
+                    .cloned()
+                    .collect(),
+                format!(
+                    "Which contracts do you want to deploy for {}?",
+                    protocol_name
+                ),
+                Box::new(move |selected| {
+                    handle_selected_contracts(
+                        selected,
+                        protocol_clone_inner.to_string(),
+                        &workflows_clone_inner,
+                    )
+                }),
+            )) as Box<dyn Screen>
+        }));
 
         Ok(ProtocolConfigWorkflow {
             current_screen: -1,
