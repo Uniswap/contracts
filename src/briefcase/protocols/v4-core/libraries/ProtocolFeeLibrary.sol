@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.0;
 
-import {Pool} from './Pool.sol';
-
 /// @notice library of functions related to protocol fees
 library ProtocolFeeLibrary {
     /// @notice Max protocol fee is 0.1% (1000 pips)

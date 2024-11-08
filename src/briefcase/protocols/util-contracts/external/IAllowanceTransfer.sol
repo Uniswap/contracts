@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {ERC20} from '../../lib-external/solmate/src/tokens/ERC20.sol';
 import {IEIP712} from './IEIP712.sol';
 
 /// @title AllowanceTransfer

@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.0;
 
-import {SafeCast} from './SafeCast.sol';
-
 /// @title Math library for liquidity
 library LiquidityMath {
     /// @notice Add a signed liquidity delta to liquidity and revert if it overflows or underflows

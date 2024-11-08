@@ -2,7 +2,6 @@
 pragma solidity >=0.6.2;
 pragma abicoder v2;
 
-import {IERC721} from '../../lib-external/oz-v3.4-solc-0.7/contracts/token/ERC721/IERC721.sol';
 import {IERC721Enumerable} from '../../lib-external/oz-v3.4-solc-0.7/contracts/token/ERC721/IERC721Enumerable.sol';
 import {IERC721Metadata} from '../../lib-external/oz-v3.4-solc-0.7/contracts/token/ERC721/IERC721Metadata.sol';
 import {IERC721Permit} from './IERC721Permit.sol';

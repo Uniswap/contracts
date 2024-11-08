@@ -5,7 +5,6 @@ import {BalanceDelta, BalanceDeltaLibrary, toBalanceDelta} from '../types/Balanc
 import {Slot0} from '../types/Slot0.sol';
 import {CustomRevert} from './CustomRevert.sol';
 import {FixedPoint128} from './FixedPoint128.sol';
-import {FullMath} from './FullMath.sol';
 import {LPFeeLibrary} from './LPFeeLibrary.sol';
 import {LiquidityMath} from './LiquidityMath.sol';
 
