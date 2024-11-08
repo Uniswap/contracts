@@ -67,8 +67,33 @@
                 "UniswapInterfaceMulticall": {
                     "deploy": false
                 },
-                "NFTDescriptor": {
+                "QuoterV2": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "factory": {
+                            "name": "Uniswap v3 factory address",
+                            "pointer": "protocols.v3.contracts.UniswapV3Factory"
+                        }
+                    },
+                    "dependencies": ["weth"]
+                },
+                "TickLens": {
                     "deploy": false
+                },
+                "NonfungibleTokenPositionDescriptor": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "nativeCurrencyLabel": {
+                            "type": "string",
+                            "value": "ETH"
+                        },
+                        "proxyAdminOwner": {
+                            "type": "address"
+                        }
+                    },
+                    "dependencies": ["weth"]
                 },
                 "NonfungiblePositonManager": {
                     "deploy": false,
@@ -79,8 +104,8 @@
                             "pointer": "protocols.v3.contracts.UniswapV3Factory"
                         },
                         "tokenDescriptor": {
-                            "name": "NFT Descriptor address",
-                            "pointer": "protocols.v3.contracts.NFTDescriptor"
+                            "name": "NFT Position Descriptor address",
+                            "pointer": "protocols.v3.contracts.NonfungibleTokenPositionDescriptor"
                         }
                     },
                     "dependencies": ["weth"]
@@ -98,9 +123,36 @@
                 }
             }
         },
-        "utils": {
+        "view-quoter-v3": {
+            "name": "View Quoter v3",
+            "deploy": false,
+            "contracts": {
+                "Quoter": {
+                    "deploy": false,
+                    "params": {
+                        "factory": {
+                            "name": "Uniswap v3 factory address",
+                            "pointer": "protocols.v3.contracts.UniswapV3Factory"
+                        }
+                    }
+                }
+            }
+        },
+        "util-contracts": {
             "name": "Utils",
-            "deploy": false
+            "deploy": false,
+            "contracts": {
+                "FeeOnTransferDetector": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "factoryV2": {
+                            "name": "Uniswap v2 factory address",
+                            "pointer": "protocols.v2.contracts.UniswapV2Factory"
+                        }
+                    }
+                }
+            }
         }
     },
     "dependencies": {

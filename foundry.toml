@@ -16,16 +16,15 @@ skip = [
   "src/pkgs/**/audits/**",
   "src/pkgs/**/certora/**",
   "src/pkgs/**/lib/**",
+  "src/pkgs/**/test/**",
   "src/pkgs/universal-router/permit2/**",
   "src/pkgs/universal-router/solmate/**",
   "src/pkgs/**/*.s.sol",
-  "**/test/**",
   "*.t.sol",
 ]
 
 additional_compiler_profiles = [
-  { name = "v4-core", optimizer_runs = 44444444, via_ir = true, evm_version = "cancun" },
-  { name = "v4-periphery", optimizer_runs = 1000000, via_ir = true, evm_version = "cancun" },
+  { name = "v4", optimizer_runs = 44444444, via_ir = true, evm_version = "cancun" },
   { name = "v4-descriptor", optimizer_runs = 1, via_ir = true, evm_version = "cancun" },
   { name = "via-ir", via_ir = true },
   { name = "via-ir-cancun", via_ir = true, evm_version = "cancun" },
@@ -35,7 +34,7 @@ additional_compiler_profiles = [
   { name = "v3-periphery-low", optimizer_runs = 2000, evm_version = "istanbul", via_ir = false },
   { name = "v3-periphery-default", optimizer_runs = 1000000, evm_version = "istanbul", via_ir = false },
   { name = "permit2", optimizer_runs = 1000000, via_ir = true },
-  { name = "universal-router", optimizer_runs = 1000000, via_ir = true },
+  { name = "uniswapx", optimizer_runs = 1000000, via_ir = false },
 ]
 
 compilation_restrictions = [
@@ -46,7 +45,7 @@ compilation_restrictions = [
   { paths = "src/pkgs/v3-periphery/contracts/**", version = "0.7.6", via_ir = false },
   { paths = "src/pkgs/v3-periphery/contracts/SwapRouter.sol", version = "0.7.6", min_optimizer_runs = 1000000, via_ir = false },
   { paths = "src/pkgs/v3-periphery/contracts/NonfungiblePositionManager.sol", version = "0.7.6", min_optimizer_runs = 2000, max_optimizer_runs = 2000, via_ir = false },
-  { paths = "src/pkgs/v3-periphery/contracts/NonFungibleTokenPositionDescriptor.sol", version = "0.7.6", max_optimizer_runs = 1000, via_ir = false },
+  { paths = "src/pkgs/v3-periphery/contracts/NonfungibleTokenPositionDescriptor.sol", version = "0.7.6", max_optimizer_runs = 1000, via_ir = false },
   { paths = "src/pkgs/v3-periphery/contracts/libraries/NFTDescriptor.sol", version = "0.7.6", max_optimizer_runs = 1000, via_ir = false },
   { paths = "src/pkgs/v3-periphery/contracts/libraries/**", version = "<0.8.0" },
   { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
@@ -55,6 +54,7 @@ compilation_restrictions = [
   { paths = "src/pkgs/v4-periphery/src/libraries/Locker.sol", min_evm_version = "cancun" },
   { paths = "src/pkgs/v4-core/src/**", version = "0.8.26", via_ir = true, min_evm_version = "cancun", max_optimizer_runs = 44444444 },
   { paths = "src/pkgs/universal-router/contracts/**", via_ir = true },
+  { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "0.8.24" },
   # Briefcase
   { paths = "src/briefcase/protocols/v2-periphery/libraries/UniswapV2Library.sol", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/v3-core/libraries/TickBitmap.sol", version = "<0.8.0" },
@@ -62,6 +62,8 @@ compilation_restrictions = [
   { paths = "src/briefcase/protocols/lib-external/solidity-lib/**", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/v4-core/libraries/**", min_evm_version = "cancun" },
   { paths = "src/briefcase/protocols/v4-periphery/libraries/Locker.sol", min_evm_version = "cancun" },
+  # script
+  { paths = "script/deploy/Deploy-all.s.sol", via_ir = true },
 ]
 
 [fmt]

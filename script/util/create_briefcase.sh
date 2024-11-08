@@ -41,7 +41,7 @@ compile_and_flatten() {
 }
 
 forge clean
-forge build --skip script
+forge build --skip script --skip "src/briefcase/**"
 
 # flatten packages
 pkgs=$(ls src/pkgs/);
@@ -64,3 +64,5 @@ echo "Copying files from temporary directory to briefcase"
 rsync -ah "$tmp_dir/" "$dir/" --delete
 rm -rf "$tmp_dir"
 forge fmt "src/briefcase"
+# build the generated files
+forge build
