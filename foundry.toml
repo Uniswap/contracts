@@ -26,10 +26,8 @@ skip = [
 additional_compiler_profiles = [
   { name = "v4", optimizer_runs = 44444444, via_ir = true, evm_version = "cancun" },
   { name = "v4-descriptor", optimizer_runs = 1, via_ir = true, evm_version = "cancun" },
-  { name = "via-ir", via_ir = true },
-  { name = "via-ir-cancun", via_ir = true, evm_version = "cancun" },
   { name = "v2", optimizer_runs = 999999 },
-  { name = "v3-core", optimizer_runs = 800, evm_version = "istanbul" },
+  { name = "v3-core", optimizer_runs = 800, evm_version = "istanbul", via_ir = false },
   { name = "v3-periphery-lowest", optimizer_runs = 1000, evm_version = "istanbul", via_ir = false },
   { name = "v3-periphery-low", optimizer_runs = 2000, evm_version = "istanbul", via_ir = false },
   { name = "v3-periphery-default", optimizer_runs = 1000000, evm_version = "istanbul", via_ir = false },
@@ -38,31 +36,37 @@ additional_compiler_profiles = [
 ]
 
 compilation_restrictions = [
-  { paths = "src/pkgs/v2-core/contracts/[!i]*.sol", version = "0.5.16", min_optimizer_runs = 999999, max_optimizer_runs = 999999 },
-  { paths = "src/pkgs/v2-periphery/contracts/[!i]*.sol", version = "0.6.6", min_optimizer_runs = 999999, max_optimizer_runs = 999999 },
-  { paths = "src/pkgs/v3-core/contracts/[!i]|[!l]*.sol", version = "0.7.6", max_optimizer_runs = 800 },
-  { paths = "src/pkgs/v3-core/contracts/libraries/TickBitmap.sol", version = "<0.8.0" },
-  { paths = "src/pkgs/v3-periphery/contracts/**", version = "0.7.6", via_ir = false },
-  { paths = "src/pkgs/v3-periphery/contracts/SwapRouter.sol", version = "0.7.6", min_optimizer_runs = 1000000, via_ir = false },
-  { paths = "src/pkgs/v3-periphery/contracts/NonfungiblePositionManager.sol", version = "0.7.6", min_optimizer_runs = 2000, max_optimizer_runs = 2000, via_ir = false },
-  { paths = "src/pkgs/v3-periphery/contracts/NonfungibleTokenPositionDescriptor.sol", version = "0.7.6", max_optimizer_runs = 1000, via_ir = false },
-  { paths = "src/pkgs/v3-periphery/contracts/libraries/NFTDescriptor.sol", version = "0.7.6", max_optimizer_runs = 1000, via_ir = false },
-  { paths = "src/pkgs/v3-periphery/contracts/libraries/**", version = "<0.8.0" },
+  # v2
+  { paths = "src/pkgs/v2-core/contracts/[!i]*.sol", version = "0.5.16", optimizer_runs = 999999 },
+  { paths = "src/pkgs/v2-periphery/contracts/[!i]*.sol", version = "0.6.6", optimizer_runs = 999999 },
+  # v3
+  { paths = "src/pkgs/v3-core/contracts/{UniswapV3Factory,UniswapV3Pool}.sol", optimizer_runs = 800 },
+  { paths = "src/**/v3-core/**/libraries/TickBitmap.sol", version = "<0.8.0" },
+  { paths = "src/pkgs/v3-periphery/contracts/lens/*.sol", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
+  { paths = "src/pkgs/v3-periphery/contracts/NonfungiblePositionManager.sol", optimizer_runs = 2000 },
+  { paths = "src/pkgs/v3-periphery/contracts/NonfungibleTokenPositionDescriptor.sol", optimizer_runs = 1000 },
+  # TODO: NFTDescriptor only compiles with 200 runs
+  { paths = "src/pkgs/v3-periphery/contracts/libraries/NFTDescriptor.sol", optimizer_runs = 1000 },
+  { paths = "src/pkgs/v3-periphery/contracts/*.sol", version = "0.7.6", via_ir = false, max_optimizer_runs = 1000000 },
+  { paths = "src/**/v3-periphery/**/libraries/**", version = "<0.8.0" },
+  # permit2
   { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
-  { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", max_optimizer_runs = 1 },
-  { paths = "src/pkgs/v4-periphery/src/[!i]|[!l]*.sol", version = "0.8.26", via_ir = true, min_evm_version = "cancun", max_optimizer_runs = 44444444 },
-  { paths = "src/pkgs/v4-periphery/src/libraries/Locker.sol", min_evm_version = "cancun" },
-  { paths = "src/pkgs/v4-core/src/**", version = "0.8.26", via_ir = true, min_evm_version = "cancun", max_optimizer_runs = 44444444 },
+  # v4
+  { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", optimizer_runs = 1, version = "0.8.26" },
+  { paths = "src/pkgs/v4-periphery/src/[!i]|[!l]*.sol", version = "0.8.26", via_ir = true, evm_version = "cancun", optimizer_runs = 44444444 },
+  { paths = "src/pkgs/v4-periphery/src/libraries/Locker.sol", evm_version = "cancun" },
+  { paths = "src/pkgs/v4-core/src/**", version = "0.8.26", via_ir = true, evm_version = "cancun", max_optimizer_runs = 44444444 },
+  { paths = "src/pkgs/v4-core/src/[!i]|[!l]|[!t]*.sol", version = "0.8.26", via_ir = true, evm_version = "cancun", optimizer_runs = 44444444 },
+  # router
   { paths = "src/pkgs/universal-router/contracts/**", via_ir = true },
+  { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
+  # X
   { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "0.8.24" },
-  { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false },
   # Briefcase
   { paths = "src/briefcase/protocols/v2-periphery/libraries/UniswapV2Library.sol", version = "<0.8.0" },
-  { paths = "src/briefcase/protocols/v3-core/libraries/TickBitmap.sol", version = "<0.8.0" },
-  { paths = "src/briefcase/protocols/v3-periphery/libraries/**", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/lib-external/solidity-lib/**", version = "<0.8.0" },
-  { paths = "src/briefcase/protocols/v4-core/libraries/**", min_evm_version = "cancun" },
-  { paths = "src/briefcase/protocols/v4-periphery/libraries/Locker.sol", min_evm_version = "cancun" },
+  { paths = "src/briefcase/protocols/v4-core/libraries/**", evm_version = "cancun" },
+  { paths = "src/briefcase/protocols/v4-periphery/libraries/Locker.sol", evm_version = "cancun" },
   { paths = "src/briefcase/protocols/swap-router-contracts/libraries/**", version = "<0.8.0" },
   # script
   { paths = "script/deploy/Deploy-all.s.sol", via_ir = true },

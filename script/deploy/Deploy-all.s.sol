@@ -3,6 +3,7 @@ pragma solidity 0.8.26;
 
 import {IPermit2, Permit2Deployer} from '../../src/briefcase/deployers/permit2/Permit2Deployer.sol';
 
+import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-contracts/SwapRouter02Deployer.sol';
 import {FeeOnTransferDetectorDeployer} from
     '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
 import {UniswapV2FactoryDeployer} from '../../src/briefcase/deployers/v2-core/UniswapV2FactoryDeployer.sol';
@@ -43,9 +44,11 @@ contract Deploy is Script {
 
         address v2Factory = deployV2Contracts(config);
 
-        address v3Factory = deployV3Contracts(config);
+        (address v3Factory, address nonfungiblePositionManager) = deployV3Contracts(config);
 
         deployViewQuoterV3(config, v3Factory);
+
+        deploySwapRouters(config, v2Factory, v3Factory, nonfungiblePositionManager);
 
         deployUtilsContracts(config, v2Factory);
 
@@ -88,10 +91,13 @@ contract Deploy is Script {
         }
     }
 
-    function deployV3Contracts(string memory config) private returns (address v3Factory) {
+    function deployV3Contracts(string memory config)
+        private
+        returns (address v3Factory, address nonfungiblePositionManager)
+    {
         bool deployV3 = config.readBool('.protocols.v3.deploy');
         if (!deployV3) {
-            return address(0);
+            return (v3Factory, nonfungiblePositionManager);
         }
         bool deployUniswapV3Factory = config.readBool('.protocols.v3.contracts.UniswapV3Factory.deploy');
         bool deployUniswapInterfaceMulticall =
@@ -108,7 +114,6 @@ contract Deploy is Script {
         // Params
         address nftDescriptor;
         address weth;
-        address nonfungiblePositionManager;
 
         if (deployUniswapV3Factory) {
             address initialOwner =
@@ -233,6 +238,30 @@ contract Deploy is Script {
         }
         console2.log('deploying View Quoter v3');
         QuoterDeployer.deploy(v3Factory);
+    }
+
+    function deploySwapRouters(
+        string memory config,
+        address v2Factory,
+        address v3Factory,
+        address nonfungiblePositionManager
+    ) private {
+        bool deploySwapRouter = config.readBool('.protocols.swap-router-contracts.deploy');
+        if (!deploySwapRouter) {
+            return;
+        }
+        if (v2Factory == address(0)) {
+            v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
+        }
+        if (v3Factory == address(0)) {
+            v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
+        }
+        if (nonfungiblePositionManager == address(0)) {
+            nonfungiblePositionManager = config.readAddress('.protocols.v3.contracts.NonfungiblePositonManager.address');
+        }
+        address weth = config.readAddress('.dependencies.weth.value');
+        console2.log('deploying Swap Router 02');
+        SwapRouter02Deployer.deploy(v2Factory, v3Factory, nonfungiblePositionManager, weth);
     }
 
     function deployUtilsContracts(string memory config, address v2Factory) private {
