@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import {Strings} from '../../lib-external/v4-core/lib/openzeppelin-contracts/contracts/utils/Strings.sol';
-
 /// @title HexStrings
 /// @notice Provides function for converting numbers to hexadecimal strings
 /// @dev Reference: https://github.com/Uniswap/v3-periphery/blob/main/contracts/libraries/HexStrings.sol

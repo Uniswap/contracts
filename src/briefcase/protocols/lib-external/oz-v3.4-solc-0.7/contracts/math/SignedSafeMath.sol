@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.7.0;
 
-import {SafeMath} from './SafeMath.sol';
-
 /**
  * @title SignedSafeMath
  * @dev Signed math operations with safety checks that revert on error.

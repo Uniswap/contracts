@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import {FullMath} from './FullMath.sol';
-import {LPFeeLibrary} from './LPFeeLibrary.sol';
 import {SqrtPriceMath} from './SqrtPriceMath.sol';
 
 /// @title Computes the result of a swap within ticks

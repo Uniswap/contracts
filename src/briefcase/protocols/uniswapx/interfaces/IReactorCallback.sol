@@ -2,7 +2,6 @@
 pragma solidity >=0.6.2;
 
 import {ResolvedOrder} from '../base/ReactorStructs.sol';
-import {IReactor} from './IReactor.sol';
 
 /// @notice Callback for executing orders through a reactor.
 interface IReactorCallback {

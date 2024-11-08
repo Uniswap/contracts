@@ -4,9 +4,7 @@ pragma solidity >=0.6.8 <0.8.0;
 import {IUniswapV3Pool} from '../../v3-core/interfaces/IUniswapV3Pool.sol';
 import {FixedPoint128} from '../../v3-core/libraries/FixedPoint128.sol';
 import {FullMath} from '../../v3-core/libraries/FullMath.sol';
-import {Tick} from '../../v3-core/libraries/Tick.sol';
 import {TickMath} from '../../v3-core/libraries/TickMath.sol';
-
 import {INonfungiblePositionManager} from '../interfaces/INonfungiblePositionManager.sol';
 import {LiquidityAmounts} from './LiquidityAmounts.sol';
 import {PoolAddress} from './PoolAddress.sol';

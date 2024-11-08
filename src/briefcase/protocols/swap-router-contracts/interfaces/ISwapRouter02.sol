@@ -2,7 +2,6 @@
 pragma solidity >=0.6.2;
 pragma abicoder v2;
 
-import {IMulticall} from '../../v3-periphery/interfaces/IMulticall.sol';
 import {ISelfPermit} from '../../v3-periphery/interfaces/ISelfPermit.sol';
 import {IApproveAndCall} from './IApproveAndCall.sol';
 import {IMulticallExtended} from './IMulticallExtended.sol';
