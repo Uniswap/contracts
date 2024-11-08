@@ -75,7 +75,7 @@ impl ExecuteDeployScriptScreen {
                 )
                 .arg(format!("--rpc-url={}", rpc_url))
                 .arg(format!("--private-key={}", private_key))
-                .arg("-vv");
+                .arg("-vvv");
             if explorer.is_some() && explorer_api_key.is_some() {
                 let explorer_api =
                     ExplorerApiLib::new(explorer.unwrap(), explorer_api_key.unwrap()).unwrap();
