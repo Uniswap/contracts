@@ -46,3 +46,6 @@
 [submodule "src/pkgs/util-contracts"]
 	path = src/pkgs/util-contracts
 	url = https://github.com/Uniswap/util-contracts.git
+[submodule "src/pkgs/swap-router-contracts"]
+	path = src/pkgs/swap-router-contracts
+	url = https://github.com/Uniswap/swap-router-contracts

@@ -55,6 +55,7 @@ compilation_restrictions = [
   { paths = "src/pkgs/v4-core/src/**", version = "0.8.26", via_ir = true, min_evm_version = "cancun", max_optimizer_runs = 44444444 },
   { paths = "src/pkgs/universal-router/contracts/**", via_ir = true },
   { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "0.8.24" },
+  { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false },
   # Briefcase
   { paths = "src/briefcase/protocols/v2-periphery/libraries/UniswapV2Library.sol", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/v3-core/libraries/TickBitmap.sol", version = "<0.8.0" },
