@@ -138,6 +138,30 @@
                 }
             }
         },
+        "swap-router-contracts": {
+            "name": "Swap Router Contracts",
+            "deploy": false,
+            "contracts": {
+                "SwapRouter02": {
+                    "deploy": false,
+                    "params": {
+                        "factoryV2": {
+                            "name": "Uniswap v2 factory address",
+                            "pointer": "protocols.v2.contracts.UniswapV2Factory"
+                        },
+                        "factoryV3": {
+                            "name": "Uniswap v3 factory address",
+                            "pointer": "protocols.v3.contracts.UniswapV3Factory"
+                        },
+                        "positionManager": {
+                            "name": "Uniswap v3 position manager address",
+                            "pointer": "protocols.v3.contracts.NonfungiblePositonManager"
+                        }
+                    },
+                    "dependencies": ["weth"]
+                }
+            }
+        },
         "util-contracts": {
             "name": "Utils",
             "deploy": false,
