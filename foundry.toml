@@ -63,6 +63,7 @@ compilation_restrictions = [
   { paths = "src/briefcase/protocols/lib-external/solidity-lib/**", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/v4-core/libraries/**", min_evm_version = "cancun" },
   { paths = "src/briefcase/protocols/v4-periphery/libraries/Locker.sol", min_evm_version = "cancun" },
+  { paths = "src/briefcase/protocols/swap-router-contracts/libraries/**", version = "<0.8.0" },
   # script
   { paths = "script/deploy/Deploy-all.s.sol", via_ir = true },
 ]
