@@ -110,6 +110,20 @@
                     },
                     "dependencies": ["weth"]
                 },
+                "V3Migrator": {
+                    "deploy": false,
+                    "params": {
+                        "factory": {
+                            "name": "Uniswap v3 factory address",
+                            "pointer": "protocols.v3.contracts.UniswapV3Factory"
+                        },
+                        "nonfungiblePositionManager": {
+                            "name": "Uniswap v3 position manager address",
+                            "pointer": "protocols.v3.contracts.NonfungiblePositonManager"
+                        }
+                    },
+                    "dependencies": ["weth"]
+                },
                 "SwapRouter": {
                     "deploy": false,
                     "address": null,

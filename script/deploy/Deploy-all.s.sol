@@ -40,7 +40,7 @@ contract Deploy is Script {
 
         vm.startBroadcast();
 
-        getPermit2(config);
+        deployPermit2(config);
 
         address v2Factory = deployV2Contracts(config);
 
@@ -170,7 +170,8 @@ contract Deploy is Script {
                 v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
             }
             console2.log('deploying Nonfungible Position Manager');
-            NonfungiblePositionManagerDeployer.deploy(v3Factory, weth, nftDescriptor);
+            nonfungiblePositionManager =
+                address(NonfungiblePositionManagerDeployer.deploy(v3Factory, weth, nftDescriptor));
         }
 
         if (deployV3Migrator) {
@@ -196,10 +197,10 @@ contract Deploy is Script {
         }
     }
 
-    function getPermit2(string memory config) private returns (address) {
-        bool deployPermit2 = config.readBool('.protocols.permit2.deploy');
-        if (!deployPermit2) {
-            return config.readAddress('.protocols.permit2.contracts.permit2.address');
+    function deployPermit2(string memory config) private returns (address) {
+        bool deployPermit2_ = config.readBool('.protocols.permit2.deploy');
+        if (!deployPermit2_) {
+            return address(0);
         }
 
         address deterministicProxy = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
@@ -224,7 +225,7 @@ contract Deploy is Script {
         require(result, 'Failed to deploy permit2');
         address computedAddress =
             computeAddress(deterministicProxy, salt, keccak256(abi.encodePacked(Permit2Deployer.initcode())));
-        console2.log('Computed address:', computedAddress);
+        console2.log('Computed permit2 address:', computedAddress);
         return computedAddress;
     }
 
