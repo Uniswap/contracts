@@ -76,6 +76,21 @@ impl ExecuteDeployScriptScreen {
                 .arg(format!("--rpc-url={}", rpc_url))
                 .arg(format!("--private-key={}", private_key))
                 .arg("-vvv");
+
+            match execute_command(&mut command) {
+                Ok(result) => {
+                    *execution_status.lock().unwrap() = ExecutionStatus::DryRunCompleted;
+                    if let Some(error_message) = result {
+                        *execution_error_message.lock().unwrap() = error_message;
+                    }
+                }
+                Err(e) => {
+                    *execution_status.lock().unwrap() = ExecutionStatus::Failed;
+                    *execution_error_message.lock().unwrap() = e.to_string();
+                    return;
+                }
+            }
+
             if explorer.is_some() && explorer_api_key.is_some() {
                 let explorer_api =
                     ExplorerApiLib::new(explorer.unwrap(), explorer_api_key.unwrap()).unwrap();
@@ -92,20 +107,6 @@ impl ExecuteDeployScriptScreen {
                     .arg(format!("--verifier-url={}", explorer_api.api_url));
                 if explorer_api.explorer_type == SupportedExplorerType::Etherscan {
                     command = command.arg(format!("--etherscan-api-key={}", explorer_api.api_key));
-                }
-            }
-
-            match execute_command(&mut command) {
-                Ok(result) => {
-                    *execution_status.lock().unwrap() = ExecutionStatus::DryRunCompleted;
-                    if let Some(error_message) = result {
-                        *execution_error_message.lock().unwrap() = error_message;
-                    }
-                }
-                Err(e) => {
-                    *execution_status.lock().unwrap() = ExecutionStatus::Failed;
-                    *execution_error_message.lock().unwrap() = e.to_string();
-                    return;
                 }
             }
 
