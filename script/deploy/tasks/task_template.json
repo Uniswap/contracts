@@ -204,7 +204,8 @@
                     "NonfungiblePositonManager.input.constructor._WETH9",
                     "NonFungibleTokenPositionDescriptor.input.constructor._WETH9",
                     "SwapRouter.input.constructor._WETH9",
-                    "Quoter.input.constructor._WETH9"
+                    "Quoter.input.constructor._WETH9",
+                    "UniswapV2Router02.input.constructor._WETH"
                 ]
             }
         }
