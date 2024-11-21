@@ -113,6 +113,7 @@ pub async fn generate_deployment_log(
             )
             .await?;
         let implementation_address = Address::from_word(FixedBytes::<32>::from(implementation));
+        let admin_address = Address::from_word(FixedBytes::<32>::from(admin));
         let (implementation_name, implementation_constructor_arguments, implementation_constructor) =
             explorer_api
                 .get_contract_data(implementation_address)
@@ -146,12 +147,12 @@ pub async fn generate_deployment_log(
         let mut res = json!({
         "contracts": {
             implementation_name.clone(): {
-                "address": contract_address,
-                "implementation": implementation,
+                "address": contract_address.to_checksum(None),
+                "implementation": implementation_address.to_checksum(None),
                 "proxy": true,
                 "proxyType": contract_name,
                 "deploymentTxn": tx_hash,
-                "proxyAdmin": admin,
+                "proxyAdmin": admin_address.to_checksum(None),
                 "input": {}
             }
         },
@@ -169,7 +170,7 @@ pub async fn generate_deployment_log(
         json!({
         "contracts": {
             contract_name.clone(): {
-                "address": contract_address,
+                "address": contract_address.to_checksum(None),
                 "proxy": false,
                 "deploymentTxn": tx_hash,
                 "input": {}
@@ -227,7 +228,6 @@ fn detect_duplicate(
     deployments_history: Vec<Value>,
     address: String,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    // TODO: add proxy support
     let history = deployments_history.clone();
     for item in history {
         for (_, v) in item["contracts"].as_object().unwrap() {
@@ -256,12 +256,24 @@ fn post_process_deployments_json(
             {
                 continue;
             }
-            latest[k] = json!({
-                    "address": v["address"],
-                    "proxy": v["proxy"],
-                    "deploymentTxn": v["deploymentTxn"],
-                    "timestamp": item["timestamp"]
-            });
+            latest[k] = if !v["proxy"].as_bool().unwrap_or(false) {
+                json!({
+                        "address": v["address"],
+                        "proxy": v["proxy"],
+                        "deploymentTxn": v["deploymentTxn"],
+                        "timestamp": item["timestamp"]
+                })
+            } else {
+                json!({
+                        "address": v["address"],
+                        "implementation": v["implementation"],
+                        "proxy": v["proxy"],
+                        "proxyType": v["proxyType"],
+                        "deploymentTxn": v["deploymentTxn"],
+                        "proxyAdmin": v["proxyAdmin"],
+                        "timestamp": item["timestamp"]
+                })
+            };
             if !item["commitHash"].is_null() {
                 latest[k]["commitHash"] = item["commitHash"].clone();
             }
