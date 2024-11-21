@@ -93,7 +93,8 @@ impl ExecuteDeployScriptScreen {
 
             if explorer.is_some() && explorer_api_key.is_some() {
                 let explorer_api =
-                    ExplorerApiLib::new(explorer.unwrap(), explorer_api_key.unwrap()).unwrap();
+                    ExplorerApiLib::new(explorer.clone().unwrap(), explorer_api_key.unwrap())
+                        .unwrap();
                 command = command
                     .arg("--verify")
                     .arg(format!(
@@ -134,6 +135,10 @@ impl ExecuteDeployScriptScreen {
                 .arg(rpc_url)
                 .arg("--force");
 
+            if explorer.is_some() {
+                command = command.arg("-e").arg(explorer.unwrap().url);
+            }
+
             match execute_command(&mut command) {
                 Ok(result) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::Success;
@@ -147,8 +152,6 @@ impl ExecuteDeployScriptScreen {
                     return;
                 }
             }
-
-            // TODO: add pool init code hashes to v2 and v3 factory deployments
 
             let _ =
                 std::fs::remove_file(get_config_dir(chain_id.clone()).join("task-pending.json"));

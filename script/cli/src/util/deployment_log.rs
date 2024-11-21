@@ -80,18 +80,19 @@ pub async fn generate_deployment_log(
         );
     }
 
-    let mut pool_init_code_hash: Option<FixedBytes<32>> = None;
-    if contract_name == "UniswapV2Factory" {
-        pool_init_code_hash = Some(
-            web3.get_v2_pool_init_code_hash(contract_address, block_number)
-                .await?,
-        );
-    } else if contract_name == "UniswapV3Factory" {
-        pool_init_code_hash = Some(
-            web3.get_v3_pool_init_code_hash(contract_address, block_number)
-                .await?,
-        );
-    }
+    // ignore pool init code hash for now because there is no good way to get it.
+    // let mut pool_init_code_hash: Option<FixedBytes<32>> = None;
+    // if contract_name == "UniswapV2Factory" {
+    //     pool_init_code_hash = Some(
+    //         web3.get_v2_pool_init_code_hash(contract_address, block_number)
+    //             .await?,
+    //     );
+    // } else if contract_name == "UniswapV3Factory" {
+    //     pool_init_code_hash = Some(
+    //         web3.get_v3_pool_init_code_hash(contract_address, block_number)
+    //             .await?,
+    //     );
+    // }
 
     let mut contract_data = json!({
         "contracts": {
@@ -111,10 +112,10 @@ pub async fn generate_deployment_log(
     } else {
         contract_data["contracts"][contract_name.clone()]["input"]["constructor"] = json!({});
     }
-    if pool_init_code_hash.is_some() {
-        contract_data["contracts"][contract_name]["poolInitCodeHash"] =
-            pool_init_code_hash.unwrap().to_string().into();
-    }
+    // if pool_init_code_hash.is_some() {
+    //     contract_data["contracts"][contract_name]["poolInitCodeHash"] =
+    //         pool_init_code_hash.unwrap().to_string().into();
+    // }
     deployments_json["history"]
         .as_array_mut()
         .unwrap()
