@@ -4,7 +4,7 @@
             "name": "Permit 2",
             "deploy": false,
             "contracts": {
-                "permit2": {
+                "Permit2": {
                     "deploy": false,
                     "address": null,
                     "params": {
@@ -189,6 +189,31 @@
                             "pointer": "protocols.v2.contracts.UniswapV2Factory"
                         }
                     }
+                }
+            }
+        },
+        "universal-router": {
+            "name": "Universal Router",
+            "deploy": false,
+            "contracts": {
+                "UniversalRouter": {
+                    "deploy": false,
+                    "params": {
+                        "permit2": {
+                            "name": "Permit 2 address",
+                            "pointer": "protocols.permit2.contracts.Permit2"
+                        },
+                        "v2Factory": {
+                            "name": "Uniswap v2 factory address",
+                            "pointer": "protocols.v2.contracts.UniswapV2Factory"
+                        },
+                        "v2PairInitCodeHash": {
+                            "name": "Uniswap v2 pair init code hash",
+                            "type": "bytes32",
+                            "value": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f"
+                        }
+                    },
+                    "dependencies": ["weth"]
                 }
             }
         }
