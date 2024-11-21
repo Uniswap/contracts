@@ -4,6 +4,8 @@ pragma solidity 0.8.26;
 import {IPermit2, Permit2Deployer} from '../../src/briefcase/deployers/permit2/Permit2Deployer.sol';
 
 import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-contracts/SwapRouter02Deployer.sol';
+
+import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-router/UniversalRouterDeployer.sol';
 import {FeeOnTransferDetectorDeployer} from
     '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
 import {UniswapV2FactoryDeployer} from '../../src/briefcase/deployers/v2-core/UniswapV2FactoryDeployer.sol';
@@ -40,7 +42,7 @@ contract Deploy is Script {
 
         vm.startBroadcast();
 
-        deployPermit2(config);
+        address permit2 = deployPermit2(config);
 
         address v2Factory = deployV2Contracts(config);
 
@@ -51,6 +53,8 @@ contract Deploy is Script {
         deploySwapRouters(config, v2Factory, v3Factory, nonfungiblePositionManager);
 
         deployUtilsContracts(config, v2Factory);
+
+        deployUniversalRouter(config, permit2, v2Factory);
 
         vm.stopBroadcast();
 
@@ -219,7 +223,7 @@ contract Deploy is Script {
             );
         }
 
-        bytes32 salt = config.readBytes32('.protocols.permit2.contracts.permit2.params.salt.value');
+        bytes32 salt = config.readBytes32('.protocols.permit2.contracts.Permit2.params.salt.value');
         console2.log('deploying Permit2');
         (bool result,) = deterministicProxy.call(abi.encodePacked(salt, Permit2Deployer.initcode()));
         require(result, 'Failed to deploy permit2');
@@ -275,6 +279,25 @@ contract Deploy is Script {
         }
         console2.log('deploying Fee On Transfer Detector');
         FeeOnTransferDetectorDeployer.deploy(v2Factory);
+    }
+
+    function deployUniversalRouter(string memory config, address permit2, address v2Factory) private {
+        bool deployUniversalRouter_ = config.readBool('.protocols.universal-router.deploy');
+        if (!deployUniversalRouter_) {
+            return;
+        }
+        if (permit2 == address(0)) {
+            permit2 = config.readAddress('.protocols.permit2.contracts.Permit2.address');
+        }
+        if (v2Factory == address(0)) {
+            v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
+        }
+        address weth = config.readAddress('.dependencies.weth.value');
+        bytes32 v2PairInitCodeHash =
+            config.readBytes32('.protocols.universal-router.contracts.UniversalRouter.params.v2PairInitCodeHash.value');
+
+        console2.log('deploying Universal Router');
+        UniversalRouterDeployer.deploy(permit2, weth, v2Factory, v2PairInitCodeHash);
     }
 }
 

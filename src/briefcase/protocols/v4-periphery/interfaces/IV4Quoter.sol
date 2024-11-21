@@ -5,12 +5,12 @@ import {Currency} from '../../v4-core/types/Currency.sol';
 import {PoolKey} from '../../v4-core/types/PoolKey.sol';
 import {PathKey} from '../libraries/PathKey.sol';
 
-/// @title Quoter Interface
+/// @title V4 Quoter Interface
 /// @notice Supports quoting the delta amounts for exact input or exact output swaps.
 /// @notice For each pool also tells you the sqrt price of the pool after the swap.
 /// @dev These functions are not marked view because they rely on calling non-view functions and reverting
 /// to compute the result. They are also not gas efficient and should not be called on-chain.
-interface IQuoter {
+interface IV4Quoter {
     struct QuoteExactSingleParams {
         PoolKey poolKey;
         bool zeroForOne;
