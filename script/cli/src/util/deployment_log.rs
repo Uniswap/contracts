@@ -2,10 +2,10 @@ use crate::libs::explorer::ExplorerApiLib;
 use crate::libs::web3::Web3Lib;
 use alloy::{
     dyn_abi::{DynSolValue, JsonAbiExt},
-    hex,
-    hex::FromHex,
+    hex::{self, FromHex},
     json_abi::Param,
-    primitives::{Address, FixedBytes},
+    primitives::{Address, FixedBytes, U256},
+    providers::Provider,
 };
 use serde_json::{json, Value};
 use std::path::PathBuf;
@@ -37,15 +37,15 @@ pub async fn generate_deployment_log(
         })
     };
 
-    let (contract_name, constructor_arguments, constructor) =
+    let (mut contract_name, constructor_arguments, mut constructor) =
         explorer_api.get_contract_data(contract_address).await?;
 
-    let local_out_path = working_dir
+    let local_out_path: PathBuf = working_dir
         .join("out")
         .join(contract_name.to_string() + ".sol")
         .join(contract_name.to_string() + ".json");
 
-    if !local_out_path.exists() {
+    if contract_name != "TransparentUpgradeableProxy" && !local_out_path.exists() {
         return Err(format!(
             "Smart contract '{}' not found in foundry 'out' directory",
             contract_name
@@ -93,19 +93,92 @@ pub async fn generate_deployment_log(
     //             .await?,
     //     );
     // }
+    let mut contract_data = if contract_name == "TransparentUpgradeableProxy" {
+        let admin: U256 = web3
+            .provider
+            .get_storage_at(
+                contract_address,
+                "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
+                    .parse()
+                    .unwrap(),
+            )
+            .await?;
+        let implementation: U256 = web3
+            .provider
+            .get_storage_at(
+                contract_address,
+                "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+                    .parse()
+                    .unwrap(),
+            )
+            .await?;
+        let implementation_address = Address::from_word(FixedBytes::<32>::from(implementation));
+        let (implementation_name, implementation_constructor_arguments, implementation_constructor) =
+            explorer_api
+                .get_contract_data(implementation_address)
+                .await?;
 
-    let mut contract_data = json!({
+        let local_out_path: PathBuf = working_dir
+            .join("out")
+            .join(implementation_name.to_string() + ".sol")
+            .join(implementation_name.to_string() + ".json");
+
+        if !local_out_path.exists() {
+            return Err(format!(
+                "Smart contract '{}' not found in foundry 'out' directory",
+                implementation_name
+            )
+            .into());
+        }
+
+        let mut implementation_args = None;
+        if implementation_constructor.is_some() {
+            implementation_args = Some(
+                implementation_constructor
+                    .clone()
+                    .unwrap()
+                    .abi_decode_input(
+                        &hex::decode(implementation_constructor_arguments).unwrap(),
+                        true,
+                    )?,
+            );
+        }
+        let mut res = json!({
+        "contracts": {
+            implementation_name.clone(): {
+                "address": contract_address,
+                "implementation": implementation,
+                "proxy": true,
+                "proxyType": contract_name,
+                "deploymentTxn": tx_hash,
+                "proxyAdmin": admin,
+                "input": {}
+            }
+        },
+            "timestamp": timestamp
+        });
+        contract_name = implementation_name;
+        if args.is_some() {
+            res["contracts"][contract_name.clone()]["input"]["proxy"] =
+                extract_constructor_inputs(constructor.unwrap().inputs, args.unwrap())?;
+            constructor = implementation_constructor;
+            args = implementation_args;
+        }
+        res
+    } else {
+        json!({
         "contracts": {
             contract_name.clone(): {
                 "address": contract_address,
-                // TODO: add proxy support
                 "proxy": false,
                 "deploymentTxn": tx_hash,
                 "input": {}
             }
         },
-        "timestamp": timestamp
-    });
+            "timestamp": timestamp
+        })
+    };
+
     if args.is_some() {
         contract_data["contracts"][contract_name.clone()]["input"]["constructor"] =
             extract_constructor_inputs(constructor.unwrap().inputs, args.unwrap())?;
