@@ -30,25 +30,50 @@ impl Web3Lib {
     }
 
     pub async fn get_block_number_by_transaction_hash(
-        &mut self,
+        &self,
         transaction_hash: FixedBytes<32>,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        let receipt = self
-            .provider
-            .get_transaction_receipt(transaction_hash)
+        // this leads to issues on arbitrum, extract the block number manually
+        // let receipt = self
+        //     .provider
+        //     .get_transaction_receipt(transaction_hash)
+        //     .await?;
+        // if receipt.is_none() {
+        //     return Err(format!(
+        //         "No receipt found for transaction hash: {}",
+        //         transaction_hash
+        //     )
+        //     .into());
+        // }
+        // Ok(receipt.unwrap().block_number.unwrap())
+        let client = reqwest::Client::new();
+        let response = client
+            .post(&self.rpc_url)
+            .json(&serde_json::json!({
+                "jsonrpc": "2.0",
+                "method": "eth_getTransactionReceipt",
+                "params": [transaction_hash.to_string()],
+                "id": 1
+            }))
+            .send()
             .await?;
-        if receipt.is_none() {
-            return Err(format!(
-                "No receipt found for transaction hash: {}",
-                transaction_hash
-            )
-            .into());
-        }
-        Ok(receipt.unwrap().block_number.unwrap())
+
+        let json: serde_json::Value = response.json().await?;
+        let block_number = u64::from_str_radix(
+            json["result"]["blockNumber"]
+                .as_str()
+                .ok_or(format!(
+                    "No receipt or block number found for transaction hash: {}",
+                    transaction_hash
+                ))?
+                .trim_start_matches("0x"),
+            16,
+        )?;
+        Ok(block_number)
     }
 
     pub async fn get_block_timestamp_by_block_number(
-        &mut self,
+        &self,
         block_number: u64,
     ) -> Result<u64, Box<dyn std::error::Error>> {
         let timestamp = self
@@ -61,6 +86,7 @@ impl Web3Lib {
         Ok(timestamp)
     }
 
+    /*
     pub async fn get_v2_pool_init_code_hash(
         &self,
         v2_factory: Address,
@@ -145,8 +171,9 @@ impl Web3Lib {
         let init_code_hash = keccak256(init_code.unwrap());
         Ok(init_code_hash)
     }
+    */
 }
-
+/*
 // recursively search calls for CREATE2 calls and return the init code
 fn get_init_code_from_calls(calls: Vec<CallFrame>, contract_address: Address) -> Option<Bytes> {
     for call in calls {
@@ -160,3 +187,4 @@ fn get_init_code_from_calls(calls: Vec<CallFrame>, contract_address: Address) ->
     }
     None
 }
+*/

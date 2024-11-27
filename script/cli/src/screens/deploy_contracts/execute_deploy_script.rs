@@ -111,7 +111,7 @@ impl ExecuteDeployScriptScreen {
                 }
             }
 
-            match execute_command(&mut command.arg("--broadcast")) {
+            match execute_command(&mut command.arg("--broadcast").arg("--skip-simulation")) {
                 Ok(result) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::DeploymentCompleted;
                     if let Some(error_message) = result {
