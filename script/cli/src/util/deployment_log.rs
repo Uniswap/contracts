@@ -37,6 +37,10 @@ pub async fn generate_deployment_log(
         })
     };
 
+    crate::errors::log(format!(
+        "Getting verified contract data for {} from explorer",
+        contract_address
+    ));
     let (mut contract_name, constructor_arguments, mut constructor) =
         explorer_api.get_contract_data(contract_address).await?;
 
@@ -58,20 +62,39 @@ pub async fn generate_deployment_log(
         contract_address.to_string(),
     )?;
 
+    crate::errors::log(format!(
+        "Getting creation transaction hash for {}",
+        contract_address
+    ));
     let tx_hash = explorer_api
         .get_creation_transaction_hash(contract_address)
         .await?;
 
-    let block_number = web3
-        .get_block_number_by_transaction_hash(FixedBytes::<32>::from_hex(tx_hash.as_str())?)
-        .await?;
+    crate::errors::log(format!(
+        "Getting block number for creation transaction hash {}",
+        tx_hash
+    ));
+    let block_number = if !tx_hash.starts_with("GENESIS") {
+        web3.get_block_number_by_transaction_hash(FixedBytes::<32>::from_hex(tx_hash.as_str())?)
+            .await?
+    } else {
+        1
+    };
 
+    crate::errors::log(format!(
+        "Getting block timestamp for block number {}",
+        block_number
+    ));
     let timestamp = web3
         .get_block_timestamp_by_block_number(block_number)
         .await?;
 
+    crate::errors::log(format!(
+        "Decoding constructor arguments {:?}\n{}",
+        constructor, constructor_arguments
+    ));
     let mut args = None;
-    if constructor.is_some() {
+    if constructor.is_some() && constructor_arguments.len() > 0 {
         args = Some(
             constructor
                 .clone()
@@ -94,6 +117,9 @@ pub async fn generate_deployment_log(
     //     );
     // }
     let mut contract_data = if contract_name == "TransparentUpgradeableProxy" {
+        crate::errors::log(format!(
+            "Proxy contract detected. Getting admin and implementation addresses"
+        ));
         let admin: U256 = web3
             .provider
             .get_storage_at(
@@ -103,6 +129,7 @@ pub async fn generate_deployment_log(
                     .unwrap(),
             )
             .await?;
+        crate::errors::log(format!("Admin storage slot: {}", admin));
         let implementation: U256 = web3
             .provider
             .get_storage_at(
@@ -112,12 +139,22 @@ pub async fn generate_deployment_log(
                     .unwrap(),
             )
             .await?;
+        crate::errors::log(format!("Implementation storage slot: {}", implementation));
         let implementation_address = Address::from_word(FixedBytes::<32>::from(implementation));
+        crate::errors::log(format!(
+            "Implementation address: {}",
+            implementation_address
+        ));
         let admin_address = Address::from_word(FixedBytes::<32>::from(admin));
+        crate::errors::log(format!("Admin address: {}", admin_address));
         let (implementation_name, implementation_constructor_arguments, implementation_constructor) =
             explorer_api
                 .get_contract_data(implementation_address)
                 .await?;
+        crate::errors::log(format!(
+            "implementation constructor arguments: {:?}\n{:?}",
+            implementation_constructor_arguments, implementation_constructor
+        ));
 
         let local_out_path: PathBuf = working_dir
             .join("out")
@@ -133,7 +170,7 @@ pub async fn generate_deployment_log(
         }
 
         let mut implementation_args = None;
-        if implementation_constructor.is_some() {
+        if implementation_constructor.is_some() && implementation_constructor_arguments.len() > 0 {
             implementation_args = Some(
                 implementation_constructor
                     .clone()
@@ -218,6 +255,10 @@ pub async fn generate_deployment_log(
         .arg(forge_chronicles_path)
         .arg("-c")
         .arg(chain_id)
+        .arg("--rpc-url")
+        .arg(web3.rpc_url)
+        .arg("-e")
+        .arg(explorer_api.url)
         .arg("-s")
         .output()
         .expect("Failed to execute markdown generation script");
