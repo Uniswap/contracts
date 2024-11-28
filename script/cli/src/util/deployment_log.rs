@@ -19,8 +19,8 @@ pub async fn generate_deployment_log(
     chain_id: String,
     working_dir: PathBuf,
     explorer_api: ExplorerApiLib,
-    mut web3: Web3Lib,
-) -> Result<(), Box<dyn std::error::Error>> {
+    web3: Web3Lib,
+) -> Result<(String), Box<dyn std::error::Error>> {
     // check if deployments/chainid.json exists, if yes load it
     let deployments_file = working_dir
         .join("deployments")
@@ -116,7 +116,8 @@ pub async fn generate_deployment_log(
     //             .await?,
     //     );
     // }
-    let mut contract_data = if contract_name == "TransparentUpgradeableProxy" {
+    let proxy = contract_name == "TransparentUpgradeableProxy";
+    let mut contract_data = if proxy {
         crate::errors::log(format!(
             "Proxy contract detected. Getting admin and implementation addresses"
         ));
@@ -262,7 +263,7 @@ pub async fn generate_deployment_log(
         .arg("-s")
         .output()
         .expect("Failed to execute markdown generation script");
-    Ok(())
+    Ok(if proxy { "Proxy:" } else { "" }.to_string() + &contract_name)
 }
 
 fn detect_duplicate(
