@@ -67,10 +67,10 @@
       "deploymentTxn": "0x0f0dcd724f195bd688b675280aa4391d53ebe46b88646af84bc7a096c80b4df2",
       "timestamp": 1622557730
     },
-    "Quoter": {
-      "address": "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6",
+    "SwapRouter": {
+      "address": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
       "proxy": false,
-      "deploymentTxn": "0x53173b717ccc1c2aeb47093246f93e3078ed0de8c92ef48ffdff91a91e7c6f03",
+      "deploymentTxn": "0xbe4eea418f93c0a2a44e6c2b3d9c763827943f01be333eeb8de83267e32d7214",
       "timestamp": 1622557651
     },
     "TickLens": {
@@ -79,10 +79,10 @@
       "deploymentTxn": "0xcb8a94f6492c7a568ad35ca9bc5fd3d965d5f664c8cbdf36d7d8300564829356",
       "timestamp": 1622557651
     },
-    "SwapRouter": {
-      "address": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+    "Quoter": {
+      "address": "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6",
       "proxy": false,
-      "deploymentTxn": "0xbe4eea418f93c0a2a44e6c2b3d9c763827943f01be333eeb8de83267e32d7214",
+      "deploymentTxn": "0x53173b717ccc1c2aeb47093246f93e3078ed0de8c92ef48ffdff91a91e7c6f03",
       "timestamp": 1622557651
     },
     "UniswapV3Factory": {
@@ -361,10 +361,10 @@
     },
     {
       "contracts": {
-        "Quoter": {
-          "address": "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6",
+        "SwapRouter": {
+          "address": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
           "proxy": false,
-          "deploymentTxn": "0x53173b717ccc1c2aeb47093246f93e3078ed0de8c92ef48ffdff91a91e7c6f03",
+          "deploymentTxn": "0xbe4eea418f93c0a2a44e6c2b3d9c763827943f01be333eeb8de83267e32d7214",
           "input": {
             "constructor": {
               "_factory": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
@@ -390,10 +390,10 @@
     },
     {
       "contracts": {
-        "SwapRouter": {
-          "address": "0xE592427A0AEce92De3Edee1F18E0157C05861564",
+        "Quoter": {
+          "address": "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6",
           "proxy": false,
-          "deploymentTxn": "0xbe4eea418f93c0a2a44e6c2b3d9c763827943f01be333eeb8de83267e32d7214",
+          "deploymentTxn": "0x53173b717ccc1c2aeb47093246f93e3078ed0de8c92ef48ffdff91a91e7c6f03",
           "input": {
             "constructor": {
               "_factory": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
