@@ -85,10 +85,8 @@ impl RegisterContractWorkflow {
                 )))
             }
             4 => {
-                // TODO: if no block explorer is found user needs to press enter twice to proceed to next screen displaying the error
-                return Ok(WorkflowResult::NextScreen(Box::new(
-                    BlockExplorerScreen::new()?,
-                )));
+                let screen = BlockExplorerScreen::new()?;
+                return Ok(WorkflowResult::NextScreen(Box::new(screen)));
             }
             5 => {
                 return Ok(WorkflowResult::NextScreen(Box::new(
