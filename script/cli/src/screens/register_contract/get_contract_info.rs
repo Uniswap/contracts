@@ -12,7 +12,7 @@ use std::sync::{Arc, Mutex};
 // chain id and rpc url MUST be set before this screen is rendered
 pub struct GetContractInfoScreen {
     execution_status: Arc<Mutex<ExecutionStatus>>,
-    execution_error_message: Arc<Mutex<String>>,
+    execution_message: Arc<Mutex<String>>,
     select: SelectComponent,
 }
 
@@ -31,7 +31,7 @@ impl GetContractInfoScreen {
                 "Exit".to_string(),
             ]),
             execution_status: Arc::new(Mutex::new(ExecutionStatus::Pending)),
-            execution_error_message: Arc::new(Mutex::new(String::new())),
+            execution_message: Arc::new(Mutex::new(String::new())),
         };
 
         let chain_id = STATE_MANAGER
@@ -45,7 +45,7 @@ impl GetContractInfoScreen {
 
         let web3 = STATE_MANAGER.workflow_state.lock()?.web3.clone().unwrap();
         let execution_status = Arc::clone(&screen.execution_status);
-        let execution_error_message = Arc::clone(&screen.execution_error_message);
+        let execution_message = Arc::clone(&screen.execution_message);
 
         let explorer = STATE_MANAGER
             .workflow_state
@@ -82,10 +82,13 @@ impl GetContractInfoScreen {
             )
             .await
             {
-                Ok(_) => *execution_status.lock().unwrap() = ExecutionStatus::Success,
+                Ok(contract_name) => {
+                    *execution_status.lock().unwrap() = ExecutionStatus::Success;
+                    *execution_message.lock().unwrap() = contract_name;
+                }
                 Err(e) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::Failed;
-                    *execution_error_message.lock().unwrap() = e.to_string();
+                    *execution_message.lock().unwrap() = e.to_string();
                 }
             }
         });
@@ -102,12 +105,15 @@ impl Screen for GetContractInfoScreen {
                 get_spinner_frame()
             ));
         } else if *self.execution_status.lock().unwrap() == ExecutionStatus::Success {
-            buffer.append_row_text("Deployment data generated successfully\n");
+            buffer.append_row_text(&format!(
+                "Deployment data generated successfully for {}\n",
+                self.execution_message.lock().unwrap()
+            ));
             self.select.render(buffer);
         } else if *self.execution_status.lock().unwrap() == ExecutionStatus::Failed {
             buffer.append_row_text(&format!(
                 "Error generating deployment data: {}\n",
-                self.execution_error_message.lock().unwrap()
+                self.execution_message.lock().unwrap()
             ));
             self.select.render(buffer);
         }
