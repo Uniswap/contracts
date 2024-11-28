@@ -20,7 +20,7 @@ pub async fn generate_deployment_log(
     working_dir: PathBuf,
     explorer_api: ExplorerApiLib,
     web3: Web3Lib,
-) -> Result<(String), Box<dyn std::error::Error>> {
+) -> Result<String, Box<dyn std::error::Error>> {
     // check if deployments/chainid.json exists, if yes load it
     let deployments_file = working_dir
         .join("deployments")
