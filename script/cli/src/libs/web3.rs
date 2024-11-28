@@ -1,11 +1,6 @@
 use alloy::eips::BlockNumberOrTag;
-use alloy::primitives::{utils::keccak256, Address, Bytes, FixedBytes};
-use alloy::providers::{ext::DebugApi, Provider, ProviderBuilder, RootProvider};
-use alloy::rpc::types::trace::geth::{
-    CallFrame, GethDebugBuiltInTracerType, GethDebugTracerType, GethDebugTracingOptions,
-    GethDefaultTracingOptions,
-};
-use alloy::rpc::types::Filter;
+use alloy::primitives::FixedBytes;
+use alloy::providers::{Provider, ProviderBuilder, RootProvider};
 use alloy::transports::http::Http;
 
 use reqwest::Client;
