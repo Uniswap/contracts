@@ -71,14 +71,34 @@ impl Web3Lib {
         &self,
         block_number: u64,
     ) -> Result<u64, Box<dyn std::error::Error>> {
-        let timestamp = self
-            .provider
-            .get_block_by_number(BlockNumberOrTag::Number(block_number), false)
-            .await?
-            .unwrap()
-            .header
-            .timestamp;
-        Ok(timestamp)
+        // this leads to issues on celo, extract the timestamp manually
+        // let timestamp = self
+        //     .provider
+        //     .get_block_by_number(BlockNumberOrTag::Number(block_number), false)
+        //     .await?
+        //     .unwrap()
+        //     .header
+        //     .timestamp;
+        // Ok(timestamp)
+        let client = reqwest::Client::new();
+        let response = client
+            .post(&self.rpc_url)
+            .json(&serde_json::json!({
+                "jsonrpc": "2.0",
+                "method": "eth_getBlockByNumber",
+                "params": [format!("0x{:x}", block_number), false],
+                "id": 1
+            }))
+            .send()
+            .await?;
+
+        let json: serde_json::Value = response.json().await?;
+        if !json["result"]["timestamp"].is_string() {
+            crate::errors::log(format!("returned block: {:?}", json));
+            return Err("No timestamp found".into());
+        }
+        let timestamp = json["result"]["timestamp"].as_str().unwrap();
+        Ok(u64::from_str_radix(&timestamp.replace("0x", ""), 16)?)
     }
 
     /*
