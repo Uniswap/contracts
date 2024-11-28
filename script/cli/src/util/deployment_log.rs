@@ -62,32 +62,26 @@ pub async fn generate_deployment_log(
         contract_address.to_string(),
     )?;
 
-    crate::errors::log(format!(
-        "Getting creation transaction hash for {}",
-        contract_address
-    ));
     let tx_hash = explorer_api
         .get_creation_transaction_hash(contract_address)
         .await?;
+    crate::errors::log(format!("creation transaction hash: {}", tx_hash));
 
-    crate::errors::log(format!(
-        "Getting block number for creation transaction hash {}",
-        tx_hash
-    ));
     let block_number = if !tx_hash.starts_with("GENESIS") {
         web3.get_block_number_by_transaction_hash(FixedBytes::<32>::from_hex(tx_hash.as_str())?)
             .await?
     } else {
         1
     };
-
     crate::errors::log(format!(
-        "Getting block timestamp for block number {}",
+        "block number for creation transaction hash: {}",
         block_number
     ));
+
     let timestamp = web3
         .get_block_timestamp_by_block_number(block_number)
         .await?;
+    crate::errors::log(format!("block timestamp for block number: {}", timestamp));
 
     crate::errors::log(format!(
         "Decoding constructor arguments {:?}\n{}",
