@@ -72,10 +72,6 @@ impl ScreenManager {
                     // a screen has returned an instruction to move to the next screen. If the screen has returned additional workflows in the vector, these will be passed to the current workflow to handle. An example for additional workflows is in the create_config workflow when the user can select multiple protocols to deploy and the create config workflow will insert additional screens based on the selected protocols.
                     let result = self.active_workflow.next_screen(new_workflows);
                     let next_screen_instance_failed = result.is_err();
-                    crate::errors::log(format!(
-                        "Next screen instance failed: {:?}",
-                        next_screen_instance_failed
-                    ));
                     self.handle_workflow_result(result);
                     if next_screen_instance_failed {
                         let error_result = self.active_workflow.next_screen(None);
@@ -116,7 +112,6 @@ impl ScreenManager {
         &mut self,
         result: Result<WorkflowResult, Box<dyn std::error::Error>>,
     ) {
-        crate::errors::log(format!("Workflow result: {:?}", result.is_ok()));
         if result.is_ok() {
             match result.unwrap() {
                 WorkflowResult::NextScreen(screen) => {
