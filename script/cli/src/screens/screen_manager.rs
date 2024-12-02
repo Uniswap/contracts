@@ -58,7 +58,10 @@ impl ScreenManager {
                     let result = self.active_workflow.as_mut().previous_screen();
                     self.handle_workflow_result(result);
                 }
-                (KeyModifiers::NONE, KeyCode::Esc) => self.reset(),
+                (KeyModifiers::NONE, KeyCode::Esc) => {
+                    self.reset();
+                    return;
+                }
                 _ => {}
             }
         }
