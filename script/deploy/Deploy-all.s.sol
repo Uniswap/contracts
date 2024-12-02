@@ -58,7 +58,7 @@ contract Deploy is Script {
 
         vm.stopBroadcast();
 
-        if (vm.isContext(VmSafe.ForgeContext.ScriptBroadcast)) {
+        if (vm.isContext(VmSafe.ForgeContext.ScriptBroadcast) && config.readBool('.rename')) {
             uint256 timestamp = vm.getBlockTimestamp();
             string memory output_filename = string.concat(
                 './script/deploy/tasks/', vm.toString(block.chainid), '/task-', vm.toString(timestamp), '.json'
