@@ -90,7 +90,7 @@ fn run_main_menu() -> Result<()> {
             buffer.draw()?;
         }
 
-        if poll(Duration::from_millis(16))? {
+        if poll(Duration::from_millis(1))? {
             let event = read()?;
 
             if let Event::Key(key_event) = event {

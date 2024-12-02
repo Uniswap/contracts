@@ -26,7 +26,6 @@ impl WorkflowState {
             chain_id: None,
             web3: None,
             explorer_api_key: None,
-            // deployment_history: HashMap::new(),
             block_explorer: None,
             register_contract_data: RegisterContractData { address: None },
             task: serde_json::json!({}),
