@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 dir=${1:-src/briefcase/protocols}
+rm -rf $dir
 tmp_dir="$(mktemp -q -d -t "$(basename "$0").XXXXXX")"
 
 replace_pragma_solidity() {

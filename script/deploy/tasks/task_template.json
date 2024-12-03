@@ -44,7 +44,9 @@
                             "pointer": "protocols.v2.contracts.UniswapV2Factory"
                         }
                     },
-                    "dependencies": ["weth"]
+                    "dependencies": [
+                        "weth"
+                    ]
                 }
             }
         },
@@ -76,7 +78,9 @@
                             "pointer": "protocols.v3.contracts.UniswapV3Factory"
                         }
                     },
-                    "dependencies": ["weth"]
+                    "dependencies": [
+                        "weth"
+                    ]
                 },
                 "TickLens": {
                     "deploy": false
@@ -86,6 +90,7 @@
                     "address": null,
                     "params": {
                         "nativeCurrencyLabel": {
+                            "name": "Native token symbol",
                             "type": "string",
                             "value": "ETH"
                         },
@@ -93,9 +98,11 @@
                             "type": "address"
                         }
                     },
-                    "dependencies": ["weth"]
+                    "dependencies": [
+                        "weth"
+                    ]
                 },
-                "NonfungiblePositonManager": {
+                "NonfungiblePositionManager": {
                     "deploy": false,
                     "address": null,
                     "params": {
@@ -108,7 +115,9 @@
                             "pointer": "protocols.v3.contracts.NonfungibleTokenPositionDescriptor"
                         }
                     },
-                    "dependencies": ["weth"]
+                    "dependencies": [
+                        "weth"
+                    ]
                 },
                 "V3Migrator": {
                     "deploy": false,
@@ -119,10 +128,12 @@
                         },
                         "nonfungiblePositionManager": {
                             "name": "Uniswap v3 position manager address",
-                            "pointer": "protocols.v3.contracts.NonfungiblePositonManager"
+                            "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
                         }
                     },
-                    "dependencies": ["weth"]
+                    "dependencies": [
+                        "weth"
+                    ]
                 },
                 "SwapRouter": {
                     "deploy": false,
@@ -133,7 +144,90 @@
                             "pointer": "protocols.v3.contracts.UniswapV3Factory"
                         }
                     },
-                    "dependencies": ["weth"]
+                    "dependencies": [
+                        "weth"
+                    ]
+                }
+            }
+        },
+        "v4": {
+            "name": "Uniswap v4",
+            "deploy": false,
+            "contracts": {
+                "PoolManager": {
+                    "deploy": false,
+                    "address": null,
+                    "lookup": {
+                        "latest": "PoolManager"
+                    },
+                    "params": {
+                        "initialOwner": {
+                            "type": "address"
+                        }
+                    }
+                },
+                "PositionDescriptor": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "nativeCurrencyLabel": {
+                            "name": "Native token symbol",
+                            "type": "string",
+                            "value": "ETH"
+                        }
+                    },
+                    "dependencies": [
+                        "weth"
+                    ]
+                },
+                "NonfungiblePositionManager": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "permit2": {
+                            "name": "Permit 2 address",
+                            "pointer": "protocols.permit2.contracts.Permit2"
+                        },
+                        "unsubscribeGasLimit": {
+                            "name": "Unsubscribe gas limit",
+                            "type": "uint256"
+                        },
+                        "positionDescriptor": {
+                            "name": "Position Descriptor address",
+                            "pointer": "protocols.v4.contracts.PositionDescriptor"
+                        }
+                    },
+                    "dependencies": [
+                        "weth"
+                    ]
+                },
+                "V4Quoter": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        }
+                    }
+                },
+                "StateView": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        }
+                    }
                 }
             }
         },
@@ -169,10 +263,12 @@
                         },
                         "positionManager": {
                             "name": "Uniswap v3 position manager address",
-                            "pointer": "protocols.v3.contracts.NonfungiblePositonManager"
+                            "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
                         }
                     },
-                    "dependencies": ["weth"]
+                    "dependencies": [
+                        "weth"
+                    ]
                 }
             }
         },
@@ -213,7 +309,9 @@
                             "value": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f"
                         }
                     },
-                    "dependencies": ["weth"]
+                    "dependencies": [
+                        "weth"
+                    ]
                 }
             }
         }
@@ -226,7 +324,7 @@
                     "UniversalRouter.input.constructor.params.weth9",
                     "QuoterV2.input.constructor._WETH9",
                     "V3Migrator.input.constructor._WETH9",
-                    "NonfungiblePositonManager.input.constructor._WETH9",
+                    "NonfungiblePositionManager.input.constructor._WETH9",
                     "NonFungibleTokenPositionDescriptor.input.constructor._WETH9",
                     "SwapRouter.input.constructor._WETH9",
                     "Quoter.input.constructor._WETH9",
