@@ -4,6 +4,7 @@ out = "out"
 libs = ["lib"]
 verbosity = 2
 bytecode_hash = "none"
+auto_detect_remappings = false
 
 fs_permissions = [
   { access = "read-write", path = ".forge-snapshots"},
@@ -20,6 +21,8 @@ skip = [
   "src/pkgs/universal-router/permit2/**",
   "src/pkgs/universal-router/solmate/**",
   "src/pkgs/**/*.s.sol",
+  # ignoring v4-core during compilation, check PoolManagerImport.sol for explanation
+  "src/pkgs/v4-core/**",
   "*.t.sol",
 ]
 
@@ -52,6 +55,7 @@ compilation_restrictions = [
   # permit2
   { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
   # v4
+  { paths = "lib/v4-core/src/PoolManager.sol", optimizer_runs = 44444444 },
   { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", version = "0.8.26", optimizer_runs = 1 },
   { paths = "src/pkgs/v4-periphery/src/PositionManager.sol", version = "0.8.26", optimizer_runs = 30000 },
   { paths = "src/pkgs/v4-periphery/src/lens/**", version = "0.8.26", optimizer_runs = 44444444 },

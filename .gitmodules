@@ -49,3 +49,6 @@
 [submodule "src/pkgs/swap-router-contracts"]
 	path = src/pkgs/swap-router-contracts
 	url = https://github.com/Uniswap/swap-router-contracts
+[submodule "lib/v4-core"]
+	path = lib/v4-core
+	url = https://github.com/Uniswap/v4-core
