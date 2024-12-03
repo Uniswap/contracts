@@ -30,6 +30,14 @@ import {QuoterDeployer} from '../../src/briefcase/deployers/view-quoter-v3/Quote
 import {TransparentUpgradeableProxy} from
     'lib/v4-core/lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol';
 
+import {PoolManagerDeployer} from '../../src/briefcase/deployers/v4-core/PoolManagerDeployer.sol';
+
+import {PositionDescriptorDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionDescriptorDeployer.sol';
+import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionManagerDeployer.sol';
+
+import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
+import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
+
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {VmSafe} from 'forge-std/Vm.sol';
 
@@ -43,6 +51,8 @@ contract Deploy is Script {
     address v2Factory;
     address v3Factory;
     address nonfungiblePositionManager;
+    address poolManager;
+    address positionManager;
 
     function run() public {
         config = vm.readFile(string.concat('./script/deploy/tasks/', vm.toString(block.chainid), '/task-pending.json'));
@@ -54,6 +64,8 @@ contract Deploy is Script {
         deployV2Contracts();
 
         deployV3Contracts();
+
+        deployV4Contracts();
 
         deployViewQuoterV3();
 
@@ -75,8 +87,7 @@ contract Deploy is Script {
     }
 
     function deployV2Contracts() private {
-        bool deployV2 = config.readBool('.protocols.v2.deploy');
-        if (!deployV2) return;
+        if (!config.readBool('.protocols.v2.deploy')) return;
 
         bool deployUniswapV2Factory = config.readBool('.protocols.v2.contracts.UniswapV2Factory.deploy');
         bool deployUniswapV2Router02 = config.readBool('.protocols.v2.contracts.UniswapV2Router02.deploy');
@@ -101,8 +112,7 @@ contract Deploy is Script {
     }
 
     function deployV3Contracts() private {
-        bool deployV3 = config.readBool('.protocols.v3.deploy');
-        if (!deployV3) return;
+        if (!config.readBool('.protocols.v3.deploy')) return;
 
         bool deployUniswapV3Factory = config.readBool('.protocols.v3.contracts.UniswapV3Factory.deploy');
         bool deployUniswapInterfaceMulticall =
@@ -111,8 +121,8 @@ contract Deploy is Script {
         bool deployTickLens = config.readBool('.protocols.v3.contracts.TickLens.deploy');
         bool deployNonfungibleTokenPositionDescriptor =
             config.readBool('.protocols.v3.contracts.NonfungibleTokenPositionDescriptor.deploy');
-        bool deployNonfungiblePositonManager =
-            config.readBool('.protocols.v3.contracts.NonfungiblePositonManager.deploy');
+        bool deployNonfungiblePositionManager =
+            config.readBool('.protocols.v3.contracts.NonfungiblePositionManager.deploy');
         bool deployV3Migrator = config.readBool('.protocols.v3.contracts.V3Migrator.deploy');
         bool deploySwapRouter = config.readBool('.protocols.v3.contracts.SwapRouter.deploy');
 
@@ -163,7 +173,7 @@ contract Deploy is Script {
             nftDescriptor = address(new TransparentUpgradeableProxy(nftDescriptorImplementation, proxyAdminOwner, ''));
         }
 
-        if (deployNonfungiblePositonManager) {
+        if (deployNonfungiblePositionManager) {
             if (!deployNonfungibleTokenPositionDescriptor) {
                 nftDescriptor = config.readAddress('.protocols.v3.contracts.NonfungibleTokenPositionDescriptor.address');
             }
@@ -179,9 +189,9 @@ contract Deploy is Script {
             if (!deployUniswapV3Factory) {
                 v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
             }
-            if (!deployNonfungiblePositonManager) {
+            if (!deployNonfungiblePositionManager) {
                 nonfungiblePositionManager =
-                    config.readAddress('.protocols.v3.contracts.NonfungiblePositonManager.address');
+                    config.readAddress('.protocols.v3.contracts.NonfungiblePositionManager.address');
             }
             console.log('deploying V3 Migrator');
             V3MigratorDeployer.deploy(v3Factory, weth(), nonfungiblePositionManager);
@@ -196,11 +206,70 @@ contract Deploy is Script {
         }
     }
 
-    function deployPermit2() private returns (address) {
-        bool deployPermit2_ = config.readBool('.protocols.permit2.deploy');
-        if (!deployPermit2_) {
-            return address(0);
+    function deployV4Contracts() private {
+        if (!config.readBool('.protocols.v4.deploy')) return;
+
+        bool deployPoolManager = config.readBool('.protocols.v4.contracts.PoolManager.deploy');
+        bool deployPositionDescriptor = config.readBool('.protocols.v4.contracts.PositionDescriptor.deploy');
+        bool deployPositionManager = config.readBool('.protocols.v4.contracts.PositionManager.deploy');
+        bool deployV4Quoter = config.readBool('.protocols.v4.contracts.V4Quoter.deploy');
+        bool deployStateView = config.readBool('.protocols.v4.contracts.StateView.deploy');
+
+        address positionDescriptor;
+
+        if (deployPoolManager) {
+            address initialOwner = config.readAddress('.protocols.v4.contracts.PoolManager.params.initialOwner.value');
+            console.log('deploying Pool Manager');
+            poolManager = address(PoolManagerDeployer.deploy(initialOwner));
         }
+
+        if (deployPositionDescriptor) {
+            string memory nativeCurrencyLabel =
+                config.readString('.protocols.v4.contracts.PositionDescriptor.params.nativeCurrencyLabel.value');
+            if (!deployPoolManager) {
+                poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+            }
+            positionDescriptor = address(PositionDescriptorDeployer.deploy(poolManager, weth(), nativeCurrencyLabel));
+        }
+
+        if (deployPositionManager) {
+            if (!deployPoolManager) {
+                poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+            }
+            if (permit2 == address(0)) {
+                permit2 = config.readAddress('.protocols.permit2.contracts.Permit2.address');
+            }
+            uint256 unsubscribeGasLimit =
+                config.readUint('.protocols.v4.contracts.PositionManager.params.unsubscribeGasLimit.value');
+            if (!deployPositionDescriptor) {
+                positionDescriptor = config.readAddress('.protocols.v4.contracts.PositionDescriptor.address');
+            }
+            console.log('deploying Position Manager');
+            positionManager = address(
+                PositionManagerDeployer.deploy(poolManager, permit2, unsubscribeGasLimit, positionDescriptor, weth())
+            );
+        }
+
+        if (deployV4Quoter) {
+            if (!deployPoolManager) {
+                poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+            }
+            console.log('deploying V4 Quoter');
+            V4QuoterDeployer.deploy(poolManager);
+        }
+
+        if (deployStateView) {
+            if (!deployPoolManager) {
+                poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+            }
+            console.log('deploying State View');
+            StateViewDeployer.deploy(poolManager);
+        }
+    }
+
+    function deployPermit2() private {
+        // TODO: handle permit2 more like WETH, get code at default address and check whether it's already deployed, if not, deploy it
+        if (!config.readBool('.protocols.permit2.deploy')) return;
 
         address deterministicProxy = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
         if (deterministicProxy.code.length == 0) {
@@ -225,12 +294,11 @@ contract Deploy is Script {
         address computedAddress =
             computeAddress(deterministicProxy, salt, keccak256(abi.encodePacked(Permit2Deployer.initcode())));
         console.log('Computed permit2 address:', computedAddress);
-        return computedAddress;
+        permit2 = computedAddress;
     }
 
     function deployViewQuoterV3() private {
-        bool deployViewQuoter = config.readBool('.protocols.view-quoter-v3.deploy');
-        if (!deployViewQuoter) return;
+        if (!config.readBool('.protocols.view-quoter-v3.deploy')) return;
 
         if (v3Factory == address(0)) {
             v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
@@ -240,8 +308,7 @@ contract Deploy is Script {
     }
 
     function deploySwapRouters() private {
-        bool deploySwapRouter = config.readBool('.protocols.swap-router-contracts.deploy');
-        if (!deploySwapRouter) return;
+        if (!config.readBool('.protocols.swap-router-contracts.deploy')) return;
 
         if (v2Factory == address(0)) {
             v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
@@ -250,17 +317,16 @@ contract Deploy is Script {
             v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
         }
         if (nonfungiblePositionManager == address(0)) {
-            nonfungiblePositionManager = config.readAddress('.protocols.v3.contracts.NonfungiblePositonManager.address');
+            nonfungiblePositionManager =
+                config.readAddress('.protocols.v3.contracts.NonfungiblePositionManager.address');
         }
         console.log('deploying Swap Router 02');
         SwapRouter02Deployer.deploy(v2Factory, v3Factory, nonfungiblePositionManager, weth());
     }
 
     function deployUtilsContracts() private {
-        bool deployUtils = config.readBool('.protocols.util-contracts.deploy');
-        if (!deployUtils) {
-            return;
-        }
+        if (!config.readBool('.protocols.util-contracts.deploy')) return;
+
         if (v2Factory == address(0)) {
             v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
         }
@@ -269,10 +335,8 @@ contract Deploy is Script {
     }
 
     function deployUniversalRouter() private {
-        bool deployUniversalRouter_ = config.readBool('.protocols.universal-router.deploy');
-        if (!deployUniversalRouter_) {
-            return;
-        }
+        if (!config.readBool('.protocols.universal-router.deploy')) return;
+
         if (permit2 == address(0)) {
             permit2 = config.readAddress('.protocols.permit2.contracts.Permit2.address');
         }

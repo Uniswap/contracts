@@ -21,8 +21,6 @@ skip = [
   "src/pkgs/universal-router/permit2/**",
   "src/pkgs/universal-router/solmate/**",
   "src/pkgs/**/*.s.sol",
-  # ignoring v4-core during compilation, check PoolManagerImport.sol for explanation
-  "src/pkgs/v4-core/**",
   "*.t.sol",
 ]
 

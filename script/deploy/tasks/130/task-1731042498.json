@@ -102,7 +102,7 @@
             "weth"
           ]
         },
-        "NonfungiblePositonManager": {
+        "NonfungiblePositionManager": {
           "deploy": true,
           "address": null,
           "params": {
@@ -128,7 +128,7 @@
             },
             "nonfungiblePositionManager": {
               "name": "Uniswap v3 position manager address",
-              "pointer": "protocols.v3.contracts.NonfungiblePositonManager"
+              "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
             }
           },
           "dependencies": [
@@ -182,7 +182,7 @@
             },
             "positionManager": {
               "name": "Uniswap v3 position manager address",
-              "pointer": "protocols.v3.contracts.NonfungiblePositonManager"
+              "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
             }
           },
           "dependencies": [
@@ -216,7 +216,7 @@
           "UniversalRouter.input.constructor.params.weth9",
           "QuoterV2.input.constructor._WETH9",
           "V3Migrator.input.constructor._WETH9",
-          "NonfungiblePositonManager.input.constructor._WETH9",
+          "NonfungiblePositionManager.input.constructor._WETH9",
           "NonFungibleTokenPositionDescriptor.input.constructor._WETH9",
           "SwapRouter.input.constructor._WETH9",
           "Quoter.input.constructor._WETH9"
