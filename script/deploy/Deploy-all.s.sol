@@ -36,25 +36,32 @@ import {VmSafe} from 'forge-std/Vm.sol';
 contract Deploy is Script {
     using stdJson for string;
 
+    address _weth;
+    string config;
+
+    address permit2;
+    address v2Factory;
+    address v3Factory;
+    address nonfungiblePositionManager;
+
     function run() public {
-        string memory config =
-            vm.readFile(string.concat('./script/deploy/tasks/', vm.toString(block.chainid), '/task-pending.json'));
+        config = vm.readFile(string.concat('./script/deploy/tasks/', vm.toString(block.chainid), '/task-pending.json'));
 
         vm.startBroadcast();
 
-        address permit2 = deployPermit2(config);
+        deployPermit2();
 
-        address v2Factory = deployV2Contracts(config);
+        deployV2Contracts();
 
-        (address v3Factory, address nonfungiblePositionManager) = deployV3Contracts(config);
+        deployV3Contracts();
 
-        deployViewQuoterV3(config, v3Factory);
+        deployViewQuoterV3();
 
-        deploySwapRouters(config, v2Factory, v3Factory, nonfungiblePositionManager);
+        deploySwapRouters();
 
-        deployUtilsContracts(config, v2Factory);
+        deployUtilsContracts();
 
-        deployUniversalRouter(config, permit2, v2Factory);
+        deployUniversalRouter();
 
         vm.stopBroadcast();
 
@@ -67,18 +74,15 @@ contract Deploy is Script {
         }
     }
 
-    function deployV2Contracts(string memory config) private returns (address v2Factory) {
+    function deployV2Contracts() private {
         bool deployV2 = config.readBool('.protocols.v2.deploy');
-        if (!deployV2) {
-            return address(0);
-        }
+        if (!deployV2) return;
 
         bool deployUniswapV2Factory = config.readBool('.protocols.v2.contracts.UniswapV2Factory.deploy');
         bool deployUniswapV2Router02 = config.readBool('.protocols.v2.contracts.UniswapV2Router02.deploy');
 
         // Params
         address feeToSetter;
-        address weth;
 
         if (deployUniswapV2Factory) {
             feeToSetter = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.params.feeToSetter.value');
@@ -87,24 +91,19 @@ contract Deploy is Script {
         }
 
         if (deployUniswapV2Router02) {
-            weth = config.readAddress('.dependencies.weth.value');
             if (!deployUniswapV2Factory) {
                 v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
             }
 
             console.log('deploying Uniswap v2 Router 02');
-            UniswapV2Router02Deployer.deploy(v2Factory, weth);
+            UniswapV2Router02Deployer.deploy(v2Factory, weth());
         }
     }
 
-    function deployV3Contracts(string memory config)
-        private
-        returns (address v3Factory, address nonfungiblePositionManager)
-    {
+    function deployV3Contracts() private {
         bool deployV3 = config.readBool('.protocols.v3.deploy');
-        if (!deployV3) {
-            return (v3Factory, nonfungiblePositionManager);
-        }
+        if (!deployV3) return;
+
         bool deployUniswapV3Factory = config.readBool('.protocols.v3.contracts.UniswapV3Factory.deploy');
         bool deployUniswapInterfaceMulticall =
             config.readBool('.protocols.v3.contracts.UniswapInterfaceMulticall.deploy');
@@ -119,7 +118,6 @@ contract Deploy is Script {
 
         // Params
         address nftDescriptor;
-        address weth;
 
         if (deployUniswapV3Factory) {
             address initialOwner =
@@ -137,12 +135,11 @@ contract Deploy is Script {
         }
 
         if (deployQuoterV2) {
-            weth = config.readAddress('.dependencies.weth.value');
             if (!deployUniswapV3Factory) {
                 v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
             }
             console.log('deploying Quoter V2');
-            QuoterV2Deployer.deploy(v3Factory, weth);
+            QuoterV2Deployer.deploy(v3Factory, weth());
         }
 
         if (deployTickLens) {
@@ -151,7 +148,6 @@ contract Deploy is Script {
         }
 
         if (deployNonfungibleTokenPositionDescriptor) {
-            weth = config.readAddress('.dependencies.weth.value');
             string memory nativeCurrencyLabel = config.readString(
                 '.protocols.v3.contracts.NonfungibleTokenPositionDescriptor.params.nativeCurrencyLabel.value'
             );
@@ -163,12 +159,11 @@ contract Deploy is Script {
                 '.protocols.v3.contracts.NonfungibleTokenPositionDescriptor.params.proxyAdminOwner.value'
             );
             address nftDescriptorImplementation =
-                address(NonfungibleTokenPositionDescriptorDeployer.deploy(weth, nativeCurrencyLabelBytes));
+                address(NonfungibleTokenPositionDescriptorDeployer.deploy(weth(), nativeCurrencyLabelBytes));
             nftDescriptor = address(new TransparentUpgradeableProxy(nftDescriptorImplementation, proxyAdminOwner, ''));
         }
 
         if (deployNonfungiblePositonManager) {
-            weth = config.readAddress('.dependencies.weth.value');
             if (!deployNonfungibleTokenPositionDescriptor) {
                 nftDescriptor = config.readAddress('.protocols.v3.contracts.NonfungibleTokenPositionDescriptor.address');
             }
@@ -177,11 +172,10 @@ contract Deploy is Script {
             }
             console.log('deploying Nonfungible Position Manager');
             nonfungiblePositionManager =
-                address(NonfungiblePositionManagerDeployer.deploy(v3Factory, weth, nftDescriptor));
+                address(NonfungiblePositionManagerDeployer.deploy(v3Factory, weth(), nftDescriptor));
         }
 
         if (deployV3Migrator) {
-            weth = config.readAddress('.dependencies.weth.value');
             if (!deployUniswapV3Factory) {
                 v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
             }
@@ -190,20 +184,19 @@ contract Deploy is Script {
                     config.readAddress('.protocols.v3.contracts.NonfungiblePositonManager.address');
             }
             console.log('deploying V3 Migrator');
-            V3MigratorDeployer.deploy(v3Factory, weth, nonfungiblePositionManager);
+            V3MigratorDeployer.deploy(v3Factory, weth(), nonfungiblePositionManager);
         }
 
         if (deploySwapRouter) {
-            weth = config.readAddress('.dependencies.weth.value');
             if (!deployUniswapV3Factory) {
                 console.log('deploying Swap Router');
                 v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
             }
-            SwapRouterDeployer.deploy(v3Factory, weth);
+            SwapRouterDeployer.deploy(v3Factory, weth());
         }
     }
 
-    function deployPermit2(string memory config) private returns (address) {
+    function deployPermit2() private returns (address) {
         bool deployPermit2_ = config.readBool('.protocols.permit2.deploy');
         if (!deployPermit2_) {
             return address(0);
@@ -235,11 +228,10 @@ contract Deploy is Script {
         return computedAddress;
     }
 
-    function deployViewQuoterV3(string memory config, address v3Factory) private {
+    function deployViewQuoterV3() private {
         bool deployViewQuoter = config.readBool('.protocols.view-quoter-v3.deploy');
-        if (!deployViewQuoter) {
-            return;
-        }
+        if (!deployViewQuoter) return;
+
         if (v3Factory == address(0)) {
             v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
         }
@@ -247,16 +239,10 @@ contract Deploy is Script {
         QuoterDeployer.deploy(v3Factory);
     }
 
-    function deploySwapRouters(
-        string memory config,
-        address v2Factory,
-        address v3Factory,
-        address nonfungiblePositionManager
-    ) private {
+    function deploySwapRouters() private {
         bool deploySwapRouter = config.readBool('.protocols.swap-router-contracts.deploy');
-        if (!deploySwapRouter) {
-            return;
-        }
+        if (!deploySwapRouter) return;
+
         if (v2Factory == address(0)) {
             v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
         }
@@ -266,12 +252,11 @@ contract Deploy is Script {
         if (nonfungiblePositionManager == address(0)) {
             nonfungiblePositionManager = config.readAddress('.protocols.v3.contracts.NonfungiblePositonManager.address');
         }
-        address weth = config.readAddress('.dependencies.weth.value');
         console.log('deploying Swap Router 02');
-        SwapRouter02Deployer.deploy(v2Factory, v3Factory, nonfungiblePositionManager, weth);
+        SwapRouter02Deployer.deploy(v2Factory, v3Factory, nonfungiblePositionManager, weth());
     }
 
-    function deployUtilsContracts(string memory config, address v2Factory) private {
+    function deployUtilsContracts() private {
         bool deployUtils = config.readBool('.protocols.util-contracts.deploy');
         if (!deployUtils) {
             return;
@@ -283,7 +268,7 @@ contract Deploy is Script {
         FeeOnTransferDetectorDeployer.deploy(v2Factory);
     }
 
-    function deployUniversalRouter(string memory config, address permit2, address v2Factory) private {
+    function deployUniversalRouter() private {
         bool deployUniversalRouter_ = config.readBool('.protocols.universal-router.deploy');
         if (!deployUniversalRouter_) {
             return;
@@ -294,12 +279,18 @@ contract Deploy is Script {
         if (v2Factory == address(0)) {
             v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
         }
-        address weth = config.readAddress('.dependencies.weth.value');
         bytes32 v2PairInitCodeHash =
             config.readBytes32('.protocols.universal-router.contracts.UniversalRouter.params.v2PairInitCodeHash.value');
 
         console.log('deploying Universal Router');
-        UniversalRouterDeployer.deploy(permit2, weth, v2Factory, v2PairInitCodeHash);
+        UniversalRouterDeployer.deploy(permit2, weth(), v2Factory, v2PairInitCodeHash);
+    }
+
+    function weth() internal returns (address) {
+        if (_weth == address(0)) {
+            _weth = config.readAddress('.dependencies.weth.value');
+        }
+        return _weth;
     }
 }
 
