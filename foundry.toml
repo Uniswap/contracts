@@ -70,8 +70,6 @@ compilation_restrictions = [
   { paths = "src/briefcase/protocols/v4-core/libraries/**", evm_version = "cancun" },
   { paths = "src/briefcase/protocols/v4-periphery/libraries/Locker.sol", evm_version = "cancun" },
   { paths = "src/briefcase/protocols/swap-router-contracts/libraries/**", version = "<0.8.0" },
-  # script
-  { paths = "script/deploy/Deploy-all.s.sol", via_ir = true },
 ]
 
 [fmt]
