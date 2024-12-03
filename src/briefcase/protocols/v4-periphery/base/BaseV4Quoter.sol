@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 
 import {IPoolManager} from '../../v4-core/interfaces/IPoolManager.sol';
 import {TickMath} from '../../v4-core/libraries/TickMath.sol';

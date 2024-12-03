@@ -4,8 +4,8 @@ pragma solidity >= 0.8.0;
 import {IPoolManager} from '../../protocols/v4-core/interfaces/IPoolManager.sol';
 
 library PoolManagerDeployer {
-    function deploy(uint256 controllerGasLimit) internal returns (IPoolManager manager) {
-        bytes memory args = abi.encode(controllerGasLimit);
+    function deploy(address initialOwner) internal returns (IPoolManager manager) {
+        bytes memory args = abi.encode(initialOwner);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
 
         assembly {
