@@ -1,6 +1,5 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
-
-// SPADIX-License-Identifier: UNLICENSED
 
 /// @title UniswapV4DeployerCompetition
 /// @notice A competition to deploy the UniswapV4 contract with the best address

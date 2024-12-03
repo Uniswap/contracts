@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import {Base64} from '../../lib-external/v4-core/lib/openzeppelin-contracts/contracts/utils/Base64.sol';

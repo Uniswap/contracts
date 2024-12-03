@@ -25,6 +25,7 @@ skip = [
 
 additional_compiler_profiles = [
   { name = "v4", optimizer_runs = 44444444, via_ir = true, evm_version = "cancun" },
+  { name = "v4-posm", optimizer_runs = 30000, via_ir = true, evm_version = "cancun" },
   { name = "v4-descriptor", optimizer_runs = 1, via_ir = true, evm_version = "cancun" },
   { name = "v2", optimizer_runs = 999999 },
   { name = "v3-core", optimizer_runs = 800, evm_version = "istanbul", via_ir = false },
@@ -45,18 +46,15 @@ compilation_restrictions = [
   { paths = "src/pkgs/v3-periphery/contracts/lens/*.sol", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
   { paths = "src/pkgs/v3-periphery/contracts/NonfungiblePositionManager.sol", optimizer_runs = 2000 },
   { paths = "src/pkgs/v3-periphery/contracts/NonfungibleTokenPositionDescriptor.sol", optimizer_runs = 1000 },
-  # TODO: NFTDescriptor only compiles with 200 runs
   { paths = "src/pkgs/v3-periphery/contracts/libraries/NFTDescriptor.sol", optimizer_runs = 1000 },
   { paths = "src/pkgs/v3-periphery/contracts/*.sol", version = "0.7.6", via_ir = false, max_optimizer_runs = 1000000 },
   { paths = "src/**/v3-periphery/**/libraries/**", version = "<0.8.0" },
   # permit2
   { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
   # v4
-  { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", optimizer_runs = 1, version = "0.8.26" },
-  { paths = "src/pkgs/v4-periphery/src/[!i]|[!l]*.sol", version = "0.8.26", via_ir = true, evm_version = "cancun", optimizer_runs = 44444444 },
-  { paths = "src/pkgs/v4-periphery/src/libraries/Locker.sol", evm_version = "cancun" },
-  { paths = "src/pkgs/v4-core/src/**", version = "0.8.26", via_ir = true, evm_version = "cancun", max_optimizer_runs = 44444444 },
-  { paths = "src/pkgs/v4-core/src/[!i]|[!l]|[!t]*.sol", version = "0.8.26", via_ir = true, evm_version = "cancun", optimizer_runs = 44444444 },
+  { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", version = "0.8.26", optimizer_runs = 1 },
+  { paths = "src/pkgs/v4-periphery/src/PositionManager.sol", version = "0.8.26", optimizer_runs = 30000 },
+  { paths = "src/pkgs/v4-periphery/src/lens/**", version = "0.8.26", optimizer_runs = 44444444 },
   # router
   { paths = "src/pkgs/universal-router/contracts/**", via_ir = true },
   { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
