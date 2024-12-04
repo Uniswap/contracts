@@ -324,6 +324,10 @@
                             "name": "Uniswap v2 factory address",
                             "pointer": "protocols.v2.contracts.UniswapV2Factory"
                         },
+                        "v3Factory": {
+                            "name": "Uniswap v3 factory address",
+                            "pointer": "protocols.v3.contracts.UniswapV3Factory"
+                        },
                         "v2PairInitCodeHash": {
                             "name": "Uniswap v2 pair init code hash",
                             "type": "bytes32",
@@ -343,6 +347,18 @@
                                     "UniversalRouter.input.constructor.params.poolInitCodeHash"
                                 ]
                             }
+                        },
+                        "v4PoolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "v3NFTPositionManager": {
+                            "name": "Uniswap v3 position manager address",
+                            "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
+                        },
+                        "v4PositionManager": {
+                            "name": "Uniswap v4 position manager address",
+                            "pointer": "protocols.v4.contracts.PositionManager"
                         }
                     },
                     "dependencies": [
