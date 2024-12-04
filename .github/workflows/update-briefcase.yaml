@@ -35,7 +35,8 @@ jobs:
       - name: Compile Briefcase
         run: |
           ./script/util/create_briefcase.sh
-          rsync -ah src/briefcase tmp_briefcase_repo/src --delete
+          rsync -ah src/briefcase/ tmp_briefcase_repo/src --delete
+          rsync -ah deployments/json/ tmp_briefcase_repo/deployments --delete
 
       - name: Check for Changes
         id: git-check
