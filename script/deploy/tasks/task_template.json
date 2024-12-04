@@ -7,14 +7,17 @@
                 "Permit2": {
                     "deploy": false,
                     "address": null,
+                    "lookup": {
+                        "latest": "Permit2",
+                        "history": [
+                            "UniversalRouter.input.constructor.params.permit2"
+                        ]
+                    },
                     "params": {
                         "salt": {
                             "type": "bytes32",
                             "value": "0x0000000000000000000000000000000000000000d3af2663da51c10215000000"
                         }
-                    },
-                    "lookup": {
-                        "latest": "Permit2"
                     }
                 }
             }
@@ -26,13 +29,16 @@
                 "UniswapV2Factory": {
                     "deploy": false,
                     "address": null,
+                    "lookup": {
+                        "latest": "UniswapV2Factory",
+                        "history": [
+                            "UniversalRouter.input.constructor.params.v2Factory"
+                        ]
+                    },
                     "params": {
                         "feeToSetter": {
                             "type": "address"
                         }
-                    },
-                    "lookup": {
-                        "latest": "UniswapV2Factory"
                     }
                 },
                 "UniswapV2Router02": {
@@ -58,7 +64,10 @@
                     "deploy": false,
                     "address": null,
                     "lookup": {
-                        "latest": "UniswapV3Factory"
+                        "latest": "UniswapV3Factory",
+                        "history": [
+                            "UniversalRouter.input.constructor.params.v3Factory"
+                        ]
                     },
                     "params": {
                         "initialOwner": {
@@ -88,6 +97,9 @@
                 "NonfungibleTokenPositionDescriptor": {
                     "deploy": false,
                     "address": null,
+                    "lookup": {
+                        "latest": "NonfungibleTokenPositionDescriptor"
+                    },
                     "params": {
                         "nativeCurrencyLabel": {
                             "name": "Native token symbol",
@@ -105,6 +117,9 @@
                 "NonfungiblePositionManager": {
                     "deploy": false,
                     "address": null,
+                    "lookup": {
+                        "latest": "NonfungiblePositionManager"
+                    },
                     "params": {
                         "factory": {
                             "name": "Uniswap v3 factory address",
@@ -169,6 +184,9 @@
                 "PositionDescriptor": {
                     "deploy": false,
                     "address": null,
+                    "lookup": {
+                        "latest": "PositionDescriptor"
+                    },
                     "params": {
                         "poolManager": {
                             "name": "Pool Manager",
@@ -184,9 +202,12 @@
                         "weth"
                     ]
                 },
-                "NonfungiblePositionManager": {
+                "PositionManager": {
                     "deploy": false,
                     "address": null,
+                    "lookup": {
+                        "latest": "PositionManager"
+                    },
                     "params": {
                         "poolManager": {
                             "name": "Pool Manager",
@@ -306,7 +327,22 @@
                         "v2PairInitCodeHash": {
                             "name": "Uniswap v2 pair init code hash",
                             "type": "bytes32",
-                            "value": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f"
+                            "value": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                            "lookup": {
+                                "history": [
+                                    "UniversalRouter.input.constructor.params.pairInitCodeHash"
+                                ]
+                            }
+                        },
+                        "v3PoolInitCodeHash": {
+                            "name": "Uniswap v3 pool init code hash",
+                            "type": "bytes32",
+                            "value": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                            "lookup": {
+                                "history": [
+                                    "UniversalRouter.input.constructor.params.poolInitCodeHash"
+                                ]
+                            }
                         }
                     },
                     "dependencies": [
@@ -327,7 +363,9 @@
                     "NonfungiblePositionManager.input.constructor._WETH9",
                     "NonFungibleTokenPositionDescriptor.input.constructor._WETH9",
                     "SwapRouter.input.constructor._WETH9",
+                    "SwapRouter02.input.constructor._WETH9",
                     "Quoter.input.constructor._WETH9",
+                    "QuoterV2.input.constructor._WETH9",
                     "UniswapV2Router02.input.constructor._WETH"
                 ]
             }
