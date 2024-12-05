@@ -1,4 +1,5 @@
-pragma solidity ^0.8.17;
+// SPDX-License-Identifier: GPL-3.0-or-later
+pragma solidity ^0.8.24;
 
 import {IAllowanceTransfer} from '../../permit2/interfaces/IAllowanceTransfer.sol';
 import {SafeCast160} from '../../permit2/libraries/SafeCast160.sol';
@@ -22,7 +23,8 @@ abstract contract Permit2Payments is Payments {
 
     /// @notice Performs a batch transferFrom on Permit2
     /// @param batchDetails An array detailing each of the transfers that should occur
-    function permit2TransferFrom(IAllowanceTransfer.AllowanceTransferDetails[] memory batchDetails, address owner)
+    /// @param owner The address that should be the owner of all transfers
+    function permit2TransferFrom(IAllowanceTransfer.AllowanceTransferDetails[] calldata batchDetails, address owner)
         internal
     {
         uint256 batchLength = batchDetails.length;

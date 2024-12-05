@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {IERC20} from '../../../lib-external/v4-core/lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
+import {IERC20} from '../../../lib-external/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol';
 
 /// @title Interface for WETH9
 interface IWETH9 is IERC20 {

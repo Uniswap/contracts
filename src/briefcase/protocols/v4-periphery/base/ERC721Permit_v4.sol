@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {ERC721} from '../../lib-external/v4-core/lib/solmate/src/tokens/ERC721.sol';
+import {ERC721} from '../../lib-external/solmate/src/tokens/ERC721.sol';
 
 import {SignatureVerification} from '../../permit2/libraries/SignatureVerification.sol';
 import {IERC721Permit_v4} from '../interfaces/IERC721Permit_v4.sol';

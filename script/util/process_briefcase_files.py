@@ -21,7 +21,6 @@ def parse_flattened_file(file_path):
                      'pragma': main_pragma_version}
 
     for line in lines:
-        # Some files are not flattened correctly and still have (unnecessary) import statements, ignore those
         if line.startswith("import {") or line.startswith("import \"") or line.startswith("import '"):
             continue
 
@@ -42,7 +41,7 @@ def parse_flattened_file(file_path):
             if current_block["source"]:
                 code_blocks.append(current_block)
                 current_block = {
-                    'source': line.strip(), 'content': '', 'pragma': main_pragma_version}
+                    'source': line.strip(), 'content': '', 'pragma': main_pragma_version, 'imports': []}
             else:
                 current_block['source'] = line.strip()
 
@@ -115,7 +114,7 @@ def remove_comments_and_assembly(code):
     return code
 
 
-def get_imported_identifiers_in_source_file(source_file):
+def get_imported_identifiers_from_code(code):
     # Regular expression to match import statements with curly braces
     import_with_braces_regex = r"import\s*{([^}]+)}\s*from\s*['\"]([^'\"]+)['\"]\s*;"
 
@@ -124,24 +123,29 @@ def get_imported_identifiers_in_source_file(source_file):
 
     imported_identifiers = []
 
+    matches_with_braces = re.findall(import_with_braces_regex, code)
+
+    for match in matches_with_braces:
+        identifiers = match[0].split(',')
+        identifiers = [identifier.strip() for identifier in identifiers]
+        imported_identifiers.extend(identifiers)
+
+    matches_without_braces = re.findall(
+        import_without_braces_regex, code)
+
+    for match in matches_without_braces:
+        filename = os.path.basename(match)
+        class_name = filename.replace('.sol', '')
+        class_name = class_name[0].upper() + class_name[1:]
+        imported_identifiers.append(class_name)
+
+    return imported_identifiers
+
+
+def get_imported_identifiers_in_source_file(source_file):
     with open(source_file, 'r') as file:
         sol_content = file.read()
-
-        matches_with_braces = re.findall(import_with_braces_regex, sol_content)
-
-        for match in matches_with_braces:
-            identifiers = match[0].split(',')
-            identifiers = [identifier.strip() for identifier in identifiers]
-            imported_identifiers.extend(identifiers)
-
-        matches_without_braces = re.findall(
-            import_without_braces_regex, sol_content)
-
-        for match in matches_without_braces:
-            filename = os.path.basename(match)
-            class_name = filename.replace('.sol', '')
-            class_name = class_name[0].upper() + class_name[1:]
-            imported_identifiers.append(class_name)
+        imported_identifiers = get_imported_identifiers_from_code(sol_content)
 
     return imported_identifiers
 
@@ -182,6 +186,12 @@ def parse_content_for_identifier_definitions(content):
 
 def get_used_identifiers(code, identifiers):
     code = remove_comments_and_assembly(code)
+
+    self_declared_identifiers, _ = parse_content_for_identifier_definitions(
+        code)
+    # It's possible an identifier was declared twice in flattened file, it shouldn't try to import a contract with its own name
+    identifiers = [
+        identifier for identifier in identifiers if identifier not in self_declared_identifiers]
 
     identifiers_pattern = '|'.join(re.escape(identifier)
                                    for identifier in identifiers)
@@ -237,7 +247,7 @@ def create_import_statement(identifier_names, relative_path):
     return f'import {{{", ".join(identifier_names)}}} from "{relative_path}";\n'
 
 
-def process_file(flattened_file, root_directory):
+def process_file(flattened_file, flattened_dir, contracts_dir):
     code_blocks = parse_flattened_file(flattened_file)
     pragma = {}
     license = {}
@@ -245,6 +255,13 @@ def process_file(flattened_file, root_directory):
     function_definitions = {}
     imports_in_source_file = {}
     blocks = {}
+
+    # get packages under src/pkgs
+    pkgs_dir = os.path.join(contracts_dir, "src", "pkgs")
+    available_packages = [
+        pkg for pkg in os.listdir(pkgs_dir)
+        if os.path.isdir(os.path.join(pkgs_dir, pkg))
+    ]
 
     flattened_file_match = re.match(
         r'(.*)/(interface|interfaces|types)/(.*)', flattened_file)
@@ -254,6 +271,16 @@ def process_file(flattened_file, root_directory):
             source_file = block['source'].replace("// ", "")
         else:
             break
+
+        # if a package in src/pkgs is part of a lib, use the main src instead
+        path_parts = source_file.split(os.sep)
+        for i in range(len(path_parts) - 1, -1, -1):
+            if path_parts[i] in available_packages:
+                path_parts = path_parts[i:]
+                break
+
+        if source_file.startswith("src/pkgs"):
+            source_file = os.path.join("src", "pkgs", *path_parts)
 
         interface_match = re.match(
             r'src/pkgs/(.*)/(src|contracts)/(interface|interfaces)/(.*)', source_file)
@@ -285,22 +312,22 @@ def process_file(flattened_file, root_directory):
         content = block['content']
 
         dest_path = os.path.join(
-            root_directory, package_name, subdir, rest_of_path)
+            flattened_dir, package_name, subdir, rest_of_path)
 
         identifier_definitions[dest_path], function_definitions[dest_path] = parse_content_for_identifier_definitions(
             content)
 
         imports_in_source_file[dest_path] = get_imported_identifiers_in_source_file(
-            source_file)
+            os.path.join(contracts_dir, source_file))
 
         if flattened_file_match:
             additional_pragma_from_source, license[dest_path] = get_pragma_and_license_from_source_file(
-                source_file, parse_pragma_versions=False)
+                os.path.join(contracts_dir, source_file), parse_pragma_versions=False)
             pragma[dest_path] = block['pragma'] + '\n' + \
                 '\n'.join(additional_pragma_from_source)
         else:
             complete_pragma_from_source, license[dest_path] = get_pragma_and_license_from_source_file(
-                source_file, parse_pragma_versions=True)
+                os.path.join(contracts_dir, source_file), parse_pragma_versions=True)
             pragma[dest_path] = '\n'.join(complete_pragma_from_source)
 
         # if the current file isn't the recognized source file, it will be/has been processed separately (guaranteed)
@@ -314,17 +341,21 @@ def process_file(flattened_file, root_directory):
                    pragma[dest_path], identifier_definitions, function_definitions, imports_in_source_file[dest_path])
 
 
-def process_all_files_in_directory(directory):
-    for root, _, files in os.walk(directory):
+def process_all_files_in_directory(flattened_dir, contracts_dir):
+    for root, _, files in os.walk(flattened_dir):
         for file in files:
             if file.endswith('.sol'):
                 filepath = os.path.join(root, file)
-                process_file(filepath, directory)
+                process_file(filepath, flattened_dir,
+                             contracts_dir)
 
 
 if __name__ == "__main__":
-    directory = sys.argv[1]
-    if not directory.endswith('/'):
-        directory += '/'
+    flattened_dir = sys.argv[1]
+    contracts_dir = sys.argv[2]
+    if not flattened_dir.endswith('/'):
+        flattened_dir += '/'
+    if not contracts_dir.endswith('/'):
+        contracts_dir += '/'
 
-    process_all_files_in_directory(directory)
+    process_all_files_in_directory(flattened_dir, contracts_dir)
