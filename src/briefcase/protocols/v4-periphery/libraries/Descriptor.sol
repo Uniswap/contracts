@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {Base64} from '../../lib-external/v4-core/lib/openzeppelin-contracts/contracts/utils/Base64.sol';
+import {Base64} from '../../lib-external/openzeppelin-contracts/contracts/utils/Base64.sol';
 
-import {Strings} from '../../lib-external/v4-core/lib/openzeppelin-contracts/contracts/utils/Strings.sol';
+import {Strings} from '../../lib-external/openzeppelin-contracts/contracts/utils/Strings.sol';
 import {FullMath} from '../../v4-core/libraries/FullMath.sol';
 import {LPFeeLibrary} from '../../v4-core/libraries/LPFeeLibrary.sol';
 import {TickMath} from '../../v4-core/libraries/TickMath.sol';
 import {HexStrings} from './HexStrings.sol';
-
 import {SVG} from './SVG.sol';
 
 /// @title Descriptor
