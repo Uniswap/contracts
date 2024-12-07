@@ -343,11 +343,35 @@ contract Deploy is Script {
         if (v2Factory == address(0)) {
             v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
         }
+        if (v3Factory == address(0)) {
+            v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
+        }
         bytes32 v2PairInitCodeHash =
             config.readBytes32('.protocols.universal-router.contracts.UniversalRouter.params.v2PairInitCodeHash.value');
-
+        bytes32 v3PoolInitCodeHash =
+            config.readBytes32('.protocols.universal-router.contracts.UniversalRouter.params.v3PoolInitCodeHash.value');
+        if (poolManager == address(0)) {
+            poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+        }
+        if (nonfungiblePositionManager == address(0)) {
+            nonfungiblePositionManager =
+                config.readAddress('.protocols.v3.contracts.NonfungiblePositionManager.address');
+        }
+        if (positionManager == address(0)) {
+            positionManager = config.readAddress('.protocols.v4.contracts.PositionManager.address');
+        }
         console.log('deploying Universal Router');
-        UniversalRouterDeployer.deploy(permit2, weth(), v2Factory, v2PairInitCodeHash);
+        UniversalRouterDeployer.deploy(
+            permit2,
+            weth(),
+            v2Factory,
+            v3Factory,
+            v2PairInitCodeHash,
+            v3PoolInitCodeHash,
+            poolManager,
+            nonfungiblePositionManager,
+            positionManager
+        );
     }
 
     function weth() internal returns (address) {
