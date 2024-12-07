@@ -75,7 +75,7 @@ impl ExecuteDeployScriptScreen {
                 )
                 .arg(format!("--rpc-url={}", rpc_url))
                 .arg(format!("--private-key={}", private_key))
-                .arg("-vvv");
+                .arg("-vvvv");
 
             match execute_command(&mut command) {
                 Ok(result) => {
@@ -131,8 +131,6 @@ impl ExecuteDeployScriptScreen {
                 .arg("Deploy-all.s.sol")
                 .arg("-c")
                 .arg(chain_id.clone())
-                .arg("--rpc-url")
-                .arg(rpc_url)
                 .arg("--force");
 
             if explorer.is_some() {
