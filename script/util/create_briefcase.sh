@@ -48,7 +48,7 @@ forge build --skip script --skip "src/briefcase/**"
 pkgs=$(ls src/pkgs/);
 for pkg in $pkgs
 do
-    subpaths=$(find src/pkgs/$pkg -type d \( -path "src/pkgs/$pkg/lib" -o -path "src/pkgs/$pkg/test" \) -prune -o \( -name "interface" -o -name "interfaces" -o -name "libraries" -o -name "types" -o -name "base" \) -print | sed "s|src/pkgs/$pkg/||")
+    subpaths=$(find src/pkgs/$pkg -type d \( -path "src/pkgs/$pkg/lib" -o -path "src/pkgs/$pkg/test" \) -prune -o \( -name "interface" -o -name "interfaces" -o -name "libraries" -o -name "types" \) -print | sed "s|src/pkgs/$pkg/||")
     for subpath in $subpaths
     do
       compile_and_flatten "src/pkgs" "$pkg" "$subpath"
