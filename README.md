@@ -27,6 +27,11 @@ If you intend to develop on this repo, follow the steps outlined in [CONTRIBUTIN
 
 ## Deployment
 
+- Install node > 18.0
+- run `forge install`
+- run `forge build`
+- run `./deploy-cli` to generate deployment tasks and execute them
+
 This repo utilizes versioned deployments. For more information on how to use forge scripts within the repo, check [here](CONTRIBUTING.md#deployment).
 
 Smart contracts are deployed or upgraded using the following command:
