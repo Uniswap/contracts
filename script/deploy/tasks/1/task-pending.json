@@ -1,0 +1,228 @@
+{
+  "protocols": {
+    "permit2": {
+      "name": "Permit 2",
+      "deploy": false,
+      "contracts": {
+        "permit2": {
+          "deploy": false,
+          "address": null,
+          "params": {
+            "salt": {
+              "type": "bytes32",
+              "value": "0x0000000000000000000000000000000000000000d3af2663da51c10215000000"
+            }
+          },
+          "lookup": {
+            "latest": "Permit2"
+          }
+        }
+      }
+    },
+    "v2": {
+      "name": "Uniswap v2",
+      "deploy": true,
+      "contracts": {
+        "UniswapV2Factory": {
+          "deploy": false,
+          "address": "0x1f98400000000000000000000000000000000002",
+          "params": {
+            "feeToSetter": {
+              "type": "address"
+            }
+          },
+          "lookup": {
+            "latest": "UniswapV2Factory"
+          }
+        },
+        "UniswapV2Router02": {
+          "deploy": true,
+          "address": null,
+          "params": {
+            "factory": {
+              "name": "Uniswap v2 factory address",
+              "pointer": "protocols.v2.contracts.UniswapV2Factory"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        }
+      }
+    },
+    "v3": {
+      "name": "Uniswap v3",
+      "deploy": true,
+      "contracts": {
+        "UniswapV3Factory": {
+          "deploy": false,
+          "address": "0x1f98400000000000000000000000000000000003",
+          "lookup": {
+            "latest": "UniswapV3Factory"
+          },
+          "params": {
+            "initialOwner": {
+              "type": "address"
+            }
+          }
+        },
+        "UniswapInterfaceMulticall": {
+          "deploy": true
+        },
+        "QuoterV2": {
+          "deploy": true,
+          "address": null,
+          "params": {
+            "factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "TickLens": {
+          "deploy": true
+        },
+        "NonfungibleTokenPositionDescriptor": {
+          "deploy": true,
+          "address": null,
+          "params": {
+            "nativeCurrencyLabel": {
+              "type": "string",
+              "value": "ETH"
+            },
+            "proxyAdminOwner": {
+              "type": "address",
+              "value": "0xC2fD2FA964C091AFcF95A835Ec19f04593AbbE07"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "NonfungiblePositionManager": {
+          "deploy": true,
+          "address": null,
+          "params": {
+            "factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            },
+            "tokenDescriptor": {
+              "name": "NFT Position Descriptor address",
+              "pointer": "protocols.v3.contracts.NonfungibleTokenPositionDescriptor"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "V3Migrator": {
+          "deploy": true,
+          "params": {
+            "factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            },
+            "nonfungiblePositionManager": {
+              "name": "Uniswap v3 position manager address",
+              "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "SwapRouter": {
+          "deploy": false,
+          "address": null,
+          "params": {
+            "factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        }
+      }
+    },
+    "view-quoter-v3": {
+      "name": "View Quoter v3",
+      "deploy": true,
+      "contracts": {
+        "Quoter": {
+          "deploy": true,
+          "params": {
+            "factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            }
+          }
+        }
+      }
+    },
+    "swap-router-contracts": {
+      "name": "Swap Router Contracts",
+      "deploy": true,
+      "contracts": {
+        "SwapRouter02": {
+          "deploy": true,
+          "params": {
+            "factoryV2": {
+              "name": "Uniswap v2 factory address",
+              "pointer": "protocols.v2.contracts.UniswapV2Factory"
+            },
+            "factoryV3": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            },
+            "positionManager": {
+              "name": "Uniswap v3 position manager address",
+              "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        }
+      }
+    },
+    "util-contracts": {
+      "name": "Utils",
+      "deploy": true,
+      "contracts": {
+        "FeeOnTransferDetector": {
+          "deploy": true,
+          "address": null,
+          "params": {
+            "factoryV2": {
+              "name": "Uniswap v2 factory address",
+              "pointer": "protocols.v2.contracts.UniswapV2Factory"
+            }
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "weth": {
+      "type": "address",
+      "lookup": {
+        "history": [
+          "UniversalRouter.input.constructor.params.weth9",
+          "QuoterV2.input.constructor._WETH9",
+          "V3Migrator.input.constructor._WETH9",
+          "NonfungiblePositionManager.input.constructor._WETH9",
+          "NonFungibleTokenPositionDescriptor.input.constructor._WETH9",
+          "SwapRouter.input.constructor._WETH9",
+          "Quoter.input.constructor._WETH9"
+        ]
+      },
+      "value": "0x4200000000000000000000000000000000000006"
+    }
+  }
+}
