@@ -8,7 +8,7 @@ library NFTDescriptorDeployer {
         bytes memory initcode_ = abi.encodePacked(initcode());
 
         assembly {
-            nftDescriptor := create(0, add(initcode_, 32), mload(initcode_))
+            nftDescriptor := create2(0, add(initcode_, 32), mload(initcode_), 0x00)
         }
     }
 
