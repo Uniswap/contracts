@@ -11,7 +11,7 @@ jobs:
 
       # Create Tenderly Virtual TestNet environment: https://docs.tenderly.co/virtual-testnets
       - name: Setup Tenderly Virtual TestNet
-        uses: Tenderly/vnet-github-action@v1.0.6
+        uses: Tenderly/vnet-github-action@v1.0.9
         with:
           access_key: ${{ secrets.TENDERLY_ACCESS_KEY }}
           project_name: ${{ vars.TENDERLY_PROJECT_SLUG }}
