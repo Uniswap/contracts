@@ -9,6 +9,7 @@ jobs:
         with:
           submodules: recursive
 
+      # Create Tenderly Virtual TestNet environment: https://docs.tenderly.co/virtual-testnets
       - name: Setup Tenderly Virtual TestNet
         uses: Tenderly/vnet-github-action@v1.0.6
         with:
@@ -16,13 +17,16 @@ jobs:
           project_name: ${{ vars.TENDERLY_PROJECT_SLUG }}
           account_name: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
           testnet_name: 'Uniswap VNet CI/CD ${{ github.run_id }}'
+          # ETH Mainnet config: https://docs.tenderly.co/supported-networks
           network_id: 1
           chain_id: 1
           block_number: 'latest'
+          # Enable explorer & verification: https://docs.tenderly.co/virtual-testnets/testnet-explorer
           public_explorer: true
           verification_visibility: 'src'
           state_sync: false
 
+      # Fund wallet using unlimited faucet: https://docs.tenderly.co/virtual-testnets/unlimited-faucet
       - name: Fund Account
         env:
           TENDERLY_ADMIN_RPC_URL: ${{ env.TENDERLY_ADMIN_RPC_URL }}
@@ -49,6 +53,7 @@ jobs:
           forge --version
           forge build --sizes
 
+      # Deploy & verify contracts
       - name: Deploy Contracts
         env:
           ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
