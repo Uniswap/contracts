@@ -11,12 +11,13 @@ jobs:
 
       # Create Tenderly Virtual TestNet environment: https://docs.tenderly.co/virtual-testnets
       - name: Setup Tenderly Virtual TestNet
-        uses: Tenderly/vnet-github-action@v1.0.9
+        uses: Tenderly/vnet-github-action@v1.0.10
         with:
           access_key: ${{ secrets.TENDERLY_ACCESS_KEY }}
           project_name: ${{ vars.TENDERLY_PROJECT_SLUG }}
           account_name: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
           testnet_name: 'Uniswap VNet CI/CD ${{ github.run_id }}'
+          mode: 'CD'
           # ETH Mainnet config: https://docs.tenderly.co/supported-networks
           network_id: 1
           chain_id: 1
