@@ -1,11 +1,6 @@
-## Template Repo (Foundry)
+## Uniswap Contracts Monorepo
 
-[![CI Status](../../actions/workflows/test.yaml/badge.svg)](../../actions)
-
-This template repo is a quick and easy way to get started with a new Solidity project. It comes with a number of features that are useful for developing and deploying smart contracts. Such as:
-
-- Pre-commit hooks for formatting, auto generated documentation, and more
-- Various libraries with useful contracts (OpenZeppelin, Solady) and libraries (Deployment log generation, storage checks, deployer templates)
+This repo contains all Uniswap contracts. It is used to configure and execute deployments, as well as compile and update the briefcase repo/package.
 
 #### Table of Contents
 
@@ -21,30 +16,12 @@ Follow these steps to set up your local environment:
 - [Install foundry](https://book.getfoundry.sh/getting-started/installation)
 - Install dependencies: `forge install`
 - Build contracts: `forge build`
-- Test contracts: `forge test`
-
-If you intend to develop on this repo, follow the steps outlined in [CONTRIBUTING.md](CONTRIBUTING.md#install).
 
 ## Deployment
 
-- Install node > 18.0
-- run `forge install`
-- run `forge build`
+- Make sure node `>18.0` is installed
+- Follow the [setup](#setup) instructions
 - run `./deploy-cli` to generate deployment tasks and execute them
-
-This repo utilizes versioned deployments. For more information on how to use forge scripts within the repo, check [here](CONTRIBUTING.md#deployment).
-
-Smart contracts are deployed or upgraded using the following command:
-
-```shell
-forge script script/Deploy.s.sol --broadcast --rpc-url <rpc_url> --verify
-```
-
-## Docs
-
-The documentation and architecture diagrams for the contracts within this repo can be found [here](docs/).
-Detailed documentation generated from the NatSpec documentation of the contracts can be found [here](docs/autogen/src/src/).
-When exploring the contracts within this repository, it is recommended to start with the interfaces first and then move on to the implementation as outlined [here](CONTRIBUTING.md#natspec--comments)
 
 ## Contributing
 
