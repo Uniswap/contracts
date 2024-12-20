@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {PoolId, PoolIdLibrary} from '../../v4-core/types/PoolId.sol';
+import {PoolId} from '../../v4-core/types/PoolId.sol';
 import {PoolKey} from '../../v4-core/types/PoolKey.sol';
 
 /**
@@ -30,9 +30,9 @@ import {PoolKey} from '../../v4-core/types/PoolKey.sol';
  */
 type PositionInfo is uint256;
 
-library PositionInfoLibrary {
-    using PoolIdLibrary for PoolKey;
+using PositionInfoLibrary for PositionInfo global;
 
+library PositionInfoLibrary {
     PositionInfo internal constant EMPTY_POSITION_INFO = PositionInfo.wrap(0);
 
     uint256 internal constant MASK_UPPER_200_BITS = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000000000;

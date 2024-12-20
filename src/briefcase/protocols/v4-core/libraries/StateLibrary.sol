@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity >=0.6.2;
 
 import {IPoolManager} from '../interfaces/IPoolManager.sol';
 import {PoolId} from '../types/PoolId.sol';
