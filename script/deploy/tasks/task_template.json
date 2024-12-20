@@ -196,6 +196,9 @@
                             "name": "Native token symbol",
                             "type": "string",
                             "value": "ETH"
+                        },
+                        "proxyAdminOwner": {
+                            "type": "address"
                         }
                     },
                     "dependencies": [
