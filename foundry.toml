@@ -78,11 +78,4 @@ quote_style = "single"
 sort_imports = true
 number_underscore = "thousands"
 
-[rpc_endpoints]
-anvil = "http://127.0.0.1:8545"
-sepolia = "https://sepolia.infura.io/v3/${INFURA_KEY}"
-
-[etherscan]
-sepolia = { key = "${ETHERSCAN_API_KEY}" }
-
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
