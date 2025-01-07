@@ -1,0 +1,50 @@
+{
+  "chainId": "480",
+  "latest": {
+    "UniswapV2Router02": {
+      "address": "0x541aB7c31A119441eF3575F6973277DE0eF460bd",
+      "proxy": false,
+      "deploymentTxn": "0x3bc038704c4e1229dfa4a10b678c3a919da249ce52b0bb0c9c8123fcfd79a370",
+      "timestamp": 1728682741
+    },
+    "UniswapV2Factory": {
+      "address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+      "proxy": false,
+      "deploymentTxn": "0x14ebc1e32b0ce9084508e0e3e0cdc76e1f383ec57029bd47b88a3923cf2cc105",
+      "timestamp": 1727462517
+    }
+  },
+  "history": [
+    {
+      "contracts": {
+        "UniswapV2Router02": {
+          "address": "0x541aB7c31A119441eF3575F6973277DE0eF460bd",
+          "proxy": false,
+          "deploymentTxn": "0x3bc038704c4e1229dfa4a10b678c3a919da249ce52b0bb0c9c8123fcfd79a370",
+          "input": {
+            "constructor": {
+              "_factory": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+              "_WETH": "0x4200000000000000000000000000000000000006"
+            }
+          }
+        }
+      },
+      "timestamp": 1728682741
+    },
+    {
+      "contracts": {
+        "UniswapV2Factory": {
+          "address": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+          "proxy": false,
+          "deploymentTxn": "0x14ebc1e32b0ce9084508e0e3e0cdc76e1f383ec57029bd47b88a3923cf2cc105",
+          "input": {
+            "constructor": {
+              "_feeToSetter": "0xcb2436774C3e191c85056d248EF4260ce5f27A9D"
+            }
+          }
+        }
+      },
+      "timestamp": 1727462517
+    }
+  ]
+}

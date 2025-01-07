@@ -1,0 +1,67 @@
+name: Update Briefcase
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-briefcase:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Clone Briefcase Repository
+        run: |
+          git clone https://github.com/Uniswap/briefcase.git tmp_briefcase_repo
+
+      - name: Compile Briefcase
+        run: |
+          ./script/util/create_briefcase.sh
+          rsync -ah src/briefcase/ tmp_briefcase_repo/src --delete
+          rsync -ah deployments/json/ tmp_briefcase_repo/deployments --delete
+
+      - name: Check for Changes
+        id: git-check
+        run: |
+          cd tmp_briefcase_repo
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY_BRIEFCASE }}
+
+      - name: Commit and Push if Changes are Present
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          cd tmp_briefcase_repo
+          git remote set-url origin git@github.com:Uniswap/briefcase.git
+          git add .
+          git commit -m "Update briefcase
+
+          Changes:
+          $(git diff --cached --name-status)
+          "
+          git pull --rebase origin main
+          git push

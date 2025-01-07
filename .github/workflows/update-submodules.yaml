@@ -2,11 +2,6 @@ name: Update Submodules
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - staging
-      - dev
   schedule:
     # Run this workflow hourly at *:17 UTC
     - cron: "17 * * * *"

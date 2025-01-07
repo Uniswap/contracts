@@ -15,13 +15,6 @@ repos:
         entry: forge fmt
         exclude: "^lib/"
         pass_filenames: true
-      - id: doc
-        name: Generate documentation
-        description: Generate docs with `forge doc`
-        language: system
-        # generates docs and unstages files if only the commit hash changed within the file, this way only when the documentation is updated, the documentation needs to be regenerated and only the changed files are pushed
-        entry: "script/util/doc_gen.sh"
-        pass_filenames: false
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: "v3.0.3"
     hooks:
