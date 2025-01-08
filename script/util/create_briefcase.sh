@@ -62,7 +62,7 @@ echo "Processing source files for briefcase"
 python3 script/util/process_briefcase_files.py "$tmp_dir" "$(pwd)"
 
 echo "Copying files from temporary directory to briefcase"
-rsync -ah "$tmp_dir/" "$dir/" --delete
+cp -r "$tmp_dir/" "$dir/"
 rm -rf "$tmp_dir"
 forge fmt "src/briefcase"
 # build the generated files
