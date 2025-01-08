@@ -2,65 +2,74 @@
 src = "src"
 out = "out"
 libs = ["lib"]
-optimizer = true
-optimizer_runs = 800
-bytecode_hash = "none"
-via_ir = false
 verbosity = 2
-ffi = true
+bytecode_hash = "none"
+auto_detect_remappings = false
+
 fs_permissions = [
   { access = "read-write", path = ".forge-snapshots"},
-  { access = "read", path = "script/" }
+  { access = "read", path = "script/" },
+  { access = "read-write", path = "script/deploy/tasks" },
+  { access = "read", path = "out/" }
 ]
-evm_version = "cancun"
 
 skip = [
   "src/pkgs/**/audits/**",
   "src/pkgs/**/certora/**",
+  "src/pkgs/**/lib/**",
+  "src/pkgs/**/test/**",
+  "src/pkgs/universal-router/permit2/**",
+  "src/pkgs/universal-router/solmate/**",
+  "src/pkgs/**/*.s.sol",
   "*.t.sol",
-  "*.s.sol"
 ]
 
-[profile.v2-core]
-src = "src/pkgs/v2-core"
+additional_compiler_profiles = [
+  { name = "v4", optimizer_runs = 44444444, via_ir = true, evm_version = "cancun" },
+  { name = "v4-posm", optimizer_runs = 30000, via_ir = true, evm_version = "cancun" },
+  { name = "v4-descriptor", optimizer_runs = 1, via_ir = true, evm_version = "cancun" },
+  { name = "v2", optimizer_runs = 999999 },
+  { name = "v3-core", optimizer_runs = 800, evm_version = "istanbul", via_ir = false },
+  { name = "v3-periphery-lowest", optimizer_runs = 1000, evm_version = "istanbul", via_ir = false },
+  { name = "v3-periphery-low", optimizer_runs = 2000, evm_version = "istanbul", via_ir = false },
+  { name = "v3-periphery-default", optimizer_runs = 1000000, evm_version = "istanbul", via_ir = false },
+  { name = "permit2", optimizer_runs = 1000000, via_ir = true },
+  { name = "uniswapx", optimizer_runs = 1000000, via_ir = false },
+]
 
-[profile.v2-periphery]
-src = "src/pkgs/v2-periphery"
-
-[profile.v3-core]
-src = "src/pkgs/v3-core"
-
-[profile.v3-periphery]
-src = "src/pkgs/v3-periphery"
-
-[profile.v4-core]
-src = "src/pkgs/v4-core"
-
-[profile.v4-periphery]
-src = "src/pkgs/v4-periphery"
-libs = ["src/pkgs/v4-core", "lib"]
-
-[profile.permit2]
-src = "src/pkgs/permit2"
-via_ir = true
-
-[profile.universal-router]
-src = "src/pkgs/universal-router"
-via_ir = true
-
-[profile.default.fuzz]
-runs = 1000
-
-[profile.pr.fuzz]
-runs = 10000
-
-[profile.ci.fuzz]
-runs = 100000
-
-[profile.debug]
-via_ir = false
-optimizer_runs = 200
-fuzz.runs = 100
+compilation_restrictions = [
+  # v2
+  { paths = "src/pkgs/v2-core/contracts/[!i]*.sol", version = "0.5.16", optimizer_runs = 999999 },
+  { paths = "src/pkgs/v2-periphery/contracts/[!i]*.sol", version = "0.6.6", optimizer_runs = 999999 },
+  # v3
+  { paths = "src/pkgs/v3-core/contracts/{UniswapV3Factory,UniswapV3Pool}.sol", optimizer_runs = 800 },
+  { paths = "src/**/v3-core/**/libraries/TickBitmap.sol", version = "<0.8.0" },
+  { paths = "src/pkgs/v3-periphery/contracts/lens/*.sol", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
+  { paths = "src/pkgs/v3-periphery/contracts/NonfungiblePositionManager.sol", optimizer_runs = 2000 },
+  { paths = "src/pkgs/v3-periphery/contracts/NonfungibleTokenPositionDescriptor.sol", optimizer_runs = 1000 },
+  { paths = "src/pkgs/v3-periphery/contracts/libraries/NFTDescriptor.sol", optimizer_runs = 1000 },
+  { paths = "src/pkgs/v3-periphery/contracts/*.sol", version = "0.7.6", via_ir = false, max_optimizer_runs = 1000000 },
+  { paths = "src/pkgs/v3-periphery/**/libraries/**", version = "<0.8.0" },
+  # permit2
+  { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
+  # v4
+  { paths = "lib/v4-core/src/PoolManager.sol", optimizer_runs = 44444444 },
+  { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", version = "0.8.26", optimizer_runs = 1 },
+  { paths = "src/pkgs/v4-periphery/src/PositionManager.sol", version = "0.8.26", optimizer_runs = 30000 },
+  { paths = "src/pkgs/v4-periphery/src/lens/**", version = "0.8.26", optimizer_runs = 44444444 },
+  # router
+  { paths = "src/pkgs/universal-router/contracts/**", optimizer_runs = 44444444 },
+  { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
+  # X
+  { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "0.8.24" },
+  # Briefcase
+  { paths = "src/briefcase/protocols/v2-periphery/libraries/UniswapV2Library.sol", version = "<0.8.0" },
+  { paths = "src/briefcase/protocols/lib-external/solidity-lib/**", version = "<0.8.0" },
+  { paths = "src/briefcase/protocols/v4-core/libraries/**", evm_version = "cancun" },
+  { paths = "src/briefcase/protocols/v4-periphery/libraries/Locker.sol", evm_version = "cancun" },
+  { paths = "src/briefcase/protocols/swap-router-contracts/libraries/**", version = "<0.8.0" },
+  { paths = "src/briefcase/protocols/v3-periphery/libraries/**", version = "<0.8.0" },
+]
 
 [fmt]
 line_length = 120
@@ -68,50 +77,5 @@ tab_width = 4
 quote_style = "single"
 sort_imports = true
 number_underscore = "thousands"
-
-[rpc_endpoints]
-anvil = "http://127.0.0.1:8545"
-mainnet = "https://mainnet.infura.io/v3/${INFURA_KEY}"
-sepolia = "https://sepolia.infura.io/v3/${INFURA_KEY}"
-linea = "https://linea-mainnet.infura.io/v3/${INFURA_KEY}"
-linea_sepolia = "https://linea-sepolia.infura.io/v3/${INFURA_KEY}"
-polygon_pos = "https://polygon-mainnet.infura.io/v3/${INFURA_KEY}"
-polygon_amoy = "https://polygon-amoy.infura.io/v3/${INFURA_KEY}"
-blast = "https://blast-mainnet.infura.io/v3/${INFURA_KEY}"
-blast_sepolia = "https://blast-sepolia.infura.io/v3/${INFURA_KEY}"
-optimism = "https://optimism-mainnet.infura.io/v3/${INFURA_KEY}"
-optimism_sepolia = "https://optimism-sepolia.infura.io/v3/${INFURA_KEY}"
-arbitrum = "https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}"
-arbitrum_sepolia = "https://arbitrum-sepolia.infura.io/v3/${INFURA_KEY}"
-celo = "https://celo-mainnet.infura.io/v3/${INFURA_KEY}"
-celo_alfajores = "https://celo-alfajores.infura.io/v3/${INFURA_KEY}"
-zksync = "https://zksync-mainnet.infura.io/v3/${INFURA_KEY}"
-zksync_sepolia = "https://zksync-sepolia.infura.io/v3/${INFURA_KEY}"
-mantle = "https://mantle-mainnet.infura.io/v3/${INFURA_KEY}"
-mantle_sepolia = "https://mantle-sepolia.infura.io/v3/${INFURA_KEY}"
-polygon_zkevm = "https://zkevm-rpc.com"
-polygon_zkevm_testnet = "https://rpc.public.zkevm-test.net"
-
-[etherscan]
-sepolia = { key = "${ETHERSCAN_API_KEY}" }
-mainnet = { key = "${ETHERSCAN_API_KEY}" }
-linea = { key = "${ETHERSCAN_API_KEY}" }
-linea_sepolia = { key = "${ETHERSCAN_API_KEY}" }
-polygon_pos = { key = "${ETHERSCAN_API_KEY}" }
-polygon_amoy = { key = "${ETHERSCAN_API_KEY}" }
-blast = { key = "${ETHERSCAN_API_KEY}" }
-blast_sepolia = { key = "${ETHERSCAN_API_KEY}" }
-optimism = { key = "${ETHERSCAN_API_KEY}" }
-optimism_sepolia = { key = "${ETHERSCAN_API_KEY}" }
-arbitrum = { key = "${ETHERSCAN_API_KEY}" }
-arbitrum_sepolia = { key = "${ETHERSCAN_API_KEY}" }
-celo = { key = "${ETHERSCAN_API_KEY}" }
-celo_alfajores = { key = "${ETHERSCAN_API_KEY}" }
-zksync = { key = "${ETHERSCAN_API_KEY}" }
-zksync_sepolia = { key = "${ETHERSCAN_API_KEY}" }
-mantle = { key = "${ETHERSCAN_API_KEY}" }
-mantle_sepolia = { key = "${ETHERSCAN_API_KEY}" }
-polygon_zkevm = { key = "${ETHERSCAN_API_KEY}" }
-polygon_zkevm_testnet = { key = "${ETHERSCAN_API_KEY}" }
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config

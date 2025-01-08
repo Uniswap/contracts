@@ -1,0 +1,18 @@
+[package]
+name = "deploy-cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+crossterm = "0.26.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["preserve_order"] }
+lazy_static = "1.4.0"
+signal-hook = "0.3"
+regex = "1.11.0"
+tokio = { version = "1.40.0", features = ["full"] }
+alloy = { version = "0.4.2", features = ["full", "rpc-types-trace", "rpc-types-debug"] }
+eyre = "0.6.12"
+reqwest = "0.12.8"
+
+[build-dependencies]

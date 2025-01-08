@@ -1,9 +1,6 @@
 [submodule "lib/forge-std"]
 	path = lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
-[submodule "lib/forge-chronicles"]
-	path = lib/forge-chronicles
-	url = https://github.com/0xPolygon/forge-chronicles
 [submodule "lib/forge-gas-snapshot"]
 	path = lib/forge-gas-snapshot
 	url = https://github.com/marktoda/forge-gas-snapshot
@@ -37,3 +34,21 @@
 [submodule "src/pkgs/universal-router"]
 	path = src/pkgs/universal-router
 	url = https://github.com/Uniswap/universal-router
+[submodule "src/pkgs/uniswapx"]
+	path = src/pkgs/uniswapx
+	url = https://github.com/uniswap/uniswapx
+[submodule "lib/forge-chronicles"]
+	path = lib/forge-chronicles
+	url = https://github.com/gretzke/forge-chronicles
+[submodule "src/pkgs/view-quoter-v3"]
+	path = src/pkgs/view-quoter-v3
+	url = https://github.com/Uniswap/view-quoter-v3.git
+[submodule "src/pkgs/util-contracts"]
+	path = src/pkgs/util-contracts
+	url = https://github.com/Uniswap/util-contracts.git
+[submodule "src/pkgs/swap-router-contracts"]
+	path = src/pkgs/swap-router-contracts
+	url = https://github.com/Uniswap/swap-router-contracts
+[submodule "lib/v4-core"]
+	path = lib/v4-core
+	url = https://github.com/Uniswap/v4-core
