@@ -124,6 +124,9 @@ impl ExecuteDeployScriptScreen {
                 }
             }
 
+            let _ =
+                std::fs::remove_file(get_config_dir(chain_id.clone()).join("task-pending.json"));
+
             let mut command = &mut Command::new("node");
             command = command
                 .arg(working_dir.join("lib").join("forge-chronicles"))
@@ -149,9 +152,6 @@ impl ExecuteDeployScriptScreen {
                     return;
                 }
             }
-
-            let _ =
-                std::fs::remove_file(get_config_dir(chain_id.clone()).join("task-pending.json"));
         });
 
         Ok(screen)
