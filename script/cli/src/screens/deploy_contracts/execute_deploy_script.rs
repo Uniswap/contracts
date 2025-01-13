@@ -74,10 +74,9 @@ impl ExecuteDeployScriptScreen {
                         .join("Deploy-all.s.sol"),
                 )
                 .arg(format!("--rpc-url={}", rpc_url))
-                .arg(format!("--private-key={}", private_key))
                 .arg("-vvvv");
 
-            match execute_command(&mut command) {
+            match execute_command(&mut command, Some(private_key.clone())) {
                 Ok(result) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::DryRunCompleted;
                     if let Some(error_message) = result {
@@ -111,7 +110,7 @@ impl ExecuteDeployScriptScreen {
                 }
             }
 
-            match execute_command(&mut command.arg("--broadcast").arg("--skip-simulation")) {
+            match execute_command(&mut command.arg("--broadcast").arg("--skip-simulation"), Some(private_key)) {
                 Ok(result) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::DeploymentCompleted;
                     if let Some(error_message) = result {
@@ -137,7 +136,7 @@ impl ExecuteDeployScriptScreen {
                 command = command.arg("-e").arg(explorer.unwrap().url);
             }
 
-            match execute_command(&mut command) {
+            match execute_command(&mut command, None) {
                 Ok(result) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::Success;
                     if let Some(error_message) = result {
@@ -169,9 +168,13 @@ impl ExecuteDeployScriptScreen {
     }
 }
 
-fn execute_command(command: &mut Command) -> Result<Option<String>, Box<dyn std::error::Error>> {
+fn execute_command(command: &mut Command, private_key: Option<String>) -> Result<Option<String>, Box<dyn std::error::Error>> {
     crate::errors::log(format!("Executing command: {:?}", command));
-    let mut result = command
+    let mut result = command;
+    if private_key.is_some() {
+        result = result.arg(format!("--private-key={}", private_key.clone().unwrap()));
+    }
+    let mut result = result
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
         .spawn()?;

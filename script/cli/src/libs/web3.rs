@@ -1,4 +1,3 @@
-use alloy::eips::BlockNumberOrTag;
 use alloy::primitives::FixedBytes;
 use alloy::providers::{Provider, ProviderBuilder, RootProvider};
 use alloy::transports::http::Http;
