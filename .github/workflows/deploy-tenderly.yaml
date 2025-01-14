@@ -69,10 +69,11 @@ jobs:
           forge script script/deploy/Deploy-all.s.sol \
             --private-key $PRIVATE_KEY \
             --rpc-url $FOUNDRY_ETH_RPC_URL \
+            --verify \
+            --verifier custom \
             --verifier-url $FOUNDRY_VERIFIER_URL \
             --slow \
-            --broadcast \
-            --verify
+            --broadcast
 
       # Generate deployment logs
       # - name: Generate Deployment Logs
