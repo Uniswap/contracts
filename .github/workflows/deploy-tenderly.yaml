@@ -65,7 +65,7 @@ jobs:
           PRIVATE_KEY: ${{ secrets.TENDERLY_PRIVATE_KEY }}
           FOUNDRY_ETH_RPC_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}
           FOUNDRY_VERIFIER_URL: ${{ env.TENDERLY_FOUNDRY_VERIFICATION_URL }}
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }} # set empty, foundry currently requires it
+          ETHERSCAN_API_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}
         run: |
           forge script script/deploy/Deploy-all.s.sol \
             --private-key $PRIVATE_KEY \
