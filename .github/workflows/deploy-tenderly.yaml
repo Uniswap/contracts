@@ -1,5 +1,10 @@
 name: Deploy to Tenderly Virtual TestNet
-on: [pull_request]
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+    paths:
+      - src/briefcase/deployers/**
 
 jobs:
   deploy-to-tenderly:
@@ -20,7 +25,7 @@ jobs:
           mode: "CD"
           # ETH Mainnet config: https://docs.tenderly.co/supported-networks
           network_id: 1
-          chain_id: 1
+          chain_id: 129412
           block_number: "latest"
           # Enable explorer & verification: https://docs.tenderly.co/virtual-testnets/testnet-explorer
           public_explorer: true
@@ -68,3 +73,17 @@ jobs:
             --slow \
             --broadcast \
             --verify
+
+      # Generate deployment logs
+      # - name: Generate Deployment Logs
+      #   env:
+      #     TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_EXPLORER_URL }}
+      #   run: |
+      #     rm deployments/129412.md && rm deployments/json/129412.json &&
+      #     node lib/forge-chronicles Deploy-all.s.sol -c 129412 --force -e $TENDERLY_EXPLORER_URL
+
+      # # https://github.com/marketplace/actions/tenderly-virtual-testnet-setup#outputs
+      # - name: Add RPC URL to deployment logs
+      #   env:
+      #     TENDERLY_URL: ${{ env.TENDERLY_URL }}
+      #   run: |
