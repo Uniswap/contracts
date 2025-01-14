@@ -2,7 +2,7 @@ name: Deploy to Tenderly Virtual TestNet
 on: [pull_request]
 
 jobs:
-  deploy:
+  deploy-to-tenderly:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,22 +16,22 @@ jobs:
           access_key: ${{ secrets.TENDERLY_ACCESS_KEY }}
           project_name: ${{ vars.TENDERLY_PROJECT_SLUG }}
           account_name: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
-          testnet_name: 'Uniswap VNet CI/CD ${{ github.run_id }}'
-          mode: 'CD'
+          testnet_name: "Uniswap VNet CI/CD ${{ github.run_id }}"
+          mode: "CD"
           # ETH Mainnet config: https://docs.tenderly.co/supported-networks
           network_id: 1
           chain_id: 1
-          block_number: 'latest'
+          block_number: "latest"
           # Enable explorer & verification: https://docs.tenderly.co/virtual-testnets/testnet-explorer
           public_explorer: true
-          verification_visibility: 'src'
+          verification_visibility: "src"
           state_sync: false
 
       # Fund wallet using unlimited faucet: https://docs.tenderly.co/virtual-testnets/unlimited-faucet
       - name: Fund Account
         env:
           TENDERLY_ADMIN_RPC_URL: ${{ env.TENDERLY_ADMIN_RPC_URL }}
-          ADMIN_WALLET: ${{ vars.ADMIN_WALLET }}
+          ADMIN_WALLET: ${{ vars.TENDERLY_ADMIN_WALLET }}
         run: |
           curl $TENDERLY_ADMIN_RPC_URL \
             -X POST \
@@ -40,7 +40,7 @@ jobs:
               "jsonrpc": "2.0",
               "method": "tenderly_setBalance",
               "params": [
-                "${{ vars.ADMIN_WALLET }}",
+                "${{ vars.TENDERLY_ADMIN_WALLET }}",
                 "0x3635c9adc5dea00000"
               ],
               "id": "1234"
@@ -57,8 +57,7 @@ jobs:
       # Deploy & verify contracts
       - name: Deploy Contracts
         env:
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          PRIVATE_KEY: ${{ secrets.TENDERLY_PRIVATE_KEY }}
           FOUNDRY_ETH_RPC_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}
           FOUNDRY_VERIFIER_URL: ${{ env.TENDERLY_FOUNDRY_VERIFICATION_URL }}
         run: |
