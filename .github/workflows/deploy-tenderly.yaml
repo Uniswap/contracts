@@ -63,13 +63,13 @@ jobs:
       - name: Deploy Contracts
         env:
           PRIVATE_KEY: ${{ secrets.TENDERLY_PRIVATE_KEY }}
-          FOUNDRY_ETH_RPC_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}
+          TENDERLY_PUBLIC_RPC_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}
           FOUNDRY_VERIFIER_URL: ${{ env.TENDERLY_FOUNDRY_VERIFICATION_URL }}
-          ETHERSCAN_API_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}
+          TENDERLY_ACCESS_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}
         run: |
           forge script script/deploy/Deploy-all.s.sol \
             --private-key $PRIVATE_KEY \
-            --rpc-url $FOUNDRY_ETH_RPC_URL \
+            --rpc-url $TENDERLY_PUBLIC_RPC_URL \
             --verify \
             --verifier-url $FOUNDRY_VERIFIER_URL \
             --slow \

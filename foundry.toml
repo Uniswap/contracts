@@ -78,4 +78,7 @@ quote_style = "single"
 sort_imports = true
 number_underscore = "thousands"
 
-# See more config options https://github.com/foundry-rs/foundry/tree/master/config
+[etherscan]
+# chain id 129412 is reserved for the tenderly testnet
+# config to deploy and verify contracts on tenderly testnet using CI
+tenderly_vnet = { key = "${TENDERLY_ACCESS_KEY}", chain = 129412, url = "${TENDERLY_PUBLIC_RPC_URL}/verify/etherscan" }
