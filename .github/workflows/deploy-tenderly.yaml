@@ -76,15 +76,43 @@ jobs:
             --broadcast
 
       # Generate deployment logs
-      # - name: Generate Deployment Logs
-      #   env:
-      #     TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_EXPLORER_URL }}
-      #   run: |
-      #     rm deployments/129412.md && rm deployments/json/129412.json &&
-      #     node lib/forge-chronicles Deploy-all.s.sol -c 129412 --force -e $TENDERLY_EXPLORER_URL
+      - name: Generate Deployment Logs
+        env:
+          TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_EXPLORER_URL }}
+        run: |
+          rm -rf broadcast/Deploy-all.s.sol/129412 && rm deployments/129412.md && rm deployments/json/129412.json &&
+          node lib/forge-chronicles Deploy-all.s.sol -c 129412 --force -e $TENDERLY_EXPLORER_URL
 
-      # # https://github.com/marketplace/actions/tenderly-virtual-testnet-setup#outputs
-      # - name: Add RPC URL to deployment logs
-      #   env:
-      #     TENDERLY_URL: ${{ env.TENDERLY_URL }}
-      #   run: |
+      # https://github.com/marketplace/actions/tenderly-virtual-testnet-setup#outputs
+      - name: Add RPC URL to deployment logs
+        env:
+          TENDERLY_URL: ${{ env.TENDERLY_URL }}
+        run: |
+          sed -i '2i\  "rpc_url": "'$TENDERLY_URL'",' deployments/json/129412.json
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check for Changes
+        id: git-check
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes=changes present" >> $GITHUB_OUTPUT
+          else
+            echo "changes=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Commit and Push if Changes are Present
+        if: steps.git-check.outputs.changes != ''
+        run: |
+          git remote set-url origin git@github.com:${{ github.repository }}.git
+          git add .
+          git commit -m "Deploy Tenderly Virtual TestNet"
+          git push
