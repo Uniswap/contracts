@@ -226,13 +226,17 @@ contract Deploy is Script {
         if (deployPositionDescriptor) {
             string memory nativeCurrencyLabel =
                 config.readString('.protocols.v4.contracts.PositionDescriptor.params.nativeCurrencyLabel.value');
+            bytes32 nativeCurrencyLabelBytes;
+            assembly {
+                nativeCurrencyLabelBytes := mload(add(nativeCurrencyLabel, 32))
+            }
             address proxyAdminOwner =
                 config.readAddress('.protocols.v4.contracts.PositionDescriptor.params.proxyAdminOwner.value');
             if (!deployPoolManager) {
                 poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
             }
             address positionDescriptorImplementation =
-                address(PositionDescriptorDeployer.deploy(poolManager, weth(), nativeCurrencyLabel));
+                address(PositionDescriptorDeployer.deploy(poolManager, weth(), nativeCurrencyLabelBytes));
             positionDescriptor =
                 address(new TransparentUpgradeableProxy(positionDescriptorImplementation, proxyAdminOwner, ''));
         }
