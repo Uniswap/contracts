@@ -1,4 +1,5 @@
 name: Deploy to Tenderly Virtual TestNet
+
 on:
   workflow_dispatch:
   push:
@@ -80,7 +81,9 @@ jobs:
         env:
           TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_EXPLORER_URL }}
         run: |
-          rm -rf broadcast/Deploy-all.s.sol/129412 && rm deployments/129412.md && rm deployments/json/129412.json &&
+          rm -rf broadcast/Deploy-all.s.sol/129412
+          rm -f deployments/129412.md
+          rm -f deployments/json/129412.json
           node lib/forge-chronicles Deploy-all.s.sol -c 129412 --force -e $TENDERLY_EXPLORER_URL
 
       # https://github.com/marketplace/actions/tenderly-virtual-testnet-setup#outputs
