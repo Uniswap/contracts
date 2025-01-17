@@ -60,6 +60,10 @@ jobs:
           forge --version
           forge build --sizes
 
+      - name: Clean up broadcast directory
+        run: |
+          rm -rf broadcast/Deploy-all.s.sol/129412
+
       # Deploy & verify contracts
       - name: Deploy Contracts
         env:
@@ -81,7 +85,6 @@ jobs:
         # env:
         #   TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_EXPLORER_URL }}
         run: |
-          rm -rf broadcast/Deploy-all.s.sol/129412
           rm -f deployments/129412.md
           rm -f deployments/json/129412.json
           node lib/forge-chronicles Deploy-all.s.sol -c 129412 --force
