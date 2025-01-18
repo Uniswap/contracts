@@ -95,7 +95,8 @@ jobs:
         env:
           TENDERLY_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}
         run: |
-          sed -i '2i\  "rpc_url": "'"$TENDERLY_URL"'",' deployments/json/129412.json
+          sed -i '2i\  "name": "Uniswap Tenderly Virtual Testnet",' deployments/json/129412.json
+          sed -i '3i\  "rpc_url": "'"$TENDERLY_URL"'",' deployments/json/129412.json
 
       - name: Configure Git
         run: |
