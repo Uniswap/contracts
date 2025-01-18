@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - deployments/**
+      - src/pkgs/**
 
 jobs:
   update-briefcase:
@@ -50,7 +53,7 @@ jobs:
       - name: Setup SSH
         uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
         with:
-          ssh-private-key: ${{ secrets.DEPLOY_KEY_BRIEFCASE }}
+          ssh-private-key: ${{ secrets.DEPLOY_KEY_INTERFACES }}
 
       - name: Commit and Push if Changes are Present
         if: steps.git-check.outputs.changes == 'true'

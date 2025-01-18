@@ -1,0 +1,127 @@
+name: Deploy to Tenderly Virtual TestNet
+
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+    paths:
+      - src/briefcase/deployers/**
+
+jobs:
+  deploy-to-tenderly:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # Create Tenderly Virtual TestNet environment: https://docs.tenderly.co/virtual-testnets
+      - name: Setup Tenderly Virtual TestNet
+        uses: Tenderly/vnet-github-action@v1.0.10
+        with:
+          access_key: ${{ secrets.TENDERLY_ACCESS_KEY }}
+          project_name: ${{ vars.TENDERLY_PROJECT_SLUG }}
+          account_name: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
+          testnet_name: "Uniswap VNet CI/CD ${{ github.run_id }}"
+          mode: "CD"
+          # ETH Mainnet config: https://docs.tenderly.co/supported-networks
+          network_id: 1
+          chain_id: 129412
+          block_number: "latest"
+          # Enable explorer & verification: https://docs.tenderly.co/virtual-testnets/testnet-explorer
+          public_explorer: true
+          verification_visibility: "src"
+          state_sync: false
+
+      # Fund wallet using unlimited faucet: https://docs.tenderly.co/virtual-testnets/unlimited-faucet
+      - name: Fund Account
+        env:
+          TENDERLY_ADMIN_RPC_URL: ${{ env.TENDERLY_ADMIN_RPC_URL }}
+          ADMIN_WALLET: ${{ vars.TENDERLY_ADMIN_WALLET }}
+        run: |
+          curl $TENDERLY_ADMIN_RPC_URL \
+            -X POST \
+            -H "Content-Type: application/json" \
+            -d '{
+              "jsonrpc": "2.0",
+              "method": "tenderly_setBalance",
+              "params": [
+                "${{ vars.TENDERLY_ADMIN_WALLET }}",
+                "0x3635c9adc5dea00000"
+              ],
+              "id": "1234"
+            }'
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Foundry Build
+        run: |
+          forge --version
+          forge build --sizes
+
+      - name: Clean up broadcast directory
+        run: |
+          rm -rf broadcast/Deploy-all.s.sol/129412
+
+      # Deploy & verify contracts
+      - name: Deploy Contracts
+        env:
+          PRIVATE_KEY: ${{ secrets.TENDERLY_PRIVATE_KEY }}
+          TENDERLY_PUBLIC_RPC_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}
+          FOUNDRY_VERIFIER_URL: ${{ env.TENDERLY_FOUNDRY_VERIFICATION_URL }}
+          TENDERLY_ACCESS_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}
+        run: |
+          forge script script/deploy/Deploy-all.s.sol \
+            --private-key $PRIVATE_KEY \
+            --rpc-url $TENDERLY_PUBLIC_RPC_URL \
+            --verify \
+            --verifier-url $FOUNDRY_VERIFIER_URL \
+            --slow \
+            --broadcast
+
+      # Generate deployment logs
+      - name: Generate Deployment Logs
+        # env:
+        #   TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_EXPLORER_URL }}
+        run: |
+          rm -f deployments/129412.md
+          rm -f deployments/json/129412.json
+          node lib/forge-chronicles Deploy-all.s.sol -c 129412 --force
+        # -e $TENDERLY_EXPLORER_URL
+
+      # https://github.com/marketplace/actions/tenderly-virtual-testnet-setup#outputs
+      - name: Add RPC URL to deployment logs
+        env:
+          TENDERLY_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}
+        run: |
+          sed -i '2i\  "name": "Uniswap Tenderly Virtual Testnet",' deployments/json/129412.json
+          sed -i '3i\  "rpc_url": "'"$TENDERLY_URL"'",' deployments/json/129412.json
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check for Changes
+        id: git-check
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes=changes present" >> $GITHUB_OUTPUT
+          else
+            echo "changes=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Commit and Push if Changes are Present
+        if: steps.git-check.outputs.changes != ''
+        run: |
+          rm -f .tenderly-deployments.json
+          git remote set-url origin git@github.com:${{ github.repository }}.git
+          git add .
+          git commit -m "Deploy Tenderly Virtual TestNet"
+          git push
