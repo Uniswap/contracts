@@ -8,6 +8,7 @@ use crossterm::event::Event;
 use std::io::BufRead;
 use std::process::Command;
 use std::sync::{Arc, Mutex};
+use regex::Regex;
 
 pub struct ExecuteDeployScriptScreen {
     execution_status: Arc<Mutex<ExecutionStatus>>,
@@ -74,9 +75,9 @@ impl ExecuteDeployScriptScreen {
                         .join("Deploy-all.s.sol"),
                 )
                 .arg(format!("--rpc-url={}", rpc_url))
-                .arg("-vvvv");
+                .arg("-vvvv").arg(format!("--private-key={}", private_key));
 
-            match execute_command(&mut command, Some(private_key.clone())) {
+            match execute_command(&mut command) {
                 Ok(result) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::DryRunCompleted;
                     if let Some(error_message) = result {
@@ -110,7 +111,7 @@ impl ExecuteDeployScriptScreen {
                 }
             }
 
-            match execute_command(&mut command.arg("--broadcast").arg("--skip-simulation"), Some(private_key)) {
+            match execute_command(&mut command.arg("--broadcast").arg("--skip-simulation")) {
                 Ok(result) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::DeploymentCompleted;
                     if let Some(error_message) = result {
@@ -139,7 +140,7 @@ impl ExecuteDeployScriptScreen {
                 command = command.arg("-e").arg(explorer.unwrap().url);
             }
 
-            match execute_command(&mut command, None) {
+            match execute_command(&mut command) {
                 Ok(result) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::Success;
                     if let Some(error_message) = result {
@@ -168,13 +169,12 @@ impl ExecuteDeployScriptScreen {
     }
 }
 
-fn execute_command(command: &mut Command, private_key: Option<String>) -> Result<Option<String>, Box<dyn std::error::Error>> {
-    crate::errors::log(format!("Executing command: {:?}", command));
-    let mut result = command;
-    if private_key.is_some() {
-        result = result.arg(format!("--private-key={}", private_key.clone().unwrap()));
-    }
-    let mut result = result
+fn execute_command(command: &mut Command) -> Result<Option<String>, Box<dyn std::error::Error>> {
+    let cmd_str = format!("{:?}", command);
+    let re = Regex::new(r"--private-key=0x[a-fA-F0-9]+").unwrap();
+    let masked_cmd = re.replace_all(&cmd_str, "--private-key=***");
+    crate::errors::log(format!("Executing command: {}", masked_cmd));
+    let mut result = command
         .stdout(std::process::Stdio::piped())
         .stderr(std::process::Stdio::piped())
         .spawn()?;

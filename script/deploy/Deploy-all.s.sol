@@ -235,6 +235,7 @@ contract Deploy is Script {
             if (!deployPoolManager) {
                 poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
             }
+            console.log('deploying Position Descriptor');
             address positionDescriptorImplementation =
                 address(PositionDescriptorDeployer.deploy(poolManager, weth(), nativeCurrencyLabelBytes));
             positionDescriptor =
