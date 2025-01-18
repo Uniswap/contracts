@@ -93,7 +93,7 @@ jobs:
       # https://github.com/marketplace/actions/tenderly-virtual-testnet-setup#outputs
       - name: Add RPC URL to deployment logs
         env:
-          TENDERLY_URL: ${{ env.TENDERLY_URL }}
+          TENDERLY_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}
         run: |
           sed -i '2i\  "rpc_url": "'"$TENDERLY_URL"'",' deployments/json/129412.json
 
@@ -119,6 +119,7 @@ jobs:
       - name: Commit and Push if Changes are Present
         if: steps.git-check.outputs.changes != ''
         run: |
+          rm -f .tenderly-deployments.json
           git remote set-url origin git@github.com:${{ github.repository }}.git
           git add .
           git commit -m "Deploy Tenderly Virtual TestNet"
