@@ -34,10 +34,17 @@ jobs:
         run: |
           git clone https://github.com/Uniswap/briefcase.git tmp_briefcase_repo
 
+      - name: Delete existing briefcase repo content
+        run: |
+          rm -rf tmp_briefcase_repo/src
+          rm -rf tmp_briefcase_repo/deployments
+          mkdir -p tmp_briefcase_repo/src
+          mkdir -p tmp_briefcase_repo/deployments
+
       - name: Compile Briefcase
         run: |
           ./script/util/create_briefcase.sh
-          cp -r src/briefcase/ tmp_briefcase_repo/src
+          cp -r src/briefcase/* tmp_briefcase_repo/src
           cp -r deployments/json/ tmp_briefcase_repo/deployments
 
       - name: Check for Changes
