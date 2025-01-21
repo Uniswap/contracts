@@ -28,7 +28,7 @@ library UniversalRouterDeployer {
         });
         bytes memory initcode_ = abi.encodePacked(initcode(), abi.encode(params));
         assembly {
-            router := create(0, add(initcode_, 32), mload(initcode_))
+            router := create2(0, add(initcode_, 32), mload(initcode_), hex'00')
         }
     }
 

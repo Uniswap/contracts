@@ -15,7 +15,7 @@ library PositionManagerDeployer {
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
 
         assembly {
-            manager := create(0, add(initcode_, 32), mload(initcode_))
+            manager := create2(0, add(initcode_, 32), mload(initcode_), hex'00')
         }
     }
 
