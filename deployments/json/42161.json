@@ -26,10 +26,11 @@
       "timestamp": 1706739165
     },
     "UniversalRouter": {
-      "address": "0x5E325eDA8064b456f4781070C0738d849c824258",
+      "address": "0xa51afafe0263b40edaef0df8781ea9aa03e381a3",
       "proxy": false,
-      "deploymentTxn": "0xefb29b6c8e5c60d189dfc7f22d5ab0ad3dd8ed37da23c9a9f022904af0031a2d",
-      "timestamp": 1705003181
+      "deploymentTxn": "0x37842996a448e73dc7b27a9a3ff85f89c6100b4306eff7344536f07984b6b19f",
+      "timestamp": 1737487458,
+      "commitHash": "ac5ac65"
     },
     "UniswapV2Factory": {
       "address": "0xf1D7CC64Fb4452F05c498126312eBE29f30Fbcf9",
@@ -90,9 +91,131 @@
       "proxy": false,
       "deploymentTxn": "0xa2a1257ad6c87282cf939494e4daae37b78c372b5de25d44c7d4018265c7b0f6",
       "timestamp": 1622557217
+    },
+    "PoolManager": {
+      "address": "0x360e68faccca8ca495c1b759fd9eee466db9fb32",
+      "proxy": false,
+      "deploymentTxn": "0x6ef4f5c15ee3cf594b68c447e3c24e39ca896c438a2cf4c3bca7f10df2f2e1ad",
+      "timestamp": 1737487458,
+      "commitHash": "ac5ac65"
+    },
+    "PositionDescriptor": {
+      "implementation": "0xad2dc21c9e0df2072f768895482fd1c30333f076",
+      "address": "0xe2023f3fa515cf070e07fd9d51c1d236e07843f4",
+      "proxy": true,
+      "proxyType": "TransparentUpgradeableProxy",
+      "deploymentTxn": "0x4d368e271ee9ccdb111e1baad61c88db6601070abaf273547b6219ae2f5176ad",
+      "timestamp": 1737487458,
+      "commitHash": "ac5ac65"
+    },
+    "PositionManager": {
+      "address": "0xd88f38f930b7952f2db2432cb002e7abbf3dd869",
+      "proxy": false,
+      "deploymentTxn": "0x13b517dc70f698507bdad179607e0806672653fccefef50ecf92371527394eec",
+      "timestamp": 1737487458,
+      "commitHash": "ac5ac65"
+    },
+    "V4Quoter": {
+      "address": "0x3972c00f7ed4885e145823eb7c655375d275a1c5",
+      "proxy": false,
+      "deploymentTxn": "0x3d7b5fbd762c399935acd0d33b2f68d489aaff6ce7b08c013b598884cd5039a6",
+      "timestamp": 1737487458,
+      "commitHash": "ac5ac65"
+    },
+    "StateView": {
+      "address": "0x76fd297e2d437cd7f76d50f01afe6160f86e9990",
+      "proxy": false,
+      "deploymentTxn": "0xd1eab0eed839ef5a5d3d5e53e6341b2837bf060f4b59543266c0a717bbbfb469",
+      "timestamp": 1737487458,
+      "commitHash": "ac5ac65"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "PoolManager": {
+          "address": "0x360e68faccca8ca495c1b759fd9eee466db9fb32",
+          "proxy": false,
+          "deploymentTxn": "0x6ef4f5c15ee3cf594b68c447e3c24e39ca896c438a2cf4c3bca7f10df2f2e1ad",
+          "input": {
+            "constructor": {
+              "initialOwner": "0x2BAD8182C09F50c8318d769245beA52C32Be46CD"
+            }
+          }
+        },
+        "PositionDescriptor": {
+          "implementation": "0xad2dc21c9e0df2072f768895482fd1c30333f076",
+          "address": "0xe2023f3fa515cf070e07fd9d51c1d236e07843f4",
+          "proxy": true,
+          "proxyType": "TransparentUpgradeableProxy",
+          "deploymentTxn": "0x4d368e271ee9ccdb111e1baad61c88db6601070abaf273547b6219ae2f5176ad",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32",
+              "_wrappedNative": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+              "_nativeCurrencyLabelBytes": "0x4554480000000000000000000000000000000000000000000000000000000000"
+            },
+            "initializeData": "0x"
+          }
+        },
+        "PositionManager": {
+          "address": "0xd88f38f930b7952f2db2432cb002e7abbf3dd869",
+          "proxy": false,
+          "deploymentTxn": "0x13b517dc70f698507bdad179607e0806672653fccefef50ecf92371527394eec",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "300000",
+              "_tokenDescriptor": "0xe2023F3FA515cF070e07fD9d51c1d236e07843f4",
+              "_weth9": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"
+            }
+          }
+        },
+        "V4Quoter": {
+          "address": "0x3972c00f7ed4885e145823eb7c655375d275a1c5",
+          "proxy": false,
+          "deploymentTxn": "0x3d7b5fbd762c399935acd0d33b2f68d489aaff6ce7b08c013b598884cd5039a6",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32"
+            }
+          }
+        },
+        "StateView": {
+          "address": "0x76fd297e2d437cd7f76d50f01afe6160f86e9990",
+          "proxy": false,
+          "deploymentTxn": "0xd1eab0eed839ef5a5d3d5e53e6341b2837bf060f4b59543266c0a717bbbfb469",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32"
+            }
+          }
+        },
+        "UniversalRouter": {
+          "address": "0xa51afafe0263b40edaef0df8781ea9aa03e381a3",
+          "proxy": false,
+          "deploymentTxn": "0x37842996a448e73dc7b27a9a3ff85f89c6100b4306eff7344536f07984b6b19f",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+                "v2Factory": "0xf1D7CC64Fb4452F05c498126312eBE29f30Fbcf9",
+                "v3Factory": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32",
+                "v3NFTPositionManager": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+                "v4PositionManager": "0xd88F38F930b7952f2DB2432Cb002E7abbF3dD86"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1737487458,
+      "commitHash": "ac5ac65"
+    },
     {
       "contracts": {
         "FeeOnTransferDetector": {
