@@ -5,12 +5,12 @@ on:
   push:
     branches:
       - main
-    # only push changes to briefcase repo if there are no changes to the deployers, if there are changes to the deployers a tenderly vnet is deployed first, after the deployment is complete this action will run again and push all changes to the briefcase repo
+    # only push changes to briefcase repo if there are no changes to the deployers, if there are changes to the deployers a tenderly vnet is deployed first, after the deployment is complete this action will run again and push all changes to the briefcase repo.
+    # Not perfect solution, will run twice if there are changes to the protocols and deployers for example.
     paths:
-      - deployments/**
-      - src/briefcase/**
-    paths-ignore:
-      - src/briefcase/deployers/**
+      - "deployments/**"
+      - "src/briefcase/**"
+      - "!src/briefcase/deployers/**"
 
 jobs:
   update-briefcase:
