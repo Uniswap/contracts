@@ -170,9 +170,7 @@ contract Deploy is Script {
             );
             address nftDescriptorImplementation =
                 address(NonfungibleTokenPositionDescriptorDeployer.deploy(weth(), nativeCurrencyLabelBytes));
-            nftDescriptor = address(
-                new TransparentUpgradeableProxy{salt: hex'00'}(nftDescriptorImplementation, proxyAdminOwner, '')
-            );
+            nftDescriptor = address(new TransparentUpgradeableProxy(nftDescriptorImplementation, proxyAdminOwner, ''));
         }
 
         if (deployNonfungiblePositionManager) {
@@ -240,8 +238,9 @@ contract Deploy is Script {
             console.log('deploying Position Descriptor');
             address positionDescriptorImplementation =
                 address(PositionDescriptorDeployer.deploy(poolManager, weth(), nativeCurrencyLabelBytes));
-            positionDescriptor =
-                address(new TransparentUpgradeableProxy(positionDescriptorImplementation, proxyAdminOwner, ''));
+            positionDescriptor = address(
+                new TransparentUpgradeableProxy{salt: hex'00'}(positionDescriptorImplementation, proxyAdminOwner, '')
+            );
         }
 
         if (deployPositionManager) {
