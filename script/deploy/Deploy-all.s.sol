@@ -170,7 +170,9 @@ contract Deploy is Script {
             );
             address nftDescriptorImplementation =
                 address(NonfungibleTokenPositionDescriptorDeployer.deploy(weth(), nativeCurrencyLabelBytes));
-            nftDescriptor = address(new TransparentUpgradeableProxy(nftDescriptorImplementation, proxyAdminOwner, ''));
+            nftDescriptor = address(
+                new TransparentUpgradeableProxy{salt: hex'00'}(nftDescriptorImplementation, proxyAdminOwner, '')
+            );
         }
 
         if (deployNonfungiblePositionManager) {

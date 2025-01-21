@@ -9,7 +9,7 @@ library V4QuoterDeployer {
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
 
         assembly {
-            v4quoter := create(0, add(initcode_, 32), mload(initcode_))
+            v4quoter := create2(0, add(initcode_, 32), mload(initcode_), hex'00')
         }
     }
 

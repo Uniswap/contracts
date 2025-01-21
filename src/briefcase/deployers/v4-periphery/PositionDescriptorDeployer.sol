@@ -12,7 +12,7 @@ library PositionDescriptorDeployer {
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
 
         assembly {
-            descriptor := create(0, add(initcode_, 32), mload(initcode_))
+            descriptor := create2(0, add(initcode_, 32), mload(initcode_), hex'00')
         }
     }
 
