@@ -1,5 +1,8 @@
+use crate::constants;
+
 use crossterm::{
     execute,
+    style::SetForegroundColor,
     terminal::{disable_raw_mode, enable_raw_mode, EnterAlternateScreen, LeaveAlternateScreen},
 };
 use std::error::Error as StdError;
@@ -22,6 +25,7 @@ impl StdError for ConnectionError {}
 pub fn log(message: String) {
     let debug_enabled = STATE_MANAGER.workflow_state.lock().unwrap().debug_mode;
     let _ = disable_raw_mode();
+    let _ = execute!(stdout(), SetForegroundColor(constants::DEFAULT_COLOR));
     if !debug_enabled {
         let _ = execute!(stdout(), LeaveAlternateScreen,);
     }
