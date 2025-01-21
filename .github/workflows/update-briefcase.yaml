@@ -6,7 +6,6 @@ on:
     branches:
       - main
     paths:
-      - deployments/**
       - src/pkgs/**
 
 jobs:
@@ -30,48 +29,19 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Clone Briefcase Repository
-        run: |
-          git clone https://github.com/Uniswap/briefcase.git tmp_briefcase_repo
-
-      - name: Delete existing briefcase repo content
-        run: |
-          rm -rf tmp_briefcase_repo/src
-          rm -rf tmp_briefcase_repo/deployments
-          mkdir -p tmp_briefcase_repo/src
-          mkdir -p tmp_briefcase_repo/deployments
-
       - name: Compile Briefcase
         run: |
           ./script/util/create_briefcase.sh
-          cp -r src/briefcase/* tmp_briefcase_repo/src
-          cp -r deployments/json/ tmp_briefcase_repo/deployments
-
-      - name: Check for Changes
-        id: git-check
-        run: |
-          cd tmp_briefcase_repo
-          if [ -n "$(git status --porcelain)" ]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
-          else
-            echo "changes=false" >> $GITHUB_OUTPUT
-          fi
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
         with:
-          ssh-private-key: ${{ secrets.DEPLOY_KEY_INTERFACES }}
+          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
 
-      - name: Commit and Push if Changes are Present
-        if: steps.git-check.outputs.changes == 'true'
+      - name: Commit and Push if changes are present
+        if: steps.git-check.outputs.changes != ''
         run: |
-          cd tmp_briefcase_repo
-          git remote set-url origin git@github.com:Uniswap/briefcase.git
+          git remote set-url origin git@github.com:${{ github.repository }}.git
           git add .
-          git commit -m "Update briefcase
-
-          Changes:
-          $(git diff --cached --name-status)
-          "
-          git pull --rebase origin main
+          git commit -m "Update briefcase"
           git push

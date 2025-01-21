@@ -1,0 +1,79 @@
+name: Push changes to Briefcase repo
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    # only push changes to briefcase repo if there are no changes to the deployers, if there are changes to the deployers a tenderly vnet is deployed first, after the deployment is complete this action will run again and push all changes to the briefcase repo
+    paths:
+      - deployments/**
+      - src/briefcase/**
+    paths-ignore:
+      - src/briefcase/deployers/**
+
+jobs:
+  update-briefcase:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: stable
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Clone Briefcase Repository
+        run: |
+          git clone https://github.com/Uniswap/briefcase.git tmp_briefcase_repo
+
+      - name: Delete existing briefcase repo content
+        run: |
+          rm -rf tmp_briefcase_repo/src
+          rm -rf tmp_briefcase_repo/deployments
+          mkdir -p tmp_briefcase_repo/src
+          mkdir -p tmp_briefcase_repo/deployments
+
+      - name: Copy Briefcase
+        run: |
+          cp -r src/briefcase/* tmp_briefcase_repo/src
+          cp -r deployments/json/* tmp_briefcase_repo/deployments
+
+      - name: Check for Changes
+        id: git-check
+        run: |
+          cd tmp_briefcase_repo
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
+        with:
+          ssh-private-key: ${{ secrets.DEPLOY_KEY_INTERFACES }}
+
+      - name: Commit and Push to briefcase repo if changes are present
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          cd tmp_briefcase_repo
+          git remote set-url origin git@github.com:Uniswap/briefcase.git
+          git add .
+          git commit -m "Update briefcase
+
+          Changes:
+          $(git diff --cached --name-status)
+          "
+          git pull --rebase origin main
+          git push
