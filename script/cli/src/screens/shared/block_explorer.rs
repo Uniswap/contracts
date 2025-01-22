@@ -22,8 +22,7 @@ impl BlockExplorerScreen {
                 .contains_key(&chain_id.clone().unwrap())
         {
             explorers = STATE_MANAGER
-                .chains
-                .get(&chain_id.unwrap())
+                .get_chain(chain_id.unwrap().clone())
                 .unwrap()
                 .explorers
                 .clone()
