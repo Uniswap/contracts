@@ -8,10 +8,11 @@
       "timestamp": 1713550173
     },
     "UniversalRouter": {
-      "address": "0x643770E279d5D0733F21d6DC03A8efbABf3255B4",
+      "address": "0xeabbcb3e8e415306207ef514f660a3f820025be3",
       "proxy": false,
-      "deploymentTxn": "0xec835d353cbe1fb21629674de8fb1d829224e7f3ef22933fc934c0a36416dfce",
-      "timestamp": 1711042703
+      "deploymentTxn": "0xb4f08b5a67d2404acffe18c03d9dcc1ab68e24bd01b6b5e302b5eb42d11ef419",
+      "timestamp": 1737564586,
+      "commitHash": "417770f"
     },
     "UniswapV2Router02": {
       "address": "0xBB66Eb1c5e875933D44DAe661dbD80e5D9B03035",
@@ -60,9 +61,131 @@
       "proxy": false,
       "deploymentTxn": "0xe3e05638f2d61c5d9f53d2fbc70373fa62c90e37ad41b78ae1074975d8548831",
       "timestamp": 1709127805
+    },
+    "PoolManager": {
+      "address": "0x1631559198a9e474033433b2958dabc135ab6446",
+      "proxy": false,
+      "deploymentTxn": "0x858e71e5e3e23c717ed95db9be8c6beba5f0b2a6eac4147dffc2e4c269e1216b",
+      "timestamp": 1737564586,
+      "commitHash": "417770f"
+    },
+    "PositionDescriptor": {
+      "implementation": "0x5ccf80f31f9126ba0888d31d0eceacd6eb2da6ef",
+      "address": "0x0747ad2b2e1f5761b1dcf0d8672bd1ffc3676f97",
+      "proxy": true,
+      "proxyType": "TransparentUpgradeableProxy",
+      "deploymentTxn": "0x901075a66b3c4cb79c9a345b3ee20c70f1e7b4fb013aeced3810568141890d54",
+      "timestamp": 1737564586,
+      "commitHash": "417770f"
+    },
+    "PositionManager": {
+      "address": "0x4ad2f4cca2682cbb5b950d660dd458a1d3f1baad",
+      "proxy": false,
+      "deploymentTxn": "0xf350e81c346a68270e88ae2e6817db932d1863de1c9ece767ffa6a27f755a42d",
+      "timestamp": 1737564586,
+      "commitHash": "417770f"
+    },
+    "V4Quoter": {
+      "address": "0x6f71cdcb0d119ff72c6eb501abceb576fbf62bcf",
+      "proxy": false,
+      "deploymentTxn": "0x2754031f93ec1e505b9236cb24779b5688c2cae91188ed4067e0ec00fb0f5df2",
+      "timestamp": 1737564586,
+      "commitHash": "417770f"
+    },
+    "StateView": {
+      "address": "0x12a88ae16f46dce4e8b15368008ab3380885df30",
+      "proxy": false,
+      "deploymentTxn": "0x7075aad6676517bfbe235b27534e98c7817e1cae5916a9f1f1d04fc17c76c2fa",
+      "timestamp": 1737564586,
+      "commitHash": "417770f"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "PoolManager": {
+          "address": "0x1631559198a9e474033433b2958dabc135ab6446",
+          "proxy": false,
+          "deploymentTxn": "0x858e71e5e3e23c717ed95db9be8c6beba5f0b2a6eac4147dffc2e4c269e1216b",
+          "input": {
+            "constructor": {
+              "initialOwner": "0x2339C0d23b60739B3E5ABF201F05903D24A26C77"
+            }
+          }
+        },
+        "PositionDescriptor": {
+          "implementation": "0x5ccf80f31f9126ba0888d31d0eceacd6eb2da6ef",
+          "address": "0x0747ad2b2e1f5761b1dcf0d8672bd1ffc3676f97",
+          "proxy": true,
+          "proxyType": "TransparentUpgradeableProxy",
+          "deploymentTxn": "0x901075a66b3c4cb79c9a345b3ee20c70f1e7b4fb013aeced3810568141890d54",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x1631559198A9e474033433b2958daBC135ab6446",
+              "_wrappedNative": "0x4300000000000000000000000000000000000004",
+              "_nativeCurrencyLabelBytes": "0x4554480000000000000000000000000000000000000000000000000000000000"
+            },
+            "initializeData": "0x"
+          }
+        },
+        "PositionManager": {
+          "address": "0x4ad2f4cca2682cbb5b950d660dd458a1d3f1baad",
+          "proxy": false,
+          "deploymentTxn": "0xf350e81c346a68270e88ae2e6817db932d1863de1c9ece767ffa6a27f755a42d",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x1631559198A9e474033433b2958daBC135ab6446",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "300000",
+              "_tokenDescriptor": "0x0747AD2b2E1f5761B1dCf0d8672bD1fFc3676F97",
+              "_weth9": "0x4300000000000000000000000000000000000004"
+            }
+          }
+        },
+        "V4Quoter": {
+          "address": "0x6f71cdcb0d119ff72c6eb501abceb576fbf62bcf",
+          "proxy": false,
+          "deploymentTxn": "0x2754031f93ec1e505b9236cb24779b5688c2cae91188ed4067e0ec00fb0f5df2",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x1631559198A9e474033433b2958daBC135ab6446"
+            }
+          }
+        },
+        "StateView": {
+          "address": "0x12a88ae16f46dce4e8b15368008ab3380885df30",
+          "proxy": false,
+          "deploymentTxn": "0x7075aad6676517bfbe235b27534e98c7817e1cae5916a9f1f1d04fc17c76c2fa",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x1631559198A9e474033433b2958daBC135ab6446"
+            }
+          }
+        },
+        "UniversalRouter": {
+          "address": "0xeabbcb3e8e415306207ef514f660a3f820025be3",
+          "proxy": false,
+          "deploymentTxn": "0xb4f08b5a67d2404acffe18c03d9dcc1ab68e24bd01b6b5e302b5eb42d11ef419",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x4300000000000000000000000000000000000004",
+                "v2Factory": "0x5C346464d33F90bABaf70dB6388507CC889C1070",
+                "v3Factory": "0x792edAdE80af5fC680d96a2eD80A44247D2Cf6Fd",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x1631559198A9e474033433b2958daBC135ab6446",
+                "v3NFTPositionManager": "0xB218e4f7cF0533d4696fDfC419A0023D33345F28",
+                "v4PositionManager": "0x4AD2F4CcA2682cBB5B950d660dD458a1D3f1bAa"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1737564586,
+      "commitHash": "417770f"
+    },
     {
       "contracts": {
         "Quoter": {
