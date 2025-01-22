@@ -2,10 +2,11 @@
   "chainId": "43114",
   "latest": {
     "UniversalRouter": {
-      "address": "0x4Dae2f939ACf50408e13d58534Ff8c2776d45265",
+      "address": "0x94b75331ae8d42c1b61065089b7d48fe14aa73b7",
       "proxy": false,
-      "deploymentTxn": "0x474852bafd923ab30f94a338d1d031aa7a7560d12d7b14dffacc02eb33265ec6",
-      "timestamp": 1705003421
+      "deploymentTxn": "0xf05987589ee75ec46ece084797df7e8a90ce681ec79a593c098dc270188c8c8f",
+      "timestamp": 1737558236,
+      "commitHash": "7076293"
     },
     "UniswapV2Factory": {
       "address": "0x9e5A52f57b3038F1B8EeE45F28b3C1967e22799C",
@@ -60,9 +61,131 @@
       "proxy": false,
       "deploymentTxn": "0xe800494c82f8d26226091df3c0b5317e1990bda57e90b7a5305e102f55267b6d",
       "timestamp": 1679632828
+    },
+    "PoolManager": {
+      "address": "0x06380c0e0912312b5150364b9dc4542ba0dbbc85",
+      "proxy": false,
+      "deploymentTxn": "0x516b487077dc84b85aacbcd1ef809d4aa87c43c6116327bf8a5e2a1126c77e6b",
+      "timestamp": 1737558236,
+      "commitHash": "7076293"
+    },
+    "PositionDescriptor": {
+      "implementation": "0xae59dc64bea6d4b81aa0a00f8c0ab9a5b9397154",
+      "address": "0x2b1aed9445b05ac1a3b203eccc1e25dd9351f0a9",
+      "proxy": true,
+      "proxyType": "TransparentUpgradeableProxy",
+      "deploymentTxn": "0x04a06fda3739eb36b5ec2703c1b3c646ede3ca74ef8a4850035e1c8293d84973",
+      "timestamp": 1737558236,
+      "commitHash": "7076293"
+    },
+    "PositionManager": {
+      "address": "0xb74b1f14d2754acfcbbe1a221023a5cf50ab8acd",
+      "proxy": false,
+      "deploymentTxn": "0x503350c1113cdd894ea3b0b2f10fea1eebb149c128d17de0230772d4f392fede",
+      "timestamp": 1737558236,
+      "commitHash": "7076293"
+    },
+    "V4Quoter": {
+      "address": "0xbe40675bb704506a3c2ccfb762dcfd1e979845c2",
+      "proxy": false,
+      "deploymentTxn": "0xdebf31ced64966467d993b52e9bf6601983fa30b29445156e8eeb3ef638d40b9",
+      "timestamp": 1737558236,
+      "commitHash": "7076293"
+    },
+    "StateView": {
+      "address": "0xc3c9e198c735a4b97e3e683f391ccbdd60b69286",
+      "proxy": false,
+      "deploymentTxn": "0xc85bfae05ec44b45e1dc831cf23af1666246ec46138606958129f4cfe9bcb41a",
+      "timestamp": 1737558236,
+      "commitHash": "7076293"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "PoolManager": {
+          "address": "0x06380c0e0912312b5150364b9dc4542ba0dbbc85",
+          "proxy": false,
+          "deploymentTxn": "0x516b487077dc84b85aacbcd1ef809d4aa87c43c6116327bf8a5e2a1126c77e6b",
+          "input": {
+            "constructor": {
+              "initialOwner": "0xeb0BCF27D1Fb4b25e708fBB815c421Aeb51eA9fc"
+            }
+          }
+        },
+        "PositionDescriptor": {
+          "implementation": "0xae59dc64bea6d4b81aa0a00f8c0ab9a5b9397154",
+          "address": "0x2b1aed9445b05ac1a3b203eccc1e25dd9351f0a9",
+          "proxy": true,
+          "proxyType": "TransparentUpgradeableProxy",
+          "deploymentTxn": "0x04a06fda3739eb36b5ec2703c1b3c646ede3ca74ef8a4850035e1c8293d84973",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x06380C0e0912312B5150364B9DC4542BA0DbBc85",
+              "_wrappedNative": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+              "_nativeCurrencyLabelBytes": "0x4156415800000000000000000000000000000000000000000000000000000000"
+            },
+            "initializeData": "0x"
+          }
+        },
+        "PositionManager": {
+          "address": "0xb74b1f14d2754acfcbbe1a221023a5cf50ab8acd",
+          "proxy": false,
+          "deploymentTxn": "0x503350c1113cdd894ea3b0b2f10fea1eebb149c128d17de0230772d4f392fede",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x06380C0e0912312B5150364B9DC4542BA0DbBc85",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "300000",
+              "_tokenDescriptor": "0x2b1AED9445B05AC1A3B203eCCC1e25dD9351F0A9",
+              "_weth9": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"
+            }
+          }
+        },
+        "V4Quoter": {
+          "address": "0xbe40675bb704506a3c2ccfb762dcfd1e979845c2",
+          "proxy": false,
+          "deploymentTxn": "0xdebf31ced64966467d993b52e9bf6601983fa30b29445156e8eeb3ef638d40b9",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x06380C0e0912312B5150364B9DC4542BA0DbBc85"
+            }
+          }
+        },
+        "StateView": {
+          "address": "0xc3c9e198c735a4b97e3e683f391ccbdd60b69286",
+          "proxy": false,
+          "deploymentTxn": "0xc85bfae05ec44b45e1dc831cf23af1666246ec46138606958129f4cfe9bcb41a",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x06380C0e0912312B5150364B9DC4542BA0DbBc85"
+            }
+          }
+        },
+        "UniversalRouter": {
+          "address": "0x94b75331ae8d42c1b61065089b7d48fe14aa73b7",
+          "proxy": false,
+          "deploymentTxn": "0xf05987589ee75ec46ece084797df7e8a90ce681ec79a593c098dc270188c8c8f",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+                "v2Factory": "0x9e5A52f57b3038F1B8EeE45F28b3C1967e22799C",
+                "v3Factory": "0x740b1c1de25031C31FF4fC9A62f554A55cdC1baD",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x06380C0e0912312B5150364B9DC4542BA0DbBc85",
+                "v3NFTPositionManager": "0x655C406EBFa14EE2006250925e54ec43AD184f8B",
+                "v4PositionManager": "0xB74b1F14d2754AcfcbBe1a221023a5cf50Ab8AC"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1737558236,
+      "commitHash": "7076293"
+    },
     {
       "contracts": {
         "UniversalRouter": {
