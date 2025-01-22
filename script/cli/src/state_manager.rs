@@ -53,8 +53,18 @@ impl StateManager {
         }
     }
 
-    pub fn get_chain(&self, chain_id: String) -> Option<&Chain> {
-        self.chains.get(&chain_id)
+    pub fn get_chain(&self, chain_id: String) -> Option<Chain> {
+        let mut chain = self.chains.get(&chain_id).cloned();
+
+        // Manual override for Zora due to incorrect config
+        if chain_id == "7777777" {
+            if let Some(ref mut chain_data) = chain {
+                if chain_data.explorers.len() == 1 {
+                    chain_data.explorers[0].name = "blockscout".to_string();
+                }
+            }
+        }
+        chain
     }
 }
 
