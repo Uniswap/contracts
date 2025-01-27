@@ -51,4 +51,4 @@
 	url = https://github.com/Uniswap/v4-core
 [submodule "lib/forge-chronicles"]
 	path = lib/forge-chronicles
-	url = https://github.com/marktoda/forge-chronicles
+	url = https://github.com/uniswap/forge-chronicles
