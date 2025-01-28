@@ -296,22 +296,6 @@
                 }
             }
         },
-        "util-contracts": {
-            "name": "Utils",
-            "deploy": false,
-            "contracts": {
-                "FeeOnTransferDetector": {
-                    "deploy": false,
-                    "address": null,
-                    "params": {
-                        "factoryV2": {
-                            "name": "Uniswap v2 factory address",
-                            "pointer": "protocols.v2.contracts.UniswapV2Factory"
-                        }
-                    }
-                }
-            }
-        },
         "universal-router": {
             "name": "Universal Router",
             "deploy": false,
@@ -366,7 +350,47 @@
                     },
                     "dependencies": [
                         "weth"
-                    ]
+                    ],
+                    "lookup": {
+                        "latest": "UniversalRouter"
+                    }
+                }
+            }
+        },
+                "util-contracts": {
+            "name": "Utils",
+            "deploy": false,
+            "contracts": {
+                "FeeOnTransferDetector": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "factoryV2": {
+                            "name": "Uniswap v2 factory address",
+                            "pointer": "protocols.v2.contracts.UniswapV2Factory"
+                        }
+                    }
+                },
+                "FeeCollector": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "owner": {
+                            "type": "address"
+                        },
+                        "universalRouter": {
+                            "name": "Universal Router address",
+                            "pointer": "protocols.universal-router.contracts.UniversalRouter"
+                        },
+                        "permit2": {
+                            "name": "Permit 2 address",
+                            "pointer": "protocols.permit2.contracts.Permit2"
+                        },
+                        "feeToken": {
+                            "name": "Fee token address (usually USDC)",
+                            "type": "address"
+                        }
+                    }
                 }
             }
         }

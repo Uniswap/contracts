@@ -6,6 +6,8 @@ import {IPermit2, Permit2Deployer} from '../../src/briefcase/deployers/permit2/P
 import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-contracts/SwapRouter02Deployer.sol';
 
 import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-router/UniversalRouterDeployer.sol';
+
+import {FeeCollectorDeployer} from '../../src/briefcase/deployers/util-contracts/FeeCollectorDeployer.sol';
 import {FeeOnTransferDetectorDeployer} from
     '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
 import {UniswapV2FactoryDeployer} from '../../src/briefcase/deployers/v2-core/UniswapV2FactoryDeployer.sol';
@@ -53,6 +55,7 @@ contract Deploy is Script {
     address nonfungiblePositionManager;
     address poolManager;
     address positionManager;
+    address universalRouter;
 
     function run() public {
         config = vm.readFile(string.concat('./script/deploy/tasks/', vm.toString(block.chainid), '/task-pending.json'));
@@ -71,9 +74,9 @@ contract Deploy is Script {
 
         deploySwapRouters();
 
-        deployUtilsContracts();
-
         deployUniversalRouter();
+
+        deployUtilsContracts();
 
         vm.stopBroadcast();
 
@@ -338,11 +341,31 @@ contract Deploy is Script {
     function deployUtilsContracts() private {
         if (!config.readBool('.protocols.util-contracts.deploy')) return;
 
-        if (v2Factory == address(0)) {
-            v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
+        bool deployFeeCollector = config.readBool('.protocols.util-contracts.contracts.FeeCollector.deploy');
+        bool deployFeeOnTransferDetector =
+            config.readBool('.protocols.util-contracts.contracts.FeeOnTransferDetector.deploy');
+
+        if (deployFeeOnTransferDetector) {
+            if (v2Factory == address(0)) {
+                v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
+            }
+            console.log('deploying Fee On Transfer Detector');
+            FeeOnTransferDetectorDeployer.deploy(v2Factory);
         }
-        console.log('deploying Fee On Transfer Detector');
-        FeeOnTransferDetectorDeployer.deploy(v2Factory);
+
+        if (deployFeeCollector) {
+            address owner = config.readAddress('.protocols.util-contracts.contracts.FeeCollector.params.owner.value');
+            address feeToken =
+                config.readAddress('.protocols.util-contracts.contracts.FeeCollector.params.feeToken.value');
+            if (universalRouter == address(0)) {
+                universalRouter = config.readAddress('.protocols.universal-router.contracts.UniversalRouter.address');
+            }
+            if (permit2 == address(0)) {
+                permit2 = config.readAddress('.protocols.permit2.contracts.Permit2.address');
+            }
+            console.log('deploying Fee Collector');
+            FeeCollectorDeployer.deploy(owner, universalRouter, permit2, feeToken);
+        }
     }
 
     function deployUniversalRouter() private {
@@ -372,16 +395,18 @@ contract Deploy is Script {
             positionManager = config.readAddress('.protocols.v4.contracts.PositionManager.address');
         }
         console.log('deploying Universal Router');
-        UniversalRouterDeployer.deploy(
-            permit2,
-            weth(),
-            v2Factory,
-            v3Factory,
-            v2PairInitCodeHash,
-            v3PoolInitCodeHash,
-            poolManager,
-            nonfungiblePositionManager,
-            positionManager
+        universalRouter = address(
+            UniversalRouterDeployer.deploy(
+                permit2,
+                weth(),
+                v2Factory,
+                v3Factory,
+                v2PairInitCodeHash,
+                v3PoolInitCodeHash,
+                poolManager,
+                nonfungiblePositionManager,
+                positionManager
+            )
         );
     }
 
