@@ -1,6 +1,6 @@
-pub mod create_config;
-pub mod deploy_contracts;
-pub mod register_contract;
+pub mod config;
+pub mod deploy;
+pub mod register;
 
 pub mod default_workflow;
 pub mod error_workflow;

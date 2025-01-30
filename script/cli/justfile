@@ -27,6 +27,10 @@ clean:
 run:
     cargo run -- --dir ../..
 
+# Watch the project and run it when the code changes
+watch:
+    cargo watch -x 'run -- --dir ../..'
+
 # Install the project
 install:
     cargo install --path .

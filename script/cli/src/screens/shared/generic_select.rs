@@ -3,18 +3,16 @@ use crate::screens::types::select::SelectComponent;
 use crate::ui::Buffer;
 use crossterm::event::Event;
 
+type Hook = Box<dyn Fn(usize) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>;
+
 pub struct GenericSelectScreen {
     select: SelectComponent,
     title: String,
-    hook: Box<dyn Fn(usize) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>,
+    hook: Hook,
 }
 
 impl GenericSelectScreen {
-    pub fn new(
-        options: Vec<String>,
-        title: String,
-        hook: Box<dyn Fn(usize) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>,
-    ) -> Self {
+    pub fn new(options: Vec<String>, title: String, hook: Hook) -> Self {
         GenericSelectScreen {
             select: SelectComponent::new(options),
             title,
@@ -41,8 +39,8 @@ impl Screen for GenericSelectScreen {
 
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let result = self.select.handle_input(event);
-        if result.is_some() {
-            return (self.hook)(result.unwrap());
+        if let Some(result) = result {
+            return (self.hook)(result);
         }
         Ok(ScreenResult::Continue)
     }

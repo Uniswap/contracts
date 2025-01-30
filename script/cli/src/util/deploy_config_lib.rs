@@ -18,10 +18,10 @@ pub fn load_template_config() -> Result<Value, Box<dyn std::error::Error>> {
 
 pub fn get_config_dir(chain_id: String) -> PathBuf {
     let working_dir = STATE_MANAGER.working_directory.clone();
-    let config_path = working_dir
+    
+    working_dir
         .join("script")
         .join("deploy")
         .join("tasks")
-        .join(chain_id);
-    config_path
+        .join(chain_id)
 }

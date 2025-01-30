@@ -47,7 +47,7 @@ impl SelectOrEnterComponent {
         env_var_input_validator: fn(String, usize) -> String,
     ) -> Self {
         let mut current_step = Step::EnterManually;
-        if options.len() > 0 {
+        if !options.is_empty() {
             options.push("Enter manually".to_string());
             current_step = Step::SelectFromList;
         }
@@ -103,8 +103,10 @@ impl SelectOrEnterComponent {
         // if there are no default options or the user has selected to enter the text manually, render the text input
         if self.current_step == Step::EnterManually {
             let selected_option = self.text_input.handle_input(event.clone());
-            if selected_option != None && !selected_option.clone().unwrap().is_empty() {
-                self.set_selected_option(selected_option.unwrap());
+            if let Some(selected_option) = selected_option {
+                if !selected_option.is_empty() {
+                    self.set_selected_option(selected_option);
+                }
             }
         }
         // if there are default options, render the text selection
@@ -119,7 +121,7 @@ impl SelectOrEnterComponent {
             }
         } else if self.current_step == Step::EnterEnvVar {
             let env_var = self.env_var_input.handle_input(event.clone());
-            if env_var != None && !env_var.clone().unwrap().is_empty() {
+            if env_var.is_some() && !env_var.clone().unwrap().is_empty() {
                 self.env_var = env_var.unwrap();
                 self.current_step = Step::SaveEnvVar;
             }

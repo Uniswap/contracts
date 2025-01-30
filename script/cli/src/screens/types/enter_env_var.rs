@@ -82,7 +82,7 @@ impl EnterEnvVarComponent {
     pub fn handle_input(&mut self, event: Event) -> Option<String> {
         if self.current_step == Step::EnterEnvVar {
             let env_var = self.env_var_input.handle_input(event.clone());
-            if env_var != None {
+            if env_var.is_some() {
                 if env_var.clone().unwrap().is_empty() {
                     self.env_var = "".to_string();
                     self.current_step = Step::Finished;

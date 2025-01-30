@@ -19,10 +19,8 @@ impl Workflow for DefaultWorkflow {
         new_workflows: Option<Vec<Box<dyn Workflow>>>,
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match process_nested_workflows(&mut self.child_workflows, new_workflows)? {
-            WorkflowResult::NextScreen(screen) => return Ok(WorkflowResult::NextScreen(screen)),
-            WorkflowResult::Finished => {
-                return Ok(WorkflowResult::NextScreen(Box::new(HomeScreen::new())));
-            }
+            WorkflowResult::NextScreen(screen) => Ok(WorkflowResult::NextScreen(screen)),
+            WorkflowResult::Finished => Ok(WorkflowResult::NextScreen(Box::new(HomeScreen::new()))),
         }
     }
 
@@ -30,7 +28,7 @@ impl Workflow for DefaultWorkflow {
         if !self.child_workflows.is_empty() {
             return self.child_workflows[0].previous_screen();
         }
-        return Ok(WorkflowResult::NextScreen(Box::new(HomeScreen::new())));
+        Ok(WorkflowResult::NextScreen(Box::new(HomeScreen::new())))
     }
 
     fn handle_error(
@@ -40,6 +38,6 @@ impl Workflow for DefaultWorkflow {
         if !self.child_workflows.is_empty() {
             return self.child_workflows[0].handle_error(error);
         }
-        return Ok(WorkflowResult::NextScreen(Box::new(HomeScreen::new())));
+        Ok(WorkflowResult::NextScreen(Box::new(HomeScreen::new())))
     }
 }

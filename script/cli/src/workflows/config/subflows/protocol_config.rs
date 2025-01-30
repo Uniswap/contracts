@@ -11,9 +11,11 @@ use serde_json::Value;
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
 
+type Screens = Vec<Box<dyn Fn() -> Box<dyn Screen> + Send>>;
+
 pub struct ProtocolConfigWorkflow {
     current_screen: isize,
-    screens: Arc<Mutex<Vec<Box<dyn Fn() -> Box<dyn Screen> + Send>>>>,
+    screens: Arc<Mutex<Screens>>,
     child_workflows: Vec<Box<dyn Workflow>>,
 }
 
@@ -35,8 +37,7 @@ impl ProtocolConfigWorkflow {
         STATE_MANAGER.workflow_state.lock()?.task["protocols"][_protocol.clone()]["deploy"] =
             Value::Bool(true);
 
-        let screens: Arc<Mutex<Vec<Box<dyn Fn() -> Box<dyn Screen> + Send>>>> =
-            Arc::new(Mutex::new(Vec::new()));
+        let screens: Arc<Mutex<Screens>> = Arc::new(Mutex::new(Vec::new()));
         let protocol = Arc::new(_protocol.clone());
 
         let workflows_clone_outer = Arc::clone(&screens);
@@ -55,7 +56,6 @@ impl ProtocolConfigWorkflow {
                     [protocol_clone_outer.to_string()]["contracts"]
                     .clone()
                     .as_object()
-                    .clone()
                     .unwrap()
                     .keys()
                     .cloned()
@@ -88,11 +88,11 @@ impl Workflow for ProtocolConfigWorkflow {
         new_workflows: Option<Vec<Box<dyn Workflow>>>,
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match process_nested_workflows(&mut self.child_workflows, new_workflows)? {
-            WorkflowResult::NextScreen(screen) => return Ok(WorkflowResult::NextScreen(screen)),
+            WorkflowResult::NextScreen(screen) => Ok(WorkflowResult::NextScreen(screen)),
             WorkflowResult::Finished => {
                 self.current_screen += 1;
-                let result = self.get_screen();
-                return result;
+
+                self.get_screen()
             }
         }
     }
@@ -105,14 +105,14 @@ impl Workflow for ProtocolConfigWorkflow {
         if self.current_screen == 0 {
             self.screens.lock().unwrap().drain(1..);
         }
-        return self.get_screen();
+        self.get_screen()
     }
 
     fn handle_error(
         &mut self,
         error: Box<dyn std::error::Error>,
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
-        return self.display_error(error.to_string());
+        self.display_error(error.to_string())
     }
 }
 
@@ -123,7 +123,7 @@ impl ProtocolConfigWorkflow {
                 [self.current_screen as usize])(
             )));
         }
-        return Ok(WorkflowResult::Finished);
+        Ok(WorkflowResult::Finished)
     }
 
     fn display_error(
@@ -132,14 +132,14 @@ impl ProtocolConfigWorkflow {
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         self.child_workflows = vec![Box::new(ErrorWorkflow::new(error_message))];
         self.current_screen = 1000000;
-        return self.child_workflows[0].next_screen(None);
+        self.child_workflows[0].next_screen(None)
     }
 }
 
 pub fn handle_selected_contracts(
     selected: Vec<usize>,
     protocol: String,
-    screens: &Mutex<Vec<Box<dyn Fn() -> Box<dyn Screen> + Send>>>,
+    screens: &Mutex<Screens>,
 ) -> Result<ScreenResult, Box<dyn std::error::Error>> {
     let mut task = STATE_MANAGER.workflow_state.lock()?.task.clone();
     let contracts = task["protocols"][protocol.clone()]["contracts"].clone();
@@ -199,9 +199,7 @@ pub fn handle_selected_contracts(
                 if target_contract["deploy"].eq(&Value::Bool(true)) {
                     // if the deploy flag is set to true, the user doesn't need to enter this parameter, it will be fetched from the deployed contract automatically
                     continue;
-                } else if target_contract["address"].is_null()
-                    && !pointers.contains(&pointer.to_string())
-                {
+                } else if target_contract["address"].is_null() && !pointers.contains(pointer) {
                     // if the address is not set, add it to the pointers map, so we don't add it multiple times
                     pointers.insert(pointer.to_string());
                     param_path = pointer
@@ -276,13 +274,7 @@ pub fn handle_selected_contracts(
                         .unwrap_or("address")
                         .to_string()
                         .clone();
-                    add_screen(
-                        screens,
-                        param_type,
-                        param_path,
-                        options,
-                        format!("{}", name),
-                    );
+                    add_screen(screens, param_type, param_path, options, name.to_string());
                 }
             }
         }
@@ -323,8 +315,8 @@ fn lookup_deployment_log(mut lookup: Value) -> Result<HashSet<String>, Box<dyn s
     if lookup["latest"].is_string() {
         let latest_address =
             deployments_json["latest"][lookup["latest"].as_str().unwrap()]["address"].as_str();
-        if latest_address.is_some() {
-            options.insert(latest_address.unwrap().to_string());
+        if let Some(latest_address) = latest_address {
+            options.insert(latest_address.to_string());
         }
     }
     if lookup["history"].is_array() {
@@ -364,7 +356,7 @@ fn get_input_validator(param_type: &str) -> fn(String, usize) -> String {
 
 // Adds a new screen to handle the input of a param
 fn add_screen(
-    screens: &Mutex<Vec<Box<dyn Fn() -> Box<dyn Screen> + Send>>>,
+    screens: &Mutex<Screens>,
     param_type: String,
     param_path: Vec<String>,
     options: HashSet<String>,

@@ -30,7 +30,7 @@ impl Workflow for RegisterContractWorkflow {
         new_workflows: Option<Vec<Box<dyn Workflow>>>,
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match process_nested_workflows(&mut self.child_workflows, new_workflows)? {
-            WorkflowResult::NextScreen(screen) => return Ok(WorkflowResult::NextScreen(screen)),
+            WorkflowResult::NextScreen(screen) => Ok(WorkflowResult::NextScreen(screen)),
             WorkflowResult::Finished => {
                 self.current_screen += 1;
                 self.get_screen()
@@ -39,7 +39,7 @@ impl Workflow for RegisterContractWorkflow {
     }
 
     fn previous_screen(&mut self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
-        if self.child_workflows.len() > 0 {
+        if !self.child_workflows.is_empty() {
             return self.child_workflows[0].previous_screen();
         }
         if self.current_screen > 1 {
@@ -49,7 +49,7 @@ impl Workflow for RegisterContractWorkflow {
         if self.current_screen == 3 {
             self.current_screen = 2;
         }
-        return self.get_screen();
+        self.get_screen()
     }
 
     fn handle_error(
@@ -63,9 +63,9 @@ impl Workflow for RegisterContractWorkflow {
                     self.current_screen = 2;
                     return self.get_screen();
                 }
-                return self.display_error(error.to_string());
+                self.display_error(error.to_string())
             }
-            _ => return self.display_error(error.to_string()),
+            _ => self.display_error(error.to_string()),
         }
     }
 }
@@ -73,37 +73,26 @@ impl Workflow for RegisterContractWorkflow {
 impl RegisterContractWorkflow {
     fn get_screen(&self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match self.current_screen {
-            1 => {
-                return Ok(WorkflowResult::NextScreen(Box::new(ChainIdScreen::new(
-                    None,
-                ))))
-            }
-            2 => return get_rpc_url_screen(),
-            3 => {
-                return Ok(WorkflowResult::NextScreen(Box::new(
-                    TestConnectionScreen::new()?,
-                )))
-            }
-            4 => {
-                let screen = BlockExplorerScreen::new()?;
-                return Ok(WorkflowResult::NextScreen(Box::new(screen)));
-            }
-            5 => {
-                return Ok(WorkflowResult::NextScreen(Box::new(
-                    EnterExplorerApiKeyScreen::new()?,
-                )))
-            }
-            6 => {
-                return Ok(WorkflowResult::NextScreen(Box::new(
-                    EnterAddressScreen::new(),
-                )))
-            }
-            7 => {
-                return Ok(WorkflowResult::NextScreen(Box::new(
-                    GetContractInfoScreen::new()?,
-                )))
-            }
-            _ => return Ok(WorkflowResult::Finished),
+            1 => Ok(WorkflowResult::NextScreen(Box::new(ChainIdScreen::new(
+                None,
+            )))),
+            2 => get_rpc_url_screen(),
+            3 => Ok(WorkflowResult::NextScreen(Box::new(
+                TestConnectionScreen::new()?,
+            ))),
+            4 => Ok(WorkflowResult::NextScreen(Box::new(
+                BlockExplorerScreen::new()?,
+            ))),
+            5 => Ok(WorkflowResult::NextScreen(Box::new(
+                EnterExplorerApiKeyScreen::new()?,
+            ))),
+            6 => Ok(WorkflowResult::NextScreen(Box::new(
+                EnterAddressScreen::new(),
+            ))),
+            7 => Ok(WorkflowResult::NextScreen(Box::new(
+                GetContractInfoScreen::new()?,
+            ))),
+            _ => Ok(WorkflowResult::Finished),
         }
     }
 
@@ -113,6 +102,6 @@ impl RegisterContractWorkflow {
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         self.child_workflows = vec![Box::new(ErrorWorkflow::new(error_message))];
         self.current_screen = 1000000;
-        return self.child_workflows[0].next_screen(None);
+        self.child_workflows[0].next_screen(None)
     }
 }

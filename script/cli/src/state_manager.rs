@@ -1,11 +1,21 @@
 use crate::libs::web3::Web3Lib;
 use crate::util::chain_config::{parse_chain_config, Chain, Explorer};
 use crate::util::deployment_log::RegisterContractData;
+use crossterm::{
+    cursor::Show,
+    execute,
+    terminal::{disable_raw_mode, is_raw_mode_enabled, LeaveAlternateScreen},
+    Result,
+};
 use serde_json::Value;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Mutex;
-use std::{env, process};
+use std::{
+    env,
+    io::{stdout, Write},
+    process,
+};
 
 // The state manager is responsible for managing the state of the application. All screens and workflows share the same state and use the singleton instance to read and write to the state.
 pub struct WorkflowState {
@@ -73,6 +83,18 @@ lazy_static::lazy_static! {
     pub static ref STATE_MANAGER: StateManager = StateManager::new();
 }
 
+pub fn clean_terminal() -> Result<()> {
+    let mut stdout = stdout();
+    if is_raw_mode_enabled().unwrap() {
+        stdout.flush()?;
+        let result = disable_raw_mode();
+        execute!(stdout, LeaveAlternateScreen, Show,)?;
+        result
+    } else {
+        Ok(())
+    }
+}
+
 fn check_for_foundry_toml() -> PathBuf {
     // check if foundry.toml file exists in the current directory
     let mut current_dir = env::current_dir().unwrap();
@@ -84,10 +106,12 @@ fn check_for_foundry_toml() -> PathBuf {
             let dir = &args[2];
             current_dir = current_dir.join(dir);
             if !current_dir.join("foundry.toml").exists() {
+                let _ = clean_terminal();
                 println!("{} does not exist.", current_dir.to_str().unwrap());
                 process::exit(1);
             }
         } else {
+            let _ = clean_terminal();
             println!("No foundry.toml file found in the current directory. Use the --dir <directory> argument to provide a relative path to your foundry directory containing the foundry.toml file. Example: ./deploy-cli --dir ../path/to/your/foundry_project");
             process::exit(1);
         }
@@ -95,5 +119,5 @@ fn check_for_foundry_toml() -> PathBuf {
         current_dir = default_dir;
     }
 
-    return current_dir;
+    current_dir
 }

@@ -3,11 +3,11 @@ use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::screens::types::select::SelectComponent;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
-use crate::workflows::deploy_contracts::deploy_contracts::DeployContractsWorkflow;
+use crate::workflows::deploy::deploy_contracts::DeployContractsWorkflow;
 use crate::workflows::error_workflow::ErrorWorkflow;
 use crate::workflows::{
-    create_config::create_config::CreateConfigWorkflow,
-    register_contract::register_contract::RegisterContractWorkflow,
+    config::create_config::CreateConfigWorkflow,
+    register::register_contract::RegisterContractWorkflow,
 };
 use crossterm::event::Event;
 

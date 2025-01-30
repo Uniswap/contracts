@@ -12,10 +12,7 @@ use crossterm::{
     cursor::{Hide, MoveToColumn, Show},
     event::{poll, read, Event, KeyCode, KeyModifiers},
     execute,
-    terminal::{
-        disable_raw_mode, enable_raw_mode, is_raw_mode_enabled, Clear, ClearType,
-        EnterAlternateScreen, LeaveAlternateScreen,
-    },
+    terminal::{enable_raw_mode, Clear, ClearType, EnterAlternateScreen, LeaveAlternateScreen},
     Result,
 };
 use screens::screen_manager::ScreenManager;
@@ -23,12 +20,8 @@ use signal_hook::{
     consts::{SIGINT, SIGTERM},
     iterator::Signals,
 };
-use state_manager::STATE_MANAGER;
-use std::{
-    io::{stdout, Write},
-    panic, process, thread,
-    time::Duration,
-};
+use state_manager::{clean_terminal, STATE_MANAGER};
+use std::{io::stdout, panic, process, thread, time::Duration};
 use ui::{render_ascii_title, Buffer};
 
 #[tokio::main]
@@ -66,18 +59,6 @@ async fn main() -> Result<()> {
     result
 }
 
-fn clean_terminal() -> Result<()> {
-    let mut stdout = stdout();
-    if is_raw_mode_enabled().unwrap() {
-        stdout.flush()?;
-        let result = disable_raw_mode();
-        execute!(stdout, LeaveAlternateScreen, Show,)?;
-        result
-    } else {
-        Ok(())
-    }
-}
-
 fn run_main_menu() -> Result<()> {
     let mut screen_manager = ScreenManager::new();
     let mut buffer = Buffer::new();
@@ -99,12 +80,7 @@ fn run_main_menu() -> Result<()> {
                     (KeyModifiers::CONTROL, KeyCode::Char('c')) => break,
                     (KeyModifiers::CONTROL, KeyCode::Char('d')) => {
                         // Toggle debug mode
-                        let debug_mode = STATE_MANAGER
-                            .workflow_state
-                            .lock()
-                            .unwrap()
-                            .debug_mode
-                            .clone();
+                        let debug_mode = STATE_MANAGER.workflow_state.lock().unwrap().debug_mode;
                         STATE_MANAGER.workflow_state.lock().unwrap().debug_mode = !debug_mode;
                         if !debug_mode {
                             execute!(stdout(), LeaveAlternateScreen, Show, MoveToColumn(0),)?;

@@ -3,18 +3,16 @@ use crate::screens::types::multiple_choice::MultipleChoiceComponent;
 use crate::ui::Buffer;
 use crossterm::event::Event;
 
+type Hook = Box<dyn Fn(Vec<usize>) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>;
+
 pub struct GenericMultiSelectScreen {
     multiple_choice_screen: MultipleChoiceComponent,
     title: String,
-    hook: Box<dyn Fn(Vec<usize>) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>,
+    hook: Hook,
 }
 
 impl GenericMultiSelectScreen {
-    pub fn new(
-        options: Vec<String>,
-        title: String,
-        hook: Box<dyn Fn(Vec<usize>) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>,
-    ) -> Self {
+    pub fn new(options: Vec<String>, title: String, hook: Hook) -> Self {
         GenericMultiSelectScreen {
             multiple_choice_screen: MultipleChoiceComponent::new(options),
             title,
@@ -42,8 +40,10 @@ impl Screen for GenericMultiSelectScreen {
 
     fn handle_input(&mut self, event: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         let result = self.multiple_choice_screen.handle_input(event);
-        if result.is_some() && !result.clone().unwrap().is_empty() {
-            return (self.hook)(result.unwrap());
+        if let Some(result) = result {
+            if !result.is_empty() {
+                return (self.hook)(result);
+            }
         }
         Ok(ScreenResult::Continue)
     }

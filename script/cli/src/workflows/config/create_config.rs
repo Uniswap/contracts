@@ -12,17 +12,13 @@ use crate::workflows::error_workflow::ErrorWorkflow;
 use crate::workflows::workflow_manager::{process_nested_workflows, Workflow, WorkflowResult};
 use std::error::Error;
 
+type ProtocolInitializer = Box<dyn Fn() -> Result<Box<dyn Workflow>, Box<dyn Error>> + Send>;
+
 // array to handle protocol display automatically
 // first element is the name of the protocol that is displayed
 // second element is the function that creates the workflow for the protocol
-fn get_protocols() -> Vec<(
-    String,
-    Box<dyn Fn() -> Result<Box<dyn Workflow>, Box<dyn Error>> + Send>,
-)> {
-    let mut res: Vec<(
-        String,
-        Box<dyn Fn() -> Result<Box<dyn Workflow>, Box<dyn Error>> + Send>,
-    )> = vec![];
+fn get_protocols() -> Vec<(String, ProtocolInitializer)> {
+    let mut res: Vec<(String, ProtocolInitializer)> = vec![];
     let protocols = STATE_MANAGER.workflow_state.lock().unwrap().task["protocols"].clone();
     if let Some(protocols_obj) = protocols.as_object() {
         for (protocol, val) in protocols_obj.iter() {
@@ -38,7 +34,7 @@ fn get_protocols() -> Vec<(
             }
         }
     }
-    return res;
+    res
 }
 
 pub struct CreateConfigWorkflow {
@@ -63,16 +59,16 @@ impl Workflow for CreateConfigWorkflow {
         new_workflows: Option<Vec<Box<dyn Workflow>>>,
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match process_nested_workflows(&mut self.child_workflows, new_workflows)? {
-            WorkflowResult::NextScreen(screen) => return Ok(WorkflowResult::NextScreen(screen)),
+            WorkflowResult::NextScreen(screen) => Ok(WorkflowResult::NextScreen(screen)),
             WorkflowResult::Finished => {
                 self.current_screen += 1;
-                return self.get_screen();
+                self.get_screen()
             }
         }
     }
 
     fn previous_screen(&mut self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
-        if self.child_workflows.len() > 0 {
+        if !self.child_workflows.is_empty() {
             return self.child_workflows[0].previous_screen();
         }
         if self.current_screen > 1 {
@@ -82,7 +78,7 @@ impl Workflow for CreateConfigWorkflow {
         if self.current_screen == 3 {
             self.current_screen = 2;
         }
-        return self.get_screen();
+        self.get_screen()
     }
 
     fn handle_error(
@@ -96,9 +92,9 @@ impl Workflow for CreateConfigWorkflow {
                     self.current_screen = 2;
                     return self.get_screen();
                 }
-                return self.display_error(error.to_string());
+                self.display_error(error.to_string())
             }
-            _ => return self.display_error(error.to_string()),
+            _ => self.display_error(error.to_string()),
         }
     }
 }
@@ -106,12 +102,10 @@ impl Workflow for CreateConfigWorkflow {
 impl CreateConfigWorkflow {
     fn get_screen(&self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match self.current_screen {
-            1 => {
-                return Ok(WorkflowResult::NextScreen(Box::new(ChainIdScreen::new(
-                    None,
-                ))))
-            }
-            2 => return get_rpc_url_screen(),
+            1 => Ok(WorkflowResult::NextScreen(Box::new(ChainIdScreen::new(
+                None,
+            )))),
+            2 => get_rpc_url_screen(),
             3 => {
                 return Ok(WorkflowResult::NextScreen(Box::new(
                     TestConnectionScreen::new()?,
@@ -125,7 +119,7 @@ impl CreateConfigWorkflow {
                             .map(|(name, _)| name.clone())
                             .collect::<Vec<String>>(),
                         "Which protocols do you want to deploy?".to_string(),
-                        Box::new(|selected| handle_selected_protocols(selected)),
+                        Box::new(handle_selected_protocols),
                     ),
                 )));
             }
@@ -144,14 +138,14 @@ impl CreateConfigWorkflow {
                 task_path = task_path.join("task-pending.json");
                 std::fs::write(task_path.clone(), serde_json::to_string_pretty(&task)?)?;
 
-                return Ok(WorkflowResult::NextScreen(Box::new(
+                Ok(WorkflowResult::NextScreen(Box::new(
                     TextDisplayScreen::new(format!(
                         "Config created and saved successfully to {}",
                         task_path.display()
                     )),
-                )));
+                )))
             }
-            _ => return Ok(WorkflowResult::Finished),
+            _ => Ok(WorkflowResult::Finished),
         }
     }
 
@@ -161,7 +155,7 @@ impl CreateConfigWorkflow {
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         self.child_workflows = vec![Box::new(ErrorWorkflow::new(error_message))];
         self.current_screen = 1000000;
-        return self.child_workflows[0].next_screen(None);
+        self.child_workflows[0].next_screen(None)
     }
 }
 

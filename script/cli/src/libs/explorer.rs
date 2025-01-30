@@ -26,14 +26,14 @@ impl ExplorerApiLib {
     pub fn new(explorer: Explorer, api_key: String) -> Result<Self, Box<dyn std::error::Error>> {
         if explorer.name.to_lowercase().contains("blockscout") {
             // blockscout just appends /api to their explorer url
-            return Ok(ExplorerApiLib {
+            Ok(ExplorerApiLib {
                 name: explorer.name.to_string(),
                 url: explorer.url.to_string(),
                 standard: explorer.standard.to_string(),
                 api_key: api_key.to_string(),
                 api_url: format!("{}/api?", explorer.url),
                 explorer_type: SupportedExplorerType::Blockscout,
-            });
+            })
         } else if explorer.name.to_lowercase().contains("scan") {
             let chain_id = STATE_MANAGER
                 .workflow_state
@@ -66,7 +66,7 @@ impl ExplorerApiLib {
                         url: explorer.url.to_string(),
                         standard: explorer.standard.to_string(),
                         api_key: api_key.to_string(),
-                        api_url: format!("{}", explorer.url.replace("https://", "https://api.")),
+                        api_url: explorer.url.replace("https://", "https://api.").to_string(),
                         explorer_type: SupportedExplorerType::Etherscan,
                     });
                 } else if slices == 3 {
@@ -76,14 +76,14 @@ impl ExplorerApiLib {
                         url: explorer.url.to_string(),
                         standard: explorer.standard.to_string(),
                         api_key: api_key.to_string(),
-                        api_url: format!("{}", explorer.url.replace("https://", "https://api-")),
+                        api_url: explorer.url.replace("https://", "https://api-").to_string(),
                         explorer_type: SupportedExplorerType::Etherscan,
                     });
                 } else {
                     return Err(format!(
                         "Invalid etherscan url: {} ({})",
-                        explorer.name.to_string(),
-                        explorer.url.to_string(),
+                        explorer.name,
+                        explorer.url,
                     )
                     .into());
                 }
@@ -91,8 +91,8 @@ impl ExplorerApiLib {
         } else {
             return Err(format!(
                 "Unsupported explorer: {} ({})",
-                explorer.name.to_string(),
-                explorer.url.to_string(),
+                explorer.name,
+                explorer.url,
             )
             .into());
         }
@@ -124,9 +124,7 @@ impl ExplorerApiLib {
                             get_constructor_inputs(abi)?,
                         ));
                     } else {
-                        return Err(format!(
-                            "Explorer Error: ContractName not found in the response from the explorer api.",
-                        )
+                        return Err("Explorer Error: ContractName not found in the response from the explorer api.".to_string()
                         .into());
                     }
                 }
@@ -135,12 +133,12 @@ impl ExplorerApiLib {
                 }
             }
         }
-        return Err(format!(
+        Err(format!(
             "Unsupported explorer: {} ({})",
-            self.name.to_string(),
-            self.url.to_string(),
+            self.name,
+            self.url,
         )
-        .into());
+        .into())
     }
 
     pub async fn get_creation_transaction_hash(
@@ -160,12 +158,12 @@ impl ExplorerApiLib {
                 .to_string();
             return Ok(tx_hash);
         }
-        return Err(format!(
+        Err(format!(
             "Unsupported explorer: {} ({})",
-            self.name.to_string(),
-            self.url.to_string(),
+            self.name,
+            self.url,
         )
-        .into());
+        .into())
     }
 }
 
@@ -184,10 +182,10 @@ async fn get_etherscan_result(url: &str) -> Result<serde_json::Value, Box<dyn st
                 "Invalid response from etherscan: {:?}",
                 json_response
             ));
-            return Err("Invalid response from etherscan".into());
+            Err("Invalid response from etherscan".into())
         }
         Err(e) => {
-            return Err(format!("Explorer Request Error: {}", e).into());
+            Err(format!("Explorer Request Error: {}", e).into())
         }
     }
 }
@@ -197,5 +195,5 @@ fn get_constructor_inputs(abi: &str) -> Result<Option<Constructor>, Box<dyn std:
         return Err("Contract source code not verified".into());
     }
     let parsed_abi: JsonAbi = serde_json::from_str(abi)?;
-    return Ok(parsed_abi.constructor);
+    Ok(parsed_abi.constructor)
 }

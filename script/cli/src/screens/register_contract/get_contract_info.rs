@@ -123,10 +123,10 @@ impl Screen for GetContractInfoScreen {
     fn handle_input(&mut self, e: Event) -> Result<ScreenResult, Box<dyn std::error::Error>> {
         if *self.execution_status.lock().unwrap() != ExecutionStatus::Pending {
             let result = self.select.handle_input(e);
-            if result.is_some() {
-                if result.unwrap() == 0 {
+            if let Some(result) = result {
+                if result == 0 {
                     return Ok(ScreenResult::PreviousScreen);
-                } else if result.unwrap() == 1 {
+                } else if result == 1 {
                     return Ok(ScreenResult::NextScreen(None));
                 }
             }

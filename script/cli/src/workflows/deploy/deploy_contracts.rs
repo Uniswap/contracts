@@ -34,7 +34,7 @@ impl Workflow for DeployContractsWorkflow {
         new_workflows: Option<Vec<Box<dyn Workflow>>>,
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match process_nested_workflows(&mut self.child_workflows, new_workflows)? {
-            WorkflowResult::NextScreen(screen) => return Ok(WorkflowResult::NextScreen(screen)),
+            WorkflowResult::NextScreen(screen) => Ok(WorkflowResult::NextScreen(screen)),
             WorkflowResult::Finished => {
                 self.current_screen += 1;
                 self.get_screen()
@@ -43,7 +43,7 @@ impl Workflow for DeployContractsWorkflow {
     }
 
     fn previous_screen(&mut self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
-        if self.child_workflows.len() > 0 {
+        if !self.child_workflows.is_empty() {
             return self.child_workflows[0].previous_screen();
         }
         if self.current_screen > 1 {
@@ -53,7 +53,7 @@ impl Workflow for DeployContractsWorkflow {
         if self.current_screen == 3 {
             self.current_screen = 2;
         }
-        return self.get_screen();
+        self.get_screen()
     }
 
     fn handle_error(
@@ -67,9 +67,9 @@ impl Workflow for DeployContractsWorkflow {
                     self.current_screen = 2;
                     return self.get_screen();
                 }
-                return self.display_error(error.to_string());
+                self.display_error(error.to_string())
             }
-            _ => return self.display_error(error.to_string()),
+            _ => self.display_error(error.to_string()),
         }
     }
 }
@@ -77,62 +77,51 @@ impl Workflow for DeployContractsWorkflow {
 impl DeployContractsWorkflow {
     fn get_screen(&mut self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match self.current_screen {
-            1 => {
-                return Ok(WorkflowResult::NextScreen(Box::new(ChainIdScreen::new(
-                    Some(Box::new(|chain_id| {
-                        let config_path =
-                            get_config_dir(chain_id.clone()).join("task-pending.json");
-                        if !config_path.exists() {
-                            return Err(format!("No config found for chain id {}", chain_id).into());
-                        }
-                        Ok(ScreenResult::NextScreen(None))
-                    })),
-                ))))
-            }
-            2 => return get_rpc_url_screen(),
-            3 => {
-                return Ok(WorkflowResult::NextScreen(Box::new(
-                    TestConnectionScreen::new()?,
-                )))
-            }
+            1 => Ok(WorkflowResult::NextScreen(Box::new(ChainIdScreen::new(
+                Some(Box::new(|chain_id| {
+                    let config_path = get_config_dir(chain_id.clone()).join("task-pending.json");
+                    if !config_path.exists() {
+                        return Err(format!("No config found for chain id {}", chain_id).into());
+                    }
+                    Ok(ScreenResult::NextScreen(None))
+                })),
+            )))),
+            2 => get_rpc_url_screen(),
+            3 => Ok(WorkflowResult::NextScreen(Box::new(
+                TestConnectionScreen::new()?,
+            ))),
             4 => match BlockExplorerScreen::new() {
-                Ok(screen) => return Ok(WorkflowResult::NextScreen(Box::new(screen))),
+                Ok(screen) => Ok(WorkflowResult::NextScreen(Box::new(screen))),
                 Err(_) => {
                     self.current_screen += 1;
-                    return Ok(WorkflowResult::NextScreen(Box::new(
+                    Ok(WorkflowResult::NextScreen(Box::new(
                         TextDisplayScreen::new(
                             "No explorer found, skipping contract verification during deployment."
                                 .to_string(),
                         ),
-                    )));
+                    )))
                 }
             },
-            5 => {
-                return Ok(WorkflowResult::NextScreen(Box::new(
-                    EnterExplorerApiKeyScreen::new()?,
-                )))
-            }
-            6 => {
-                return Ok(WorkflowResult::NextScreen(Box::new(
-                    GenericSelectOrEnterScreen::new(
-                        "Enter your private key".to_string(),
-                        vec!["${PRIVATE_KEY}".to_string()],
-                        |s, c| validate_bytes32(s, c),
-                        |s, c| validate_bytes32(s, c),
-                        true,
-                        Box::new(move |result| {
-                            STATE_MANAGER.workflow_state.lock()?.private_key = Some(result);
-                            Ok(ScreenResult::NextScreen(None))
-                        }),
-                    ),
-                )))
-            }
-            7 => {
-                return Ok(WorkflowResult::NextScreen(Box::new(
-                    ExecuteDeployScriptScreen::new()?,
-                )))
-            }
-            _ => return Ok(WorkflowResult::Finished),
+            5 => Ok(WorkflowResult::NextScreen(Box::new(
+                EnterExplorerApiKeyScreen::new()?,
+            ))),
+            6 => Ok(WorkflowResult::NextScreen(Box::new(
+                GenericSelectOrEnterScreen::new(
+                    "Enter your private key".to_string(),
+                    vec!["${PRIVATE_KEY}".to_string()],
+                    validate_bytes32,
+                    validate_bytes32,
+                    true,
+                    Box::new(move |result| {
+                        STATE_MANAGER.workflow_state.lock()?.private_key = Some(result);
+                        Ok(ScreenResult::NextScreen(None))
+                    }),
+                ),
+            ))),
+            7 => Ok(WorkflowResult::NextScreen(Box::new(
+                ExecuteDeployScriptScreen::new()?,
+            ))),
+            _ => Ok(WorkflowResult::Finished),
         }
     }
 
@@ -142,6 +131,6 @@ impl DeployContractsWorkflow {
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         self.child_workflows = vec![Box::new(ErrorWorkflow::new(error_message))];
         self.current_screen = 1000000;
-        return self.child_workflows[0].next_screen(None);
+        self.child_workflows[0].next_screen(None)
     }
 }

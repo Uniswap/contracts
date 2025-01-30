@@ -19,7 +19,7 @@ pub fn get_rpc_url_screen() -> Result<WorkflowResult, Box<dyn std::error::Error>
             .clone();
         pre_selected_rpcs.push("${RPC_URL}".to_string());
     }
-    return Ok(WorkflowResult::NextScreen(Box::new(
+    Ok(WorkflowResult::NextScreen(Box::new(
         GenericSelectOrEnterScreen::new(
             "RPC URL".to_string(),
             pre_selected_rpcs,
@@ -28,7 +28,7 @@ pub fn get_rpc_url_screen() -> Result<WorkflowResult, Box<dyn std::error::Error>
             false,
             Box::new(handle_rpc_url),
         ),
-    )));
+    )))
 }
 
 fn handle_rpc_url(rpc_url: String) -> Result<ScreenResult, Box<dyn std::error::Error>> {
