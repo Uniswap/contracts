@@ -19,3 +19,4 @@ script/deploy/tasks/31337/**
 
 debug/
 Cargo.lock
+deploy-cli

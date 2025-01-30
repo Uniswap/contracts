@@ -20,9 +20,12 @@ Follow these steps to set up your local environment:
 
 ## Deployment
 
-- Make sure node `>18.0` is installed
 - Follow the [setup](#setup) instructions
-- run `./deploy-cli` to generate deployment tasks and execute them
+- Make sure node `>18.0` is installed
+- Install `just` and `cargo`
+- Install deploy-cli, `cd script/cli` and either
+  - run `just install` to install the cli to your local bin and run `deploy-cli`
+  - or run `just build` to build the cli, copy it to the project root, and run `./deploy-cli` from the project root
 
 ## Contributing
 
