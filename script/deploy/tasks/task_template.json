@@ -9,9 +9,7 @@
                     "address": null,
                     "lookup": {
                         "latest": "Permit2",
-                        "history": [
-                            "UniversalRouter.input.constructor.params.permit2"
-                        ]
+                        "history": ["UniversalRouter.input.constructor.params.permit2"]
                     },
                     "params": {
                         "salt": {
@@ -31,9 +29,7 @@
                     "address": null,
                     "lookup": {
                         "latest": "UniswapV2Factory",
-                        "history": [
-                            "UniversalRouter.input.constructor.params.v2Factory"
-                        ]
+                        "history": ["UniversalRouter.input.constructor.params.v2Factory"]
                     },
                     "params": {
                         "feeToSetter": {
@@ -50,9 +46,7 @@
                             "pointer": "protocols.v2.contracts.UniswapV2Factory"
                         }
                     },
-                    "dependencies": [
-                        "weth"
-                    ]
+                    "dependencies": ["weth"]
                 }
             }
         },
@@ -65,9 +59,7 @@
                     "address": null,
                     "lookup": {
                         "latest": "UniswapV3Factory",
-                        "history": [
-                            "UniversalRouter.input.constructor.params.v3Factory"
-                        ]
+                        "history": ["UniversalRouter.input.constructor.params.v3Factory"]
                     },
                     "params": {
                         "initialOwner": {
@@ -87,9 +79,7 @@
                             "pointer": "protocols.v3.contracts.UniswapV3Factory"
                         }
                     },
-                    "dependencies": [
-                        "weth"
-                    ]
+                    "dependencies": ["weth"]
                 },
                 "TickLens": {
                     "deploy": false
@@ -110,9 +100,7 @@
                             "type": "address"
                         }
                     },
-                    "dependencies": [
-                        "weth"
-                    ]
+                    "dependencies": ["weth"]
                 },
                 "NonfungiblePositionManager": {
                     "deploy": false,
@@ -130,9 +118,7 @@
                             "pointer": "protocols.v3.contracts.NonfungibleTokenPositionDescriptor"
                         }
                     },
-                    "dependencies": [
-                        "weth"
-                    ]
+                    "dependencies": ["weth"]
                 },
                 "V3Migrator": {
                     "deploy": false,
@@ -146,9 +132,7 @@
                             "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
                         }
                     },
-                    "dependencies": [
-                        "weth"
-                    ]
+                    "dependencies": ["weth"]
                 },
                 "SwapRouter": {
                     "deploy": false,
@@ -159,9 +143,7 @@
                             "pointer": "protocols.v3.contracts.UniswapV3Factory"
                         }
                     },
-                    "dependencies": [
-                        "weth"
-                    ]
+                    "dependencies": ["weth"]
                 }
             }
         },
@@ -201,9 +183,7 @@
                             "type": "address"
                         }
                     },
-                    "dependencies": [
-                        "weth"
-                    ]
+                    "dependencies": ["weth"]
                 },
                 "PositionManager": {
                     "deploy": false,
@@ -229,9 +209,7 @@
                             "pointer": "protocols.v4.contracts.PositionDescriptor"
                         }
                     },
-                    "dependencies": [
-                        "weth"
-                    ]
+                    "dependencies": ["weth"]
                 },
                 "V4Quoter": {
                     "deploy": false,
@@ -290,25 +268,7 @@
                             "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
                         }
                     },
-                    "dependencies": [
-                        "weth"
-                    ]
-                }
-            }
-        },
-        "util-contracts": {
-            "name": "Utils",
-            "deploy": false,
-            "contracts": {
-                "FeeOnTransferDetector": {
-                    "deploy": false,
-                    "address": null,
-                    "params": {
-                        "factoryV2": {
-                            "name": "Uniswap v2 factory address",
-                            "pointer": "protocols.v2.contracts.UniswapV2Factory"
-                        }
-                    }
+                    "dependencies": ["weth"]
                 }
             }
         },
@@ -336,9 +296,7 @@
                             "type": "bytes32",
                             "value": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
                             "lookup": {
-                                "history": [
-                                    "UniversalRouter.input.constructor.params.pairInitCodeHash"
-                                ]
+                                "history": ["UniversalRouter.input.constructor.params.pairInitCodeHash"]
                             }
                         },
                         "v3PoolInitCodeHash": {
@@ -346,9 +304,7 @@
                             "type": "bytes32",
                             "value": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
                             "lookup": {
-                                "history": [
-                                    "UniversalRouter.input.constructor.params.poolInitCodeHash"
-                                ]
+                                "history": ["UniversalRouter.input.constructor.params.poolInitCodeHash"]
                             }
                         },
                         "v4PoolManager": {
@@ -364,9 +320,47 @@
                             "pointer": "protocols.v4.contracts.PositionManager"
                         }
                     },
-                    "dependencies": [
-                        "weth"
-                    ]
+                    "dependencies": ["weth"],
+                    "lookup": {
+                        "latest": "UniversalRouter"
+                    }
+                }
+            }
+        },
+        "util-contracts": {
+            "name": "Utils",
+            "deploy": false,
+            "contracts": {
+                "FeeOnTransferDetector": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "factoryV2": {
+                            "name": "Uniswap v2 factory address",
+                            "pointer": "protocols.v2.contracts.UniswapV2Factory"
+                        }
+                    }
+                },
+                "FeeCollector": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "owner": {
+                            "type": "address"
+                        },
+                        "universalRouter": {
+                            "name": "Universal Router address",
+                            "pointer": "protocols.universal-router.contracts.UniversalRouter"
+                        },
+                        "permit2": {
+                            "name": "Permit 2 address",
+                            "pointer": "protocols.permit2.contracts.Permit2"
+                        },
+                        "feeToken": {
+                            "name": "Fee token address (usually USDC)",
+                            "type": "address"
+                        }
+                    }
                 }
             }
         }
