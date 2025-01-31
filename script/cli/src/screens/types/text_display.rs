@@ -13,7 +13,7 @@ impl TextDisplayComponent {
 
     pub fn render(&self, buffer: &mut Buffer) {
         buffer.append_row_text(&self.text);
-        buffer.append_row_text_color(&"> Press any key to continue", constants::SELECTION_COLOR);
+        buffer.append_row_text_color("> Press any key to continue", constants::SELECTION_COLOR);
     }
 
     pub fn handle_input(&mut self, event: Event) -> bool {

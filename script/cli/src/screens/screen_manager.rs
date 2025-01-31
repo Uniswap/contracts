@@ -38,14 +38,14 @@ impl ScreenManager {
         match self.current_screen.execute() {
             Ok(_) => {}
             Err(error) => {
-                errors::log(format!("Execution error: {}", error.to_string()));
+                errors::log(format!("Execution error: {}", error));
                 self.handle_error(error);
             }
         }
         match self.current_screen.render_content(buffer) {
             Ok(_) => {}
             Err(error) => {
-                errors::log(format!("Render error: {}", error.to_string()));
+                errors::log(format!("Render error: {}", error));
                 self.handle_error(error);
             }
         }
@@ -91,7 +91,7 @@ impl ScreenManager {
             }
         } else {
             let error = result.err().unwrap();
-            errors::log(format!("Input error: {}", error.to_string()));
+            errors::log(format!("Input error: {}", error));
             self.handle_error(error);
         }
     }
@@ -128,7 +128,7 @@ impl ScreenManager {
             }
         } else {
             let error = result.err().unwrap();
-            errors::log(format!("Workflow error: {}", error.to_string()));
+            errors::log(format!("Workflow error: {}", error));
             self.active_workflow = Box::new(ErrorWorkflow::new(error.to_string()));
         }
     }

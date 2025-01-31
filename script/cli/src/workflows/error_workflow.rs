@@ -26,17 +26,17 @@ impl Workflow for ErrorWorkflow {
                 self.error_message.clone(),
             ))));
         }
-        return Ok(WorkflowResult::Finished);
+        Ok(WorkflowResult::Finished)
     }
 
     fn previous_screen(&mut self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
-        return Ok(WorkflowResult::Finished);
+        Ok(WorkflowResult::Finished)
     }
 
     fn handle_error(
         &mut self,
         _: Box<dyn std::error::Error>,
     ) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
-        return Ok(WorkflowResult::Finished);
+        Ok(WorkflowResult::Finished)
     }
 }

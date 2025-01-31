@@ -120,7 +120,7 @@ impl TextInputComponent {
                     self.text = new_text;
                 }
                 (KeyModifiers::NONE, KeyCode::Backspace) => {
-                    if self.text.len() > 0 && self.cursor_position > 0 {
+                    if !self.text.is_empty() && self.cursor_position > 0 {
                         let mut new_text = self.text.clone();
                         new_text.remove(self.cursor_position - 1);
                         if self.cursor_position > 0 {

@@ -88,7 +88,7 @@ pub async fn generate_deployment_log(
         constructor, constructor_arguments
     ));
     let mut args = None;
-    if constructor.is_some() && constructor_arguments.len() > 0 {
+    if constructor.is_some() && !constructor_arguments.is_empty() {
         args = Some(
             constructor
                 .clone()
@@ -112,9 +112,7 @@ pub async fn generate_deployment_log(
     // }
     let proxy = contract_name == "TransparentUpgradeableProxy";
     let mut contract_data = if proxy {
-        crate::errors::log(format!(
-            "Proxy contract detected. Getting admin and implementation addresses"
-        ));
+        crate::errors::log("Proxy contract detected. Getting admin and implementation addresses".to_string());
         let admin: U256 = web3
             .provider
             .get_storage_at(
@@ -165,7 +163,7 @@ pub async fn generate_deployment_log(
         }
 
         let mut implementation_args = None;
-        if implementation_constructor.is_some() && implementation_constructor_arguments.len() > 0 {
+        if implementation_constructor.is_some() && !implementation_constructor_arguments.is_empty() {
             implementation_args = Some(
                 implementation_constructor
                     .clone()
@@ -338,7 +336,7 @@ fn extract_constructor_inputs(
 }
 
 fn serialize_value(param: Param, value: DynSolValue) -> Result<Value, Box<dyn std::error::Error>> {
-    return match value {
+    match value {
         DynSolValue::Address(a) => Ok(a.to_string().into()),
         DynSolValue::Bool(b) => Ok(b.to_string().into()),
         DynSolValue::FixedBytes(b, _) => Ok(b.to_string().into()),
@@ -360,5 +358,5 @@ fn serialize_value(param: Param, value: DynSolValue) -> Result<Value, Box<dyn st
             // push items into arr
             Err("Found fixed array, not implemented".into())
         }
-    };
+    }
 }

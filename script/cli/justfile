@@ -1,0 +1,36 @@
+# Default recipe to run when just is called without arguments
+default:
+    @just --list
+
+# Build the project and copy the binary to the project root
+build:
+    cargo build --release
+    cp ./target/release/deploy-cli ../../deploy-cli
+
+# Run tests
+test:
+    cargo test
+
+# Format code
+fmt:
+    cargo fmt
+
+# Run clippy lints
+lint:
+    cargo clippy
+
+# Clean build artifacts
+clean:
+    cargo clean
+
+# Build and run the project
+run:
+    cargo run -- --dir ../..
+
+# Watch the project and run it when the code changes
+watch:
+    cargo watch -x 'run -- --dir ../..'
+
+# Install the project
+install:
+    cargo install --path .

@@ -5,17 +5,15 @@ use crate::ui::Buffer;
 use crate::util::screen_util::validate_number;
 use crossterm::event::Event;
 
+type Hook = Box<dyn Fn(String) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>;
+
 pub struct ChainIdScreen {
     text_input: TextInputComponent,
-    hook: Option<Box<dyn Fn(String) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>>,
+    hook: Option<Hook>,
 }
 
 impl ChainIdScreen {
-    pub fn new(
-        hook: Option<
-            Box<dyn Fn(String) -> Result<ScreenResult, Box<dyn std::error::Error>> + Send>,
-        >,
-    ) -> Self {
+    pub fn new(hook: Option<Hook>) -> Self {
         ChainIdScreen {
             text_input: TextInputComponent::new(false, "".to_string(), validate_number),
             hook,

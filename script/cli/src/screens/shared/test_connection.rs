@@ -69,7 +69,7 @@ impl Screen for TestConnectionScreen {
         } else if *self.connection_status.lock().unwrap() == ConnectionStatus::Success {
             buffer.append_row_text("Connection successful\n");
             buffer
-                .append_row_text_color(&"> Press any key to continue", constants::SELECTION_COLOR);
+                .append_row_text_color("> Press any key to continue", constants::SELECTION_COLOR);
         } else if *self.connection_status.lock().unwrap() == ConnectionStatus::Failed {
             buffer.append_row_text("Connection failed\n");
             buffer.append_row_text(&format!(
@@ -77,7 +77,7 @@ impl Screen for TestConnectionScreen {
                 self.connection_error_message.lock().unwrap().clone()
             ));
             buffer
-                .append_row_text_color(&"> Press any key to try again", constants::SELECTION_COLOR);
+                .append_row_text_color("> Press any key to try again", constants::SELECTION_COLOR);
         }
         Ok(())
     }

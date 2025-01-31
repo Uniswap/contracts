@@ -5,10 +5,10 @@ use crate::state_manager::STATE_MANAGER;
 use crate::ui::{get_spinner_frame, Buffer};
 use crate::util::deploy_config_lib::get_config_dir;
 use crossterm::event::Event;
+use regex::Regex;
 use std::io::BufRead;
 use std::process::Command;
 use std::sync::{Arc, Mutex};
-use regex::Regex;
 
 pub struct ExecuteDeployScriptScreen {
     execution_status: Arc<Mutex<ExecutionStatus>>,
@@ -75,9 +75,10 @@ impl ExecuteDeployScriptScreen {
                         .join("Deploy-all.s.sol"),
                 )
                 .arg(format!("--rpc-url={}", rpc_url))
-                .arg("-vvvv").arg(format!("--private-key={}", private_key));
+                .arg("-vvvv")
+                .arg(format!("--private-key={}", private_key));
 
-            match execute_command(&mut command) {
+            match execute_command(command) {
                 Ok(result) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::DryRunCompleted;
                     if let Some(error_message) = result {
@@ -111,7 +112,7 @@ impl ExecuteDeployScriptScreen {
                 }
             }
 
-            match execute_command(&mut command.arg("--broadcast").arg("--skip-simulation")) {
+            match execute_command(command.arg("--broadcast").arg("--skip-simulation")) {
                 Ok(result) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::DeploymentCompleted;
                     if let Some(error_message) = result {
@@ -140,7 +141,7 @@ impl ExecuteDeployScriptScreen {
                 command = command.arg("-e").arg(explorer.unwrap().url);
             }
 
-            match execute_command(&mut command) {
+            match execute_command(command) {
                 Ok(result) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::Success;
                     if let Some(error_message) = result {
@@ -150,7 +151,6 @@ impl ExecuteDeployScriptScreen {
                 Err(e) => {
                     *execution_status.lock().unwrap() = ExecutionStatus::Failed;
                     *execution_error_message.lock().unwrap() = e.to_string();
-                    return;
                 }
             }
         });
@@ -195,7 +195,7 @@ fn execute_command(command: &mut Command) -> Result<Option<String>, Box<dyn std:
         let line = line?;
         crate::errors::log(line.clone());
         error_message.push_str(&line);
-        error_message.push_str("\n");
+        error_message.push('\n');
     }
     match result.wait() {
         Ok(status) => {
@@ -206,10 +206,10 @@ fn execute_command(command: &mut Command) -> Result<Option<String>, Box<dyn std:
                     return Err(error_message.into());
                 }
             }
-            return Ok(None);
+            Ok(None)
         }
         Err(e) => {
-            return Err(e.to_string().into());
+            Err(e.to_string().into())
         }
     }
 }
@@ -222,7 +222,7 @@ impl Screen for ExecuteDeployScriptScreen {
                 self.execution_error_message.lock().unwrap()
             ));
             buffer
-                .append_row_text_color(&"> Press any key to continue", constants::SELECTION_COLOR);
+                .append_row_text_color("> Press any key to continue", constants::SELECTION_COLOR);
         } else {
             buffer.append_row_text(&format!(
                 "{} Executing dry run\n",
@@ -243,7 +243,7 @@ impl Screen for ExecuteDeployScriptScreen {
                     buffer.append_row_text(&error_message);
                 }
                 buffer.append_row_text_color(
-                    &"\n> Press any key to continue",
+                    "\n> Press any key to continue",
                     constants::SELECTION_COLOR,
                 );
             }

@@ -22,8 +22,8 @@ impl Buffer {
     pub fn new() -> Self {
         let (width, height) = terminal::size().unwrap();
         Buffer {
-            old_content: vec![vec![(' ', constants::DEFAULT_COLOR); 0]; 0],
-            content: vec![vec![(' ', constants::DEFAULT_COLOR); 0]; 0],
+            old_content: vec![],
+            content: vec![],
             width: width as usize,
             height: height as usize,
         }
@@ -100,7 +100,7 @@ impl Buffer {
 
     fn reset(&mut self) {
         self.old_content = self.content.clone();
-        self.content = vec![vec![(' ', constants::DEFAULT_COLOR); 0]; 0];
+        self.content = vec![];
     }
 }
 
@@ -137,7 +137,7 @@ pub fn render_ascii_title(buffer: &mut Buffer) -> Result<()> {
 }
 
 pub fn get_spinner_frame() -> char {
-    let frames = vec!["_", "_", "_", "-", "`", "`", "'", "´", "-", "_", "_", "_"];
+    let frames = ["_", "_", "_", "-", "`", "`", "'", "´", "-", "_", "_", "_"];
     let time = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap()

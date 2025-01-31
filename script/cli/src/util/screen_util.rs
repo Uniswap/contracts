@@ -11,7 +11,7 @@ pub fn validate_address(input: String, cursor_position: usize) -> String {
     let re = regex::Regex::new(r"^0x[0-9a-fA-F]{0,40}|^0|^0x$").unwrap();
     re.find(&input)
         .map(|m| m.as_str().to_string())
-        .unwrap_or_else(String::new)
+        .unwrap_or_default()
 }
 
 pub fn validate_bytes32(input: String, cursor_position: usize) -> String {
@@ -25,11 +25,11 @@ pub fn validate_bytes32(input: String, cursor_position: usize) -> String {
     let re = regex::Regex::new(r"^0x[0-9a-fA-F]{0,64}|^0|^0x$").unwrap();
     re.find(&input)
         .map(|m| m.as_str().to_string())
-        .unwrap_or_else(String::new)
+        .unwrap_or_default()
 }
 
 pub fn validate_number(input: String, _cursor_position: usize) -> String {
-    let cleaned = input.chars().filter(|c| c.is_digit(10)).collect::<String>();
+    let cleaned = input.chars().filter(|c| c.is_ascii_digit()).collect::<String>();
     if cleaned.is_empty() {
         return "".to_string();
     }
