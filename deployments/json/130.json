@@ -80,9 +80,121 @@
       "deploymentTxn": "0x49bcd22f916527fdc918f7e0442494cd92dbaebaa1b0d9746d9c4a051ed71b2e",
       "timestamp": 1731042514,
       "commitHash": "941946a"
+    },
+    "PositionDescriptor": {
+      "implementation": "0x8be6f6785b71c16ca238abbcdd3f33271969c305",
+      "address": "0x9fb28449a191cd8c03a1b7abfb0f5996ecf7f722",
+      "proxy": true,
+      "proxyType": "TransparentUpgradeableProxy",
+      "deploymentTxn": "0x86f8f6510d17aaafa452e052fe0a50479145abe63373bf6f60d49a2790c55288",
+      "timestamp": 1737568156,
+      "commitHash": "417770f"
+    },
+    "PositionManager": {
+      "address": "0x4529a01c7a0410167c5740c487a8de60232617bf",
+      "proxy": false,
+      "deploymentTxn": "0x51161eb65e19fabceb5de42cf48b3d4d283fa9d455c755d2f2fbf7b91b77d9ee",
+      "timestamp": 1737568156,
+      "commitHash": "417770f"
+    },
+    "V4Quoter": {
+      "address": "0x333e3c607b141b18ff6de9f258db6e77fe7491e0",
+      "proxy": false,
+      "deploymentTxn": "0xd017255a7c984031cc1577095b26f3eb71de25fcc8ce5fe0e330c8539dcfe073",
+      "timestamp": 1737568156,
+      "commitHash": "417770f"
+    },
+    "StateView": {
+      "address": "0x86e8631a016f9068c3f085faf484ee3f5fdee8f2",
+      "proxy": false,
+      "deploymentTxn": "0xa661aabf0b39113be264ffa38d73be6a71c259a00c217741e26c883761d906f4",
+      "timestamp": 1737568156,
+      "commitHash": "417770f"
+    },
+    "UniversalRouter": {
+      "address": "0xef740bf23acae26f6492b10de645d6b98dc8eaf3",
+      "proxy": false,
+      "deploymentTxn": "0x8ba6faddd12cf5aaabd6a7a17bd0d1fbd6c258238536b732ad56e44f0077d81e",
+      "timestamp": 1737568156,
+      "commitHash": "417770f"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "PositionDescriptor": {
+          "implementation": "0x8be6f6785b71c16ca238abbcdd3f33271969c305",
+          "address": "0x9fb28449a191cd8c03a1b7abfb0f5996ecf7f722",
+          "proxy": true,
+          "proxyType": "TransparentUpgradeableProxy",
+          "deploymentTxn": "0x86f8f6510d17aaafa452e052fe0a50479145abe63373bf6f60d49a2790c55288",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x1F98400000000000000000000000000000000004",
+              "_wrappedNative": "0x4200000000000000000000000000000000000006",
+              "_nativeCurrencyLabelBytes": "0x4554480000000000000000000000000000000000000000000000000000000000"
+            },
+            "initializeData": "0x"
+          }
+        },
+        "PositionManager": {
+          "address": "0x4529a01c7a0410167c5740c487a8de60232617bf",
+          "proxy": false,
+          "deploymentTxn": "0x51161eb65e19fabceb5de42cf48b3d4d283fa9d455c755d2f2fbf7b91b77d9ee",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x1F98400000000000000000000000000000000004",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "300000",
+              "_tokenDescriptor": "0x9fb28449a191CD8C03a1B7abfb0F5996ECf7f722",
+              "_weth9": "0x4200000000000000000000000000000000000006"
+            }
+          }
+        },
+        "V4Quoter": {
+          "address": "0x333e3c607b141b18ff6de9f258db6e77fe7491e0",
+          "proxy": false,
+          "deploymentTxn": "0xd017255a7c984031cc1577095b26f3eb71de25fcc8ce5fe0e330c8539dcfe073",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x1F98400000000000000000000000000000000004"
+            }
+          }
+        },
+        "StateView": {
+          "address": "0x86e8631a016f9068c3f085faf484ee3f5fdee8f2",
+          "proxy": false,
+          "deploymentTxn": "0xa661aabf0b39113be264ffa38d73be6a71c259a00c217741e26c883761d906f4",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x1F98400000000000000000000000000000000004"
+            }
+          }
+        },
+        "UniversalRouter": {
+          "address": "0xef740bf23acae26f6492b10de645d6b98dc8eaf3",
+          "proxy": false,
+          "deploymentTxn": "0x8ba6faddd12cf5aaabd6a7a17bd0d1fbd6c258238536b732ad56e44f0077d81e",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x4200000000000000000000000000000000000006",
+                "v2Factory": "0x1F98400000000000000000000000000000000002",
+                "v3Factory": "0x1F98400000000000000000000000000000000003",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x1F98400000000000000000000000000000000004",
+                "v3NFTPositionManager": "0x943e6e07a7E8E791dAFC44083e54041D743C46E9",
+                "v4PositionManager": "0x4529A01c7A0410167c5740C487A8DE60232617b"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1737568156,
+      "commitHash": "417770f"
+    },
     {
       "contracts": {
         "UniswapV2Router02": {
