@@ -1,16 +1,8 @@
 #!/bin/bash -e
 
-dir=${1:-src/briefcase/protocols}
-rm -rf $dir
+target_dir=${1:-src/briefcase/protocols}
+rm -rf $target_dir
 tmp_dir="$(mktemp -q -d -t "$(basename "$0").XXXXXX")"
-
-replace_pragma_solidity() {
-  local file=$1
-  local version=$2
-  local temp_file=$(mktemp)
-  awk -v version="$version" '/pragma solidity/{if($3 != ">=0.5.0;") {print "pragma solidity " version ";"; next}}1' "$file" > "$temp_file"
-  mv "$temp_file" "$file"
-}
 
 compile_and_flatten() {
   local source_path=$1
@@ -32,11 +24,6 @@ compile_and_flatten() {
 
     echo "Flattening $sol_file"
     $flatten_command "$sol_file" -o "$output_file"
-
-  # replace pragma if file is within interfaces or types directory or starts with a capital I followed by another capital letter (common naming convention for interfaces)
-  if [[ "$input_dir" == *"interface"* || "$input_dir" == *"types"* || $(basename "$sol_file") =~ ^I[A-Z] ]]; then
-      replace_pragma_solidity "$output_file" ">=0.6.2"
-    fi
   done
 
   echo ""
@@ -59,11 +46,9 @@ done
 echo "Inserting current initcode into deployers"
 python3 script/util/insert_initcode.py "src/briefcase/deployers" "out" 
 
-echo "Processing source files for briefcase"
-python3 script/util/process_briefcase_files.py "$tmp_dir" "$(pwd)"
+echo "Processing source files and writing to briefcase"
+python3 script/util/process_briefcase_files.py "$tmp_dir" "$(pwd)" "$target_dir"
 
-echo "Copying files from temporary directory to briefcase"
-cp -r "$tmp_dir/" "$dir/"
 rm -rf "$tmp_dir"
 forge fmt "src/briefcase"
 # build the generated files
