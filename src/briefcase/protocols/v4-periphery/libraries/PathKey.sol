@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity >=0.6.2;
+pragma solidity ^0.8.0;
 
 import {IHooks} from '../../v4-core/interfaces/IHooks.sol';
 import {Currency} from '../../v4-core/types/Currency.sol';
