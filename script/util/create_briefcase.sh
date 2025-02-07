@@ -33,7 +33,8 @@ compile_and_flatten() {
     echo "Flattening $sol_file"
     $flatten_command "$sol_file" -o "$output_file"
 
-  if [[ "$input_dir" == *"interface"* || "$input_dir" == *"types"* ]]; then
+  # replace pragma if file is within interfaces or types directory or starts with a capital I followed by another capital letter (common naming convention for interfaces)
+  if [[ "$input_dir" == *"interface"* || "$input_dir" == *"types"* || $(basename "$sol_file") =~ ^I[A-Z] ]]; then
       replace_pragma_solidity "$output_file" ">=0.6.2"
     fi
   done
