@@ -296,8 +296,6 @@ def process_file(flattened_file, contracts_dir, target_dir):
         if os.path.isdir(os.path.join(pkgs_dir, pkg))
     ]
 
-    overwrite_pragma = check_if_should_overwrite_pragma(flattened_file)
-
     for block in code_blocks:
         if block["source"]:
             source_file = block["source"].replace("// ", "")
@@ -364,11 +362,12 @@ def process_file(flattened_file, contracts_dir, target_dir):
 
         license[dest_path] = license_from_source
 
+        overwrite_pragma = check_if_should_overwrite_pragma(dest_path)
+
         # If source flattened file is interface or type, we want to make sure pragma version gets overwritten
         if overwrite_pragma:
             if normalize_pragma_version(pragma_version) != "pragma solidity >=0.5.0;":
                 pragma_version = "pragma solidity >=0.6.2;"
-
 
         pragma[dest_path] = "\n".join([pragma_version] + additional_pragma)
         blocks[dest_path] = content
