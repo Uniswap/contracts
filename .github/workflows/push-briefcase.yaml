@@ -27,6 +27,8 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: stable
+        run: |
+          forge --version
 
       - name: Configure Git
         run: |

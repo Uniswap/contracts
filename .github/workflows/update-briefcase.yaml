@@ -31,6 +31,8 @@ jobs:
 
       - name: Compile Briefcase
         run: |
+          forge --version
+          forge install
           ./script/util/create_briefcase.sh
 
       - name: Setup SSH
