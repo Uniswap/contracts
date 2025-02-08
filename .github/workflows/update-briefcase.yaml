@@ -14,10 +14,6 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Python version
-        run: |
-          python3 --version
-
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
@@ -38,6 +34,15 @@ jobs:
           forge --version
           forge install
           ./script/util/create_briefcase.sh
+
+      - name: Check for Changes
+        id: git-check
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes=changes present" >> $GITHUB_OUTPUT
+          else
+            echo "changes=" >> $GITHUB_OUTPUT
+          fi
 
       - name: Setup SSH
         uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
