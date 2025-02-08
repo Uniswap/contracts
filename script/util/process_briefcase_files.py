@@ -40,6 +40,10 @@ def parse_flattened_file(file_path):
         if line.startswith("pragma"):
             continue
 
+        # Flatten currently produces buggy lines (when processing "/// @inheritdoc" statements), delete those until fixed
+        if line.strip() == "///":
+            continue
+
         if line.startswith("// src/") or line.startswith("// lib/"):
             if current_block["source"]:
                 code_blocks.append(current_block)
@@ -273,6 +277,7 @@ def check_if_should_overwrite_pragma(flattened_file_path):
 
     return False
 
+
 # Normalize pragma version statement for potential whitespace so comparison is safer
 def normalize_pragma_version(pragma_version):
     match = re.match(r"^\s*pragma\s+solidity\s+([^;]+);", pragma_version)
@@ -386,6 +391,7 @@ def process_file(flattened_file, contracts_dir, target_dir):
 
 
 def process_all_files_in_directory(flattened_dir, contracts_dir, target_dir):
+    print(f"Writing briefcase files to {os.path.join(contracts_dir, target_dir)}")
     for root, _, files in os.walk(flattened_dir):
         for file in files:
             if file.endswith(".sol"):
