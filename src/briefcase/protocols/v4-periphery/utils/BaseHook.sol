@@ -14,8 +14,6 @@ import {ImmutableState} from '../base/ImmutableState.sol';
 /// @title Base Hook
 /// @notice abstract contract for hook implementations
 abstract contract BaseHook is IHooks, ImmutableState {
-    error NotSelf();
-    error InvalidPool();
     error HookNotImplemented();
 
     constructor(IPoolManager _manager) ImmutableState(_manager) {
@@ -34,7 +32,6 @@ abstract contract BaseHook is IHooks, ImmutableState {
         Hooks.validateHookPermissions(_this, getHookPermissions());
     }
 
-    ///
     function beforeInitialize(address sender, PoolKey calldata key, uint160 sqrtPriceX96)
         external
         onlyPoolManager
@@ -47,7 +44,6 @@ abstract contract BaseHook is IHooks, ImmutableState {
         revert HookNotImplemented();
     }
 
-    ///
     function afterInitialize(address sender, PoolKey calldata key, uint160 sqrtPriceX96, int24 tick)
         external
         onlyPoolManager
@@ -60,7 +56,6 @@ abstract contract BaseHook is IHooks, ImmutableState {
         revert HookNotImplemented();
     }
 
-    ///
     function beforeAddLiquidity(
         address sender,
         PoolKey calldata key,
@@ -78,7 +73,6 @@ abstract contract BaseHook is IHooks, ImmutableState {
         revert HookNotImplemented();
     }
 
-    ///
     function beforeRemoveLiquidity(
         address sender,
         PoolKey calldata key,
@@ -97,7 +91,6 @@ abstract contract BaseHook is IHooks, ImmutableState {
         revert HookNotImplemented();
     }
 
-    ///
     function afterAddLiquidity(
         address sender,
         PoolKey calldata key,
@@ -120,7 +113,6 @@ abstract contract BaseHook is IHooks, ImmutableState {
         revert HookNotImplemented();
     }
 
-    ///
     function afterRemoveLiquidity(
         address sender,
         PoolKey calldata key,
@@ -143,7 +135,6 @@ abstract contract BaseHook is IHooks, ImmutableState {
         revert HookNotImplemented();
     }
 
-    ///
     function beforeSwap(
         address sender,
         PoolKey calldata key,
@@ -161,7 +152,6 @@ abstract contract BaseHook is IHooks, ImmutableState {
         revert HookNotImplemented();
     }
 
-    ///
     function afterSwap(
         address sender,
         PoolKey calldata key,
@@ -180,7 +170,6 @@ abstract contract BaseHook is IHooks, ImmutableState {
         revert HookNotImplemented();
     }
 
-    ///
     function beforeDonate(
         address sender,
         PoolKey calldata key,
@@ -199,7 +188,6 @@ abstract contract BaseHook is IHooks, ImmutableState {
         revert HookNotImplemented();
     }
 
-    ///
     function afterDonate(
         address sender,
         PoolKey calldata key,
