@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.8.0;
 
+import {IUniversalRouter} from '../../protocols/universal-router/interfaces/IUniversalRouter.sol';
 import {RouterParameters} from '../../protocols/universal-router/types/RouterParameters.sol';
 
 library UniversalRouterDeployer {
@@ -14,7 +15,7 @@ library UniversalRouterDeployer {
         address v4PoolManager,
         address v3NFTPositionManager,
         address v4PositionManager
-    ) internal returns (address router) {
+    ) internal returns (IUniversalRouter router) {
         RouterParameters memory params = RouterParameters({
             permit2: permit2,
             weth9: weth9,

@@ -86,11 +86,15 @@ def get_pragma_and_license_from_source_file(source_file):
     return pragma_version_line, pragma_additional_lines, license
 
 
-def remove_comments_and_assembly(code):
+def remove_comments_strings_assembly(code):
     # Remove single-line comments
     code = re.sub(r"//.*", "", code)
+
     # Remove multi-line comments
     code = re.sub(r"/\*.*?\*/", "", code, flags=re.DOTALL)
+
+    # Remove string sections
+    code = re.sub(r'(".*?"|\'.*?\')', "", code)
 
     # Pattern to find assembly blocks (with optional annotation like ("memory-safe"))
     # Since Python allows no recursive regex, we need to be greedy for the last '}' it can find and find the correct end of block ourselves
@@ -166,7 +170,7 @@ def parse_content_for_identifier_definitions(content):
     identifier_pattern = r"\b(?:interface|contract|type|library|struct)\s+(\w+)\b"
     function_pattern = r"\b(?:function)\s+(\w+)\b"
     # Remove comments
-    content = remove_comments_and_assembly(content)
+    content = remove_comments_strings_assembly(content)
 
     # Initialize scope level
     scope_level = 0
@@ -200,7 +204,7 @@ def parse_content_for_identifier_definitions(content):
 
 
 def get_used_identifiers(code, identifiers):
-    code = remove_comments_and_assembly(code)
+    code = remove_comments_strings_assembly(code)
 
     self_declared_identifiers, _ = parse_content_for_identifier_definitions(code)
     # It's possible an identifier was declared twice in flattened file, it shouldn't try to import a contract with its own name
@@ -403,11 +407,5 @@ if __name__ == "__main__":
     flattened_dir = sys.argv[1]
     contracts_dir = sys.argv[2]
     target_dir = sys.argv[3]
-    if not flattened_dir.endswith("/"):
-        flattened_dir += "/"
-    if not contracts_dir.endswith("/"):
-        contracts_dir += "/"
-    if not target_dir.endswith("/"):
-        target_dir += "/"
 
     process_all_files_in_directory(flattened_dir, contracts_dir, target_dir)
