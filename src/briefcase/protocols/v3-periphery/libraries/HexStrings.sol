@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity =0.7.6;
 
-import {Strings} from '../../lib-external/oz-v3.4-solc-0.7/contracts/utils/Strings.sol';
-
 library HexStrings {
     bytes16 internal constant ALPHABET = '0123456789abcdef';
 
