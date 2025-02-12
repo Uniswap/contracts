@@ -3,11 +3,9 @@ pragma solidity ^0.8.0;
 
 import {IHooks} from '../../v4-core/interfaces/IHooks.sol';
 import {IPoolManager} from '../../v4-core/interfaces/IPoolManager.sol';
-
 import {Hooks} from '../../v4-core/libraries/Hooks.sol';
 import {BalanceDelta} from '../../v4-core/types/BalanceDelta.sol';
 import {BeforeSwapDelta} from '../../v4-core/types/BeforeSwapDelta.sol';
-
 import {PoolKey} from '../../v4-core/types/PoolKey.sol';
 import {ImmutableState} from '../base/ImmutableState.sol';
 
