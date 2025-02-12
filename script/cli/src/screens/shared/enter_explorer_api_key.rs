@@ -14,18 +14,8 @@ impl EnterExplorerApiKeyScreen {
     pub fn new() -> Result<Self, Box<dyn std::error::Error>> {
         let explorer = STATE_MANAGER.workflow_state.lock()?.block_explorer.clone();
         let mut env_var_name = "".to_string();
-        if explorer.is_some() {
-            if explorer
-                .clone()
-                .unwrap()
-                .name
-                .to_lowercase()
-                .contains("scan")
-            {
-                env_var_name = "ETHERSCAN_API_KEY".to_string();
-            } else {
-                env_var_name = explorer.unwrap().name.clone().to_uppercase() + "_API_KEY";
-            }
+        if let Some(explorer) = explorer {
+            env_var_name = explorer.explorer_type.to_env_var_name();
         }
         Ok(EnterExplorerApiKeyScreen {
             env_var_name: env_var_name.clone(),

@@ -112,7 +112,9 @@ pub async fn generate_deployment_log(
     // }
     let proxy = contract_name == "TransparentUpgradeableProxy";
     let mut contract_data = if proxy {
-        crate::errors::log("Proxy contract detected. Getting admin and implementation addresses".to_string());
+        crate::errors::log(
+            "Proxy contract detected. Getting admin and implementation addresses".to_string(),
+        );
         let admin: U256 = web3
             .provider
             .get_storage_at(
@@ -163,7 +165,8 @@ pub async fn generate_deployment_log(
         }
 
         let mut implementation_args = None;
-        if implementation_constructor.is_some() && !implementation_constructor_arguments.is_empty() {
+        if implementation_constructor.is_some() && !implementation_constructor_arguments.is_empty()
+        {
             implementation_args = Some(
                 implementation_constructor
                     .clone()
@@ -251,7 +254,7 @@ pub async fn generate_deployment_log(
         .arg("--rpc-url")
         .arg(web3.rpc_url)
         .arg("-e")
-        .arg(explorer_api.url)
+        .arg(explorer_api.explorer.url)
         .arg("-s")
         .output()
         .expect("Failed to execute markdown generation script");

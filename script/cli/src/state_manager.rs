@@ -1,5 +1,6 @@
+use crate::libs::explorer::{Explorer, SupportedExplorerType};
 use crate::libs::web3::Web3Lib;
-use crate::util::chain_config::{parse_chain_config, Chain, Explorer};
+use crate::util::chain_config::{parse_chain_config, Chain};
 use crate::util::deployment_log::RegisterContractData;
 use crossterm::{
     cursor::Show,
@@ -70,7 +71,7 @@ impl StateManager {
         if chain_id == "7777777" || chain_id == "57073" {
             if let Some(ref mut chain_data) = chain {
                 if chain_data.explorers.len() == 1 {
-                    chain_data.explorers[0].name = "blockscout".to_string();
+                    chain_data.explorers[0].explorer_type = SupportedExplorerType::Blockscout;
                 }
             }
         }
