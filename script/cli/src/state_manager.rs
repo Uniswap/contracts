@@ -1,5 +1,6 @@
 use crate::libs::explorer::{Explorer, SupportedExplorerType};
 use crate::libs::web3::Web3Lib;
+use crate::screens::verify_contract::verify_contract_screen::VerifyContractData;
 use crate::util::chain_config::{parse_chain_config, Chain};
 use crate::util::deployment_log::RegisterContractData;
 use crossterm::{
@@ -26,6 +27,7 @@ pub struct WorkflowState {
     pub explorer_api_key: Option<String>,
     pub block_explorer: Option<Explorer>,
     pub register_contract_data: RegisterContractData,
+    pub verify_contract_data: VerifyContractData,
     pub task: Value,
     pub private_key: Option<String>,
 }
@@ -39,6 +41,7 @@ impl WorkflowState {
             explorer_api_key: None,
             block_explorer: None,
             register_contract_data: RegisterContractData { address: None },
+            verify_contract_data: VerifyContractData { address: None },
             task: serde_json::json!({}),
             private_key: None,
         }

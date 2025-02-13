@@ -4,10 +4,10 @@ use crate::screens::types::select::SelectComponent;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
 use crate::workflows::deploy::deploy_contracts::DeployContractsWorkflow;
-use crate::workflows::error_workflow::ErrorWorkflow;
 use crate::workflows::{
     config::create_config::CreateConfigWorkflow,
     register::register_contract::RegisterContractWorkflow,
+    verify::verify_contract::VerifyContractWorkflow,
 };
 use crossterm::event::Event;
 
@@ -64,7 +64,7 @@ impl Screen for HomeScreen {
                     DeployContractsWorkflow::new(),
                 )]))),
                 2 | 3 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
-                    ErrorWorkflow::new("Coming soon!".to_string()),
+                    VerifyContractWorkflow::new(),
                 )]))),
                 4 => Ok(ScreenResult::NextScreen(Some(vec![Box::new(
                     RegisterContractWorkflow::new(),
