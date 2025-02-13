@@ -1,38 +1,10 @@
 {
   "chainId": "1301",
   "latest": {
-    "UniswapV2Factory": {
-      "address": "0x216d3b49e8c5140d2499da346ab5335a75f655d8",
-      "proxy": false,
-      "deploymentTxn": "0xf5f1e527c5ecd1701a79367f003162686402f0e05b0667a99d733ec184740118",
-      "timestamp": 1737578658,
-      "commitHash": "77d52a7"
-    },
-    "UniswapV2Router02": {
-      "address": "0xd24d4e867fda1238b5fa035fa8ab731d41c4a3ed",
-      "proxy": false,
-      "deploymentTxn": "0x41283e07dd1b8bdf71e42dbeddb46ae5c99f527a025b6a532e5fc11d6b37713a",
-      "timestamp": 1737578658,
-      "commitHash": "77d52a7"
-    },
-    "UniswapV3Factory": {
-      "address": "0x780e96775371e1c4f4cd1524a578b8f1b12ece58",
-      "proxy": false,
-      "deploymentTxn": "0x8d9c3a854134c8c038e84fd749fe531da52f9c65073e632b5b9ea62fab604083",
-      "timestamp": 1737578658,
-      "commitHash": "77d52a7"
-    },
     "UniswapInterfaceMulticall": {
       "address": "0xa72e4f582f7c3e2232a9f23a41e53c13d1a647a9",
       "proxy": false,
       "deploymentTxn": "0xdbba5f58a37aef8302e125c1efd65e1b9df6af1c595709d52a946fc5273b299a",
-      "timestamp": 1737578658,
-      "commitHash": "77d52a7"
-    },
-    "QuoterV2": {
-      "address": "0xbc02cbe6e4e29b504b67b0187a0178e13871fa3c",
-      "proxy": false,
-      "deploymentTxn": "0x42feb903896a21a0a834bc7c93d8ce84536d215d20700bf251e3945d2f9c18cc",
       "timestamp": 1737578658,
       "commitHash": "77d52a7"
     },
@@ -166,52 +138,12 @@
     },
     {
       "contracts": {
-        "UniswapV2Factory": {
-          "address": "0x216d3b49e8c5140d2499da346ab5335a75f655d8",
-          "proxy": false,
-          "deploymentTxn": "0xf5f1e527c5ecd1701a79367f003162686402f0e05b0667a99d733ec184740118",
-          "input": {
-            "constructor": {
-              "_feeToSetter": "0x07D68837A1940cF2749FF0B3E6aBEd23Ac6F9A04"
-            }
-          }
-        },
-        "UniswapV2Router02": {
-          "address": "0xd24d4e867fda1238b5fa035fa8ab731d41c4a3ed",
-          "proxy": false,
-          "deploymentTxn": "0x41283e07dd1b8bdf71e42dbeddb46ae5c99f527a025b6a532e5fc11d6b37713a",
-          "input": {
-            "constructor": {
-              "_factory": "0x216d3b49e8c5140D2499dA346AB5335A75f655d8",
-              "_WETH": "0x4200000000000000000000000000000000000006"
-            }
-          }
-        },
-        "UniswapV3Factory": {
-          "address": "0x780e96775371e1c4f4cd1524a578b8f1b12ece58",
-          "proxy": false,
-          "deploymentTxn": "0x8d9c3a854134c8c038e84fd749fe531da52f9c65073e632b5b9ea62fab604083",
-          "input": {
-            "constructor": {}
-          }
-        },
         "UniswapInterfaceMulticall": {
           "address": "0xa72e4f582f7c3e2232a9f23a41e53c13d1a647a9",
           "proxy": false,
           "deploymentTxn": "0xdbba5f58a37aef8302e125c1efd65e1b9df6af1c595709d52a946fc5273b299a",
           "input": {
             "constructor": {}
-          }
-        },
-        "QuoterV2": {
-          "address": "0xbc02cbe6e4e29b504b67b0187a0178e13871fa3c",
-          "proxy": false,
-          "deploymentTxn": "0x42feb903896a21a0a834bc7c93d8ce84536d215d20700bf251e3945d2f9c18cc",
-          "input": {
-            "constructor": {
-              "_factory": "0x780E96775371e1C4F4cD1524a578B8f1b12ECE58",
-              "_WETH9": "0x4200000000000000000000000000000000000006"
-            }
           }
         },
         "TickLens": {
@@ -228,41 +160,6 @@
           "deploymentTxn": "0x4c6469b634c0bf639d5378f34b3921036ebfc8325b2f7ea72035b989baa645c4",
           "input": {
             "constructor": {}
-          }
-        },
-        "NonfungiblePositionManager": {
-          "address": "0x4801ed4f1b57559f9071413d9d99b607316fd1eb",
-          "proxy": false,
-          "deploymentTxn": "0x1e18ec55902dcaac896d262b31ccf5658967e02f723034a9547bd1cbdd9e9546",
-          "input": {
-            "constructor": {
-              "_factory": "0x780E96775371e1C4F4cD1524a578B8f1b12ECE58",
-              "_WETH9": "0x4200000000000000000000000000000000000006",
-              "_tokenDescriptor_": "0x1872C8F792BB8321f9eF2F531e98e53572d3f293"
-            }
-          }
-        },
-        "V3Migrator": {
-          "address": "0x9171c97d7b17278e5fce1996cd5dda682bddaf43",
-          "proxy": false,
-          "deploymentTxn": "0x4602ffd6b2503ef1d402059c90840b6180f82c63e621ad84783d2dcfbb4b570f",
-          "input": {
-            "constructor": {
-              "_factory": "0x780E96775371e1C4F4cD1524a578B8f1b12ECE58",
-              "_WETH9": "0x4200000000000000000000000000000000000006",
-              "_nonfungiblePositionManager": "0x4801Ed4f1b57559F9071413d9D99b607316Fd1Eb"
-            }
-          }
-        },
-        "SwapRouter": {
-          "address": "0xbeeabec0220a09048dbe86790b59510a2e1ff5d2",
-          "proxy": false,
-          "deploymentTxn": "0x7c1be94d3a1c61ed3cdd80b420b88cab0913daff6385b12971d068735530cb91",
-          "input": {
-            "constructor": {
-              "_factory": "0x780E96775371e1C4F4cD1524a578B8f1b12ECE58",
-              "_WETH9": "0x4200000000000000000000000000000000000006"
-            }
           }
         },
         "PoolManager": {
@@ -331,29 +228,6 @@
           "input": {
             "constructor": {
               "_factory": "0x780E96775371e1C4F4cD1524a578B8f1b12ECE58"
-            }
-          }
-        },
-        "SwapRouter02": {
-          "address": "0xcf21367b17d22a2e2a03904ca79a5045b18231ef",
-          "proxy": false,
-          "deploymentTxn": "0x28fd60fdb37a0e822cc70d2b4835d3e3146830a364d6cb9f4eea48cab2c3ff41",
-          "input": {
-            "constructor": {
-              "_factoryV2": "0x216d3b49e8c5140D2499dA346AB5335A75f655d8",
-              "factoryV3": "0x780E96775371e1C4F4cD1524a578B8f1b12ECE58",
-              "_positionManager": "0x4801Ed4f1b57559F9071413d9D99b607316Fd1Eb",
-              "_WETH9": "0x4200000000000000000000000000000000000006"
-            }
-          }
-        },
-        "FeeOnTransferDetector": {
-          "address": "0xdfbe641684882769918f0a8da4c4c876a75c5ab1",
-          "proxy": false,
-          "deploymentTxn": "0xa351d11889e366fa8246704cb0f1dba494aa4a8396d49229c2ba588f9123bb51",
-          "input": {
-            "constructor": {
-              "_factoryV2": "0x216d3b49e8c5140D2499dA346AB5335A75f655d8"
             }
           }
         }
