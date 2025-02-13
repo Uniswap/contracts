@@ -6,6 +6,8 @@ pub mod shared;
 pub mod register_contract;
 // screens used by the deploy contracts workflow
 pub mod deploy_contracts;
+// screens used by the verify contract workflow
+pub mod verify_contract;
 
 // home screen
 pub mod home;

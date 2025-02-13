@@ -100,16 +100,16 @@ impl ExecuteDeployScriptScreen {
                     .arg("--verify")
                     .arg(format!(
                         "--verifier={}",
-                        if explorer_api.explorer_type == SupportedExplorerType::Blockscout {
+                        if explorer_api.explorer.explorer_type == SupportedExplorerType::Blockscout
+                        {
                             "blockscout"
                         } else {
-                            "etherscan"
+                            // custom also works for etherscan
+                            "custom"
                         }
                     ))
-                    .arg(format!("--verifier-url={}", explorer_api.api_url));
-                if explorer_api.explorer_type == SupportedExplorerType::Etherscan {
-                    command = command.arg(format!("--etherscan-api-key={}", explorer_api.api_key));
-                }
+                    .arg(format!("--verifier-url={}", explorer_api.api_url))
+                    .arg(format!("--verifier-api-key={}", explorer_api.api_key));
             }
 
             match execute_command(command.arg("--broadcast").arg("--skip-simulation")) {
@@ -208,9 +208,7 @@ fn execute_command(command: &mut Command) -> Result<Option<String>, Box<dyn std:
             }
             Ok(None)
         }
-        Err(e) => {
-            Err(e.to_string().into())
-        }
+        Err(e) => Err(e.to_string().into()),
     }
 }
 
@@ -221,8 +219,7 @@ impl Screen for ExecuteDeployScriptScreen {
                 "Deployment failed: {}\n",
                 self.execution_error_message.lock().unwrap()
             ));
-            buffer
-                .append_row_text_color("> Press any key to continue", constants::SELECTION_COLOR);
+            buffer.append_row_text_color("> Press any key to continue", constants::SELECTION_COLOR);
         } else {
             buffer.append_row_text(&format!(
                 "{} Executing dry run\n",
