@@ -2,11 +2,11 @@
   "protocols": {
     "permit2": {
       "name": "Permit 2",
-      "deploy": true,
+      "deploy": false,
       "contracts": {
         "Permit2": {
-          "deploy": true,
-          "address": null,
+          "deploy": false,
+          "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
           "lookup": {
             "latest": "Permit2",
             "history": [
@@ -138,7 +138,7 @@
           ]
         },
         "V3Migrator": {
-          "deploy": false,
+          "deploy": true,
           "params": {
             "factory": {
               "name": "Uniswap v3 factory address",
@@ -170,23 +170,22 @@
     },
     "v4": {
       "name": "Uniswap v4",
-      "deploy": true,
+      "deploy": false,
       "contracts": {
         "PoolManager": {
-          "deploy": true,
-          "address": null,
+          "deploy": false,
+          "address": "0x360e68faccca8ca495c1b759fd9eee466db9fb32",
           "lookup": {
             "latest": "PoolManager"
           },
           "params": {
             "initialOwner": {
-              "type": "address",
-              "value": "0x2BAD8182C09F50c8318d769245beA52C32Be46CD"
+              "type": "address"
             }
           }
         },
         "PositionDescriptor": {
-          "deploy": true,
+          "deploy": false,
           "address": null,
           "lookup": {
             "latest": "PositionDescriptor"
@@ -202,8 +201,7 @@
               "value": "ETH"
             },
             "proxyAdminOwner": {
-              "type": "address",
-              "value": "0x2BAD8182C09F50c8318d769245beA52C32Be46CD"
+              "type": "address"
             }
           },
           "dependencies": [
@@ -211,8 +209,8 @@
           ]
         },
         "PositionManager": {
-          "deploy": true,
-          "address": null,
+          "deploy": false,
+          "address": "0x1b35d13a2e2528f192637f14b05f0dc0e7deb566",
           "lookup": {
             "latest": "PositionManager"
           },
@@ -227,8 +225,7 @@
             },
             "unsubscribeGasLimit": {
               "name": "Unsubscribe gas limit",
-              "type": "uint256",
-              "value": "150000"
+              "type": "uint256"
             },
             "positionDescriptor": {
               "name": "Position Descriptor address",
@@ -240,7 +237,7 @@
           ]
         },
         "V4Quoter": {
-          "deploy": true,
+          "deploy": false,
           "address": null,
           "params": {
             "poolManager": {
@@ -250,7 +247,7 @@
           }
         },
         "StateView": {
-          "deploy": true,
+          "deploy": false,
           "address": null,
           "params": {
             "poolManager": {
@@ -365,10 +362,10 @@
     },
     "util-contracts": {
       "name": "Utils",
-      "deploy": true,
+      "deploy": false,
       "contracts": {
         "FeeOnTransferDetector": {
-          "deploy": true,
+          "deploy": false,
           "address": null,
           "params": {
             "factoryV2": {
@@ -378,12 +375,11 @@
           }
         },
         "FeeCollector": {
-          "deploy": true,
+          "deploy": false,
           "address": null,
           "params": {
             "owner": {
-              "type": "address",
-              "value": "0xbE84D31B2eE049DCb1d8E7c798511632b44d1b55"
+              "type": "address"
             },
             "universalRouter": {
               "name": "Universal Router address",
@@ -395,8 +391,7 @@
             },
             "feeToken": {
               "name": "Fee token address (usually USDC)",
-              "type": "address",
-              "value": "0xbA9986D2381edf1DA03B0B9c1f8b00dc4AacC369"
+              "type": "address"
             }
           }
         }
