@@ -60,7 +60,9 @@ impl MultipleChoiceComponent {
                     }
                 }
                 KeyCode::Enter => {
-                    return Some(self.selected_indices.clone());
+                    let mut sorted_indices = self.selected_indices.clone();
+                    sorted_indices.sort();
+                    return Some(sorted_indices);
                 }
                 _ => {}
             }
