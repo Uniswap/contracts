@@ -5,6 +5,7 @@ libs = ["lib"]
 verbosity = 2
 bytecode_hash = "none"
 auto_detect_remappings = false
+optimizer = true
 
 fs_permissions = [
   { access = "read-write", path = ".forge-snapshots"},
