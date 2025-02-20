@@ -20,8 +20,6 @@ import {NonfungiblePositionManagerDeployer} from
     '../../src/briefcase/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
 import {NonfungibleTokenPositionDescriptorDeployer} from
     '../../src/briefcase/deployers/v3-periphery/NonfungibleTokenPositionDescriptorDeployer.sol';
-import {NonfungibleTokenPositionDescriptorDeployer} from
-    '../../src/briefcase/deployers/v3-periphery/NonfungibleTokenPositionDescriptorDeployer.sol';
 import {QuoterV2Deployer} from '../../src/briefcase/deployers/v3-periphery/QuoterV2Deployer.sol';
 import {SwapRouterDeployer} from '../../src/briefcase/deployers/v3-periphery/SwapRouterDeployer.sol';
 import {TickLensDeployer} from '../../src/briefcase/deployers/v3-periphery/TickLensDeployer.sol';
