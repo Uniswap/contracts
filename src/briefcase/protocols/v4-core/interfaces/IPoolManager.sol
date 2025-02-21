@@ -3,7 +3,6 @@ pragma solidity >=0.6.2;
 
 import {BalanceDelta} from '../types/BalanceDelta.sol';
 import {Currency} from '../types/Currency.sol';
-
 import {PoolId} from '../types/PoolId.sol';
 import {PoolKey} from '../types/PoolKey.sol';
 import {IExtsload} from './IExtsload.sol';
@@ -137,9 +136,6 @@ interface IPoolManager is IProtocolFees, IERC6909Claims, IExtsload, IExttload {
     /// @param hookData The data to pass through to the add/removeLiquidity hooks
     /// @return callerDelta The balance delta of the caller of modifyLiquidity. This is the total of both principal, fee deltas, and hook deltas if applicable
     /// @return feesAccrued The balance delta of the fees generated in the liquidity range. Returned for informational purposes
-    /// @dev Note that feesAccrued can be artificially inflated by a malicious actor and integrators should be careful using the value
-    /// For pools with a single liquidity position, actors can donate to themselves to inflate feeGrowthGlobal (and consequently feesAccrued)
-    /// atomically donating and collecting fees in the same unlockCallback may make the inflated value more extreme
     function modifyLiquidity(PoolKey memory key, ModifyLiquidityParams memory params, bytes calldata hookData)
         external
         returns (BalanceDelta callerDelta, BalanceDelta feesAccrued);

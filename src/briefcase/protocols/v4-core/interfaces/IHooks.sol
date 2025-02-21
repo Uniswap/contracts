@@ -3,7 +3,6 @@ pragma solidity >=0.6.2;
 
 import {BalanceDelta} from '../types/BalanceDelta.sol';
 import {BeforeSwapDelta} from '../types/BeforeSwapDelta.sol';
-
 import {PoolKey} from '../types/PoolKey.sol';
 import {IPoolManager} from './IPoolManager.sol';
 

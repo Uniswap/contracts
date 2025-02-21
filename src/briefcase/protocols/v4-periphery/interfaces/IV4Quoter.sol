@@ -3,7 +3,6 @@ pragma solidity >=0.6.2;
 
 import {Currency} from '../../v4-core/types/Currency.sol';
 import {PoolKey} from '../../v4-core/types/PoolKey.sol';
-
 import {PathKey} from '../libraries/PathKey.sol';
 import {IImmutableState} from './IImmutableState.sol';
 

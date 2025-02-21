@@ -5,7 +5,6 @@ import {IHooks} from '../interfaces/IHooks.sol';
 import {IPoolManager} from '../interfaces/IPoolManager.sol';
 import {BalanceDelta, BalanceDeltaLibrary, toBalanceDelta} from '../types/BalanceDelta.sol';
 import {BeforeSwapDelta, BeforeSwapDeltaLibrary} from '../types/BeforeSwapDelta.sol';
-
 import {PoolKey} from '../types/PoolKey.sol';
 import {CustomRevert} from './CustomRevert.sol';
 import {LPFeeLibrary} from './LPFeeLibrary.sol';
