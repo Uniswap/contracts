@@ -121,9 +121,32 @@
       "deploymentTxn": "0x14b1ac0212092563ca2ac700ca705b1926b9c6fcde9509c28aa221916a80fdb9",
       "timestamp": 1739644539,
       "commitHash": null
+    },
+    "FeeOnTransferDetector": {
+      "address": "0x7a5299822b2cd9ac9a9f67756aa2d62140e9a66f",
+      "proxy": false,
+      "deploymentTxn": "0x3cc211781d9d4257a2d6c831798c50700396ae1df6adf7ee8c94afc815e44582",
+      "timestamp": 1741129370,
+      "commitHash": "74a9dc6"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "FeeOnTransferDetector": {
+          "address": "0x7a5299822b2cd9ac9a9f67756aa2d62140e9a66f",
+          "proxy": false,
+          "deploymentTxn": "0x3cc211781d9d4257a2d6c831798c50700396ae1df6adf7ee8c94afc815e44582",
+          "input": {
+            "constructor": {
+              "_factoryV2": "0x97FeBbC2AdBD5644ba22736E962564B23F5828CE"
+            }
+          }
+        }
+      },
+      "timestamp": 1741129370,
+      "commitHash": "74a9dc6"
+    },
     {
       "contracts": {
         "UniswapV2Factory": {
