@@ -52,7 +52,7 @@ compilation_restrictions = [
   { paths = "src/pkgs/v3-periphery/contracts/*.sol", version = "0.7.6", via_ir = false, max_optimizer_runs = 1000000 },
   { paths = "src/pkgs/v3-periphery/**/libraries/**", version = "<0.8.0" },
   # permit2
-  { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
+  { paths = "src/pkgs/permit2/src/[!i]*.sol", version = "0.8.17", via_ir = true },
   # v4
   { paths = "lib/v4-core/src/PoolManager.sol", optimizer_runs = 44444444 },
   { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", version = "0.8.26", optimizer_runs = 1 },
@@ -62,7 +62,7 @@ compilation_restrictions = [
   { paths = "src/pkgs/universal-router/contracts/**", optimizer_runs = 44444444 },
   { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
   # X
-  { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "0.8.24" },
+  { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "=0.8.24" },
   # Briefcase
   { paths = "src/briefcase/protocols/v2-periphery/libraries/UniswapV2Library.sol", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/lib-external/solidity-lib/**", version = "<0.8.0" },
