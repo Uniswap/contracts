@@ -413,7 +413,7 @@ contract Deploy is Script {
 
     function deployDutchV3Reactor() private {
         if (!config.readBoolOr('.protocols.uniswapx.deploy', false)) return;
-        
+
         address owner = config.readAddress('.protocols.uniswapx.contracts.DutchV3Reactor.params.owner.value');
         if (permit2 == address(0)) {
             permit2 = config.readAddress('.protocols.permit2.contracts.Permit2.address');
