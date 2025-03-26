@@ -37,6 +37,7 @@ import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-peripher
 
 import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
+import {MinimalDelegationDeployer} from '../../src/briefcase/deployers/minimal-delegation/MinimalDelegationDeployer.sol';
 
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {VmSafe} from 'forge-std/Vm.sol';
@@ -54,6 +55,7 @@ contract Deploy is Script {
     address poolManager;
     address positionManager;
     address universalRouter;
+    address minimalDelegation;
 
     function run() public {
         config = vm.readFile(string.concat('./script/deploy/tasks/', vm.toString(block.chainid), '/task-pending.json'));
@@ -75,6 +77,8 @@ contract Deploy is Script {
         deployUniversalRouter();
 
         deployUtilsContracts();
+
+        deployMinimalDelegation();
 
         vm.stopBroadcast();
 
@@ -406,6 +410,14 @@ contract Deploy is Script {
                 positionManager
             )
         );
+    }
+
+    function deployMinimalDelegation() private {
+        if (!config.readBoolOr('.protocols.minimal-delegation.deploy', false)) return;
+
+        bytes32 salt = config.readBytes32('.protocols.minimal-delegation.contracts.MinimalDelegation.params.salt.value');
+        console.log('deploying Minimal Delegation');
+        minimalDelegation = address(MinimalDelegationDeployer.deploy(salt));
     }
 
     function weth() internal returns (address) {

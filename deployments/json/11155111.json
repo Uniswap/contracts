@@ -66,9 +66,30 @@
       "proxy": false,
       "deploymentTxn": "0x363df5deeead44d8fd38425f3986e3e81946a6c59d8b68fe33926cc700713173",
       "timestamp": 1669385988
+    },
+    "MinimalDelegation": {
+      "address": "0xfdb69e70bae2ab8991a7ef25774fa798d0ebb978",
+      "proxy": false,
+      "deploymentTxn": "0x8d866032a60dc53db83a4d9e49a13f5af31f4e02441d8cb9d06e4d1c759c737c",
+      "timestamp": 1743004241,
+      "commitHash": "fe42ade"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "MinimalDelegation": {
+          "address": "0xfdb69e70bae2ab8991a7ef25774fa798d0ebb978",
+          "proxy": false,
+          "deploymentTxn": "0x8d866032a60dc53db83a4d9e49a13f5af31f4e02441d8cb9d06e4d1c759c737c",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1743004241,
+      "commitHash": "fe42ade"
+    },
     {
       "contracts": {
         "UniswapV2Router02": {
