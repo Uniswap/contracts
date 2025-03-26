@@ -2,6 +2,7 @@
 pragma solidity >= 0.7.0;
 
 import {IV3Migrator} from '../../protocols/v3-periphery/interfaces/IV3Migrator.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library V3MigratorDeployer {
     function deploy(address factory, address weth, address nonfungiblePositionManager)
@@ -10,10 +11,7 @@ library V3MigratorDeployer {
     {
         bytes memory args = abi.encode(factory, weth, nonfungiblePositionManager);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            migrator := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        migrator = IV3Migrator(DeployerHelper.create(initcode_));
     }
 
     /**

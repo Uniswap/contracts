@@ -2,14 +2,12 @@
 pragma solidity >= 0.7.0;
 
 import {ISwapRouter} from '../../protocols/v3-periphery/interfaces/ISwapRouter.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library NFTDescriptorDeployer {
     function deploy() internal returns (address nftDescriptor) {
         bytes memory initcode_ = abi.encodePacked(initcode());
-
-        assembly {
-            nftDescriptor := create2(0, add(initcode_, 32), mload(initcode_), 0x00)
-        }
+        nftDescriptor = DeployerHelper.create2(initcode_);
     }
 
     /**

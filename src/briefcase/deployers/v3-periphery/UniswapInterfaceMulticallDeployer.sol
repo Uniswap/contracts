@@ -1,13 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.7.0;
 
+import {DeployerHelper} from '../DeployerHelper.sol';
+
 library UniswapInterfaceMulticallDeployer {
     function deploy() internal returns (address multicall) {
         bytes memory initcode_ = abi.encodePacked(initcode());
-
-        assembly {
-            multicall := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        multicall = DeployerHelper.create(initcode_);
     }
 
     /**
