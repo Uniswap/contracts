@@ -52,7 +52,7 @@ additional_compiler_profiles = [
 ]
 ```
 
-Next, add the compilation restrictions to use the new profile.
+Next, add the compilation restrictions to use the new profile. Compilation restrictions define what compiler profiles can be used to compile individual files. The restrictions should be defined in a way so that the main contracts used for deployments from the new repository can only be compiled with the newly added profile from this step to ensure consistent deployments.
 
 ```
 compilation_restrictions = [
