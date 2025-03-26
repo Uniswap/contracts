@@ -3,7 +3,7 @@
 - [Install](#install)
 - [Pre-commit Hooks](#pre-commit-hooks)
 - [Requirements for merge](#requirements-for-merge)
-- [Adding a new package](#adding-a-new-package)
+- [Adding a new repository](#adding-a-new-repository)
 - [Adding a deployer](#adding-a-deployer)
 
 ## Install
