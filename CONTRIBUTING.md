@@ -156,29 +156,16 @@ contracts: {
   "<contract-name>": {
     "deploy": false, // deploy is false by default
     "address": null, // address is null by default
-    "lookup": {
-      ... // lookup information for the contract
-    },
     "params": {
-      ... // parameters for the contract
+      ... // parameters for the contract deployment
+    },
+    "lookup": {
+      ... // optional, lookup information for the contract
     },
     "dependencies": [
-      ... // dependencies for the contract
+      ... // optional, dependencies for the contract
     ]
   }
-}
-```
-
-**Lookup**
-
-The lookup object allows the deployer tool to find past deployments of the contract in the deployment logs located in `deployments/json/<chain-id>.json`. If a contract has been found there, the deployer tool will display the address to the user as a quick selection option for convenience. For example, when deploying the UniversalRouter, where Permit2 is a constructor argument, the lookup object can provide the location of past Permit2 deployments to the user for that chain.
-
-It can either point at the address of the latest deployment of the contract or a point in time it was used as a constructor argument in the past.
-
-```json
-"lookup": {
-  "latest": "<contract-name>",
-  "history": [<other-contract>.input.constructor.params.<param-name>]
 }
 ```
 
@@ -200,6 +187,19 @@ The params object allows the deployer tool to pass arguments to the deployment.
 If a value is provided, it will be displayed to the user as a default value, the user can then press enter to use the default value or provide a new value.
 
 A pointer allows to dynamically resolve the value of the argument at runtime. This is primarily used to resolve the address of contracts that are deployed in the same run in prior steps. For example, when deploying Uniswap v2, the address of the Uniswap v2 factory needs to be resolved at runtime within the deployment of the Uniswap v2 router. If the v2 factory is deployed in the same run, the pointer would then point to the address of the newly deployed factory. If the v2 factory is not deployed, the user will be prompted to provide the address of the factory.
+
+**Lookup**
+
+The lookup object allows the deployer tool to find past deployments of the contract in the deployment logs located in `deployments/json/<chain-id>.json`. If a contract has been found there, the deployer tool will display the address to the user as a quick selection option for convenience. For example, when deploying the UniversalRouter, where Permit2 is a constructor argument, the lookup object can provide the location of past Permit2 deployments to the user for that chain.
+
+It can either point at the address of the latest deployment of the contract or a point in time it was used as a constructor argument in the past.
+
+```json
+"lookup": {
+  "latest": "<contract-name>",
+  "history": [<other-contract>.input.constructor.params.<param-name>]
+}
+```
 
 **Dependencies**
 
