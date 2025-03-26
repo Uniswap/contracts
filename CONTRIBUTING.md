@@ -5,6 +5,7 @@
 - [Requirements for merge](#requirements-for-merge)
 - [Adding a new repository](#adding-a-new-repository)
 - [Adding a deployer](#adding-a-deployer)
+- [Deploying](#deploying)
 
 ## Install
 
@@ -225,3 +226,21 @@ Create a new protocol section in the config file, create a new function in the d
 Within the protocol section the to be deployed contract is defined in, read the arguments for that contract from the config file and pass them to the deployer library for that contract.
 
 Should the contract have dependencies that need to be resolved at runtime (e.g., the factory when deploying a router), ensure that the dependency contracts are deployed before the current contract.
+
+## Deploying
+
+Follow these steps from the [README](README.md#deployment) and launch the `deploy-cli` to deploy contracts.
+
+### Generate a deployment task
+
+Select the `Create Deployment Config` option from the `deploy-cli` menu. Follow the prompts to select protocols and contracts to deploy as well as enter all required parameters for the deployment.
+
+After this step is completed, a new deployment task file is created under `deployments/tasks/<chain-id>/task-pending.json`. This file can be used to verify the deployment and the parameters and will be used by the `deploy-cli` in the next step to execute the deployment.
+
+The generated task file should be pushed to the repository. After the deployment is executed, the task will be renamed to `task-<timestamp>.json`.
+
+### Execute a deployment
+
+Select the `Deploy from Config` option from the `deploy-cli` menu to execute the deployment. Enter the chain id of the chain where the deployment should be executed. Additionally, select an RPC URL, an explorer for automatic verification and the private key of the account that will be used to execute the deployment.
+
+After the deployment is executed, deployment logs are generated automatically and added to the `deployments/json/<chain-id>.json` file. A human readable summary of the deployment logs is added to the `deployments/<chain-id>.md` file. These deployment logs together with the foundry broadcast files should be pushed to the repository.
