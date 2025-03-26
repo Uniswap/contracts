@@ -124,6 +124,8 @@ library <ContractName>Deployer {
 }
 ```
 
+The deploy function can run arbitrary logic to deploy the contract, e.g., deploying via create, create2, using a factory, or a proxy. The deployer function should return the address and interface of the deployed contract so it can be called in subsequent steps.
+
 After creating the deployer file, it's important to update the `Source Contract` path in the comment above the `initcode` function. This ensures that the correct contract is used for the initcode.
 
 Finally, run `./script/util/create_briefcase.sh` to generate the initcode for the deployer and populate the bytecode in the initcode function.
