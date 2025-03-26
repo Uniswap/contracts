@@ -153,7 +153,7 @@ Modify the `script/deploy/tasks/task_template.json` file to add the new contract
 #### Adding a new contract to an existing protocol
 
 ```json
-contracts: {
+"contracts": {
   "<contract-name>": {
     "deploy": false, // deploy is false by default
     "address": null, // address is null by default
@@ -198,7 +198,7 @@ It can either point at the address of the latest deployment of the contract or a
 ```json
 "lookup": {
   "latest": "<contract-name>",
-  "history": [<other-contract>.input.constructor.params.<param-name>]
+  "history": ["<other-contract>.input.constructor.params.<param-name>"]
 }
 ```
 
