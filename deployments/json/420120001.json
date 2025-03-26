@@ -1,0 +1,30 @@
+{
+  "chainId": "420120001",
+  "latest": {
+    "PoolManager": {
+      "address": "0x9131b9084e6017be19c6a0ef23f73dbb1bf41f96",
+      "proxy": false,
+      "deploymentTxn": "0xc22ad1a10e8370980e7900bd43534bb5adb5e7d7d356c215defe7f7a702b4c01",
+      "timestamp": 1743023616,
+      "commitHash": "c0e2e80"
+    }
+  },
+  "history": [
+    {
+      "contracts": {
+        "PoolManager": {
+          "address": "0x9131b9084e6017be19c6a0ef23f73dbb1bf41f96",
+          "proxy": false,
+          "deploymentTxn": "0xc22ad1a10e8370980e7900bd43534bb5adb5e7d7d356c215defe7f7a702b4c01",
+          "input": {
+            "constructor": {
+              "initialOwner": "0x0000000000000000000000000000000000000000"
+            }
+          }
+        }
+      },
+      "timestamp": 1743023616,
+      "commitHash": "c0e2e80"
+    }
+  ]
+}

@@ -23,3 +23,4 @@ This repository contains deployment information for the following networks:
 | 129412 | Chain 129412 | [View Deployment](./129412.md) |
 | 7777777 | Zora | [View Deployment](./7777777.md) |
 | 11155111 | Sepolia | [View Deployment](./11155111.md) |
+| 420120001 | Chain 420120001 | [View Deployment](./420120001.md) |
