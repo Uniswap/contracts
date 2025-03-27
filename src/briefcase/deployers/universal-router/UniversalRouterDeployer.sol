@@ -3,6 +3,7 @@ pragma solidity >= 0.8.0;
 
 import {IUniversalRouter} from '../../protocols/universal-router/interfaces/IUniversalRouter.sol';
 import {RouterParameters} from '../../protocols/universal-router/types/RouterParameters.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library UniversalRouterDeployer {
     function deploy(
@@ -28,9 +29,7 @@ library UniversalRouterDeployer {
             v4PositionManager: v4PositionManager
         });
         bytes memory initcode_ = abi.encodePacked(initcode(), abi.encode(params));
-        assembly {
-            router := create2(0, add(initcode_, 32), mload(initcode_), hex'00')
-        }
+        router = IUniversalRouter(DeployerHelper.create2(initcode_));
     }
 
     /**

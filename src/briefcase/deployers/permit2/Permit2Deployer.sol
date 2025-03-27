@@ -2,15 +2,12 @@
 pragma solidity >= 0.8.0;
 
 import {IPermit2} from '../../protocols/permit2/interfaces/IPermit2.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library Permit2Deployer {
     function deploy() internal returns (IPermit2 permit2) {
         bytes memory initcode_ = abi.encodePacked(initcode());
-        address permit2Address;
-        assembly {
-            permit2Address := create(0, add(initcode_, 32), mload(initcode_))
-        }
-        permit2 = IPermit2(permit2Address);
+        permit2 = IPermit2(DeployerHelper.create(initcode_));
     }
 
     /**

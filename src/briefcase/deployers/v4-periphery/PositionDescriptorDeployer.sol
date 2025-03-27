@@ -2,6 +2,7 @@
 pragma solidity >= 0.8.0;
 
 import {IPositionDescriptor} from '../../protocols/v4-periphery/interfaces/IPositionDescriptor.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library PositionDescriptorDeployer {
     function deploy(address poolManager, address weth, bytes32 nativeCurrencyLabelBytes)
@@ -10,10 +11,7 @@ library PositionDescriptorDeployer {
     {
         bytes memory args = abi.encode(poolManager, weth, nativeCurrencyLabelBytes);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            descriptor := create2(0, add(initcode_, 32), mload(initcode_), hex'00')
-        }
+        descriptor = IPositionDescriptor(DeployerHelper.create2(initcode_));
     }
 
     /**

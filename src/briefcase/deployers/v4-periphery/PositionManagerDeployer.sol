@@ -2,6 +2,7 @@
 pragma solidity >= 0.8.0;
 
 import {IPositionManager} from '../../protocols/v4-periphery/interfaces/IPositionManager.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library PositionManagerDeployer {
     function deploy(
@@ -13,10 +14,7 @@ library PositionManagerDeployer {
     ) internal returns (IPositionManager manager) {
         bytes memory args = abi.encode(poolManager, permit2, unsubscribeGasLimit, positionDescriptor, weth);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            manager := create2(0, add(initcode_, 32), mload(initcode_), hex'00')
-        }
+        manager = IPositionManager(DeployerHelper.create2(initcode_));
     }
 
     /**

@@ -2,6 +2,7 @@
 pragma solidity >= 0.7.0;
 
 import {ISwapRouter02} from '../../protocols/swap-router-contracts/interfaces/ISwapRouter02.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library SwapRouter02Deployer {
     function deploy(address factoryV2, address factoryV3, address positionManager, address weth)
@@ -10,10 +11,7 @@ library SwapRouter02Deployer {
     {
         bytes memory args = abi.encode(factoryV2, factoryV3, positionManager, weth);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            router := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        router = ISwapRouter02(DeployerHelper.create(initcode_));
     }
 
     /**

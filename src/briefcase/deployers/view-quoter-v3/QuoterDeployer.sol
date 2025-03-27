@@ -2,15 +2,13 @@
 pragma solidity >= 0.7.0;
 
 import {IQuoter} from '../../protocols/view-quoter-v3/interfaces/IQuoter.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library QuoterDeployer {
     function deploy(address factory) internal returns (IQuoter quoter) {
         bytes memory args = abi.encode(factory);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            quoter := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        quoter = IQuoter(DeployerHelper.create(initcode_));
     }
 
     /**
