@@ -65,7 +65,7 @@ compilation_restrictions = [
   # X
   { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "0.8.24" },
   # Minimal Delegation
-  { paths = "src/pkgs/minimal-delegation/src/**", version = "=0.8.23", optimizer_runs = 1000000, via_ir = false },
+  { paths = "src/pkgs/minimal-delegation/src/**", version = "=0.8.28", optimizer_runs = 1000000, via_ir = false },
   # Briefcase
   { paths = "src/briefcase/protocols/v2-periphery/libraries/UniswapV2Library.sol", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/lib-external/solidity-lib/**", version = "<0.8.0" },
