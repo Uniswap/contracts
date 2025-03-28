@@ -2,6 +2,7 @@
 pragma solidity >= 0.7.0;
 
 import {IFeeCollector} from '../../protocols/util-contracts/interfaces/IFeeCollector.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library FeeCollectorDeployer {
     function deploy(address owner, address universalRouter, address permit2, address feeToken)
@@ -10,10 +11,7 @@ library FeeCollectorDeployer {
     {
         bytes memory args = abi.encode(owner, universalRouter, permit2, feeToken);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            feeCollector := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        feeCollector = IFeeCollector(DeployerHelper.create(initcode_));
     }
 
     /**

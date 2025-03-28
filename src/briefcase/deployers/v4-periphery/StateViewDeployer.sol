@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.8.0;
 
+import {DeployerHelper} from '../DeployerHelper.sol';
+
 library StateViewDeployer {
     function deploy(address poolManager) internal returns (address stateview) {
         bytes memory args = abi.encode(poolManager);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            stateview := create2(0, add(initcode_, 32), mload(initcode_), hex'00')
-        }
+        stateview = DeployerHelper.create2(initcode_);
     }
 
     /**

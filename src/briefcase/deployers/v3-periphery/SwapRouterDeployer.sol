@@ -2,15 +2,13 @@
 pragma solidity >= 0.7.0;
 
 import {ISwapRouter} from '../../protocols/v3-periphery/interfaces/ISwapRouter.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library SwapRouterDeployer {
-    function deploy(address factory, address weth9) internal returns (ISwapRouter manager) {
+    function deploy(address factory, address weth9) internal returns (ISwapRouter swapRouter) {
         bytes memory args = abi.encode(factory, weth9);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            manager := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        swapRouter = ISwapRouter(DeployerHelper.create(initcode_));
     }
 
     /**

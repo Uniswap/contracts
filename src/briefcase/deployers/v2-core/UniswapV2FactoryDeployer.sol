@@ -2,14 +2,13 @@
 pragma solidity >= 0.5.0;
 
 import {IUniswapV2Factory} from '../../protocols/v2-core/interfaces/IUniswapV2Factory.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library UniswapV2FactoryDeployer {
     function deploy(address feeToSetter) internal returns (IUniswapV2Factory factory) {
         bytes memory args = abi.encode(feeToSetter);
         bytes memory initcode_ = abi.encodePacked(legacyInitcode(), args);
-        assembly {
-            factory := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        factory = IUniswapV2Factory(DeployerHelper.create(initcode_));
     }
 
     /// @dev this is the init code of the previously deployed v2 factory instances with a different metadata hash. Using this version ensures the correct pool init code hash

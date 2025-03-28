@@ -2,15 +2,13 @@
 pragma solidity >= 0.8.0;
 
 import {IPoolManager} from '../../protocols/v4-core/interfaces/IPoolManager.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library PoolManagerDeployer {
     function deploy(address initialOwner) internal returns (IPoolManager manager) {
         bytes memory args = abi.encode(initialOwner);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            manager := create2(0, add(initcode_, 32), mload(initcode_), hex'00')
-        }
+        manager = IPoolManager(DeployerHelper.create2(initcode_));
     }
 
     /**

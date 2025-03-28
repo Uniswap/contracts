@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >= 0.7.0;
 
+import {DeployerHelper} from '../DeployerHelper.sol';
+
 library FeeOnTransferDetectorDeployer {
     function deploy(address v2Factory) internal returns (address detector) {
         bytes memory args = abi.encode(v2Factory);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            detector := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        detector = DeployerHelper.create(initcode_);
     }
 
     /**

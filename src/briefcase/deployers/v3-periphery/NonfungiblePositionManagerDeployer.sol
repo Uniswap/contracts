@@ -2,6 +2,7 @@
 pragma solidity >= 0.7.0;
 
 import {INonfungiblePositionManager} from '../../protocols/v3-periphery/interfaces/INonfungiblePositionManager.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library NonfungiblePositionManagerDeployer {
     function deploy(address factory, address weth9, address tokenDescriptor)
@@ -10,10 +11,7 @@ library NonfungiblePositionManagerDeployer {
     {
         bytes memory args = abi.encode(factory, weth9, tokenDescriptor);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            manager := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        manager = INonfungiblePositionManager(DeployerHelper.create(initcode_));
     }
 
     /**

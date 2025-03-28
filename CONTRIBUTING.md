@@ -3,22 +3,9 @@
 - [Install](#install)
 - [Pre-commit Hooks](#pre-commit-hooks)
 - [Requirements for merge](#requirements-for-merge)
-- [Branching](#branching)
-  - [Main](#main)
-  - [Staging](#staging)
-  - [Dev](#dev)
-  - [Feature](#feature)
-  - [Fix](#fix)
-- [Code Practices](#code-practices)
-  - [Code Style](#code-style)
-  - [Interfaces](#interfaces)
-  - [NatSpec \& Comments](#natspec--comments)
-- [Testing](#testing)
-  - [Gas Metering](#gas-metering)
-- [Deployment](#deployment)
-  - [Deployment](#deployment-1)
-  - [Deployment Info Generation](#deployment-info-generation)
-- [Releases](#releases)
+- [Adding a new repository](#adding-a-new-repository)
+- [Adding a deployer](#adding-a-deployer)
+- [Deploying](#deploying)
 
 ## Install
 
@@ -36,7 +23,6 @@ This repo includes the following pre-commit hooks that are defined in the `.pre-
 
 - `mixed-line-ending`: This hook ensures that all files have the same line endings (LF).
 - `format`: This hook uses `forge fmt` to format all Solidity files.
-- `doc`: This hook uses `forge doc` to automatically generate documentation for all Solidity files whenever the NatSpec documentation changes. The `script/util/doc_gen.sh` script is used to generate documentation. Forge updates the commit hash in the documentation automatically. To only generate new documentation when the documentation has actually changed, the script checks whether more than just the hash has changed in the documentation and discard all changes if only the hash has changed.
 - `prettier`: All remaining files are formatted using prettier.
 
 ## Requirements for merge
@@ -50,109 +36,211 @@ In order for a PR to be merged, it must pass the following requirements:
 - The PR must be approved by at least one maintainer
   - The PR must be approved by 2+ maintainers if the PR is a new feature or > 100 LOC changed
 
-## Branching
+## Adding a new repository
 
-This section outlines the branching strategy of this repo.
+### 1. Add the repository to packages
 
-### Main
+Run `git submodule add https://github.com/Uniswap/<repository-name> src/pkgs/<repository-name>`
 
-The main branch is supposed to reflect the deployed state on all networks. Any pull requests into this branch MUST come from the staging branch.
+### 2. Add compilation settings to foundry.toml
 
-### Staging
+In the `foundry.toml` file, first create a profile with the compiler settings.
 
-The staging branch reflects new code complete deployments or upgrades containing fixes and/or features. Any pull requests into this branch MUST come from the dev branch. The staging branch is used for security audits and deployments. Once the deployment is complete and verified as well as deployment log files are generated, the branch can be merged into main. For more information on the deployment and log file generation check [here](#deployment).
-
-### Dev
-
-This is the active development branch. All pull requests into this branch MUST come from fix or feature branches. Upon code completion this branch is merged into staging for auditing and deployment. PRs into this branch should squash all commits into a single commit.
-
-### Feature
-
-Any new feature should be developed on a separate branch. The naming convention for these branches is `feat/*`. Once the feature is complete, a pull request into the dev branch can be created.
-
-### Fix
-
-Any bug fixes should be developed on a separate branch. The naming convention for these branches is `fix/*`. Once the fix is complete, a pull request into the dev branch can be created.
-
-## Code Practices
-
-### Code Style
-
-The repo follows the official [Solidity Style Guide](https://docs.soliditylang.org/en/latest/style-guide.html). In addition to that, this repo also borrows the following rules from [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/GUIDELINES.md#solidity-conventions):
-
-- Internal or private state variables or functions should have an underscore prefix.
-
-  ```solidity
-  contract TestContract {
-      uint256 private _privateVar;
-      uint256 internal _internalVar;
-      function _testInternal() internal { ... }
-      function _testPrivate() private { ... }
-  }
-  ```
-
-- Events should generally be emitted immediately after the state change that they
-  represent, and should be named in the past tense. Some exceptions may be made for gas
-  efficiency if the result doesn't affect observable ordering of events.
-
-  ```solidity
-  function _burn(address who, uint256 value) internal {
-      super._burn(who, value);
-      emit TokensBurned(who, value);
-  }
-  ```
-
-- Interface names should have a capital I prefix.
-
-  ```solidity
-  interface IERC777 {
-  ```
-
-- Contracts not intended to be used standalone should be marked abstract
-  so they are required to be inherited to other contracts.
-
-  ```solidity
-  abstract contract AccessControl is ..., {
-  ```
-
-- Unchecked arithmetic blocks should contain comments explaining why overflow is guaranteed not to happen or permissible. If the reason is immediately apparent from the line above the unchecked block, the comment may be omitted.
-
-### Interfaces
-
-Every contract MUST implement their corresponding interface that includes all externally callable functions, errors and events.
-
-### NatSpec & Comments
-
-Interfaces should be the entrypoint for all contracts. When exploring the a contract within the repository, the interface MUST contain all relevant information to understand the functionality of the contract in the form of NatSpec comments. This includes all externally callable functions, errors and events. The NatSpec documentation MUST be added to the functions, errors and events within the interface. This allows a reader to understand the functionality of a function before moving on to the implementation. The implementing functions MUST point to the NatSpec documentation in the interface using `@inheritdoc`. Internal and private functions shouldn't have NatSpec documentation except for `@dev` comments, whenever more context is needed. Additional comments within a function should only be used to give more context to more complex operations, otherwise the code should be kept readable and self-explanatory.
-
-## Testing
-
-The following testing practices should be followed when writing unit tests for new code. All functions, lines and branches should be tested to result in 100% testing coverage. Fuzz parameters and conditions whenever possible. Extremes should be tested in dedicated edge case and corner case tests. Invariants should be tested in dedicated invariant tests.
-
-Differential testing should be used to compare assembly implementations with implementations in Solidity or testing alternative implementations against existing Solidity or non-Solidity code using ffi.
-
-New features must be merged with associated tests. Bug fixes should have a corresponding test that fails without the bug fix.
-
-### Gas Metering
-
-The [Forge Gas Snapshot](https://github.com/marktoda/forge-gas-snapshot) library is used to measure the gas cost of individual actions. To ensure that the measured gas is accurate, tests have to be run using the isolate argument to generate the correct snapshot and ensure that CI passes:
-
-```sh
-$ forge test --isolate
+```
+additional_compiler_profiles = [
+  ...
+  { name = "<repository-name>", optimizer_runs = <optimizer-runs>, via_ir = <via_ir>, ... },
+]
 ```
 
-When adding new functionality, a new gas snapshot should be added, preferably using `snapLastCall`.
+Next, add the compilation restrictions to use the new profile. Compilation restrictions define what compiler profiles can be used to compile individual files. The restrictions should be defined in a way so that the main contracts used for deployments from the new repository can only be compiled with the newly added profile from this step to ensure consistent deployments.
 
-## Deployment
-
-After deployments are executed a script is provided that extracts deployment information from the `run-latest.json` file within the `broadcast` directory generated while the forge script runs. From this information a JSON and markdown file is generated using the [Forge Chronicles](https://github.com/0xPolygon/forge-chronicles) library containing various information about the deployment itself as well as past deployments.
-
-### Deployment
-
-To deploy the contracts, provide the `--broadcast` flag to the forge script command. Should the etherscan verification time out, it can be picked up again by replacing the `--broadcast` flag with `--resume`.
-Deploy the contracts to one of the predefined networks by providing the according key with the `--rpc-url` flag. Most of the predefined networks require the `INFURA_KEY` environment variable to be set in the `.env` file.
-Including the `--verify` flag will verify deployed contracts on Etherscan. Define the appropriate environment variable for the Etherscan api key in the `.env` file.
-
-```shell
-forge script script/Deploy.s.sol --broadcast --rpc-url <rpc_url> --verify
 ```
+compilation_restrictions = [
+  ...
+  { paths = "src/pkgs/<repository-name>/src/**", version = "<version>", optimizer_runs = <optimizer-runs>, via_ir = <via_ir>, evm_version = <evm_version> },
+]
+```
+
+The `version` should be fixed (e.g., `=0.8.29`) to ensure that foundry does not compile the package with a different version.
+
+Should other packages depend on interfaces of the new package, to ensure that the interfaces can also be compiled with other versions, the path should exclude interfaces from the compilation restrictions. E.g., `paths = "src/pkgs/<repository-name>/src/**/[!i]*.sol"`
+
+Should the package include libraries other packages depend on, multiple compilation restrictions should be added to ensure that the compilation restrictions do not interfere with the compilation restrictions of other packages. E.g.,
+
+```
+{ paths = "src/pkgs/<repository-name>/src/**/libraries/**", version = "<0.9.0", optimizer_runs = <optimizer_runs>, via_ir = <via_ir> },
+{ paths = "src/pkgs/<repository-name>/src/*.sol", version = "0.8.26", ... },
+```
+
+### 3. Add foundry remappings for dependencies
+
+In the remappings.txt file, add the remappings for the dependencies of the new package.
+
+```
+src/pkgs/<repository-name>:dependency1=src/pkgs/<repository-name>/lib/dependency1
+src/pkgs/<repository-name>:dependency2=src/pkgs/<repository-name>/lib/dependency2
+```
+
+### 4. Generate briefcase files
+
+Run `./script/util/create_briefcase.sh` to generate the briefcase files for the new package.
+
+## Adding a deployer
+
+### 1. Create a new deployer
+
+Create a new deployer in the `src/briefcase/deployers` folder.
+
+The file should be located in the directory of the package of the contract. The name of the file should be the name of the contract with the `Deployer.sol` suffix:
+
+`src/briefcase/deployers/<package-name>/<contract-name>Deployer.sol`
+
+The structure of the file should be as follows:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity >= 0.8.0;
+
+import {<ContractInterface>} from '../../protocols/<package-name>/interfaces/<ContractInterface>.sol';
+
+library <ContractName>Deployer {
+    function deploy(address <arg1>, uint256 <arg2>) internal returns (<ContractInterface> contract) {
+        bytes memory args = abi.encode(<arg1>, <arg2>);
+        bytes memory initcode_ = abi.encodePacked(initcode(), args);
+        assembly {
+            contract := create(0, add(initcode_, 32), mload(initcode_))
+        }
+    }
+
+    /**
+     * @dev autogenerated - run `./script/util/create_briefcase.sh` to generate current initcode
+     *
+     * @notice This initcode is generated from the following contract:
+     * - Source Contract: src/pkgs/<package-name>/src/<contract-name>.sol
+     */
+    function initcode() internal pure returns (bytes memory) {
+        return hex'';
+    }
+}
+```
+
+The deploy function can run arbitrary logic to deploy the contract, e.g., deploying via create, create2, using a factory, or a proxy. The deployer function should return the address and interface of the deployed contract so it can be called in subsequent steps.
+
+After creating the deployer file, it's important to update the `Source Contract` path in the comment above the `initcode` function. This ensures that the correct contract is used for the initcode.
+
+Finally, run `./script/util/create_briefcase.sh` to generate the initcode for the deployer and populate the bytecode in the initcode function.
+
+### 2. Add the contract to the task template
+
+Modify the `script/deploy/tasks/task_template.json` file to add the new contract to the task template. The contract can either be added to a new protocol or to an existing protocol where appropriate.
+
+#### Adding a new protocol
+
+```json
+"protocols": {
+  ...,
+  "<protocol-name>": {
+    "name": "Permit 2", // The name that will be displayed in the deploy-cli for that protocol
+    "deploy": false, // deploy is false by default
+    "contracts": {
+      ... // contracts that can be deployed for that protocol
+    },
+  }
+}
+```
+
+#### Adding a new contract to an existing protocol
+
+```json
+"contracts": {
+  "<contract-name>": {
+    "deploy": false, // deploy is false by default
+    "address": null, // address is null by default
+    "params": {
+      ... // parameters for the contract deployment
+    },
+    "lookup": {
+      ... // optional, lookup information for the contract
+    },
+    "dependencies": [
+      ... // optional, dependencies for the contract
+    ]
+  }
+}
+```
+
+**Params**
+
+The params object allows the deployer tool to pass arguments to the deployment.
+
+```json
+"params": {
+  "<arg-name>": {
+    "type": "<type>", // e.g., uint256, address, bool, etc.
+    "name": "<name>", // optional, if provided it will be displayed to the user instead of the arg-name
+    "value": "<value>", // optional, if provided it will be prompted to the user as a default value
+    "pointer": "protocols.<protocol-name>.contracts.<contract-name>" // optional, if provided it will be used to resolve the value at runtime
+  }
+}
+```
+
+If a value is provided, it will be displayed to the user as a default value, the user can then press enter to use the default value or provide a new value.
+
+A pointer allows to dynamically resolve the value of the argument at runtime. This is primarily used to resolve the address of contracts that are deployed in the same run in prior steps. For example, when deploying Uniswap v2, the address of the Uniswap v2 factory needs to be resolved at runtime within the deployment of the Uniswap v2 router. If the v2 factory is deployed in the same run, the pointer would then point to the address of the newly deployed factory. If the v2 factory is not deployed, the user will be prompted to provide the address of the factory.
+
+**Lookup**
+
+The lookup object allows the deployer tool to find past deployments of the contract in the deployment logs located in `deployments/json/<chain-id>.json`. If a contract has been found there, the deployer tool will display the address to the user as a quick selection option for convenience. For example, when deploying the UniversalRouter, where Permit2 is a constructor argument, the lookup object can provide the location of past Permit2 deployments to the user for that chain.
+
+It can either point at the address of the latest deployment of the contract or a point in time it was used as a constructor argument in the past.
+
+```json
+"lookup": {
+  "latest": "<contract-name>",
+  "history": ["<other-contract>.input.constructor.params.<param-name>"]
+}
+```
+
+**Dependencies**
+
+The dependencies array specifies other external contracts that are required to deploy the current contract but are not deployable by the deployer tool (e.g., WETH).
+
+### 3. Add the deployer to the deployment script
+
+Add the deployer to the deployment script used by the deploy-cli.
+
+`script/deploy/Deploy-all.s.sol`
+
+```solidity
+function deploy<ProtocolName>() private {
+    if (!config.readBoolOr('.protocols.<protocol-name>.deploy', false)) return;
+
+    console.log('deploying <ContractName>');
+    <ContractName>Deployer.deploy(<params>);
+}
+```
+
+Create a new protocol section in the config file, create a new function in the deployment script that will deploy the contracts for that protocol. This function should then be called from the `run` function in the deployment script.
+
+Within the protocol section the to be deployed contract is defined in, read the arguments for that contract from the config file and pass them to the deployer library for that contract.
+
+Should the contract have dependencies that need to be resolved at runtime (e.g., the factory when deploying a router), ensure that the dependency contracts are deployed before the current contract.
+
+## Deploying
+
+Follow these steps from the [README](README.md#deployment) and launch the `deploy-cli` to deploy contracts.
+
+### Generate a deployment task
+
+Select the `Create Deployment Config` option from the `deploy-cli` menu. Follow the prompts to select protocols and contracts to deploy as well as enter all required parameters for the deployment.
+
+After this step is completed, a new deployment task file is created under `deployments/tasks/<chain-id>/task-pending.json`. This file can be used to verify the deployment and the parameters and will be used by the `deploy-cli` in the next step to execute the deployment.
+
+The generated task file should be pushed to the repository. After the deployment is executed, the task will be renamed to `task-<timestamp>.json`.
+
+### Execute a deployment
+
+Select the `Deploy from Config` option from the `deploy-cli` menu to execute the deployment. Enter the chain id of the chain where the deployment should be executed. Additionally, select an RPC URL, an explorer for automatic verification and the private key of the account that will be used to execute the deployment.
+
+After the deployment is executed, deployment logs are generated automatically and added to the `deployments/json/<chain-id>.json` file. A human readable summary of the deployment logs is added to the `deployments/<chain-id>.md` file. These deployment logs together with the foundry broadcast files should be pushed to the repository.

@@ -2,15 +2,13 @@
 pragma solidity >= 0.8.0;
 
 import {IV4Quoter} from '../../protocols/v4-periphery/interfaces/IV4Quoter.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library V4QuoterDeployer {
     function deploy(address poolManager) internal returns (IV4Quoter v4quoter) {
         bytes memory args = abi.encode(poolManager);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-
-        assembly {
-            v4quoter := create2(0, add(initcode_, 32), mload(initcode_), hex'00')
-        }
+        v4quoter = IV4Quoter(DeployerHelper.create2(initcode_));
     }
 
     /**

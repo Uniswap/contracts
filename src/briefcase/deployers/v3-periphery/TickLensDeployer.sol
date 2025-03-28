@@ -2,14 +2,12 @@
 pragma solidity >= 0.7.0;
 
 import {ITickLens} from '../../protocols/v3-periphery/interfaces/ITickLens.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library TickLensDeployer {
     function deploy() internal returns (ITickLens tickLens) {
         bytes memory initcode_ = abi.encodePacked(initcode());
-
-        assembly {
-            tickLens := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        tickLens = ITickLens(DeployerHelper.create(initcode_));
     }
 
     /**
