@@ -14,24 +14,19 @@ library CallLib {
     /// @dev The typehash for the Call struct
     bytes32 internal constant CALL_TYPEHASH = keccak256(CALL_TYPE);
 
-    /// @notice Hash a single call
+    /// @notice Hash a single struct according to EIP-712.
     function hash(Call memory call) internal pure returns (bytes32) {
-        return keccak256(abi.encode(CALL_TYPEHASH, call.to, call.value, call.data));
+        return keccak256(abi.encode(CALL_TYPEHASH, call.to, call.value, keccak256(call.data)));
     }
 
-    /// @notice Hash a series of calls
+    /// @notice Hash an array of structs according to EIP-712.
     function hash(Call[] memory calls) internal pure returns (bytes32) {
+        bytes32[] memory hashes = new bytes32[](calls.length);
         unchecked {
-            bytes memory packedHashes = new bytes(32 * calls.length);
-
             for (uint256 i = 0; i < calls.length; i++) {
-                bytes32 callHash = hash(calls[i]);
-                assembly {
-                    mstore(add(add(packedHashes, 0x20), mul(i, 0x20)), callHash)
-                }
+                hashes[i] = hash(calls[i]);
             }
-
-            return keccak256(packedHashes);
         }
+        return keccak256(abi.encodePacked(hashes));
     }
 }
