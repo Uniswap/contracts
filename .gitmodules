@@ -25,6 +25,7 @@
 [submodule "src/pkgs/v4-core"]
 	path = src/pkgs/v4-core
 	url = https://github.com/Uniswap/v4-core/
+	branch = chris/fix-dependency-graph
 [submodule "src/pkgs/v4-periphery"]
 	path = src/pkgs/v4-periphery
 	url = https://github.com/Uniswap/v4-periphery/
@@ -46,9 +47,9 @@
 [submodule "src/pkgs/swap-router-contracts"]
 	path = src/pkgs/swap-router-contracts
 	url = https://github.com/Uniswap/swap-router-contracts
-[submodule "lib/v4-core"]
-	path = lib/v4-core
-	url = https://github.com/Uniswap/v4-core
 [submodule "lib/forge-chronicles"]
 	path = lib/forge-chronicles
 	url = https://github.com/uniswap/forge-chronicles
+[submodule "lib/openzeppelin-contracts"]
+	path = lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts

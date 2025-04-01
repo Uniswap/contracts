@@ -54,7 +54,7 @@ compilation_restrictions = [
   # permit2
   { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
   # v4
-  { paths = "lib/v4-core/src/PoolManager.sol", optimizer_runs = 44444444 },
+  { paths = "src/pkgs/v4-core/src/PoolManager.sol", optimizer_runs = 44444444 },
   { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", version = "0.8.26", optimizer_runs = 1 },
   { paths = "src/pkgs/v4-periphery/src/PositionManager.sol", version = "0.8.26", optimizer_runs = 30000 },
   { paths = "src/pkgs/v4-periphery/src/lens/**", version = "0.8.26", optimizer_runs = 44444444 },

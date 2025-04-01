@@ -28,7 +28,7 @@ import {UniswapInterfaceMulticallDeployer} from
 import {V3MigratorDeployer} from '../../src/briefcase/deployers/v3-periphery/V3MigratorDeployer.sol';
 import {QuoterDeployer} from '../../src/briefcase/deployers/view-quoter-v3/QuoterDeployer.sol';
 import {TransparentUpgradeableProxy} from
-    'lib/v4-core/lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol';
+    'lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol';
 
 import {PoolManagerDeployer} from '../../src/briefcase/deployers/v4-core/PoolManagerDeployer.sol';
 
