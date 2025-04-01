@@ -363,6 +363,22 @@
                     }
                 }
             }
+        },
+        "minimal-delegation": {
+            "name": "Minimal Delegation",
+            "deploy": false,
+            "contracts": {
+                "MinimalDelegation": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "salt": {
+                            "type": "bytes32",
+                            "value": "0x0000000000000000000000000000000000000000000000000000000000000000"
+                        }
+                    }
+                }
+            }
         }
     },
     "dependencies": {
