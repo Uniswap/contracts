@@ -5,6 +5,7 @@ import {IPermit2, Permit2Deployer} from '../../src/briefcase/deployers/permit2/P
 
 import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-contracts/SwapRouter02Deployer.sol';
 
+import {V3DutchOrderReactorDeployer} from '../../src/briefcase/deployers/uniswapx/V3DutchOrderReactorDeployer.sol';
 import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-router/UniversalRouterDeployer.sol';
 
 import {FeeCollectorDeployer} from '../../src/briefcase/deployers/util-contracts/FeeCollectorDeployer.sol';
@@ -61,6 +62,8 @@ contract Deploy is Script {
         vm.startBroadcast();
 
         deployPermit2();
+
+        deployDutchV3Reactor();
 
         deployV2Contracts();
 
@@ -406,6 +409,17 @@ contract Deploy is Script {
                 positionManager
             )
         );
+    }
+
+    function deployDutchV3Reactor() private {
+        if (!config.readBoolOr('.protocols.uniswapx.deploy', false)) return;
+
+        address owner = config.readAddress('.protocols.uniswapx.contracts.DutchV3Reactor.params.owner.value');
+        if (permit2 == address(0)) {
+            permit2 = config.readAddress('.protocols.permit2.contracts.Permit2.address');
+        }
+        console.log('deploying Dutch V3 Reactor');
+        V3DutchOrderReactorDeployer.deploy(permit2, owner);
     }
 
     function weth() internal returns (address) {

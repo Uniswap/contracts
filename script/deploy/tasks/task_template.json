@@ -20,6 +20,25 @@
                 }
             }
         },
+        "uniswapx": {
+            "name": "UniswapX",
+            "deploy": false,
+            "contracts": {
+                "DutchV3Reactor": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "owner": {
+                            "type": "address"
+                        },
+                        "permit2": {
+                            "name": "Permit 2 address",
+                            "pointer": "protocols.permit2.contracts.Permit2"
+                        }
+                    }
+                }
+            }
+        },
         "v2": {
             "name": "Uniswap v2",
             "deploy": false,
