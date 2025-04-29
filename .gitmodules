@@ -46,9 +46,9 @@
 [submodule "src/pkgs/swap-router-contracts"]
 	path = src/pkgs/swap-router-contracts
 	url = https://github.com/Uniswap/swap-router-contracts
-[submodule "lib/v4-core"]
-	path = lib/v4-core
-	url = https://github.com/Uniswap/v4-core
 [submodule "lib/forge-chronicles"]
 	path = lib/forge-chronicles
 	url = https://github.com/uniswap/forge-chronicles
+[submodule "lib/openzeppelin-contracts"]
+	path = lib/openzeppelin-contracts
+	url = https://github.com/Openzeppelin/openzeppelin-contracts
