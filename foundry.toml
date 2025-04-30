@@ -55,7 +55,7 @@ compilation_restrictions = [
   # permit2
   { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
   # v4
-  { paths = "lib/v4-core/src/PoolManager.sol", optimizer_runs = 44444444 },
+  { paths = "src/pkgs/v4-core/src/PoolManager.sol", optimizer_runs = 44444444 },
   { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", version = "0.8.26", optimizer_runs = 1 },
   { paths = "src/pkgs/v4-periphery/src/PositionManager.sol", version = "0.8.26", optimizer_runs = 30000 },
   { paths = "src/pkgs/v4-periphery/src/lens/**", version = "0.8.26", optimizer_runs = 44444444 },
@@ -85,4 +85,4 @@ number_underscore = "thousands"
 [etherscan]
 # chain id 129412 is reserved for the tenderly testnet
 # config to deploy and verify contracts on tenderly testnet using CI
-tenderly_vnet = { key = "${TENDERLY_ACCESS_KEY}", chain = 129412, url = "${TENDERLY_PUBLIC_RPC_URL}/verify/etherscan" }
+tenderly_vnet = { key = "${TENDERLY_ACCESS_KEY}", chain = 1294121, url = "${TENDERLY_PUBLIC_RPC_URL}/verify/etherscan" }

@@ -43,13 +43,18 @@ do
     done
 done
 
-echo "Inserting current initcode into deployers"
-python3 script/util/insert_initcode.py "src/briefcase/deployers" "out" 
-
 echo "Processing source files and writing to briefcase"
 python3 script/util/process_briefcase_files.py "$tmp_dir" "$(pwd)" "$target_dir"
+
+# clean and build again, when compiling with skipped scripts and briefcase above it compiles some contracts with a different compiler version, so we need to clean and build again so they don't end up in the deployer init codes
+forge clean
+forge build
+
+echo "Inserting current initcode into deployers"
+python3 script/util/insert_initcode.py "src/briefcase/deployers" "out" 
 
 rm -rf "$tmp_dir"
 forge fmt "src/briefcase"
 # build the generated files
+forge clean
 forge build
