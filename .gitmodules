@@ -49,9 +49,6 @@
 [submodule "lib/forge-chronicles"]
 	path = lib/forge-chronicles
 	url = https://github.com/uniswap/forge-chronicles
-[submodule "src/pkgs/minimal-delegation"]
-	path = src/pkgs/minimal-delegation
-	url = https://github.com/Uniswap/minimal-delegation
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/Openzeppelin/openzeppelin-contracts
