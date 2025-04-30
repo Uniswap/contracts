@@ -12,7 +12,6 @@ This repository contains deployment information for the following networks:
 | 137 | Polygon Mainnet | [View Deployment](./137.md) |
 | 480 | World Chain | [View Deployment](./480.md) |
 | 1301 | Unichain Sepolia Testnet | [View Deployment](./1301.md) |
-| 1337 | Geth Testnet | [View Deployment](./1337.md) |
 | 1868 | Soneium | [View Deployment](./1868.md) |
 | 8453 | Base | [View Deployment](./8453.md) |
 | 10143 | Monad Testnet | [View Deployment](./10143.md) |
