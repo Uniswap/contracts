@@ -364,8 +364,8 @@
                 }
             }
         },
-        "minimal-delegation": {
-            "name": "Minimal Delegation",
+        "calibur": {
+            "name": "Calibur",
             "deploy": false,
             "contracts": {
                 "MinimalDelegation": {

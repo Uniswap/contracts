@@ -37,7 +37,7 @@ import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-peripher
 
 import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
-import {MinimalDelegationDeployer} from '../../src/briefcase/deployers/minimal-delegation/MinimalDelegationDeployer.sol';
+import {CaliburDeployer} from '../../src/briefcase/deployers/calibur/CaliburDeployer.sol';
 
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {VmSafe} from 'forge-std/Vm.sol';
@@ -55,7 +55,7 @@ contract Deploy is Script {
     address poolManager;
     address positionManager;
     address universalRouter;
-    address minimalDelegation;
+    address calibur;
 
     function run() public {
         config = vm.readFile(string.concat('./script/deploy/tasks/', vm.toString(block.chainid), '/task-pending.json'));
@@ -78,7 +78,7 @@ contract Deploy is Script {
 
         deployUtilsContracts();
 
-        deployMinimalDelegation();
+        deployCalibur();
 
         vm.stopBroadcast();
 
@@ -412,12 +412,12 @@ contract Deploy is Script {
         );
     }
 
-    function deployMinimalDelegation() private {
-        if (!config.readBoolOr('.protocols.minimal-delegation.deploy', false)) return;
+    function deployCalibur() private {
+        if (!config.readBoolOr('.protocols.calibur.deploy', false)) return;
 
-        bytes32 salt = config.readBytes32('.protocols.minimal-delegation.contracts.MinimalDelegation.params.salt.value');
-        console.log('deploying Minimal Delegation');
-        minimalDelegation = address(MinimalDelegationDeployer.deploy(salt));
+        bytes32 salt = config.readBytes32('.protocols.calibur.contracts.MinimalDelegation.params.salt.value');
+        console.log('deploying Calibur');
+        calibur = address(CaliburDeployer.deploy(salt));
     }
 
     function weth() internal returns (address) {

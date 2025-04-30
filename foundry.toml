@@ -36,7 +36,7 @@ additional_compiler_profiles = [
   { name = "v3-periphery-default", optimizer_runs = 1000000, evm_version = "istanbul", via_ir = false },
   { name = "permit2", optimizer_runs = 1000000, via_ir = true },
   { name = "uniswapx", optimizer_runs = 1000000, via_ir = false },
-  { name = "minimal-delegation", optimizer_runs = 1000000, via_ir = false }
+  { name = "calibur", optimizer_runs = 1000000, via_ir = false }
 ]
 
 compilation_restrictions = [
@@ -64,8 +64,8 @@ compilation_restrictions = [
   { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
   # X
   { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "0.8.24" },
-  # Minimal Delegation
-  { paths = "src/pkgs/minimal-delegation/src/**", version = "=0.8.28", optimizer_runs = 1000000, via_ir = false },
+  # Calibur
+  { paths = "src/pkgs/calibur/src/**", version = "=0.8.29", optimizer_runs = 1000000, via_ir = false },
   # Briefcase
   { paths = "src/briefcase/protocols/v2-periphery/libraries/UniswapV2Library.sol", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/lib-external/solidity-lib/**", version = "<0.8.0" },
