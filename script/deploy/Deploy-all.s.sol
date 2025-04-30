@@ -35,9 +35,9 @@ import {PoolManagerDeployer} from '../../src/briefcase/deployers/v4-core/PoolMan
 import {PositionDescriptorDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionDescriptorDeployer.sol';
 import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionManagerDeployer.sol';
 
+import {CaliburDeployer} from '../../src/briefcase/deployers/calibur/CaliburDeployer.sol';
 import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
-import {CaliburDeployer} from '../../src/briefcase/deployers/calibur/CaliburDeployer.sol';
 
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {VmSafe} from 'forge-std/Vm.sol';
