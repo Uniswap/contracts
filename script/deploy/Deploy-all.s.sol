@@ -37,6 +37,8 @@ import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-peripher
 
 import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
+import {WETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WETHHookDeployer.sol';
+import {WstETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WstETHHookDeployer.sol';
 
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {VmSafe} from 'forge-std/Vm.sol';
@@ -67,6 +69,8 @@ contract Deploy is Script {
         deployV3Contracts();
 
         deployV4Contracts();
+
+        deployV4Hooks();
 
         deployViewQuoterV3();
 
@@ -276,6 +280,26 @@ contract Deploy is Script {
             }
             console.log('deploying State View');
             StateViewDeployer.deploy(poolManager);
+        }
+    }
+
+    function deployV4Hooks() private {
+        if (!config.readBoolOr('.protocols.hooks.deploy', false)) return;
+        bool deployWETHHook = config.readBoolOr('.protocols.hooks.contracts.WETHHook.deploy', false);
+        bool deployWstETHHook = config.readBoolOr('.protocols.hooks.contracts.WstETHHook.deploy', false);
+
+        if (poolManager == address(0)) {
+            poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+        }
+
+        if (deployWETHHook) {
+            bytes32 salt = config.readBytes32('.protocols.hooks.contracts.WETHHook.params.salt.value');
+            WETHHookDeployer.deploy(poolManager, weth(), salt);
+        }
+        if (deployWstETHHook) {
+            bytes32 salt = config.readBytes32('.protocols.hooks.contracts.WstETHHook.params.salt.value');
+            address wsteth = config.readAddress('.protocols.hooks.contracts.WstETHHook.params.wstETH.value');
+            WstETHHookDeployer.deploy(poolManager, wsteth, salt);
         }
     }
 

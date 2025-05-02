@@ -58,6 +58,7 @@ compilation_restrictions = [
   { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", version = "0.8.26", optimizer_runs = 1 },
   { paths = "src/pkgs/v4-periphery/src/PositionManager.sol", version = "0.8.26", optimizer_runs = 30000 },
   { paths = "src/pkgs/v4-periphery/src/lens/**", version = "0.8.26", optimizer_runs = 44444444 },
+  { paths = "src/pkgs/v4-periphery/src/hooks/**", version = "0.8.26", optimizer_runs = 44444444 },
   # router
   { paths = "src/pkgs/universal-router/contracts/**", optimizer_runs = 44444444 },
   { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
