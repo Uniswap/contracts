@@ -4,10 +4,10 @@ pragma solidity >= 0.8.0;
 import {DeployerHelper} from '../DeployerHelper.sol';
 
 library WETHHookDeployer {
-    function deploy(address poolManager, address weth) internal returns (address wethHook) {
+    function deploy(address poolManager, address weth, bytes32 salt) internal returns (address wethHook) {
         bytes memory args = abi.encode(poolManager, weth);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-        wethHook = DeployerHelper.create2(initcode_);
+        wethHook = DeployerHelper.create2(initcode_, salt);
     }
 
     /**

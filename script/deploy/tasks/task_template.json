@@ -233,6 +233,41 @@
                 }
             }
         },
+        "hooks": {
+            "name": "v4 Hooks",
+            "deploy": false,
+            "contracts": {
+                "WETHHook": {
+                    "deploy": false,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "salt": {
+                            "type": "bytes32"
+                        }
+                    },
+                    "dependencies": ["weth"]
+                },
+                "WstETHHook": {
+                    "deploy": false,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "wstETH": {
+                            "name": "WstETH address",
+                            "type": "address"
+                        },
+                        "salt": {
+                            "type": "bytes32"
+                        }
+                    }
+                }
+            }
+        },
         "view-quoter-v3": {
             "name": "View Quoter v3",
             "deploy": false,
