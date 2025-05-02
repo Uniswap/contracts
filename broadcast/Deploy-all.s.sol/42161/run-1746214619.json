@@ -1,7 +1,7 @@
 {
   "transactions": [
     {
-      "hash": "0x57f20b43c7f001cde3ced566ee11d83749678639d155234fcdd8a0b8d1a7c856",
+      "hash": null,
       "transactionType": "CREATE2",
       "contractName": "WETHHook",
       "contractAddress": "0x2a4adf825bd96598487dbb6b2d8d882a4eb86888",
@@ -22,31 +22,11 @@
       "isFixedGasLimit": false
     }
   ],
-  "receipts": [
-    {
-      "status": "0x1",
-      "cumulativeGasUsed": "0x15e316",
-      "logs": [],
-      "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-      "type": "0x2",
-      "transactionHash": "0x57f20b43c7f001cde3ced566ee11d83749678639d155234fcdd8a0b8d1a7c856",
-      "transactionIndex": "0x1",
-      "blockHash": "0xe1faa80b3f36dec7e2dbfe787e7a4c90cd1d506eaa725dad16cbca1fe8440267",
-      "blockNumber": "0x13d2b477",
-      "gasUsed": "0x15e316",
-      "effectiveGasPrice": "0x989680",
-      "from": "0x2cf8e5b175aa29c1fdf0e9fe572735c78eacce43",
-      "to": "0x4e59b44847b379578588920ca78fbf26c0b4956c",
-      "contractAddress": "0x2a4adf825bd96598487dbb6b2d8d882a4eb86888",
-      "gasUsedForL1": "0x720e",
-      "l1BlockNumber": "0x155c52d",
-      "timeboosted": false
-    }
-  ],
+  "receipts": [],
   "libraries": [],
   "pending": [],
   "returns": {},
-  "timestamp": 1746214762,
+  "timestamp": 1746214619,
   "chain": 42161,
   "commit": "c797b9e"
 }
