@@ -117,9 +117,30 @@
       "deploymentTxn": "0x8ba6faddd12cf5aaabd6a7a17bd0d1fbd6c258238536b732ad56e44f0077d81e",
       "timestamp": 1737568156,
       "commitHash": "417770f"
+    },
+    "MinimalDelegation": {
+      "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
+      "proxy": false,
+      "deploymentTxn": "0x1cdebeb71b54bbc2199945a417611180acafcb1f3a222a00653013a2a06d0280",
+      "timestamp": 1746568895,
+      "commitHash": "7970c86"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "MinimalDelegation": {
+          "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
+          "proxy": false,
+          "deploymentTxn": "0x1cdebeb71b54bbc2199945a417611180acafcb1f3a222a00653013a2a06d0280",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1746568895,
+      "commitHash": "7970c86"
+    },
     {
       "contracts": {
         "PositionDescriptor": {
