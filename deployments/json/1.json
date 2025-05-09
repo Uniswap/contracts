@@ -19,11 +19,11 @@
       "commitHash": "2656054"
     },
     "V4Quoter": {
-      "address": "0x52f0e24d1c21c8a0cb1e5a5dd6198556bd9e1203",
+      "address": "0x99bd42b2b22e531f283b7f8a86dff631eb16a9d1",
       "proxy": false,
-      "deploymentTxn": "0xc56194b3e8eb020eefcd6aafa6e445d331f0f174adf504ec831ce6a0ebf9a059",
-      "timestamp": 1737658355,
-      "commitHash": "2656054"
+      "deploymentTxn": "0xb7ce7cae387606359384371c6eda5972051e1bea816c8b46e59499e810fd97c5",
+      "timestamp": 1746819287,
+      "commitHash": "fd6ba4e"
     },
     "StateView": {
       "address": "0x7ffe42c4a5deea5b0fec41c94c136cf115597227",
@@ -164,6 +164,22 @@
     }
   },
   "history": [
+    {
+      "contracts": {
+        "V4Quoter": {
+          "address": "0x99bd42b2b22e531f283b7f8a86dff631eb16a9d1",
+          "proxy": false,
+          "deploymentTxn": "0xb7ce7cae387606359384371c6eda5972051e1bea816c8b46e59499e810fd97c5",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x000000000004444c5dc75cB358380D2e3dE08A90"
+            }
+          }
+        }
+      },
+      "timestamp": 1746819287,
+      "commitHash": "fd6ba4e"
+    },
     {
       "contracts": {
         "PositionDescriptor": {
