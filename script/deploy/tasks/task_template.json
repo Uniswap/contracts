@@ -368,7 +368,7 @@
             "name": "Calibur",
             "deploy": false,
             "contracts": {
-                "MinimalDelegation": {
+                "Calibur": {
                     "deploy": false,
                     "address": null,
                     "params": {

@@ -394,11 +394,11 @@
         }
       }
     },
-    "minimal-delegation": {
-      "name": "Minimal Delegation",
+    "calibur": {
+      "name": "Calibur",
       "deploy": true,
       "contracts": {
-        "MinimalDelegation": {
+        "Calibur": {
           "deploy": true,
           "address": null,
           "params": {

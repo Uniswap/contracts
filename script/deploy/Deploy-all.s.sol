@@ -415,7 +415,7 @@ contract Deploy is Script {
     function deployCalibur() private {
         if (!config.readBoolOr('.protocols.calibur.deploy', false)) return;
 
-        bytes32 salt = config.readBytes32('.protocols.calibur.contracts.MinimalDelegation.params.salt.value');
+        bytes32 salt = config.readBytes32('.protocols.calibur.contracts.Calibur.params.salt.value');
         console.log('deploying Calibur');
         calibur = address(CaliburDeployer.deploy(salt));
     }
