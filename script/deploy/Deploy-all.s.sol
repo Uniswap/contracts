@@ -35,6 +35,7 @@ import {PoolManagerDeployer} from '../../src/briefcase/deployers/v4-core/PoolMan
 import {PositionDescriptorDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionDescriptorDeployer.sol';
 import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionManagerDeployer.sol';
 
+import {CaliburDeployer} from '../../src/briefcase/deployers/calibur/CaliburDeployer.sol';
 import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
 import {WETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WETHHookDeployer.sol';
@@ -56,6 +57,7 @@ contract Deploy is Script {
     address poolManager;
     address positionManager;
     address universalRouter;
+    address calibur;
 
     function run() public {
         config = vm.readFile(string.concat('./script/deploy/tasks/', vm.toString(block.chainid), '/task-pending.json'));
@@ -79,6 +81,8 @@ contract Deploy is Script {
         deployUniversalRouter();
 
         deployUtilsContracts();
+
+        deployCalibur();
 
         vm.stopBroadcast();
 
@@ -430,6 +434,14 @@ contract Deploy is Script {
                 positionManager
             )
         );
+    }
+
+    function deployCalibur() private {
+        if (!config.readBoolOr('.protocols.calibur.deploy', false)) return;
+
+        bytes32 salt = config.readBytes32('.protocols.calibur.contracts.Calibur.params.salt.value');
+        console.log('deploying Calibur');
+        calibur = address(CaliburDeployer.deploy(salt));
     }
 
     function weth() internal returns (address) {
