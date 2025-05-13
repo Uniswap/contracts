@@ -2,7 +2,8 @@
 pragma solidity ^0.8.23;
 
 /// @title TypedDataSignLib
-/// @notice Library supporting nesting of EIP-712 typed data signatures per ERC-7739
+/// @notice Library supporting nesting of EIP-712 typed data signatures
+/// Follows ERC-7739 spec
 library TypedDataSignLib {
     /// @dev Generate the dynamic type string for the TypedDataSign struct
     /// @notice contentsName and contentsType MUST be checked for length before hashing

@@ -3,16 +3,12 @@ pragma solidity ^0.8.23;
 
 import {MessageHashUtils} from
     '../../lib-external/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol';
-import {LibString} from '../../lib-external/solady/src/utils/LibString.sol';
 import {PersonalSignLib} from './PersonalSignLib.sol';
 import {TypedDataSignLib} from './TypedDataSignLib.sol';
 
 /// @title ERC7739Utils
-/// @notice Modified from the original implementation at
+/// @author Extends the original implementation at
 /// https://github.com/OpenZeppelin/openzeppelin-community-contracts/blob/53f590e4f4902bee0e06e455332e3321c697ea8b/contracts/utils/cryptography/ERC7739Utils.sol
-/// Changelog
-/// - Use in memory strings
-/// - Use Solady's LibString for memory string operations
 library ERC7739Utils {
     /// @notice Hash a PersonalSign struct with the app's domain separator to produce an EIP-712 compatible hash
     /// @dev Uses this account's domain separator in the EIP-712 hash for replay protection
@@ -28,30 +24,30 @@ library ERC7739Utils {
     /// @param contentsHash The hash of the contents, per EIP-712
     /// @param domainBytes The encoded domain bytes from EIP-5267
     /// @param appSeparator The app's domain separator
-    /// @param contentsName The top level type, per EIP-712
-    /// @param contentsType The full type string of the contents, per EIP-712
+    /// @param contentsName The type name of the contents
+    /// @param contentsType The type description of the contents
     function toNestedTypedDataSignHash(
         bytes32 contentsHash,
         bytes memory domainBytes,
         bytes32 appSeparator,
-        string memory contentsName,
-        string memory contentsType
+        string calldata contentsName,
+        string calldata contentsType
     ) internal pure returns (bytes32) {
-        bytes32 typedDataSignHash = TypedDataSignLib.hash(contentsName, contentsType, contentsHash, domainBytes);
-        return MessageHashUtils.toTypedDataHash(appSeparator, typedDataSignHash);
+        return MessageHashUtils.toTypedDataHash(
+            appSeparator, TypedDataSignLib.hash(contentsName, contentsType, contentsHash, domainBytes)
+        );
     }
 
     /// @notice Parse the type name out of the ERC-7739 contents type description. Supports both the implicit and explicit modes
-    /// @dev Modified from https://github.com/OpenZeppelin/openzeppelin-community-contracts/blob/53f590e4f4902bee0e06e455332e3321c697ea8b/contracts/utils/cryptography/ERC7739Utils.sol
     /// @dev Returns empty strings if the contentsDescr is invalid, which must be handled by the calling function
     /// @return contentsName The type name of the contents
     /// @return contentsType The type description of the contents
-    function decodeContentsDescr(string memory contentsDescr)
+    function decodeContentsDescr(string calldata contentsDescr)
         internal
         pure
-        returns (string memory contentsName, string memory contentsType)
+        returns (string calldata contentsName, string calldata contentsType)
     {
-        bytes memory buffer = bytes(contentsDescr);
+        bytes calldata buffer = bytes(contentsDescr);
         if (buffer.length == 0) {
             // pass through (fail)
         } else if (buffer[buffer.length - 1] == bytes1(')')) {
@@ -62,9 +58,7 @@ library ERC7739Utils {
                     // if name is empty - passthrough (fail)
                     if (i == 0) break;
                     // we found the end of the contentsName
-                    contentsName = LibString.slice(contentsDescr, 0, i);
-                    contentsType = contentsDescr;
-                    return (contentsName, contentsType);
+                    return (string(buffer[:i]), contentsDescr);
                 } else if (_isForbiddenChar(current)) {
                     // we found an invalid character (forbidden) - passthrough (fail)
                     break;
@@ -76,16 +70,20 @@ library ERC7739Utils {
                 bytes1 current = buffer[i - 1];
                 if (current == bytes1(')')) {
                     // we found the end of the contentsName
-                    contentsName = LibString.slice(contentsDescr, i, buffer.length);
-                    contentsType = LibString.slice(contentsDescr, 0, i);
-                    return (contentsName, contentsType);
+                    return (string(buffer[i:]), string(buffer[:i]));
                 } else if (_isForbiddenChar(current)) {
                     // we found an invalid character (forbidden) - passthrough (fail)
                     break;
                 }
             }
         }
-        return ('', '');
+        // If we didn't find a valid contentsName, return empty strings
+        assembly ("memory-safe") {
+            contentsName.offset := 0
+            contentsName.length := 0
+            contentsType.offset := 0
+            contentsType.length := 0
+        }
     }
 
     /// @notice Perform onchain sanitization of contentsName as defined by the ERC-7739 spec

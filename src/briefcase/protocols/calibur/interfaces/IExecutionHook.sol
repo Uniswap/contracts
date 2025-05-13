@@ -15,6 +15,10 @@ interface IExecutionHook {
 
     /// @dev Must revert if the entire call should revert.
     /// @param keyHash The key hash to check against
+    /// @param success Whether the call succeeded
+    /// @param output The output of the call
     /// @param beforeExecuteData The context returned by the beforeExecute hook.
-    function afterExecute(bytes32 keyHash, bytes calldata beforeExecuteData) external returns (bytes4);
+    function afterExecute(bytes32 keyHash, bool success, bytes calldata output, bytes calldata beforeExecuteData)
+        external
+        returns (bytes4);
 }

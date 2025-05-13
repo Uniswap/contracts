@@ -24,7 +24,7 @@ import {INonceManager} from './INonceManager.sol';
 /// ERC-7914 transfer from native
 /// Alternative key management and verification
 /// Multicall
-interface IMinimalDelegation is
+interface ICalibur is
     IKeyManagement,
     IERC4337Account,
     IERC7821,
@@ -42,6 +42,9 @@ interface IMinimalDelegation is
 
     /// @dev Used when internally verifying signatures over batched calls
     error InvalidSignature();
+
+    /// @dev Thrown when the signature has expired
+    error SignatureExpired();
 
     /// @notice Execute entrypoint for trusted callers
     /// @dev This function is only callable by this account or an admin key

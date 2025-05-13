@@ -5,8 +5,8 @@ pragma solidity ^0.8.24;
 /// TODO: This library can be deleted when we have the transient keyword support in solidity.
 /// @dev The custom storage layout keyword does not work for transient storage.
 /// However, since transient storage is automatically cleared between transactions and does not persist, custom storage is not needed.
-library TransientAllowance {
-    /// @notice calculates which storage slot a transient allowance should be stored in for a given spender
+library TransientNativeAllowance {
+    /// @notice calculates which storage slot a transient native allowance should be stored in for a given spender
     function _computeSlot(address spender) internal pure returns (bytes32 hashSlot) {
         assembly ("memory-safe") {
             mstore(0, and(spender, 0xffffffffffffffffffffffffffffffffffffffff))

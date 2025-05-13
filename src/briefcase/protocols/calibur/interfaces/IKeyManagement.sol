@@ -11,6 +11,9 @@ interface IKeyManagement {
     /// @dev Emitted when a key is revoked.
     event Revoked(bytes32 indexed keyHash);
 
+    /// @dev Emitted when a key's settings are updated.
+    event KeySettingsUpdated(bytes32 indexed keyHash, Settings settings);
+
     /// @dev The key does not exist.
     error KeyDoesNotExist();
 

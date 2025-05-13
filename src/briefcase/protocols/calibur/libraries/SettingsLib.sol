@@ -12,7 +12,7 @@ type Settings is uint256;
 /// - byte 25 is used to specify if the key is an admin key or not.
 /// - the remaining bytes are reserved for future use.
 ///   6 bytes |   1 byte       | 5 bytes           | 20 bytes
-///   UNUSED  |   isAdmin      | expiration        | VALIDATION_ADDRESS
+///   UNUSED  |   isAdmin      | expiration        | hook
 library SettingsLib {
     uint160 constant MASK_20_BYTES = uint160(0xFFfFfFffFFfffFFfFFfFFFFFffFFFffffFfFFFfF);
     uint40 constant MASK_5_BYTES = uint40(0xFFFFFFFFFF);
