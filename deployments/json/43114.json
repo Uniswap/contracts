@@ -60,9 +60,30 @@
       "proxy": false,
       "deploymentTxn": "0xe800494c82f8d26226091df3c0b5317e1990bda57e90b7a5305e102f55267b6d",
       "timestamp": 1679632828
+    },
+    "MinimalDelegation": {
+      "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
+      "proxy": false,
+      "deploymentTxn": "0xad8a111ea9b1ebea8b515478f2f589794c3f6bc0a941cfab3ea0891b14ae1d87",
+      "timestamp": 1747068904,
+      "commitHash": "8e3f9f4"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "MinimalDelegation": {
+          "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
+          "proxy": false,
+          "deploymentTxn": "0xad8a111ea9b1ebea8b515478f2f589794c3f6bc0a941cfab3ea0891b14ae1d87",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1747068904,
+      "commitHash": "8e3f9f4"
+    },
     {
       "contracts": {
         "UniversalRouter": {

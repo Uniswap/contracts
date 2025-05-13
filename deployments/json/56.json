@@ -122,9 +122,30 @@
       "deploymentTxn": "0xe5c716fd7b9122a51a55cdb24b2d0e984a4d51e4a202e1b9bc026a8267737695",
       "timestamp": 1737493275,
       "commitHash": "e6c327f"
+    },
+    "MinimalDelegation": {
+      "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
+      "proxy": false,
+      "deploymentTxn": "0x44fd2d7648d2c5d0967baea82f2c13e377a03989378ef7d456c28e3fe967a6f6",
+      "timestamp": 1747068422,
+      "commitHash": "8e3f9f4"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "MinimalDelegation": {
+          "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
+          "proxy": false,
+          "deploymentTxn": "0x44fd2d7648d2c5d0967baea82f2c13e377a03989378ef7d456c28e3fe967a6f6",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1747068422,
+      "commitHash": "8e3f9f4"
+    },
     {
       "contracts": {
         "PoolManager": {
