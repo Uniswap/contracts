@@ -128,9 +128,30 @@
       "deploymentTxn": "0x3cc211781d9d4257a2d6c831798c50700396ae1df6adf7ee8c94afc815e44582",
       "timestamp": 1741129370,
       "commitHash": "74a9dc6"
+    },
+    "MinimalDelegation": {
+      "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
+      "proxy": false,
+      "deploymentTxn": "0xcde22f8acea403222b2e602bb5088ef2de436e7c3185d7213aca4bb79e1429cf",
+      "timestamp": 1747077503,
+      "commitHash": "8e3f9f4"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "MinimalDelegation": {
+          "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
+          "proxy": false,
+          "deploymentTxn": "0xcde22f8acea403222b2e602bb5088ef2de436e7c3185d7213aca4bb79e1429cf",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1747077503,
+      "commitHash": "8e3f9f4"
+    },
     {
       "contracts": {
         "FeeOnTransferDetector": {
