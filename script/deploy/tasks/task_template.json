@@ -398,6 +398,25 @@
                     }
                 }
             }
+        },
+        "uerc20-factory": {
+            "name": "UERC20 Factory",
+            "deploy": false,
+            "contracts": {
+                "UERC20Factory": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {}
+                },
+                "UERC20SuperchainFactory": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {}
+                }
+            },
+            "lookup": {
+                "latest": "UERC20Factory"
+            }
         }
     },
     "dependencies": {

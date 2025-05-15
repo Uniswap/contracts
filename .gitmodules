@@ -52,3 +52,6 @@
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/Openzeppelin/openzeppelin-contracts
+[submodule "src/pkgs/uerc20-factory"]
+	path = src/pkgs/uerc20-factory
+	url = git@github.com:Uniswap/uerc20-factory.git
