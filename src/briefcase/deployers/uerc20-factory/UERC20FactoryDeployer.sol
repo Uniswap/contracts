@@ -3,11 +3,11 @@ pragma solidity >= 0.8.0;
 
 import {IUERC20Factory} from '../../protocols/uerc20-factory/interfaces/IUERC20Factory.sol';
 import {DeployerHelper} from '../DeployerHelper.sol';
-import {UERC20MetadataDeployer} from './UERC20MetadataDeployer.sol';
+import {UERC20MetadataLibraryDeployer} from './UERC20MetadataLibraryDeployer.sol';
 
 library UERC20FactoryDeployer {
     function deploy() internal returns (IUERC20Factory uerc20Factory) {
-        address uerc20Metadata = UERC20MetadataDeployer.deploy();
+        address uerc20Metadata = UERC20MetadataLibraryDeployer.deploy();
         bytes memory initcode_ = abi.encodePacked(initcode(uerc20Metadata));
         uerc20Factory = IUERC20Factory(DeployerHelper.create(initcode_));
     }
