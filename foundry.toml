@@ -36,6 +36,7 @@ additional_compiler_profiles = [
   { name = "v3-periphery-default", optimizer_runs = 1000000, evm_version = "istanbul", via_ir = false },
   { name = "permit2", optimizer_runs = 1000000, via_ir = true },
   { name = "uniswapx", optimizer_runs = 1000000, via_ir = false },
+  { name = "uerc20-factory", optimizer_runs = 50000000, via_ir = false }
 ]
 
 compilation_restrictions = [
