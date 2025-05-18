@@ -403,19 +403,18 @@
             "name": "UERC20 Factory",
             "deploy": false,
             "contracts": {
+                "UERC20MetadataLibrary": {
+                    "deploy": false,
+                    "address": null
+                },
                 "UERC20Factory": {
                     "deploy": false,
-                    "address": null,
-                    "params": {}
+                    "address": null
                 },
                 "UERC20SuperchainFactory": {
                     "deploy": false,
-                    "address": null,
-                    "params": {}
+                    "address": null
                 }
-            },
-            "lookup": {
-                "latest": "UERC20Factory"
             }
         }
     },

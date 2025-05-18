@@ -6,10 +6,9 @@ import {DeployerHelper} from '../DeployerHelper.sol';
 import {UERC20MetadataLibraryDeployer} from './UERC20MetadataLibraryDeployer.sol';
 
 library UERC20FactoryDeployer {
-    function deploy() internal returns (IUERC20Factory uerc20Factory) {
-        address uerc20Metadata = UERC20MetadataLibraryDeployer.deploy();
-        bytes memory initcode_ = abi.encodePacked(initcode(uerc20Metadata));
-        uerc20Factory = IUERC20Factory(DeployerHelper.create(initcode_));
+    function deploy(address uerc20MetadataLibrary) internal returns (IUERC20Factory uerc20Factory) {
+        bytes memory initcode_ = abi.encodePacked(initcode(uerc20MetadataLibrary));
+        uerc20Factory = IUERC20Factory(DeployerHelper.create2(initcode_));
     }
 
     /**

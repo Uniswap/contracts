@@ -47,6 +47,9 @@ import {UERC20FactoryDeployer} from '../../src/briefcase/deployers/uerc20-factor
 import {UERC20SuperchainFactoryDeployer} from
     '../../src/briefcase/deployers/uerc20-factory/UERC20SuperchainFactoryDeployer.sol';
 
+import {UERC20MetadataLibraryDeployer} from
+    '../../src/briefcase/deployers/uerc20-factory/UERC20MetadataLibraryDeployer.sol';
+
 contract Deploy is Script {
     using stdJson for string;
 
@@ -441,19 +444,34 @@ contract Deploy is Script {
     function deployUERC20Factory() private {
         if (!config.readBoolOr('.protocols.uerc20-factory.deploy', false)) return;
 
+        bool deployUERC20MetadataLibrary =
+            config.readBoolOr('.protocols.uerc20-factory.contracts.UERC20MetadataLibrary.deploy', false);
         bool deployUERC20FactoryMainnet =
             config.readBoolOr('.protocols.uerc20-factory.contracts.UERC20Factory.deploy', false);
         bool deployUERC20SuperchainFactory =
             config.readBoolOr('.protocols.uerc20-factory.contracts.UERC20SuperchainFactory.deploy', false);
 
+        // Params
+        address uerc20MetadataLibrary;
+
+        if (deployUERC20MetadataLibrary) {
+            console.log('deploying UERC20 Metadata Library');
+            uerc20MetadataLibrary = UERC20MetadataLibraryDeployer.deploy();
+        }
+
+        if (!deployUERC20MetadataLibrary) {
+            uerc20MetadataLibrary =
+                config.readAddress('.protocols.uerc20-factory.contracts.UERC20MetadataLibrary.address');
+        }
+
         if (deployUERC20FactoryMainnet) {
             console.log('deploying UERC20 Factory');
-            UERC20FactoryDeployer.deploy();
+            UERC20FactoryDeployer.deploy(uerc20MetadataLibrary);
         }
 
         if (deployUERC20SuperchainFactory) {
             console.log('deploying UERC20 Superchain Factory');
-            UERC20SuperchainFactoryDeployer.deploy();
+            UERC20SuperchainFactoryDeployer.deploy(uerc20MetadataLibrary);
         }
     }
 

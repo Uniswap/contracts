@@ -6,10 +6,12 @@ import {DeployerHelper} from '../DeployerHelper.sol';
 import {UERC20MetadataLibraryDeployer} from './UERC20MetadataLibraryDeployer.sol';
 
 library UERC20SuperchainFactoryDeployer {
-    function deploy() internal returns (IUERC20SuperchainFactory uerc20SuperchainFactory) {
-        address uerc20Metadata = UERC20MetadataLibraryDeployer.deploy();
-        bytes memory initcode_ = abi.encodePacked(initcode(uerc20Metadata));
-        uerc20SuperchainFactory = IUERC20SuperchainFactory(DeployerHelper.create(initcode_));
+    function deploy(address uerc20MetadataLibrary)
+        internal
+        returns (IUERC20SuperchainFactory uerc20SuperchainFactory)
+    {
+        bytes memory initcode_ = abi.encodePacked(initcode(uerc20MetadataLibrary));
+        uerc20SuperchainFactory = IUERC20SuperchainFactory(DeployerHelper.create2(initcode_));
     }
 
     /**
