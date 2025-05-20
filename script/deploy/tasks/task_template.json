@@ -409,31 +409,43 @@
                 },
                 "UERC20Factory": {
                     "deploy": false,
-                    "address": null
+                    "address": null,
+                    "params": {
+                        "metadataLibrary": {
+                            "name": "UERC20 Metadata Library address",
+                            "pointer": "protocols.uerc20-factory.contracts.UERC20MetadataLibrary"
+                        }
+                    }
                 },
                 "UERC20SuperchainFactory": {
                     "deploy": false,
-                    "address": null
+                    "address": null,
+                    "params": {
+                        "metadataLibrary": {
+                            "name": "UERC20 Metadata Library address",
+                            "pointer": "protocols.uerc20-factory.contracts.UERC20MetadataLibrary"
+                        }
+                    }
                 }
             }
-        }
-    },
-    "dependencies": {
-        "weth": {
-            "type": "address",
-            "lookup": {
-                "history": [
-                    "UniversalRouter.input.constructor.params.weth9",
-                    "QuoterV2.input.constructor._WETH9",
-                    "V3Migrator.input.constructor._WETH9",
-                    "NonfungiblePositionManager.input.constructor._WETH9",
-                    "NonFungibleTokenPositionDescriptor.input.constructor._WETH9",
-                    "SwapRouter.input.constructor._WETH9",
-                    "SwapRouter02.input.constructor._WETH9",
-                    "Quoter.input.constructor._WETH9",
-                    "QuoterV2.input.constructor._WETH9",
-                    "UniswapV2Router02.input.constructor._WETH"
-                ]
+        },
+        "dependencies": {
+            "weth": {
+                "type": "address",
+                "lookup": {
+                    "history": [
+                        "UniversalRouter.input.constructor.params.weth9",
+                        "QuoterV2.input.constructor._WETH9",
+                        "V3Migrator.input.constructor._WETH9",
+                        "NonfungiblePositionManager.input.constructor._WETH9",
+                        "NonFungibleTokenPositionDescriptor.input.constructor._WETH9",
+                        "SwapRouter.input.constructor._WETH9",
+                        "SwapRouter02.input.constructor._WETH9",
+                        "Quoter.input.constructor._WETH9",
+                        "QuoterV2.input.constructor._WETH9",
+                        "UniswapV2Router02.input.constructor._WETH"
+                    ]
+                }
             }
         }
     },
