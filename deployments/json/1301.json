@@ -135,9 +135,30 @@
       "deploymentTxn": "0x0c1eb8a3d340b717b178201453170a611ddae1c348a84115bac3148bec5a83f2",
       "timestamp": 1737578658,
       "commitHash": "77d52a7"
+    },
+    "UERC20SuperchainFactory": {
+      "address": "0x43414b3556b6dfbb1278670871b11c73c22c93f3",
+      "proxy": false,
+      "deploymentTxn": "0x170028b613a6daf839e60de54b8dcc7e230909a6eed67d3e444324ec063c3d6a",
+      "timestamp": 1747773832,
+      "commitHash": "5addf85"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "UERC20SuperchainFactory": {
+          "address": "0x43414b3556b6dfbb1278670871b11c73c22c93f3",
+          "proxy": false,
+          "deploymentTxn": "0x170028b613a6daf839e60de54b8dcc7e230909a6eed67d3e444324ec063c3d6a",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1747773832,
+      "commitHash": "5addf85"
+    },
     {
       "contracts": {
         "UniswapV2Factory": {

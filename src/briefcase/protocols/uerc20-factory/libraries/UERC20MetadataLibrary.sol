@@ -19,7 +19,7 @@ library UERC20MetadataLibrary {
     /// @notice Generates a base64 encoded JSON string of the token metadata
     /// @param metadata The token metadata
     /// @return The base64 encoded JSON string
-    function toJSON(UERC20Metadata memory metadata) public pure returns (string memory) {
+    function toJSON(UERC20Metadata memory metadata) internal pure returns (string memory) {
         return string(abi.encodePacked('data:application/json;base64,', Base64.encode(displayMetadata(metadata))));
     }
 

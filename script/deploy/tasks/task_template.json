@@ -403,29 +403,13 @@
             "name": "UERC20 Factory",
             "deploy": false,
             "contracts": {
-                "UERC20MetadataLibrary": {
+                "UERC20Factory": {
                     "deploy": false,
                     "address": null
                 },
-                "UERC20Factory": {
-                    "deploy": false,
-                    "address": null,
-                    "params": {
-                        "metadataLibrary": {
-                            "name": "UERC20 Metadata Library address",
-                            "pointer": "protocols.uerc20-factory.contracts.UERC20MetadataLibrary"
-                        }
-                    }
-                },
                 "UERC20SuperchainFactory": {
                     "deploy": false,
-                    "address": null,
-                    "params": {
-                        "metadataLibrary": {
-                            "name": "UERC20 Metadata Library address",
-                            "pointer": "protocols.uerc20-factory.contracts.UERC20MetadataLibrary"
-                        }
-                    }
+                    "address": null
                 }
             }
         },

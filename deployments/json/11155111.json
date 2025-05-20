@@ -66,9 +66,30 @@
       "proxy": false,
       "deploymentTxn": "0x363df5deeead44d8fd38425f3986e3e81946a6c59d8b68fe33926cc700713173",
       "timestamp": 1669385988
+    },
+    "UERC20Factory": {
+      "address": "0x58b3578be439f47e393503518b5c50fb6339237f",
+      "proxy": false,
+      "deploymentTxn": "0xe62cda122ca2adcf828362a33347dd80c850e79603dd17b933c83b2fb85c5650",
+      "timestamp": 1747774105,
+      "commitHash": "5addf85"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "UERC20Factory": {
+          "address": "0x58b3578be439f47e393503518b5c50fb6339237f",
+          "proxy": false,
+          "deploymentTxn": "0xe62cda122ca2adcf828362a33347dd80c850e79603dd17b933c83b2fb85c5650",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1747774105,
+      "commitHash": "5addf85"
+    },
     {
       "contracts": {
         "UniswapV2Router02": {
