@@ -22,10 +22,10 @@ interface IERC7914 {
     event NativeAllowanceUpdated(address indexed spender, uint256 value);
 
     /// @notice Returns the allowance of a spender
-    function nativeAllowance(address spender) external returns (uint256);
+    function nativeAllowance(address spender) external view returns (uint256);
 
     /// @notice Returns the transient allowance of a spender
-    function transientNativeAllowance(address spender) external returns (uint256);
+    function transientNativeAllowance(address spender) external view returns (uint256);
 
     /// @notice Transfers native tokens from the caller to a recipient
     /// @dev Doesn't forward transferFrom requests - the specified `from` address must be address(this)

@@ -3,6 +3,10 @@ pragma solidity >=0.6.2;
 
 /// @title IEIP712
 interface IEIP712 {
+    /// @notice Encode the EIP-5267 domain into bytes
+    /// @dev for use in ERC-7739
+    function domainBytes() external view returns (bytes memory);
+
     /// @notice Returns the `domainSeparator` used to create EIP-712 compliant hashes.
     /// @return The 32 bytes domain separator result.
     function domainSeparator() external view returns (bytes32);
