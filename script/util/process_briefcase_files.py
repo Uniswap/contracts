@@ -248,6 +248,8 @@ def write_file(
             file.write(license + "\n")
         file.write(pragma + "\n\n")
 
+        import_statements = []
+
         for dest_path in identifiers:
             if dest_path != path:
                 identifier_names = identifiers[dest_path]
@@ -259,11 +261,16 @@ def write_file(
 
                 if used_identifiers:
                     relative_path = get_relative_path(dest_path, path)
-                    import_statement = create_import_statement(
-                        used_identifiers, relative_path
-                    )
-                    file.write(import_statement)
+                    import_statement = create_import_statement(used_identifiers, relative_path)
+                    import_statements.append((relative_path, import_statement))
 
+        # Sort by the relative path
+        import_statements.sort(key=lambda x: x[0])
+
+        # Write sorted imports to the file
+        for _, import_statement in import_statements:
+            file.write(import_statement)
+        
         file.write("\n" + code_block.strip())
 
 

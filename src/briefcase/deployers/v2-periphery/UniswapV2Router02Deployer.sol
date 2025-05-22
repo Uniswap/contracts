@@ -2,14 +2,13 @@
 pragma solidity >= 0.5.0;
 
 import {IUniswapV2Router02} from '../../protocols/v2-periphery/interfaces/IUniswapV2Router02.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library UniswapV2Router02Deployer {
     function deploy(address factory, address weth) internal returns (IUniswapV2Router02 router02) {
         bytes memory args = abi.encode(factory, weth);
         bytes memory initcode_ = abi.encodePacked(initcode(), args);
-        assembly {
-            router02 := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        router02 = IUniswapV2Router02(DeployerHelper.create(initcode_));
     }
 
     /**

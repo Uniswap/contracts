@@ -2,7 +2,6 @@
 pragma solidity ^0.8.0;
 
 import {Base64} from '../../lib-external/openzeppelin-contracts/contracts/utils/Base64.sol';
-
 import {Strings} from '../../lib-external/openzeppelin-contracts/contracts/utils/Strings.sol';
 import {FullMath} from '../../v4-core/libraries/FullMath.sol';
 import {LPFeeLibrary} from '../../v4-core/libraries/LPFeeLibrary.sol';

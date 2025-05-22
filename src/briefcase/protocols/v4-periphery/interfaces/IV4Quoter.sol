@@ -3,13 +3,13 @@ pragma solidity >=0.6.2;
 
 import {Currency} from '../../v4-core/types/Currency.sol';
 import {PoolKey} from '../../v4-core/types/PoolKey.sol';
-
 import {PathKey} from '../libraries/PathKey.sol';
 import {IImmutableState} from './IImmutableState.sol';
+import {IMsgSender} from './IMsgSender.sol';
 
 /// @title IV4Quoter
 /// @notice Interface for the V4Quoter contract
-interface IV4Quoter is IImmutableState {
+interface IV4Quoter is IImmutableState, IMsgSender {
     struct QuoteExactSingleParams {
         PoolKey poolKey;
         bool zeroForOne;

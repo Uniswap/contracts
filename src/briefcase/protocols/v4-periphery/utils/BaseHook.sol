@@ -3,12 +3,11 @@ pragma solidity ^0.8.0;
 
 import {IHooks} from '../../v4-core/interfaces/IHooks.sol';
 import {IPoolManager} from '../../v4-core/interfaces/IPoolManager.sol';
-
 import {Hooks} from '../../v4-core/libraries/Hooks.sol';
 import {BalanceDelta} from '../../v4-core/types/BalanceDelta.sol';
 import {BeforeSwapDelta} from '../../v4-core/types/BeforeSwapDelta.sol';
-
 import {PoolKey} from '../../v4-core/types/PoolKey.sol';
+import {ModifyLiquidityParams, SwapParams} from '../../v4-core/types/PoolOperation.sol';
 import {ImmutableState} from '../base/ImmutableState.sol';
 
 /// @title Base Hook
@@ -22,6 +21,7 @@ abstract contract BaseHook is IHooks, ImmutableState {
 
     /// @notice Returns a struct of permissions to signal which hook functions are to be implemented
     /// @dev Used at deployment to validate the address correctly represents the expected permissions
+    /// @return Permissions struct
     function getHookPermissions() public pure virtual returns (Hooks.Permissions memory);
 
     /// @notice Validates the deployed hook address agrees with the expected permissions of the hook
@@ -59,13 +59,13 @@ abstract contract BaseHook is IHooks, ImmutableState {
     function beforeAddLiquidity(
         address sender,
         PoolKey calldata key,
-        IPoolManager.ModifyLiquidityParams calldata params,
+        ModifyLiquidityParams calldata params,
         bytes calldata hookData
     ) external onlyPoolManager returns (bytes4) {
         return _beforeAddLiquidity(sender, key, params, hookData);
     }
 
-    function _beforeAddLiquidity(address, PoolKey calldata, IPoolManager.ModifyLiquidityParams calldata, bytes calldata)
+    function _beforeAddLiquidity(address, PoolKey calldata, ModifyLiquidityParams calldata, bytes calldata)
         internal
         virtual
         returns (bytes4)
@@ -76,25 +76,24 @@ abstract contract BaseHook is IHooks, ImmutableState {
     function beforeRemoveLiquidity(
         address sender,
         PoolKey calldata key,
-        IPoolManager.ModifyLiquidityParams calldata params,
+        ModifyLiquidityParams calldata params,
         bytes calldata hookData
     ) external onlyPoolManager returns (bytes4) {
         return _beforeRemoveLiquidity(sender, key, params, hookData);
     }
 
-    function _beforeRemoveLiquidity(
-        address,
-        PoolKey calldata,
-        IPoolManager.ModifyLiquidityParams calldata,
-        bytes calldata
-    ) internal virtual returns (bytes4) {
+    function _beforeRemoveLiquidity(address, PoolKey calldata, ModifyLiquidityParams calldata, bytes calldata)
+        internal
+        virtual
+        returns (bytes4)
+    {
         revert HookNotImplemented();
     }
 
     function afterAddLiquidity(
         address sender,
         PoolKey calldata key,
-        IPoolManager.ModifyLiquidityParams calldata params,
+        ModifyLiquidityParams calldata params,
         BalanceDelta delta,
         BalanceDelta feesAccrued,
         bytes calldata hookData
@@ -105,7 +104,7 @@ abstract contract BaseHook is IHooks, ImmutableState {
     function _afterAddLiquidity(
         address,
         PoolKey calldata,
-        IPoolManager.ModifyLiquidityParams calldata,
+        ModifyLiquidityParams calldata,
         BalanceDelta,
         BalanceDelta,
         bytes calldata
@@ -116,7 +115,7 @@ abstract contract BaseHook is IHooks, ImmutableState {
     function afterRemoveLiquidity(
         address sender,
         PoolKey calldata key,
-        IPoolManager.ModifyLiquidityParams calldata params,
+        ModifyLiquidityParams calldata params,
         BalanceDelta delta,
         BalanceDelta feesAccrued,
         bytes calldata hookData
@@ -127,7 +126,7 @@ abstract contract BaseHook is IHooks, ImmutableState {
     function _afterRemoveLiquidity(
         address,
         PoolKey calldata,
-        IPoolManager.ModifyLiquidityParams calldata,
+        ModifyLiquidityParams calldata,
         BalanceDelta,
         BalanceDelta,
         bytes calldata
@@ -135,16 +134,15 @@ abstract contract BaseHook is IHooks, ImmutableState {
         revert HookNotImplemented();
     }
 
-    function beforeSwap(
-        address sender,
-        PoolKey calldata key,
-        IPoolManager.SwapParams calldata params,
-        bytes calldata hookData
-    ) external onlyPoolManager returns (bytes4, BeforeSwapDelta, uint24) {
+    function beforeSwap(address sender, PoolKey calldata key, SwapParams calldata params, bytes calldata hookData)
+        external
+        onlyPoolManager
+        returns (bytes4, BeforeSwapDelta, uint24)
+    {
         return _beforeSwap(sender, key, params, hookData);
     }
 
-    function _beforeSwap(address, PoolKey calldata, IPoolManager.SwapParams calldata, bytes calldata)
+    function _beforeSwap(address, PoolKey calldata, SwapParams calldata, bytes calldata)
         internal
         virtual
         returns (bytes4, BeforeSwapDelta, uint24)
@@ -155,14 +153,14 @@ abstract contract BaseHook is IHooks, ImmutableState {
     function afterSwap(
         address sender,
         PoolKey calldata key,
-        IPoolManager.SwapParams calldata params,
+        SwapParams calldata params,
         BalanceDelta delta,
         bytes calldata hookData
     ) external onlyPoolManager returns (bytes4, int128) {
         return _afterSwap(sender, key, params, delta, hookData);
     }
 
-    function _afterSwap(address, PoolKey calldata, IPoolManager.SwapParams calldata, BalanceDelta, bytes calldata)
+    function _afterSwap(address, PoolKey calldata, SwapParams calldata, BalanceDelta, bytes calldata)
         internal
         virtual
         returns (bytes4, int128)

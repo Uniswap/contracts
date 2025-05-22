@@ -7,7 +7,6 @@ import {CustomRevert} from './CustomRevert.sol';
 import {FixedPoint128} from './FixedPoint128.sol';
 import {LPFeeLibrary} from './LPFeeLibrary.sol';
 import {LiquidityMath} from './LiquidityMath.sol';
-
 import {Position} from './Position.sol';
 import {ProtocolFeeLibrary} from './ProtocolFeeLibrary.sol';
 import {SafeCast} from './SafeCast.sol';

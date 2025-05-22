@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import {FixedPoint96} from './FixedPoint96.sol';
 import {FullMath} from './FullMath.sol';
-
 import {SafeCast} from './SafeCast.sol';
 import {UnsafeMath} from './UnsafeMath.sol';
 

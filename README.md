@@ -13,7 +13,7 @@ This repo contains all Uniswap contracts. It is used to configure and execute de
 
 Follow these steps to set up your local environment:
 
-- [Install foundry](https://book.getfoundry.sh/getting-started/installation)
+- [Install foundryup](https://book.getfoundry.sh/getting-started/installation)
 - Fetch submodules: `git submodule update --init --recursive`
 - Install dependencies: `forge install`
 - Build contracts: `forge build`

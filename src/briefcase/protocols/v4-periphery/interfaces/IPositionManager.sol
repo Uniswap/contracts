@@ -2,13 +2,11 @@
 pragma solidity >=0.6.2;
 
 import {PoolKey} from '../../v4-core/types/PoolKey.sol';
-
 import {PositionInfo} from '../libraries/PositionInfoLibrary.sol';
 import {IEIP712_v4} from './IEIP712_v4.sol';
 import {IERC721Permit_v4} from './IERC721Permit_v4.sol';
 import {IImmutableState} from './IImmutableState.sol';
 import {IMulticall_v4} from './IMulticall_v4.sol';
-
 import {INotifier} from './INotifier.sol';
 import {IPermit2Forwarder} from './IPermit2Forwarder.sol';
 import {IPoolInitializer_v4} from './IPoolInitializer_v4.sol';

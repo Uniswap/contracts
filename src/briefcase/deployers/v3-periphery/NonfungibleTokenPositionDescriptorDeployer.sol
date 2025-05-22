@@ -3,6 +3,7 @@ pragma solidity >= 0.7.0;
 
 import {INonfungibleTokenPositionDescriptor} from
     '../../protocols/v3-periphery/interfaces/INonfungibleTokenPositionDescriptor.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 import {NFTDescriptorDeployer} from './NFTDescriptorDeployer.sol';
 
 library NonfungibleTokenPositionDescriptorDeployer {
@@ -13,10 +14,7 @@ library NonfungibleTokenPositionDescriptorDeployer {
         address nftDescriptor = NFTDescriptorDeployer.deploy();
         bytes memory args = abi.encode(weth9, nativeCurrencyLabelBytes);
         bytes memory initcode_ = abi.encodePacked(initcode(nftDescriptor), args);
-
-        assembly {
-            descriptor := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        descriptor = INonfungibleTokenPositionDescriptor(DeployerHelper.create(initcode_));
     }
 
     /**

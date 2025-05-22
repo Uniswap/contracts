@@ -2,13 +2,12 @@
 pragma solidity >= 0.7.0;
 
 import {IUniswapV3Factory} from '../../protocols/v3-core/interfaces/IUniswapV3Factory.sol';
+import {DeployerHelper} from '../DeployerHelper.sol';
 
 library UniswapV3FactoryDeployer {
     function deploy() internal returns (IUniswapV3Factory factory) {
         bytes memory initcode_ = abi.encodePacked(initcode());
-        assembly {
-            factory := create(0, add(initcode_, 32), mload(initcode_))
-        }
+        factory = IUniswapV3Factory(DeployerHelper.create(initcode_));
     }
 
     /**
