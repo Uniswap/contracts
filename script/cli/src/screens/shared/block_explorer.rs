@@ -1,8 +1,8 @@
+use crate::libs::explorer::{Explorer, SupportedExplorerType};
 use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::screens::types::select::SelectComponent;
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::Buffer;
-use crate::util::chain_config::Explorer;
 use crossterm::event::Event;
 
 // Sets the block explorer for further operations
@@ -28,15 +28,16 @@ impl BlockExplorerScreen {
                 .clone()
                 .into_iter()
                 .filter(|explorer| {
-                    explorer.name.to_lowercase().contains("blockscout")
-                        || explorer.name.to_lowercase().contains("scan")
+                    explorer.explorer_type == SupportedExplorerType::Blockscout
+                        || explorer.explorer_type == SupportedExplorerType::EtherscanV2
+                        || explorer.explorer_type == SupportedExplorerType::Etherscan
                 })
                 .collect();
 
             pre_selected_explorers = explorers
                 .clone()
                 .into_iter()
-                .map(|explorer| explorer.url)
+                .map(|explorer| format!("{} ({})", explorer.url, explorer.explorer_type.name()))
                 .collect();
         }
         if explorers.is_empty() {
