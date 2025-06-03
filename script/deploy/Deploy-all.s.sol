@@ -446,14 +446,18 @@ contract Deploy is Script {
         bool deployUERC20SuperchainFactory =
             config.readBoolOr('.protocols.uerc20-factory.contracts.UERC20SuperchainFactory.deploy', false);
 
+        bytes32 salt;
+
         if (deployUERC20FactoryMainnet) {
+            salt = config.readBytes32('.protocols.uerc20-factory.contracts.UERC20Factory.params.salt.value');
             console.log('deploying UERC20 Factory');
-            UERC20FactoryDeployer.deploy();
+            UERC20FactoryDeployer.deploy(salt);
         }
 
         if (deployUERC20SuperchainFactory) {
+            salt = config.readBytes32('.protocols.uerc20-factory.contracts.UERC20SuperchainFactory.params.salt.value');
             console.log('deploying UERC20 Superchain Factory');
-            UERC20SuperchainFactoryDeployer.deploy();
+            UERC20SuperchainFactoryDeployer.deploy(salt);
         }
     }
 

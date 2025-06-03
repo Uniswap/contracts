@@ -9,12 +9,14 @@ import {ITokenFactory} from './ITokenFactory.sol';
 interface IUERC20SuperchainFactory is ITokenFactory {
     /// @notice Parameters struct to be used by the UERC20Superchain during construction
     struct Parameters {
-        string name;
-        string symbol;
         uint256 totalSupply;
         uint256 homeChainId;
+        bytes32 graffiti;
         address recipient;
+        address creator;
         uint8 decimals;
+        string name;
+        string symbol;
         UERC20Metadata metadata;
     }
 
@@ -27,13 +29,15 @@ interface IUERC20SuperchainFactory is ITokenFactory {
     /// @param decimals The number of decimals the token uses
     /// @param homeChainId The hub chain ID of the token
     /// @param creator The creator of the token
+    /// @param graffiti Additional data needed to compute the salt
     /// @return The deterministic address of the token
     function getUERC20SuperchainAddress(
         string memory name,
         string memory symbol,
         uint8 decimals,
         uint256 homeChainId,
-        address creator
+        address creator,
+        bytes32 graffiti
     ) external view returns (address);
 
     /// @notice Gets the parameters for token initialization
