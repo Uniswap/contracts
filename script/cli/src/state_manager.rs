@@ -1,6 +1,7 @@
 use crate::libs::explorer::{Explorer, SupportedExplorerType};
 use crate::libs::web3::Web3Lib;
-use crate::util::chain_config::{parse_chain_config, Chain, Explorer};
+use crate::screens::verify_contract::verify_contract_screen::VerifyContractData;
+use crate::util::chain_config::{parse_chain_config, Chain};
 use crate::util::deployment_log::RegisterContractData;
 use crossterm::{
     cursor::Show,
