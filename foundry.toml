@@ -50,7 +50,8 @@ compilation_restrictions = [
   { paths = "src/pkgs/v3-periphery/contracts/NonfungiblePositionManager.sol", optimizer_runs = 2000 },
   { paths = "src/pkgs/v3-periphery/contracts/NonfungibleTokenPositionDescriptor.sol", optimizer_runs = 1000 },
   { paths = "src/pkgs/v3-periphery/contracts/libraries/NFTDescriptor.sol", optimizer_runs = 1000 },
-  { paths = "src/pkgs/v3-periphery/contracts/*.sol", version = "0.7.6", via_ir = false, max_optimizer_runs = 1000000 },
+  { paths = "src/pkgs/v3-periphery/contracts/SwapRouter.sol", version = "0.7.6", via_ir = false, min_optimizer_runs = 1000000 },
+  { paths = "src/pkgs/v3-periphery/contracts/V3Migrator.sol", version = "0.7.6", via_ir = false, min_optimizer_runs = 1000000 },
   { paths = "src/pkgs/v3-periphery/**/libraries/**", version = "<0.8.0" },
   # permit2
   { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
