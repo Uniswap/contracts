@@ -68,14 +68,28 @@
       "timestamp": 1669385988
     },
     "UERC20Factory": {
-      "address": "0x58b3578be439f47e393503518b5c50fb6339237f",
+      "address": "0x0cde87c11b959e5eb0924c1abf5250ee3f9bd1b5",
       "proxy": false,
-      "deploymentTxn": "0xe62cda122ca2adcf828362a33347dd80c850e79603dd17b933c83b2fb85c5650",
-      "timestamp": 1747774105,
-      "commitHash": "5addf85"
+      "deploymentTxn": "0xeb200999e9ca93432554b85ddad8e6f401d8e5194335b133975e1dbba4907324",
+      "timestamp": 1748985045,
+      "commitHash": "8c0b627"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "UERC20Factory": {
+          "address": "0x0cde87c11b959e5eb0924c1abf5250ee3f9bd1b5",
+          "proxy": false,
+          "deploymentTxn": "0xeb200999e9ca93432554b85ddad8e6f401d8e5194335b133975e1dbba4907324",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1748985045,
+      "commitHash": "8c0b627"
+    },
     {
       "contracts": {
         "UERC20Factory": {
