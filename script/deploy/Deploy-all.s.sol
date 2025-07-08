@@ -39,6 +39,7 @@ import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/Stat
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
 import {WETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WETHHookDeployer.sol';
 import {WstETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WstETHHookDeployer.sol';
+import {ERC20ETHDeployer} from '../../src/briefcase/deployers/ERC20-eth/ERC20ETHDeployer.sol';
 
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {VmSafe} from 'forge-std/Vm.sol';
@@ -79,6 +80,8 @@ contract Deploy is Script {
         deployUniversalRouter();
 
         deployUtilsContracts();
+
+        deployERC20ETH();
 
         vm.stopBroadcast();
 
@@ -387,6 +390,15 @@ contract Deploy is Script {
             }
             console.log('deploying Fee Collector');
             FeeCollectorDeployer.deploy(owner, universalRouter, permit2, feeToken);
+        }
+    }
+
+    function deployERC20ETH() private {
+        if (!config.readBoolOr('.protocols.ERC20-eth.deploy', false)) return;
+        bool deployERC20ETH_ = config.readBoolOr('.protocols.ERC20-eth.contracts.ERC20ETH.deploy', false);
+        if (deployERC20ETH_) {
+            console.log('deploying ERC20ETH');
+            ERC20ETHDeployer.deploy();
         }
     }
 

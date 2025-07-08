@@ -52,3 +52,6 @@
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/Openzeppelin/openzeppelin-contracts
+[submodule "src/pkgs/ERC20-eth"]
+	path = src/pkgs/ERC20-eth
+	url = https://github.com/Uniswap/ERC20-eth
