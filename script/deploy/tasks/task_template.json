@@ -398,6 +398,16 @@
                     }
                 }
             }
+        },
+        "ERC20-eth": {
+            "name": "ERC20 ETH",
+            "deploy": true,
+            "contracts": {
+                "ERC20ETH": {
+                    "deploy": true,
+                    "address": null
+                }
+            }
         }
     },
     "dependencies": {

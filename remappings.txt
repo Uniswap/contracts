@@ -27,3 +27,7 @@ permit2=src/pkgs/permit2
 @uniswap/v2-core=src/pkgs/v2-core
 @uniswap/v3-core=src/pkgs/v3-core
 @uniswap/v4-core=src/pkgs/v4-core
+ERC20-eth/=src/pkgs/ERC20-eth/
+src/pkgs/ERC20-eth:solady=src/pkgs/ERC20-eth/lib/solady/src
+src/pkgs/ERC20-eth:solmate=src/pkgs/ERC20-eth/lib/solmate/src
+src/pkgs/ERC20-eth:forge-std=src/pkgs/ERC20-eth/lib/forge-std/src

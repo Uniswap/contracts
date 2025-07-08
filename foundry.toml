@@ -36,6 +36,7 @@ additional_compiler_profiles = [
   { name = "v3-periphery-default", optimizer_runs = 1000000, evm_version = "istanbul", via_ir = false },
   { name = "permit2", optimizer_runs = 1000000, via_ir = true },
   { name = "uniswapx", optimizer_runs = 1000000, via_ir = false },
+  { name = "ERC20-eth", optimizer_runs = 200, via_ir = false, version = "^0.8.29" },
 ]
 
 compilation_restrictions = [
@@ -72,6 +73,7 @@ compilation_restrictions = [
   { paths = "src/briefcase/protocols/v4-periphery/libraries/Locker.sol", evm_version = "cancun" },
   { paths = "src/briefcase/protocols/swap-router-contracts/libraries/**", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/v3-periphery/libraries/**", version = "<0.8.0" },
+  { paths = "src/pkgs/ERC20-eth/src/ERC20ETH.sol", version = "0.8.29", optimizer_runs = 200 },
 ]
 
 [fmt]
