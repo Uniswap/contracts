@@ -1,4 +1,3 @@
-use crate::util::chain_config::Explorer;
 use crate::{errors::log, state_manager::STATE_MANAGER};
 use alloy::{
     json_abi::{Constructor, JsonAbi},
@@ -8,93 +7,88 @@ use alloy::{
 #[derive(Clone, PartialEq, Eq, Default)]
 pub enum SupportedExplorerType {
     #[default]
+    Manual,
+    EtherscanV2,
     Etherscan,
     Blockscout,
 }
 
 #[derive(Default, Clone)]
-pub struct ExplorerApiLib {
+pub struct Explorer {
     pub name: String,
     pub url: String,
     pub standard: String,
+    pub explorer_type: SupportedExplorerType,
+}
+
+#[derive(Default, Clone)]
+pub struct ExplorerApiLib {
+    pub explorer: Explorer,
     pub api_key: String,
     pub api_url: String,
-    pub explorer_type: SupportedExplorerType,
 }
 
 impl ExplorerApiLib {
     pub fn new(explorer: Explorer, api_key: String) -> Result<Self, Box<dyn std::error::Error>> {
-        if explorer.name.to_lowercase().contains("blockscout") {
+        if explorer.explorer_type == SupportedExplorerType::Blockscout {
             // blockscout just appends /api to their explorer url
+            let api_url = format!("{}/api?", explorer.url);
             Ok(ExplorerApiLib {
-                name: explorer.name.to_string(),
-                url: explorer.url.to_string(),
-                standard: explorer.standard.to_string(),
+                explorer,
                 api_key: api_key.to_string(),
-                api_url: format!("{}/api?", explorer.url),
-                explorer_type: SupportedExplorerType::Blockscout,
+                api_url,
             })
-        } else if explorer.name.to_lowercase().contains("scan") {
+        } else if explorer.explorer_type == SupportedExplorerType::EtherscanV2 {
             let chain_id = STATE_MANAGER
                 .workflow_state
                 .lock()
                 .unwrap()
                 .chain_id
                 .clone();
-            if chain_id.is_some() {
-                // old Etherscan v1 API code below, let's try the v2 API multichain beta when we have a chain id
-                // TODO: maybe check supported chain ids and fallback to v1 if the chain id is not supported?
+            if let Some(chain_id) = chain_id {
                 return Ok(ExplorerApiLib {
-                    name: explorer.name.to_string(),
-                    url: explorer.url.to_string(),
-                    standard: explorer.standard.to_string(),
+                    explorer,
                     api_key: api_key.to_string(),
-                    api_url: format!(
-                        "https://api.etherscan.io/v2/api?chainid={}",
-                        chain_id.unwrap()
-                    ),
-                    explorer_type: SupportedExplorerType::Etherscan,
+                    api_url: format!("https://api.etherscan.io/v2/api?chainid={}", chain_id),
                 });
             } else {
-                // etherscan prepends their api url with the api.* subdomain. So for mainnet this would be https://etherscan.io => https://api.etherscan.io. However testnets are also their own subdomain, their subdomains are then prefixed with api- and the explorer url is then used as the suffix, e.g., https://sepolia.etherscan.io => https://api-sepolia.etherscan.io. Some chains are also using a subdomain of etherscan, e.g., Optimism uses https://optimistic.etherscan.io. Here also the dash api- prefix is used. The testnet of optimism doesn't use an additional subdomain: https://sepolia-optimistic.etherscan.io => https://api-sepolia-optimistic.etherscan.io. Some explorers are using their own subdomain, e.g., arbiscan for Arbitrum: https://arbiscan.io => https://api.arbiscan.io.
-                // TODO: this is kinda error prone, this would catch correct etherscan instances like arbiscan for Arbitrum but there are a lot of other explorers named *something*scan that are not using an etherscan instance and thus don't share the same api endpoints. Maybe get a list of known etherscan-like explorers and their api urls and check if the explorer_url matches any of them?
-                let slices = explorer.url.split(".").collect::<Vec<&str>>().len();
-                if slices == 2 {
-                    // we are dealing with https://somethingscan.io
-                    return Ok(ExplorerApiLib {
-                        name: explorer.name.to_string(),
-                        url: explorer.url.to_string(),
-                        standard: explorer.standard.to_string(),
-                        api_key: api_key.to_string(),
-                        api_url: explorer.url.replace("https://", "https://api.").to_string(),
-                        explorer_type: SupportedExplorerType::Etherscan,
-                    });
-                } else if slices == 3 {
-                    // we are dealing with https://subdomain.somethingscan.io
-                    return Ok(ExplorerApiLib {
-                        name: explorer.name.to_string(),
-                        url: explorer.url.to_string(),
-                        standard: explorer.standard.to_string(),
-                        api_key: api_key.to_string(),
-                        api_url: explorer.url.replace("https://", "https://api-").to_string(),
-                        explorer_type: SupportedExplorerType::Etherscan,
-                    });
-                } else {
-                    return Err(format!(
-                        "Invalid etherscan url: {} ({})",
-                        explorer.name,
-                        explorer.url,
-                    )
-                    .into());
-                }
+                return Err(format!(
+                    "Chain id not found for explorer: {} ({})",
+                    explorer.name, explorer.url,
+                )
+                .into());
+            }
+        } else if explorer.explorer_type == SupportedExplorerType::Etherscan {
+            // etherscan prepends their api url with the api.* subdomain. So for mainnet this would be https://etherscan.io => https://api.etherscan.io. However testnets are also their own subdomain, their subdomains are then prefixed with api- and the explorer url is then used as the suffix, e.g., https://sepolia.etherscan.io => https://api-sepolia.etherscan.io. Some chains are also using a subdomain of etherscan, e.g., Optimism uses https://optimistic.etherscan.io. Here also the dash api- prefix is used. The testnet of optimism doesn't use an additional subdomain: https://sepolia-optimistic.etherscan.io => https://api-sepolia-optimistic.etherscan.io. Some explorers are using their own subdomain, e.g., arbiscan for Arbitrum: https://arbiscan.io => https://api.arbiscan.io.
+            // TODO: this is kinda error prone, this would catch correct etherscan instances like arbiscan for Arbitrum but there are a lot of other explorers named *something*scan that are not using an etherscan instance and thus don't share the same api endpoints. Maybe get a list of known etherscan-like explorers and their api urls and check if the explorer_url matches any of them?
+            let slices = explorer.url.split(".").collect::<Vec<&str>>().len();
+            if slices == 2 {
+                // we are dealing with https://somethingscan.io
+                let api_url = explorer.url.replace("https://", "https://api.");
+                return Ok(ExplorerApiLib {
+                    explorer,
+                    api_key: api_key.to_string(),
+                    api_url: format!("{}/api?", api_url),
+                });
+            } else if slices == 3 {
+                // we are dealing with https://subdomain.somethingscan.io
+                let api_url = explorer.url.replace("https://", "https://api-");
+                return Ok(ExplorerApiLib {
+                    explorer,
+                    api_key: api_key.to_string(),
+                    api_url: format!("{}/api?", api_url),
+                });
+            } else {
+                return Err(format!(
+                    "Invalid etherscan url: {} ({})",
+                    explorer.name, explorer.url,
+                )
+                .into());
             }
         } else {
-            return Err(format!(
-                "Unsupported explorer: {} ({})",
-                explorer.name,
-                explorer.url,
-            )
-            .into());
+            return Err(
+                format!("Unsupported explorer: {} ({})", explorer.name, explorer.url,).into(),
+            );
         }
     }
 
@@ -102,8 +96,9 @@ impl ExplorerApiLib {
         &self,
         contract_address: Address,
     ) -> Result<(String, String, Option<Constructor>), Box<dyn std::error::Error>> {
-        if self.explorer_type == SupportedExplorerType::Etherscan
-            || self.explorer_type == SupportedExplorerType::Blockscout
+        if self.explorer.explorer_type == SupportedExplorerType::Etherscan
+            || self.explorer.explorer_type == SupportedExplorerType::EtherscanV2
+            || self.explorer.explorer_type == SupportedExplorerType::Blockscout
         {
             let url = format!(
                 "{}&module=contract&action=getsourcecode&address={}&apikey={}",
@@ -135,8 +130,7 @@ impl ExplorerApiLib {
         }
         Err(format!(
             "Unsupported explorer: {} ({})",
-            self.name,
-            self.url,
+            self.explorer.name, self.explorer.url,
         )
         .into())
     }
@@ -145,8 +139,9 @@ impl ExplorerApiLib {
         &self,
         contract_address: Address,
     ) -> Result<String, Box<dyn std::error::Error>> {
-        if self.explorer_type == SupportedExplorerType::Etherscan
-            || self.explorer_type == SupportedExplorerType::Blockscout
+        if self.explorer.explorer_type == SupportedExplorerType::Etherscan
+            || self.explorer.explorer_type == SupportedExplorerType::EtherscanV2
+            || self.explorer.explorer_type == SupportedExplorerType::Blockscout
         {
             let url = format!(
                 "{}&module=contract&action=getcontractcreation&contractaddresses={}&apikey={}",
@@ -160,10 +155,29 @@ impl ExplorerApiLib {
         }
         Err(format!(
             "Unsupported explorer: {} ({})",
-            self.name,
-            self.url,
+            self.explorer.name, self.explorer.url,
         )
         .into())
+    }
+}
+
+impl SupportedExplorerType {
+    pub fn to_env_var_name(&self) -> String {
+        match self {
+            SupportedExplorerType::Etherscan => "ETHERSCAN_API_KEY".to_string(),
+            SupportedExplorerType::EtherscanV2 => "ETHERSCAN_API_KEY".to_string(),
+            SupportedExplorerType::Blockscout => "BLOCKSCOUT_API_KEY".to_string(),
+            SupportedExplorerType::Manual => "VERIFIER_API_KEY".to_string(),
+        }
+    }
+
+    pub fn name(&self) -> String {
+        match self {
+            SupportedExplorerType::Etherscan => "Etherscan".to_string(),
+            SupportedExplorerType::EtherscanV2 => "Etherscan v2".to_string(),
+            SupportedExplorerType::Blockscout => "Blockscout".to_string(),
+            SupportedExplorerType::Manual => "".to_string(),
+        }
     }
 }
 
@@ -184,9 +198,7 @@ async fn get_etherscan_result(url: &str) -> Result<serde_json::Value, Box<dyn st
             ));
             Err("Invalid response from etherscan".into())
         }
-        Err(e) => {
-            Err(format!("Explorer Request Error: {}", e).into())
-        }
+        Err(e) => Err(format!("Explorer Request Error: {}", e).into()),
     }
 }
 
