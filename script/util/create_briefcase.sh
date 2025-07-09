@@ -18,8 +18,8 @@ compile_and_flatten() {
   echo "processing $project/$subpath"
   echo ""
 
-  find "$input_dir" -type f -name "*.sol" | while read -r sol_file; do
-    relative_path=$(echo "$sol_file" | sed -E "s|$input_dir||")
+  find "$input_dir" -type f -name "*.sol" -print0 | while IFS= read -r -d '' sol_file; do
+    relative_path=$(echo "$sol_file" | sed -E "s|^$input_dir/||")
     output_file="$output_dir$relative_path"
 
     echo "Flattening $sol_file"
