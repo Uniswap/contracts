@@ -54,7 +54,7 @@ jobs:
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1.4.0
-        with: 
+        with:
           version: "nightly-192332ef39d61b9c5762de4567569619380d92cf"
 
       - name: Foundry Build
@@ -81,14 +81,14 @@ jobs:
             --broadcast
 
       # Generate deployment logs
-      - name: Generate Deployment Logs
-        # env:
-        #   TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_EXPLORER_URL }}
-        run: |
-          rm -f deployments/1294121.md
-          rm -f deployments/json/1294121.json
-          node lib/forge-chronicles Deploy-all.s.sol -c 1294121 --force
-        # -e $TENDERLY_EXPLORER_URL
+      # - name: Generate Deployment Logs
+      #   # env:
+      #   #   TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_EXPLORER_URL }}
+      #   run: |
+      #     rm -f deployments/1294121.md
+      #     rm -f deployments/json/1294121.json
+      #     node lib/forge-chronicles Deploy-all.s.sol -c 1294121 --force
+      #   # -e $TENDERLY_EXPLORER_URL
 
       # https://github.com/marketplace/actions/tenderly-virtual-testnet-setup#outputs
       - name: Add RPC URL to deployment logs
@@ -97,6 +97,7 @@ jobs:
         run: |
           sed -i '2i\  "name": "Uniswap Tenderly Virtual Testnet",' deployments/json/1294121.json
           sed -i '3i\  "rpc_url": "'"$TENDERLY_URL"'",' deployments/json/1294121.json
+          cat deployments/json/1294121.json
 
       - name: Configure Git
         run: |
