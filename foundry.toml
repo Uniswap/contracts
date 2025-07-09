@@ -36,6 +36,7 @@ additional_compiler_profiles = [
   { name = "v3-periphery-default", optimizer_runs = 1000000, evm_version = "istanbul", via_ir = false },
   { name = "permit2", optimizer_runs = 1000000, via_ir = true },
   { name = "uniswapx", optimizer_runs = 1000000, via_ir = false },
+  { name = "util-contracts", optimizer_runs = 200, via_ir = false, evm_version = "paris" },
 ]
 
 compilation_restrictions = [
@@ -65,6 +66,8 @@ compilation_restrictions = [
   { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
   # X
   { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "0.8.24" },
+  # util-contracts: util-contracts specifies shanghai fork, but it was only supported from 0.8.20 onwards, so paris is the correct evm version
+  { paths = "src/pkgs/util-contracts/src/**", version = "=0.8.19", optimizer_runs = 200, via_ir = false, evm_version = "paris" },
   # Briefcase
   { paths = "src/briefcase/protocols/v2-periphery/libraries/UniswapV2Library.sol", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/lib-external/solidity-lib/**", version = "<0.8.0" },

@@ -22,6 +22,10 @@ library UniswapV2FactoryDeployer {
      *
      * @notice This initcode is generated from the following contract:
      * - Source Contract: src/pkgs/v2-core/contracts/UniswapV2Factory.sol
+     * - solc: 0.5.16
+     * - optimizer_runs: 999999
+     * - via_ir: false
+     * - evm_version: istanbul
      */
     function initcode() internal pure returns (bytes memory) {
         return

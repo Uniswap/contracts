@@ -15,6 +15,10 @@ library StateViewDeployer {
      *
      * @notice This initcode is generated from the following contract:
      * - Source Contract: src/pkgs/v4-periphery/src/lens/StateView.sol
+     * - solc: 0.8.26
+     * - optimizer_runs: 44444444
+     * - via_ir: true
+     * - evm_version: cancun
      */
     function initcode() internal pure returns (bytes memory) {
         return

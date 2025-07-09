@@ -15,6 +15,10 @@ library Permit2Deployer {
      *
      * @notice This initcode is generated from the following contract:
      * - Source Contract: src/pkgs/permit2/src/Permit2.sol
+     * - solc: 0.8.17
+     * - optimizer_runs: 1000000
+     * - via_ir: true
+     * - evm_version: london
      */
     function initcode() internal pure returns (bytes memory) {
         return

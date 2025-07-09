@@ -51,7 +51,11 @@ forge clean
 forge build
 
 echo "Inserting current initcode into deployers"
-python3 script/util/insert_initcode.py "src/briefcase/deployers" "out" 
+if ! python3 script/util/insert_initcode.py "src/briefcase/deployers" "out"; then
+  rm -rf "$tmp_dir"
+  forge fmt "src/briefcase"
+  exit 1
+fi
 
 rm -rf "$tmp_dir"
 forge fmt "src/briefcase"
