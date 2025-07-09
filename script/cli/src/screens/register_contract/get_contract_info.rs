@@ -8,8 +8,6 @@ use alloy::primitives::Address;
 use crossterm::event::Event;
 use std::sync::{Arc, Mutex};
 
-// Tests the connection to the rpc url, fails if the connection is not successful or the chain id doesn't match the expected chain id
-// chain id and rpc url MUST be set before this screen is rendered
 pub struct GetContractInfoScreen {
     execution_status: Arc<Mutex<ExecutionStatus>>,
     execution_message: Arc<Mutex<String>>,

@@ -1,4 +1,4 @@
-#  Deployments
+# contracts Deployments
 
 This repository contains deployment information for the following networks:
 
@@ -20,6 +20,5 @@ This repository contains deployment information for the following networks:
 | 43114 | Avalanche C-Chain | [View Deployment](./43114.md) |
 | 57073 | Ink | [View Deployment](./57073.md) |
 | 81457 | Blast | [View Deployment](./81457.md) |
-| 129412 | Chain 129412 | [View Deployment](./129412.md) |
 | 7777777 | Zora | [View Deployment](./7777777.md) |
 | 11155111 | Sepolia | [View Deployment](./11155111.md) |

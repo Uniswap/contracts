@@ -1,7 +1,6 @@
 forge-std=lib/forge-std/src
 src/pkgs/v3-periphery:base64-sol=lib/base64
 src/pkgs/v3-periphery:@openzeppelin/contracts=lib/oz-v3.4-solc-0.7/contracts
-lib/v4-core:solmate/src=lib/v4-core/lib/solmate/src
 src/pkgs/v4-core:solmate/src=src/pkgs/v4-core/lib/solmate/src
 src/pkgs/v4-periphery:solmate/src=src/pkgs/v4-periphery/lib/v4-core/lib/solmate/src
 src/pkgs/v4-periphery:@uniswap/v4-core=src/pkgs/v4-periphery/lib/v4-core
@@ -14,6 +13,8 @@ src/pkgs/universal-router:solmate=src/pkgs/universal-router/lib/solmate
 src/pkgs/universal-router/lib/v4-periphery:@openzeppelin=src/pkgs/universal-router/lib/v4-periphery/lib/v4-core/lib/openzeppelin-contracts
 src/pkgs/universal-router/lib/v3-periphery:@openzeppelin=lib/oz-v4.7.0
 src/pkgs/uniswapx:solmate=src/pkgs/uniswapx/lib/solmate
+src/pkgs/uniswapx/lib/calibur/lib/permit2:openzeppelin-contracts=src/pkgs/uniswapx/lib/calibur/lib/permit2/lib/openzeppelin-contracts/contracts
+src/pkgs/uniswapx/lib/calibur:openzeppelin-contracts=src/pkgs/uniswapx/lib/calibur/lib/openzeppelin-contracts/contracts
 src/pkgs/uniswapx:openzeppelin-contracts=src/pkgs/uniswapx/lib/openzeppelin-contracts/contracts
 src/pkgs/util-contracts:v2-core=src/pkgs/v2-core/contracts
 src/pkgs/util-contracts:solmate=src/pkgs/util-contracts/lib/solmate/src

@@ -1,8 +1,9 @@
 use crate::errors;
-use crate::screens::register_contract::enter_address::EnterAddressScreen;
 use crate::screens::register_contract::get_contract_info::GetContractInfoScreen;
+use crate::screens::screen_manager::ScreenResult;
 use crate::screens::shared::block_explorer::BlockExplorerScreen;
 use crate::screens::shared::chain_id::ChainIdScreen;
+use crate::screens::shared::enter_address::EnterAddressScreen;
 use crate::screens::shared::enter_explorer_api_key::EnterExplorerApiKeyScreen;
 use crate::screens::shared::rpc_url::get_rpc_url_screen;
 use crate::screens::shared::test_connection::TestConnectionScreen;
@@ -87,7 +88,18 @@ impl RegisterContractWorkflow {
                 EnterExplorerApiKeyScreen::new()?,
             ))),
             6 => Ok(WorkflowResult::NextScreen(Box::new(
-                EnterAddressScreen::new(),
+                EnterAddressScreen::new(
+                    "Please enter the contract address to register\n".to_string(),
+                    Some(Box::new(|address| {
+                        STATE_MANAGER
+                            .workflow_state
+                            .lock()
+                            .unwrap()
+                            .register_contract_data
+                            .address = Some(address);
+                        Ok(ScreenResult::NextScreen(None))
+                    })),
+                ),
             ))),
             7 => Ok(WorkflowResult::NextScreen(Box::new(
                 GetContractInfoScreen::new()?,
