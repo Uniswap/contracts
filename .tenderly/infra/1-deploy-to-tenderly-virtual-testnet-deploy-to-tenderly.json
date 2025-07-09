@@ -1,0 +1,19 @@
+{
+  "networks": {
+    "1": {
+      "id": "cd4675ca-be49-45fc-a2bc-98bc57fdffef",
+      "publicRpcUrl": "https://virtual.mainnet.rpc.tenderly.co/12409c32-edf3-49d9-bcec-3ec636f9cbeb",
+      "networkId": "1",
+      "chainId": 1294121,
+      "testnetSlug": "1-uniswap-vnet-ci-cd-1-net-1-deploy-to-tenderly-virtual-testnet-deploy-to-tenderly-1",
+      "explorerUrl": "https://dashboard.tenderly.co/explorer/vnet/cd4675ca-be49-45fc-a2bc-98bc57fdffef/transactions"
+    }
+  },
+  "timestamp": "2025-07-09T21:57:10.438Z",
+  "githubContext": {
+    "workflow": "Deploy to Tenderly Virtual TestNet",
+    "runId": "1",
+    "runNumber": "1",
+    "job": "deploy-to-tenderly"
+  }
+}
