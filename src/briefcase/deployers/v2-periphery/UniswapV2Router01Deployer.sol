@@ -16,6 +16,10 @@ library UniswapV2Router02Deployer {
      *
      * @notice This initcode is generated from the following contract:
      * - Source Contract: src/pkgs/v2-periphery/contracts/UniswapV2Router01.sol
+     * - solc: 0.6.6
+     * - optimizer_runs: 999999
+     * - via_ir: false
+     * - evm_version: istanbul
      */
     function initcode() internal pure returns (bytes memory) {
         return

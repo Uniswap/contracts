@@ -573,3 +573,7 @@ if __name__ == "__main__":
     logging.info("-" * 60)
 
     processed_count, error_count = process_directory(src_dir, json_dir)
+    if error_count > 0:
+        sys.exit(1)
+    else:
+        sys.exit(0)

@@ -22,6 +22,10 @@ library NonfungibleTokenPositionDescriptorDeployer {
      *
      * @notice This initcode is generated from the following contract:
      * - Source Contract: src/pkgs/v3-periphery/contracts/NonfungibleTokenPositionDescriptor.sol
+     * - solc: 0.7.6
+     * - optimizer_runs: 1000
+     * - via_ir: false
+     * - evm_version: istanbul
      */
     function initcode(address NFTDescriptor) internal pure returns (bytes memory) {
         return abi.encodePacked(

@@ -19,6 +19,10 @@ library SwapRouter02Deployer {
      *
      * @notice This initcode is generated from the following contract:
      * - Source Contract: src/pkgs/swap-router-contracts/contracts/SwapRouter02.sol
+     * - solc: 0.7.6
+     * - optimizer_runs: 1000000
+     * - via_ir: false
+     * - evm_version: istanbul
      */
     function initcode() internal pure returns (bytes memory) {
         return

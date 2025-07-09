@@ -15,6 +15,10 @@ library FeeOnTransferDetectorDeployer {
      *
      * @notice This initcode is generated from the following contract:
      * - Source Contract: src/pkgs/util-contracts/src/FeeOnTransferDetector.sol
+     * - solc: 0.8.19
+     * - optimizer_runs: 200
+     * - via_ir: false
+     * - evm_version: paris
      */
     function initcode() internal pure returns (bytes memory) {
         return
