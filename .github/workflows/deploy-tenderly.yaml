@@ -79,14 +79,13 @@ jobs:
             --broadcast
 
       # Generate deployment logs
-      # - name: Generate Deployment Logs
-      #   # env:
-      #   #   TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_EXPLORER_URL }}
-      #   run: |
-      #     rm -f deployments/1294121.md
-      #     rm -f deployments/json/1294121.json
-      #     node lib/forge-chronicles Deploy-all.s.sol -c 1294121 --force
-      #   # -e $TENDERLY_EXPLORER_URL
+      - name: Generate Deployment Logs
+        env:
+          TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL_1 }}
+        run: |
+          rm -f deployments/1294121.md
+          rm -f deployments/json/1294121.json
+          node lib/forge-chronicles Deploy-all.s.sol -c 1294121 -e $TENDERLY_EXPLORER_URL --force
 
       # https://github.com/marketplace/actions/tenderly-virtual-testnet-setup#outputs
       - name: Add RPC URL to deployment logs
