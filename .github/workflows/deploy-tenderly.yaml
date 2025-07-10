@@ -53,9 +53,7 @@ jobs:
             }'
 
       - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1.4.0
-        with:
-          version: "nightly-192332ef39d61b9c5762de4567569619380d92cf"
+        uses: foundry-rs/foundry-toolchain@v1
 
       - name: Foundry Build
         run: |
