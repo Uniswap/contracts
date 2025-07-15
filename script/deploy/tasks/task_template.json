@@ -413,7 +413,7 @@
                         }
                     }
                 },
-                "UERC20SuperchainFactory": {
+                "USUPERC20Factory": {
                     "deploy": false,
                     "address": null,
                     "params": {

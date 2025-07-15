@@ -44,8 +44,7 @@ import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {VmSafe} from 'forge-std/Vm.sol';
 
 import {UERC20FactoryDeployer} from '../../src/briefcase/deployers/uerc20-factory/UERC20FactoryDeployer.sol';
-import {UERC20SuperchainFactoryDeployer} from
-    '../../src/briefcase/deployers/uerc20-factory/UERC20SuperchainFactoryDeployer.sol';
+import {USUPERC20FactoryDeployer} from '../../src/briefcase/deployers/uerc20-factory/USUPERC20FactoryDeployer.sol';
 
 contract Deploy is Script {
     using stdJson for string;
@@ -443,8 +442,8 @@ contract Deploy is Script {
 
         bool deployUERC20FactoryMainnet =
             config.readBoolOr('.protocols.uerc20-factory.contracts.UERC20Factory.deploy', false);
-        bool deployUERC20SuperchainFactory =
-            config.readBoolOr('.protocols.uerc20-factory.contracts.UERC20SuperchainFactory.deploy', false);
+        bool deployUSUPERC20Factory =
+            config.readBoolOr('.protocols.uerc20-factory.contracts.USUPERC20Factory.deploy', false);
 
         bytes32 salt;
 
@@ -454,10 +453,10 @@ contract Deploy is Script {
             UERC20FactoryDeployer.deploy(salt);
         }
 
-        if (deployUERC20SuperchainFactory) {
-            salt = config.readBytes32('.protocols.uerc20-factory.contracts.UERC20SuperchainFactory.params.salt.value');
-            console.log('deploying UERC20 Superchain Factory');
-            UERC20SuperchainFactoryDeployer.deploy(salt);
+        if (deployUSUPERC20Factory) {
+            salt = config.readBytes32('.protocols.uerc20-factory.contracts.USUPERC20Factory.params.salt.value');
+            console.log('deploying USUPERC20 Factory');
+            USUPERC20FactoryDeployer.deploy(salt);
         }
     }
 

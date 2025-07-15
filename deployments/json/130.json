@@ -117,9 +117,51 @@
       "deploymentTxn": "0x8ba6faddd12cf5aaabd6a7a17bd0d1fbd6c258238536b732ad56e44f0077d81e",
       "timestamp": 1737568156,
       "commitHash": "417770f"
+    },
+    "UERC20SuperchainFactory": {
+      "address": "0x2b4b6ae1d9f392ecb63201ef29f591e2055123e9",
+      "proxy": false,
+      "deploymentTxn": "0xede965fabff85e414948c3488a70ee366516e0c17cd5a849e5031a0eb348fdd6",
+      "timestamp": 1750271110,
+      "commitHash": "dd0a295"
+    },
+    "USUPERC20Factory": {
+      "address": "0x24016ed99a69e9b86d16d84351e1661266b7ac6a",
+      "proxy": false,
+      "deploymentTxn": "0x7887c279399099a21b1318b104d3213a167db63dd0f8bcddeb2b753c79002fcc",
+      "timestamp": 1752599470,
+      "commitHash": "dd0a295"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "USUPERC20Factory": {
+          "address": "0x24016ed99a69e9b86d16d84351e1661266b7ac6a",
+          "proxy": false,
+          "deploymentTxn": "0x7887c279399099a21b1318b104d3213a167db63dd0f8bcddeb2b753c79002fcc",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1752599470,
+      "commitHash": "dd0a295"
+    },
+    {
+      "contracts": {
+        "UERC20SuperchainFactory": {
+          "address": "0x2b4b6ae1d9f392ecb63201ef29f591e2055123e9",
+          "proxy": false,
+          "deploymentTxn": "0xede965fabff85e414948c3488a70ee366516e0c17cd5a849e5031a0eb348fdd6",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1750271110,
+      "commitHash": "dd0a295"
+    },
     {
       "contracts": {
         "PositionDescriptor": {

@@ -4,10 +4,10 @@ pragma solidity >=0.6.2;
 import {UERC20Metadata} from '../libraries/UERC20MetadataLibrary.sol';
 import {ITokenFactory} from './ITokenFactory.sol';
 
-/// @title IUERC20SuperchainFactory
-/// @notice Interface for the UERC20SuperchainFactory contract
-interface IUERC20SuperchainFactory is ITokenFactory {
-    /// @notice Parameters struct to be used by the UERC20Superchain during construction
+/// @title IUSUPERC20Factory
+/// @notice Interface for the USUPERC20Factory contract
+interface IUSUPERC20Factory is ITokenFactory {
+    /// @notice Parameters struct to be used by the USUPERC20 during construction
     struct Parameters {
         uint256 totalSupply;
         uint256 homeChainId;
@@ -31,7 +31,7 @@ interface IUERC20SuperchainFactory is ITokenFactory {
     /// @param creator The creator of the token
     /// @param graffiti Additional data needed to compute the salt
     /// @return The deterministic address of the token
-    function getUERC20SuperchainAddress(
+    function getUSUPERC20Address(
         string memory name,
         string memory symbol,
         uint8 decimals,

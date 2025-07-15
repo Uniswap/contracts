@@ -161,9 +161,30 @@
       "proxy": false,
       "deploymentTxn": "0xc31d7e7e85cab1d38ce1b8ac17e821ccd47dbde00f9d57f2bd8613bff9428396",
       "timestamp": 1588610042
+    },
+    "UERC20Factory": {
+      "address": "0x0cde87c11b959e5eb0924c1abf5250ee3f9bd1b5",
+      "proxy": false,
+      "deploymentTxn": "0x3fd5a6f58f25bd2a6bc180e43a5d613e12a284733c9bf7a80fd857f6ac342ad2",
+      "timestamp": 1750271409,
+      "commitHash": "dd0a295"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "UERC20Factory": {
+          "address": "0x0cde87c11b959e5eb0924c1abf5250ee3f9bd1b5",
+          "proxy": false,
+          "deploymentTxn": "0x3fd5a6f58f25bd2a6bc180e43a5d613e12a284733c9bf7a80fd857f6ac342ad2",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1750271409,
+      "commitHash": "dd0a295"
+    },
     {
       "contracts": {
         "PositionDescriptor": {
