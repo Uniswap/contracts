@@ -129,6 +129,7 @@ pub fn parse_chain_config() -> HashMap<String, Chain> {
                         let mut v2_explorer = etherscan_explorer.clone();
                         v2_explorer.explorer_type = SupportedExplorerType::EtherscanV2;
                         explorers.push(v2_explorer);
+                        explorers.retain(|e| e.explorer_type != SupportedExplorerType::Etherscan);
                         chains.get_mut(&chain_id).unwrap().explorers = explorers;
                     }
                 }

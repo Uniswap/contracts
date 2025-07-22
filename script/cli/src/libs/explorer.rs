@@ -49,7 +49,7 @@ impl ExplorerApiLib {
                 return Ok(ExplorerApiLib {
                     explorer,
                     api_key: api_key.to_string(),
-                    api_url: format!("https://api.etherscan.io/v2/api?chainid={}", chain_id),
+                    api_url: format!("https://api.etherscan.io/v2/api"),
                 });
             } else {
                 return Err(format!(
