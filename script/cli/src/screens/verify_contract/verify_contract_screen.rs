@@ -93,6 +93,8 @@ impl VerifyContractScreen {
                     "--verifier={}",
                     if explorer_api.explorer.explorer_type == SupportedExplorerType::Blockscout {
                         "blockscout"
+                    } else if explorer_api.explorer.explorer_type == SupportedExplorerType::EtherscanV2 {
+                        "etherscan"
                     } else {
                         // custom also works for etherscan
                         "custom"
