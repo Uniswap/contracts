@@ -265,6 +265,22 @@
                             "type": "bytes32"
                         }
                     }
+                },
+                "WstETHRoutingHook": {
+                    "deploy": false,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "wstETH": {
+                            "name": "WstETH address",
+                            "type": "address"
+                        },
+                        "salt": {
+                            "type": "bytes32"
+                        }
+                    }
                 }
             }
         },
