@@ -35,7 +35,7 @@ import {PoolManagerDeployer} from '../../src/briefcase/deployers/v4-core/PoolMan
 import {PositionDescriptorDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionDescriptorDeployer.sol';
 import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionManagerDeployer.sol';
 
-import {CaliburDeployer} from '../../src/briefcase/deployers/calibur/CaliburDeployer.sol';
+import {CaliburEntryDeployer} from '../../src/briefcase/deployers/calibur/CaliburEntryDeployer.sol';
 import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
 
@@ -417,7 +417,7 @@ contract Deploy is Script {
 
         bytes32 salt = config.readBytes32('.protocols.calibur.contracts.Calibur.params.salt.value');
         console.log('deploying Calibur');
-        calibur = address(CaliburDeployer.deploy(salt));
+        calibur = address(CaliburEntryDeployer.deploy(salt));
     }
 
     function weth() internal returns (address) {
