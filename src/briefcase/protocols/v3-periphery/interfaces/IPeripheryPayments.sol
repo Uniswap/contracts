@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.6.2;
 
+
 /// @title Periphery Payments
 /// @notice Functions to ease deposits and withdrawals of ETH
 interface IPeripheryPayments {
@@ -20,5 +21,9 @@ interface IPeripheryPayments {
     /// @param token The contract address of the token which will be transferred to `recipient`
     /// @param amountMinimum The minimum amount of token required for a transfer
     /// @param recipient The destination address of the token
-    function sweepToken(address token, uint256 amountMinimum, address recipient) external payable;
+    function sweepToken(
+        address token,
+        uint256 amountMinimum,
+        address recipient
+    ) external payable;
 }

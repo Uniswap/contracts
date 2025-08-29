@@ -10,6 +10,7 @@ import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-r
 import {FeeCollectorDeployer} from '../../src/briefcase/deployers/util-contracts/FeeCollectorDeployer.sol';
 import {FeeOnTransferDetectorDeployer} from
     '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
+import {ERC7914DetectorDeployer} from '../../src/briefcase/deployers/util-contracts/ERC7914DetectorDeployer.sol';
 import {UniswapV2FactoryDeployer} from '../../src/briefcase/deployers/v2-core/UniswapV2FactoryDeployer.sol';
 import {UniswapV2Router02Deployer} from '../../src/briefcase/deployers/v2-periphery/UniswapV2Router02Deployer.sol';
 import {
@@ -366,6 +367,8 @@ contract Deploy is Script {
         bool deployFeeCollector = config.readBoolOr('.protocols.util-contracts.contracts.FeeCollector.deploy', false);
         bool deployFeeOnTransferDetector =
             config.readBoolOr('.protocols.util-contracts.contracts.FeeOnTransferDetector.deploy', false);
+        bool deployERC7914Detector =
+            config.readBoolOr('.protocols.util-contracts.contracts.ERC7914Detector.deploy', false);
 
         if (deployFeeOnTransferDetector) {
             if (v2Factory == address(0)) {
@@ -387,6 +390,12 @@ contract Deploy is Script {
             }
             console.log('deploying Fee Collector');
             FeeCollectorDeployer.deploy(owner, universalRouter, permit2, feeToken);
+        }
+
+        if (deployERC7914Detector) {
+            address caliburAddress = config.readAddress('.protocols.util-contracts.contracts.ERC7914Detector.params.caliburAddress.value');
+            console.log('deploying ERC7914Detector');
+            ERC7914DetectorDeployer.deploy(caliburAddress);
         }
     }
 

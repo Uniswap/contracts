@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+
 /// @notice Parses bytes returned from hooks and the byte selector used to check return selectors from hooks.
 /// @dev parseSelector also is used to parse the expected selector
 /// For parsing hook returns, note that all hooks return either bytes4 or (bytes4, 32-byte-delta) or (bytes4, 32-byte-delta, uint24).

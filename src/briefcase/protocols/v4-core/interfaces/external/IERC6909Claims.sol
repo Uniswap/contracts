@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
+
 /// @notice Interface for claims over a contract balance, wrapped as a ERC6909
 interface IERC6909Claims {
     /*//////////////////////////////////////////////////////////////

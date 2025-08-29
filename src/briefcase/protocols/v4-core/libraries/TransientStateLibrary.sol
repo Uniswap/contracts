@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {IPoolManager} from '../interfaces/IPoolManager.sol';
-import {Currency} from '../types/Currency.sol';
-import {CurrencyReserves} from './CurrencyReserves.sol';
-import {Lock} from './Lock.sol';
-import {NonzeroDeltaCount} from './NonzeroDeltaCount.sol';
+import {IPoolManager} from "../interfaces/IPoolManager.sol";
+import {Currency} from "../types/Currency.sol";
+import {CurrencyReserves} from "./CurrencyReserves.sol";
+import {Lock} from "./Lock.sol";
+import {NonzeroDeltaCount} from "./NonzeroDeltaCount.sol";
 
 /// @notice A helper library to provide state getters that use exttload
 library TransientStateLibrary {

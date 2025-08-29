@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IERC20Metadata} from
-    '../../lib-external/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol';
-import {AddressStringUtil} from './AddressStringUtil.sol';
+import {IERC20Metadata} from "../../lib-external/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import {AddressStringUtil} from "./AddressStringUtil.sol";
 
 /// @title SafeCurrencyMetadata
 /// @notice can produce symbols and decimals from inconsistent or absent ERC20 implementations
@@ -82,7 +81,7 @@ library SafeCurrencyMetadata {
         (bool success, bytes memory data) = currencyAddress.staticcall(abi.encodeWithSelector(selector));
         // if not implemented, return empty string
         if (!success) {
-            return '';
+            return "";
         }
         // bytes32 data always has length 32
         if (data.length == 32) {
@@ -91,7 +90,7 @@ library SafeCurrencyMetadata {
         } else if (data.length > 64) {
             return abi.decode(data, (string));
         }
-        return '';
+        return "";
     }
 
     /// @notice truncates the symbol to the MAX_SYMBOL_LENGTH

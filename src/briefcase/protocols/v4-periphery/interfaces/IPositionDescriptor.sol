@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {IPoolManager} from '../../v4-core/interfaces/IPoolManager.sol';
-import {IPositionManager} from './IPositionManager.sol';
+import {IPoolManager} from "../../v4-core/interfaces/IPoolManager.sol";
+import {IPositionManager} from "./IPositionManager.sol";
 
 /// @title IPositionDescriptor
 /// @notice Interface for the PositionDescriptor contract

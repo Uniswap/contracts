@@ -2,6 +2,7 @@
 pragma solidity >=0.6.2;
 pragma abicoder v2;
 
+
 /// @title QuoterV2 Interface
 /// @notice Supports quoting the calculated amounts from exact input or exact output swaps.
 /// @notice For each pool also tells you the number of initialized ticks crossed and the sqrt price of the pool after the swap.
@@ -45,7 +46,12 @@ interface IQuoterV2 {
     /// @return gasEstimate The estimate of the gas that the swap consumes
     function quoteExactInputSingle(QuoteExactInputSingleParams memory params)
         external
-        returns (uint256 amountOut, uint160 sqrtPriceX96After, uint32 initializedTicksCrossed, uint256 gasEstimate);
+        returns (
+            uint256 amountOut,
+            uint160 sqrtPriceX96After,
+            uint32 initializedTicksCrossed,
+            uint256 gasEstimate
+        );
 
     /// @notice Returns the amount in required for a given exact output swap without executing the swap
     /// @param path The path of the swap, i.e. each token pair and the pool fee. Path must be provided in reverse order
@@ -84,5 +90,10 @@ interface IQuoterV2 {
     /// @return gasEstimate The estimate of the gas that the swap consumes
     function quoteExactOutputSingle(QuoteExactOutputSingleParams memory params)
         external
-        returns (uint256 amountIn, uint160 sqrtPriceX96After, uint32 initializedTicksCrossed, uint256 gasEstimate);
+        returns (
+            uint256 amountIn,
+            uint160 sqrtPriceX96After,
+            uint32 initializedTicksCrossed,
+            uint256 gasEstimate
+        );
 }

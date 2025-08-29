@@ -2,6 +2,7 @@
 pragma solidity >=0.6.2;
 pragma abicoder v2;
 
+
 /// @title Tick Lens
 /// @notice Provides functions for fetching chunks of tick data for a pool
 /// @dev This avoids the waterfall of fetching the tick bitmap, parsing the bitmap to know which ticks to fetch, and

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.24;
 
+
 /// @notice A library to implement a reentrancy lock in transient storage.
 /// @dev Instead of storing a boolean, the locker's address is stored to allow the contract to know who locked the contract
 /// TODO: This library can be deleted when we have the transient keyword support in solidity.

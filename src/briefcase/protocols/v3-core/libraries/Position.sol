@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity >=0.5.0 <0.8.0;
 
-import {FixedPoint128} from './FixedPoint128.sol';
-import {FullMath} from './FullMath.sol';
-import {LiquidityMath} from './LiquidityMath.sol';
+import {FixedPoint128} from "./FixedPoint128.sol";
+import {FullMath} from "./FullMath.sol";
+import {LiquidityMath} from "./LiquidityMath.sol";
 
 /// @title Position
 /// @notice Positions represent an owner address' liquidity between a lower and upper tick boundary
@@ -27,11 +27,12 @@ library Position {
     /// @param tickLower The lower tick boundary of the position
     /// @param tickUpper The upper tick boundary of the position
     /// @return position The position info struct of the given owners' position
-    function get(mapping(bytes32 => Info) storage self, address owner, int24 tickLower, int24 tickUpper)
-        internal
-        view
-        returns (Position.Info storage position)
-    {
+    function get(
+        mapping(bytes32 => Info) storage self,
+        address owner,
+        int24 tickLower,
+        int24 tickUpper
+    ) internal view returns (Position.Info storage position) {
         position = self[keccak256(abi.encodePacked(owner, tickLower, tickUpper))];
     }
 
@@ -57,12 +58,22 @@ library Position {
         }
 
         // calculate accumulated fees
-        uint128 tokensOwed0 = uint128(
-            FullMath.mulDiv(feeGrowthInside0X128 - _self.feeGrowthInside0LastX128, _self.liquidity, FixedPoint128.Q128)
-        );
-        uint128 tokensOwed1 = uint128(
-            FullMath.mulDiv(feeGrowthInside1X128 - _self.feeGrowthInside1LastX128, _self.liquidity, FixedPoint128.Q128)
-        );
+        uint128 tokensOwed0 =
+            uint128(
+                FullMath.mulDiv(
+                    feeGrowthInside0X128 - _self.feeGrowthInside0LastX128,
+                    _self.liquidity,
+                    FixedPoint128.Q128
+                )
+            );
+        uint128 tokensOwed1 =
+            uint128(
+                FullMath.mulDiv(
+                    feeGrowthInside1X128 - _self.feeGrowthInside1LastX128,
+                    _self.liquidity,
+                    FixedPoint128.Q128
+                )
+            );
 
         // update the position
         if (liquidityDelta != 0) self.liquidity = liquidityNext;

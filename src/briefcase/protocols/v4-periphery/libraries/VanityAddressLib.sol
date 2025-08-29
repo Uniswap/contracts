@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+
 /// @title VanityAddressLib
 /// @notice A library to score addresses based on their vanity
 library VanityAddressLib {

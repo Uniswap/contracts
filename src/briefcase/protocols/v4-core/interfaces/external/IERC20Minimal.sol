@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
+
 /// @title Minimal ERC20 interface for Uniswap
 /// @notice Contains a subset of the full ERC20 interface that is used in Uniswap V3
 interface IERC20Minimal {

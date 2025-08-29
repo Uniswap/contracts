@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.6.2;
 
-import {IERC721} from '../../lib-external/oz-v3.4-solc-0.7/contracts/token/ERC721/IERC721.sol';
+import {IERC721} from "../../lib-external/oz-v3.4-solc-0.7/contracts/token/ERC721/IERC721.sol";
 
 /// @title ERC721 with permit
 /// @notice Extension to ERC721 that includes a permit function for signature based approvals
@@ -21,7 +21,12 @@ interface IERC721Permit is IERC721 {
     /// @param v Must produce valid secp256k1 signature from the holder along with `r` and `s`
     /// @param r Must produce valid secp256k1 signature from the holder along with `v` and `s`
     /// @param s Must produce valid secp256k1 signature from the holder along with `r` and `v`
-    function permit(address spender, uint256 tokenId, uint256 deadline, uint8 v, bytes32 r, bytes32 s)
-        external
-        payable;
+    function permit(
+        address spender,
+        uint256 tokenId,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external payable;
 }

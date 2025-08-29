@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+
 /// @title HexStrings
 /// @notice Provides function for converting numbers to hexadecimal strings
 /// @dev Reference: https://github.com/Uniswap/v3-periphery/blob/main/contracts/libraries/HexStrings.sol
 library HexStrings {
-    bytes16 internal constant ALPHABET = '0123456789abcdef';
+    bytes16 internal constant ALPHABET = "0123456789abcdef";
 
     /// @notice Convert a number to a hex string without the '0x' prefix with a fixed length
     /// @param value The number to convert

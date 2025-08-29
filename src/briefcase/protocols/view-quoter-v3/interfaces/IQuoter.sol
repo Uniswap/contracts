@@ -2,6 +2,7 @@
 pragma solidity >=0.6.2;
 pragma abicoder v2;
 
+
 /// @title QuoterV2 Interface
 /// @notice Supports quoting the calculated amounts from exact input or exact output swaps.
 /// @notice For each pool also tells you the number of initialized ticks crossed and the sqrt price of the pool after the swap.

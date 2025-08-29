@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {IHooks} from '../interfaces/IHooks.sol';
-import {Currency} from './Currency.sol';
-import {PoolIdLibrary} from './PoolId.sol';
+import {IHooks} from "../interfaces/IHooks.sol";
+import {Currency} from "./Currency.sol";
+import {PoolIdLibrary} from "./PoolId.sol";
 
 using PoolIdLibrary for PoolKey global;
 

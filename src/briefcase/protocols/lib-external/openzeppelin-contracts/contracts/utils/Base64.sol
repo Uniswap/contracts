@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+
 // OpenZeppelin Contracts (last updated v5.0.2) (utils/Base64.sol)
 
 /**
@@ -10,7 +11,7 @@ library Base64 {
     /**
      * @dev Base64 Encoding/Decoding Table
      */
-    string internal constant _TABLE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    string internal constant _TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     /**
      * @dev Converts a `bytes` to its Bytes64 `string` representation.
@@ -20,7 +21,7 @@ library Base64 {
          * Inspired by Brecht Devos (Brechtpd) implementation - MIT licence
          * https://github.com/Brechtpd/base64/blob/e78d9fd951e7b0977ddca77d92dc85183770daf4/base64.sol
          */
-        if (data.length == 0) return '';
+        if (data.length == 0) return "";
 
         // Loads the table into memory
         string memory table = _TABLE;
@@ -50,7 +51,11 @@ library Base64 {
             mstore(afterPtr, 0x00)
 
             // Run over the input, 3 bytes at a time
-            for {} lt(dataPtr, endPtr) {} {
+            for {
+
+            } lt(dataPtr, endPtr) {
+
+            } {
                 // Advance 3 bytes
                 dataPtr := add(dataPtr, 3)
                 let input := mload(dataPtr)
@@ -85,7 +90,9 @@ library Base64 {
                 mstore8(sub(resultPtr, 1), 0x3d)
                 mstore8(sub(resultPtr, 2), 0x3d)
             }
-            case 2 { mstore8(sub(resultPtr, 1), 0x3d) }
+            case 2 {
+                mstore8(sub(resultPtr, 1), 0x3d)
+            }
         }
 
         return result;

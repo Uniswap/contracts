@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.5.0;
 
+
 /// @title Events emitted by a pool
 /// @notice Contains all events emitted by the pool
 interface IUniswapV3PoolEvents {
@@ -101,7 +102,8 @@ interface IUniswapV3PoolEvents {
     /// @param observationCardinalityNextOld The previous value of the next observation cardinality
     /// @param observationCardinalityNextNew The updated value of the next observation cardinality
     event IncreaseObservationCardinalityNext(
-        uint16 observationCardinalityNextOld, uint16 observationCardinalityNextNew
+        uint16 observationCardinalityNextOld,
+        uint16 observationCardinalityNextNew
     );
 
     /// @notice Emitted when the protocol fee is changed by the pool

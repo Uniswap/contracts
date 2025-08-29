@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
+
 // OpenZeppelin Contracts (last updated v5.0.0) (utils/math/Math.sol)
 
 /**
@@ -17,7 +18,6 @@ library Math {
         Ceil, // Toward positive infinity
         Trunc, // Toward zero
         Expand // Away from zero
-
     }
 
     /**

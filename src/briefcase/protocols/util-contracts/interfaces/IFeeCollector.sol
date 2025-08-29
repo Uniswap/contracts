@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.6.2;
 
-import {ERC20} from '../../lib-external/solmate/src/tokens/ERC20.sol';
-import {IPermit2} from '../external/IPermit2.sol';
+import {ERC20} from "../../lib-external/solmate/src/tokens/ERC20.sol";
+import {IPermit2} from "../external/IPermit2.sol";
 
 /// @notice The collector of protocol fees that will be used to swap and send to a fee recipient address.
 interface IFeeCollector {

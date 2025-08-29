@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity =0.7.6;
 
-import {IUniswapV3Pool} from '../../v3-core/interfaces/IUniswapV3Pool.sol';
-import {PoolAddress} from './PoolAddress.sol';
+import {IUniswapV3Pool} from "../../v3-core/interfaces/IUniswapV3Pool.sol";
+import {PoolAddress} from "./PoolAddress.sol";
 
 /// @notice Provides validation for callbacks from Uniswap V3 Pools
 library CallbackValidation {
@@ -12,11 +12,12 @@ library CallbackValidation {
     /// @param tokenB The contract address of the other token
     /// @param fee The fee collected upon every swap in the pool, denominated in hundredths of a bip
     /// @return pool The V3 pool contract address
-    function verifyCallback(address factory, address tokenA, address tokenB, uint24 fee)
-        internal
-        view
-        returns (IUniswapV3Pool pool)
-    {
+    function verifyCallback(
+        address factory,
+        address tokenA,
+        address tokenB,
+        uint24 fee
+    ) internal view returns (IUniswapV3Pool pool) {
         return verifyCallback(factory, PoolAddress.getPoolKey(tokenA, tokenB, fee));
     }
 

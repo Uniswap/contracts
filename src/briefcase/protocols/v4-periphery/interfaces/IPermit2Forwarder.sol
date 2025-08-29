@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {IAllowanceTransfer} from '../../permit2/interfaces/IAllowanceTransfer.sol';
+import {IAllowanceTransfer} from "../../permit2/interfaces/IAllowanceTransfer.sol";
 
 /// @title IPermit2Forwarder
 /// @notice Interface for the Permit2Forwarder contract

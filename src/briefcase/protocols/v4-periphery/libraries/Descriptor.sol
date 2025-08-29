@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {Base64} from '../../lib-external/openzeppelin-contracts/contracts/utils/Base64.sol';
-import {Strings} from '../../lib-external/openzeppelin-contracts/contracts/utils/Strings.sol';
-import {FullMath} from '../../v4-core/libraries/FullMath.sol';
-import {LPFeeLibrary} from '../../v4-core/libraries/LPFeeLibrary.sol';
-import {TickMath} from '../../v4-core/libraries/TickMath.sol';
-import {HexStrings} from './HexStrings.sol';
-import {SVG} from './SVG.sol';
+import {Base64} from "../../lib-external/openzeppelin-contracts/contracts/utils/Base64.sol";
+import {Strings} from "../../lib-external/openzeppelin-contracts/contracts/utils/Strings.sol";
+import {FullMath} from "../../v4-core/libraries/FullMath.sol";
+import {LPFeeLibrary} from "../../v4-core/libraries/LPFeeLibrary.sol";
+import {TickMath} from "../../v4-core/libraries/TickMath.sol";
+import {HexStrings} from "./HexStrings.sol";
+import {SVG} from "./SVG.sol";
 
 /// @title Descriptor
 /// @notice Describes NFT token positions
@@ -18,7 +18,7 @@ library Descriptor {
     using HexStrings for uint256;
     using LPFeeLibrary for uint24;
 
-    uint256 constant sqrt10X128 = 1_076_067_327_063_303_206_878_105_757_264_492_625_226;
+    uint256 constant sqrt10X128 = 1076067327063303206878105757264492625226;
 
     struct ConstructTokenURIParams {
         uint256 tokenId;
@@ -51,16 +51,16 @@ library Descriptor {
         string memory descriptionPartTwo = generateDescriptionPartTwo(
             params.tokenId.toString(),
             escapeSpecialCharacters(params.baseCurrencySymbol),
-            params.quoteCurrency == address(0) ? 'Native' : addressToString(params.quoteCurrency),
-            params.baseCurrency == address(0) ? 'Native' : addressToString(params.baseCurrency),
-            params.hooks == address(0) ? 'No Hook' : addressToString(params.hooks),
+            params.quoteCurrency == address(0) ? "Native" : addressToString(params.quoteCurrency),
+            params.baseCurrency == address(0) ? "Native" : addressToString(params.baseCurrency),
+            params.hooks == address(0) ? "No Hook" : addressToString(params.hooks),
             feeToPercentString(params.fee)
         );
         string memory image = Base64.encode(bytes(generateSVGImage(params)));
 
         return string(
             abi.encodePacked(
-                'data:application/json;base64,',
+                "data:application/json;base64,",
                 Base64.encode(
                     bytes(
                         abi.encodePacked(
@@ -70,7 +70,7 @@ library Descriptor {
                             descriptionPartOne,
                             descriptionPartTwo,
                             '", "image": "',
-                            'data:image/svg+xml;base64,',
+                            "data:image/svg+xml;base64,",
                             image,
                             '"}'
                         )
@@ -97,7 +97,7 @@ library Descriptor {
             for (uint8 i = 0; i < symbolBytes.length; i++) {
                 // add a '\' before any double quotes, form feeds, new lines, carriage returns, or tabs
                 if (isSpecialCharacter(symbolBytes[i])) {
-                    escapedBytes[index++] = '\\';
+                    escapedBytes[index++] = "\\";
                 }
                 // copy each byte from original string to the new array
                 escapedBytes[index++] = symbolBytes[i];
@@ -120,15 +120,15 @@ library Descriptor {
         // displays quote currency first, then base currency
         return string(
             abi.encodePacked(
-                'This NFT represents a liquidity position in a Uniswap v4 ',
+                "This NFT represents a liquidity position in a Uniswap v4 ",
                 quoteCurrencySymbol,
-                '-',
+                "-",
                 baseCurrencySymbol,
-                ' pool. ',
-                'The owner of this NFT can modify or redeem the position.\\n',
-                '\\nPool Manager Address: ',
+                " pool. ",
+                "The owner of this NFT can modify or redeem the position.\\n",
+                "\\nPool Manager Address: ",
                 poolManager,
-                '\\n',
+                "\\n",
                 quoteCurrencySymbol
             )
         );
@@ -152,20 +152,20 @@ library Descriptor {
     ) private pure returns (string memory) {
         return string(
             abi.encodePacked(
-                ' Address: ',
+                " Address: ",
                 quoteCurrency,
-                '\\n',
+                "\\n",
                 baseCurrencySymbol,
-                ' Address: ',
+                " Address: ",
                 baseCurrency,
-                '\\nHook Address: ',
+                "\\nHook Address: ",
                 hooks,
-                '\\nFee Tier: ',
+                "\\nFee Tier: ",
                 feeTier,
-                '\\nToken ID: ',
+                "\\nToken ID: ",
                 tokenId,
-                '\\n\\n',
-                unicode'⚠️ DISCLAIMER: Due diligence is imperative when assessing this NFT. Make sure currency addresses match the expected currencies, as currency symbols may be imitated.'
+                "\\n\\n",
+                unicode"⚠️ DISCLAIMER: Due diligence is imperative when assessing this NFT. Make sure currency addresses match the expected currencies, as currency symbols may be imitated."
             )
         );
     }
@@ -182,13 +182,13 @@ library Descriptor {
         // image shows in terms of price, ie quoteCurrency/baseCurrency
         return string(
             abi.encodePacked(
-                'Uniswap - ',
+                "Uniswap - ",
                 feeTier,
-                ' - ',
+                " - ",
                 escapeSpecialCharacters(params.quoteCurrencySymbol),
-                '/',
+                "/",
                 escapeSpecialCharacters(params.baseCurrencySymbol),
-                ' - ',
+                " - ",
                 tickToDecimalString(
                     !params.flipRatio ? params.tickLower : params.tickUpper,
                     params.tickSpacing,
@@ -196,7 +196,7 @@ library Descriptor {
                     params.quoteCurrencyDecimals,
                     params.flipRatio
                 ),
-                '<>',
+                "<>",
                 tickToDecimalString(
                     !params.flipRatio ? params.tickUpper : params.tickLower,
                     params.tickSpacing,
@@ -230,11 +230,11 @@ library Descriptor {
     function generateDecimalString(DecimalStringParams memory params) private pure returns (string memory) {
         bytes memory buffer = new bytes(params.bufferLength);
         if (params.isPercent) {
-            buffer[buffer.length - 1] = '%';
+            buffer[buffer.length - 1] = "%";
         }
         if (params.isLessThanOne) {
-            buffer[0] = '0';
-            buffer[1] = '.';
+            buffer[0] = "0";
+            buffer[1] = ".";
         }
 
         // add leading/trailing 0's
@@ -245,7 +245,7 @@ library Descriptor {
         // add sigfigs
         while (params.sigfigs > 0) {
             if (params.decimalIndex > 0 && params.sigfigIndex == params.decimalIndex) {
-                buffer[params.sigfigIndex--] = '.';
+                buffer[params.sigfigIndex--] = ".";
             }
             buffer[params.sigfigIndex] = bytes1(uint8(48 + (params.sigfigs % 10)));
             // can overflow when sigfigIndex = 0
@@ -273,9 +273,9 @@ library Descriptor {
         bool flipRatio
     ) internal pure returns (string memory) {
         if (tick == (TickMath.MIN_TICK / tickSpacing) * tickSpacing) {
-            return !flipRatio ? 'MIN' : 'MAX';
+            return !flipRatio ? "MIN" : "MAX";
         } else if (tick == (TickMath.MAX_TICK / tickSpacing) * tickSpacing) {
-            return !flipRatio ? 'MAX' : 'MIN';
+            return !flipRatio ? "MAX" : "MIN";
         } else {
             uint160 sqrtRatioX96 = TickMath.getSqrtPriceAtTick(tick);
             if (flipRatio) {
@@ -296,7 +296,7 @@ library Descriptor {
             value = value + 1;
         }
         // 99999 -> 100000 gives an extra sigfig
-        if (value == 100_000) {
+        if (value == 100000) {
             value /= 10;
             extraDigit = true;
         }
@@ -403,10 +403,10 @@ library Descriptor {
     /// @return fee as a decimal string with percent sign
     function feeToPercentString(uint24 fee) internal pure returns (string memory) {
         if (fee.isDynamicFee()) {
-            return 'Dynamic';
+            return "Dynamic";
         }
         if (fee == 0) {
-            return '0%';
+            return "0%";
         }
         uint24 temp = fee;
         uint256 digits;
@@ -503,7 +503,7 @@ library Descriptor {
     }
 
     function isSpecialCharacter(bytes1 b) private pure returns (bool) {
-        return b == '"' || b == '\u000c' || b == '\n' || b == '\r' || b == '\t';
+        return b == '"' || b == "\u000c" || b == "\n" || b == "\r" || b == "\t";
     }
 
     function scale(uint256 n, uint256 inMn, uint256 inMx, uint256 outMn, uint256 outMx)

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {IAllowanceTransfer} from './IAllowanceTransfer.sol';
+import {IAllowanceTransfer} from "./IAllowanceTransfer.sol";
 
 /// @notice Permit2 handles signature-based transfers in SignatureTransfer and allowance-based transfers in AllowanceTransfer.
 /// @dev Users must approve Permit2 before calling any of the transfer functions.

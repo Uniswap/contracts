@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {IEIP712} from './IEIP712.sol';
+import {IEIP712} from "./IEIP712.sol";
 
 /// @title AllowanceTransfer
 /// @notice Handles ERC20 token permissions through signature based allowance setting and ERC20 token transfers by checking allowed amounts

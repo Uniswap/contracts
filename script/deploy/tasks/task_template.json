@@ -396,6 +396,16 @@
                             "type": "address"
                         }
                     }
+                },
+                "ERC7914Detector": {
+                    "deploy": false,
+                    "address": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00",
+                    "params": {
+                        "caliburAddress": {
+                            "name": "Calibur address for ERC7914 detection",
+                            "type": "address"
+                        }
+                    }
                 }
             }
         }

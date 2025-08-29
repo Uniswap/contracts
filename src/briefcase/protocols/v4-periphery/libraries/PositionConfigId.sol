@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+
 /// @notice A configId is set per tokenId
 /// The lower 255 bits are used to store the truncated hash of the corresponding PositionConfig
 /// The upper bit is used to signal if the tokenId has a subscriber
