@@ -83,8 +83,3 @@ tab_width = 4
 quote_style = "single"
 sort_imports = true
 number_underscore = "thousands"
-
-[etherscan]
-# chain id 129412 is reserved for the tenderly testnet
-# config to deploy and verify contracts on tenderly testnet using CI
-tenderly_vnet = { key = "${TENDERLY_ACCESS_KEY}", chain = 1294121, url = "${TENDERLY_PUBLIC_RPC_URL}/verify/etherscan" }
