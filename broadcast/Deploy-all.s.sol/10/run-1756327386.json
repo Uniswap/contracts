@@ -1,7 +1,7 @@
 {
   "transactions": [
     {
-      "hash": "0x029e91802d7ff5802ee09179c89f6f8ad98c1204405bd51e84fa1185b7239af0",
+      "hash": null,
       "transactionType": "CREATE2",
       "contractName": "ERC7914Detector",
       "contractAddress": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
@@ -21,36 +21,11 @@
       "isFixedGasLimit": false
     }
   ],
-  "receipts": [
-    {
-      "status": "0x1",
-      "cumulativeGasUsed": "0x1d616a2",
-      "logs": [],
-      "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-      "type": "0x2",
-      "transactionHash": "0x029e91802d7ff5802ee09179c89f6f8ad98c1204405bd51e84fa1185b7239af0",
-      "transactionIndex": "0x15",
-      "blockHash": "0xbe48c7417e6ebbba21616ceef4af28385370ec06e2c6097f3e7acec994796ada",
-      "blockNumber": "0x85dca8c",
-      "gasUsed": "0x38cb0",
-      "effectiveGasPrice": "0x14d0",
-      "from": "0x250a94c03b9b57c93cc5549760d59d6eacfb136d",
-      "to": "0x4e59b44847b379578588920ca78fbf26c0b4956c",
-      "contractAddress": null,
-      "l1BaseFeeScalar": "0x146b",
-      "l1BlobBaseFee": "0x1",
-      "l1BlobBaseFeeScalar": "0xf79c5",
-      "l1Fee": "0xe1d6a9596",
-      "l1GasPrice": "0x3c677bc8",
-      "l1GasUsed": "0x2cb4",
-      "operatorFeeConstant": "0x0",
-      "operatorFeeScalar": "0x0"
-    }
-  ],
+  "receipts": [],
   "libraries": [],
   "pending": [],
   "returns": {},
-  "timestamp": 1756327634,
+  "timestamp": 1756327386,
   "chain": 10,
   "commit": "320811c"
 }

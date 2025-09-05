@@ -122,9 +122,32 @@
       "deploymentTxn": "0xe5c716fd7b9122a51a55cdb24b2d0e984a4d51e4a202e1b9bc026a8267737695",
       "timestamp": 1737493275,
       "commitHash": "e6c327f"
+    },
+    "ERC7914Detector": {
+      "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+      "proxy": false,
+      "deploymentTxn": "0x0c92f6e93d802df807922c4524739f25bd6ab25051c7cc655d3700cb83087165",
+      "timestamp": 1756472573,
+      "commitHash": "320811c"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "ERC7914Detector": {
+          "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+          "proxy": false,
+          "deploymentTxn": "0x0c92f6e93d802df807922c4524739f25bd6ab25051c7cc655d3700cb83087165",
+          "input": {
+            "constructor": {
+              "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            }
+          }
+        }
+      },
+      "timestamp": 1756472573,
+      "commitHash": "320811c"
+    },
     {
       "contracts": {
         "PoolManager": {

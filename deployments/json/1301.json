@@ -116,9 +116,32 @@
       "proxy": false,
       "deploymentTxn": "GENESIS_5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f",
       "timestamp": 1726852429
+    },
+    "ERC7914Detector": {
+      "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+      "proxy": false,
+      "deploymentTxn": "0x79223e459e374a931b5cf32f82860ac3980306e7e23a4d3004ad974a3aee1ab4",
+      "timestamp": 1756328710,
+      "commitHash": "320811c"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "ERC7914Detector": {
+          "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+          "proxy": false,
+          "deploymentTxn": "0x79223e459e374a931b5cf32f82860ac3980306e7e23a4d3004ad974a3aee1ab4",
+          "input": {
+            "constructor": {
+              "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            }
+          }
+        }
+      },
+      "timestamp": 1756328710,
+      "commitHash": "320811c"
+    },
     {
       "contracts": {
         "UniswapV2Router02": {
