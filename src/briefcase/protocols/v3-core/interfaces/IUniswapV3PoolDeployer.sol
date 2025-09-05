@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.5.0;
 
-
 /// @title An interface for a contract that is capable of deploying Uniswap V3 Pools
 /// @notice A contract that constructs a pool must implement this to pass arguments to the pool
 /// @dev This is used to avoid having constructor arguments in the pool contract, which results in the init code hash
@@ -17,11 +16,5 @@ interface IUniswapV3PoolDeployer {
     function parameters()
         external
         view
-        returns (
-            address factory,
-            address token0,
-            address token1,
-            uint24 fee,
-            int24 tickSpacing
-        );
+        returns (address factory, address token0, address token1, uint24 fee, int24 tickSpacing);
 }

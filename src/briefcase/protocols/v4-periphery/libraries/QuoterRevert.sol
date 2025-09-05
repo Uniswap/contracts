@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {ParseBytes} from "../../v4-core/libraries/ParseBytes.sol";
+import {ParseBytes} from '../../v4-core/libraries/ParseBytes.sol';
 
 library QuoterRevert {
     using QuoterRevert for bytes;

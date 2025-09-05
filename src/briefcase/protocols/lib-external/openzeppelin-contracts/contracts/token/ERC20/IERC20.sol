@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 // OpenZeppelin Contracts (last updated v5.0.0) (token/ERC20/IERC20.sol)
-
 
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP.

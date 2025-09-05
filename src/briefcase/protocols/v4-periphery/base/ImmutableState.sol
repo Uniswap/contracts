@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IPoolManager} from "../../v4-core/interfaces/IPoolManager.sol";
-import {IImmutableState} from "../interfaces/IImmutableState.sol";
+import {IPoolManager} from '../../v4-core/interfaces/IPoolManager.sol';
+import {IImmutableState} from '../interfaces/IImmutableState.sol';
 
 /// @title Immutable State
 /// @notice A collection of immutable state variables, commonly used across multiple contracts

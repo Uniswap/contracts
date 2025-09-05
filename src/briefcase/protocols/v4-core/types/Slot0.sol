@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 /**
  * @dev Slot0 is a packed version of solidity structure.
  * Using the packaged version saves gas by not storing the structure fields in memory slots.

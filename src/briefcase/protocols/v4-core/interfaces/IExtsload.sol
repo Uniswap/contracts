@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 /// @notice Interface for functions to access any storage slot in a contract
 interface IExtsload {
     /// @notice Called by external contracts to access granular pool state

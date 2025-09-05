@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {ISubscriber} from "./ISubscriber.sol";
+import {ISubscriber} from './ISubscriber.sol';
 
 /// @title INotifier
 /// @notice Interface for the Notifier contract

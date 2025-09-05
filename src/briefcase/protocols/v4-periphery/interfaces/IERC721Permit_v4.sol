@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 /// @title IERC721Permit_v4
 /// @notice Interface for the ERC721Permit_v4 contract
 interface IERC721Permit_v4 {

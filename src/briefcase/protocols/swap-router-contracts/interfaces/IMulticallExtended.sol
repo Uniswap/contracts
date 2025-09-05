@@ -2,7 +2,7 @@
 pragma solidity >=0.6.2;
 pragma abicoder v2;
 
-import {IMulticall} from "../../v3-periphery/interfaces/IMulticall.sol";
+import {IMulticall} from '../../v3-periphery/interfaces/IMulticall.sol';
 
 /// @title MulticallExtended interface
 /// @notice Enables calling multiple methods in a single call to the contract with optional validation

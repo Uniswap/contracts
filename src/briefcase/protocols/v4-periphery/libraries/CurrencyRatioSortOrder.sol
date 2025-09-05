@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-
 /// @title CurrencyRatioSortOrder
 /// @notice Provides constants for sorting currencies when displaying price ratios
 /// Currencies given larger values will be in the numerator of the price ratio

@@ -7,10 +7,10 @@ import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-co
 
 import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-router/UniversalRouterDeployer.sol';
 
+import {ERC7914DetectorDeployer} from '../../src/briefcase/deployers/util-contracts/ERC7914DetectorDeployer.sol';
 import {FeeCollectorDeployer} from '../../src/briefcase/deployers/util-contracts/FeeCollectorDeployer.sol';
 import {FeeOnTransferDetectorDeployer} from
     '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
-import {ERC7914DetectorDeployer} from '../../src/briefcase/deployers/util-contracts/ERC7914DetectorDeployer.sol';
 import {UniswapV2FactoryDeployer} from '../../src/briefcase/deployers/v2-core/UniswapV2FactoryDeployer.sol';
 import {UniswapV2Router02Deployer} from '../../src/briefcase/deployers/v2-periphery/UniswapV2Router02Deployer.sol';
 import {
@@ -400,7 +400,8 @@ contract Deploy is Script {
         }
 
         if (deployERC7914Detector) {
-            address caliburAddress = config.readAddress('.protocols.util-contracts.contracts.ERC7914Detector.params.caliburAddress.value');
+            address caliburAddress =
+                config.readAddress('.protocols.util-contracts.contracts.ERC7914Detector.params.caliburAddress.value');
             console.log('deploying ERC7914Detector');
             ERC7914DetectorDeployer.deploy(caliburAddress);
         }

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.5.0;
 
-
 /// @title The interface for the Uniswap V3 Factory
 /// @notice The Uniswap V3 Factory facilitates creation of Uniswap V3 pools and control over the protocol fees
 interface IUniswapV3Factory {
@@ -17,11 +16,7 @@ interface IUniswapV3Factory {
     /// @param tickSpacing The minimum number of ticks between initialized ticks
     /// @param pool The address of the created pool
     event PoolCreated(
-        address indexed token0,
-        address indexed token1,
-        uint24 indexed fee,
-        int24 tickSpacing,
-        address pool
+        address indexed token0, address indexed token1, uint24 indexed fee, int24 tickSpacing, address pool
     );
 
     /// @notice Emitted when a new fee amount is enabled for pool creation via the factory
@@ -46,11 +41,7 @@ interface IUniswapV3Factory {
     /// @param tokenB The contract address of the other token
     /// @param fee The fee collected upon every swap in the pool, denominated in hundredths of a bip
     /// @return pool The pool address
-    function getPool(
-        address tokenA,
-        address tokenB,
-        uint24 fee
-    ) external view returns (address pool);
+    function getPool(address tokenA, address tokenB, uint24 fee) external view returns (address pool);
 
     /// @notice Creates a pool for the given two tokens and fee
     /// @param tokenA One of the two tokens in the desired pool
@@ -60,11 +51,7 @@ interface IUniswapV3Factory {
     /// from the fee. The call will revert if the pool already exists, the fee is invalid, or the token arguments
     /// are invalid.
     /// @return pool The address of the newly created pool
-    function createPool(
-        address tokenA,
-        address tokenB,
-        uint24 fee
-    ) external returns (address pool);
+    function createPool(address tokenA, address tokenB, uint24 fee) external returns (address pool);
 
     /// @notice Updates the owner of the factory
     /// @dev Must be called by the current owner

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 /// @notice Parameter struct for `ModifyLiquidity` pool operations
 struct ModifyLiquidityParams {
     // the lower and upper tick of the position

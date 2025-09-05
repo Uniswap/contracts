@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {CustomRevert} from "./CustomRevert.sol";
+import {CustomRevert} from './CustomRevert.sol';
 
 /// @notice Library of helper functions for a pools LP fee
 library LPFeeLibrary {
@@ -22,7 +22,7 @@ library LPFeeLibrary {
     uint24 public constant REMOVE_OVERRIDE_MASK = 0xBFFFFF;
 
     /// @notice the lp fee is represented in hundredths of a bip, so the max is 100%
-    uint24 public constant MAX_LP_FEE = 1000000;
+    uint24 public constant MAX_LP_FEE = 1_000_000;
 
     /// @notice returns true if a pool's LP fee signals that the pool has a dynamic fee
     /// @param self The fee to check

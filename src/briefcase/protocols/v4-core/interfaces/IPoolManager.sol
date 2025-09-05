@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {BalanceDelta} from "../types/BalanceDelta.sol";
-import {Currency} from "../types/Currency.sol";
-import {PoolId} from "../types/PoolId.sol";
-import {PoolKey} from "../types/PoolKey.sol";
-import {SwapParams, ModifyLiquidityParams} from "../types/PoolOperation.sol";
-import {IExtsload} from "./IExtsload.sol";
-import {IExttload} from "./IExttload.sol";
-import {IHooks} from "./IHooks.sol";
-import {IProtocolFees} from "./IProtocolFees.sol";
-import {IERC6909Claims} from "./external/IERC6909Claims.sol";
+import {BalanceDelta} from '../types/BalanceDelta.sol';
+import {Currency} from '../types/Currency.sol';
+import {PoolId} from '../types/PoolId.sol';
+import {PoolKey} from '../types/PoolKey.sol';
+import {ModifyLiquidityParams, SwapParams} from '../types/PoolOperation.sol';
+import {IExtsload} from './IExtsload.sol';
+import {IExttload} from './IExttload.sol';
+import {IHooks} from './IHooks.sol';
+import {IProtocolFees} from './IProtocolFees.sol';
+import {IERC6909Claims} from './external/IERC6909Claims.sol';
 
 /// @notice Interface for the PoolManager
 interface IPoolManager is IProtocolFees, IERC6909Claims, IExtsload, IExttload {

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 /// @notice Interface for functions to access any transient storage slot in a contract
 interface IExttload {
     /// @notice Called by external contracts to access transient storage of the contract

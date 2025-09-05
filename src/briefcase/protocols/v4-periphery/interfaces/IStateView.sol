@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {PoolId} from "../../v4-core/types/PoolId.sol";
-import {IImmutableState} from "./IImmutableState.sol";
+import {PoolId} from '../../v4-core/types/PoolId.sol';
+import {IImmutableState} from './IImmutableState.sol';
 
 /// @title IStateView
 /// @notice Interface for the StateView contract

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {CustomRevert} from "./CustomRevert.sol";
+import {CustomRevert} from './CustomRevert.sol';
 
 /// @title Safe casting methods
 /// @notice Contains methods for safely casting between types

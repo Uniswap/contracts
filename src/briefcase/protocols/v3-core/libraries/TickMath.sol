@@ -1,20 +1,19 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.5.0 <0.8.0;
 
-
 /// @title Math library for computing sqrt prices from ticks and vice versa
 /// @notice Computes sqrt price for ticks of size 1.0001, i.e. sqrt(1.0001^tick) as fixed point Q64.96 numbers. Supports
 /// prices between 2**-128 and 2**128
 library TickMath {
     /// @dev The minimum tick that may be passed to #getSqrtRatioAtTick computed from log base 1.0001 of 2**-128
-    int24 internal constant MIN_TICK = -887272;
+    int24 internal constant MIN_TICK = -887_272;
     /// @dev The maximum tick that may be passed to #getSqrtRatioAtTick computed from log base 1.0001 of 2**128
     int24 internal constant MAX_TICK = -MIN_TICK;
 
     /// @dev The minimum value that can be returned from #getSqrtRatioAtTick. Equivalent to getSqrtRatioAtTick(MIN_TICK)
-    uint160 internal constant MIN_SQRT_RATIO = 4295128739;
+    uint160 internal constant MIN_SQRT_RATIO = 4_295_128_739;
     /// @dev The maximum value that can be returned from #getSqrtRatioAtTick. Equivalent to getSqrtRatioAtTick(MAX_TICK)
-    uint160 internal constant MAX_SQRT_RATIO = 1461446703485210103287273052203988822378723970342;
+    uint160 internal constant MAX_SQRT_RATIO = 1_461_446_703_485_210_103_287_273_052_203_988_822_378_723_970_342;
 
     /// @notice Calculates sqrt(1.0001^tick) * 2^96
     /// @dev Throws if |tick| > max tick
@@ -196,10 +195,10 @@ library TickMath {
             log_2 := or(log_2, shl(50, f))
         }
 
-        int256 log_sqrt10001 = log_2 * 255738958999603826347141; // 128.128 number
+        int256 log_sqrt10001 = log_2 * 255_738_958_999_603_826_347_141; // 128.128 number
 
-        int24 tickLow = int24((log_sqrt10001 - 3402992956809132418596140100660247210) >> 128);
-        int24 tickHi = int24((log_sqrt10001 + 291339464771989622907027621153398088495) >> 128);
+        int24 tickLow = int24((log_sqrt10001 - 3_402_992_956_809_132_418_596_140_100_660_247_210) >> 128);
+        int24 tickHi = int24((log_sqrt10001 + 291_339_464_771_989_622_907_027_621_153_398_088_495) >> 128);
 
         tick = tickLow == tickHi ? tickLow : getSqrtRatioAtTick(tickHi) <= sqrtPriceX96 ? tickHi : tickLow;
     }

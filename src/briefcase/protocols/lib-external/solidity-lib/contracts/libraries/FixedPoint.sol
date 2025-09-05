@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity >=0.4.0;
 
-import {Babylonian} from "./Babylonian.sol";
-import {BitMath} from "./BitMath.sol";
-import {FullMath} from "./FullMath.sol";
+import {Babylonian} from './Babylonian.sol';
+import {BitMath} from './BitMath.sol';
+import {FullMath} from './FullMath.sol';
 
 // a library for handling binary fixed point numbers (https://en.wikipedia.org/wiki/Q_(number_format))
 library FixedPoint {
@@ -56,7 +56,7 @@ library FixedPoint {
     // reverts on overflow
     function muli(uq112x112 memory self, int256 y) internal pure returns (int256) {
         uint256 z = FullMath.mulDiv(self._x, uint256(y < 0 ? -y : y), Q112);
-        require(z < 2**255, 'FixedPoint: MULI_OVERFLOW');
+        require(z < 2 ** 255, 'FixedPoint: MULI_OVERFLOW');
         return y < 0 ? -int256(z) : int256(z);
     }
 

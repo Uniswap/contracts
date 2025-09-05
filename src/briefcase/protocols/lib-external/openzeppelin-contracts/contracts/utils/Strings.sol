@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-import {Math} from "./math/Math.sol";
-import {SignedMath} from "./math/SignedMath.sol";
+import {Math} from './math/Math.sol';
+import {SignedMath} from './math/SignedMath.sol';
 
 // OpenZeppelin Contracts (last updated v5.0.0) (utils/Strings.sol)
 
@@ -10,7 +10,7 @@ import {SignedMath} from "./math/SignedMath.sol";
  * @dev String operations.
  */
 library Strings {
-    bytes16 private constant HEX_DIGITS = "0123456789abcdef";
+    bytes16 private constant HEX_DIGITS = '0123456789abcdef';
     uint8 private constant ADDRESS_LENGTH = 20;
 
     /**
@@ -47,7 +47,7 @@ library Strings {
      * @dev Converts a `int256` to its ASCII `string` decimal representation.
      */
     function toStringSigned(int256 value) internal pure returns (string memory) {
-        return string.concat(value < 0 ? "-" : "", toString(SignedMath.abs(value)));
+        return string.concat(value < 0 ? '-' : '', toString(SignedMath.abs(value)));
     }
 
     /**
@@ -65,8 +65,8 @@ library Strings {
     function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
         uint256 localValue = value;
         bytes memory buffer = new bytes(2 * length + 2);
-        buffer[0] = "0";
-        buffer[1] = "x";
+        buffer[0] = '0';
+        buffer[1] = 'x';
         for (uint256 i = 2 * length + 1; i > 1; --i) {
             buffer[i] = HEX_DIGITS[localValue & 0xf];
             localValue >>= 4;

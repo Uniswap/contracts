@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-
 /// @title For calculating a percentage of an amount, using bips
 library BipsLibrary {
     uint256 internal constant BPS_DENOMINATOR = 10_000;

@@ -2,7 +2,6 @@
 pragma solidity >=0.6.2;
 pragma abicoder v2;
 
-
 /// @title Quoter Interface
 /// @notice Supports quoting the calculated amounts from exact input or exact output swaps
 /// @dev These functions are not marked view because they rely on calling non-view functions and reverting

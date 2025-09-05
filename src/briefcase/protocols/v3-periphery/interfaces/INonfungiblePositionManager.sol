@@ -2,12 +2,12 @@
 pragma solidity >=0.6.2;
 pragma abicoder v2;
 
-import {IERC721Enumerable} from "../../lib-external/oz-v3.4-solc-0.7/contracts/token/ERC721/IERC721Enumerable.sol";
-import {IERC721Metadata} from "../../lib-external/oz-v3.4-solc-0.7/contracts/token/ERC721/IERC721Metadata.sol";
-import {IERC721Permit} from "./IERC721Permit.sol";
-import {IPeripheryImmutableState} from "./IPeripheryImmutableState.sol";
-import {IPeripheryPayments} from "./IPeripheryPayments.sol";
-import {IPoolInitializer} from "./IPoolInitializer.sol";
+import {IERC721Enumerable} from '../../lib-external/oz-v3.4-solc-0.7/contracts/token/ERC721/IERC721Enumerable.sol';
+import {IERC721Metadata} from '../../lib-external/oz-v3.4-solc-0.7/contracts/token/ERC721/IERC721Metadata.sol';
+import {IERC721Permit} from './IERC721Permit.sol';
+import {IPeripheryImmutableState} from './IPeripheryImmutableState.sol';
+import {IPeripheryPayments} from './IPeripheryPayments.sol';
+import {IPoolInitializer} from './IPoolInitializer.sol';
 
 /// @title Non-fungible token for positions
 /// @notice Wraps Uniswap V3 positions in a non-fungible token interface which allows for them to be transferred
@@ -99,12 +99,7 @@ interface INonfungiblePositionManager is
     function mint(MintParams calldata params)
         external
         payable
-        returns (
-            uint256 tokenId,
-            uint128 liquidity,
-            uint256 amount0,
-            uint256 amount1
-        );
+        returns (uint256 tokenId, uint128 liquidity, uint256 amount0, uint256 amount1);
 
     struct IncreaseLiquidityParams {
         uint256 tokenId;
@@ -128,11 +123,7 @@ interface INonfungiblePositionManager is
     function increaseLiquidity(IncreaseLiquidityParams calldata params)
         external
         payable
-        returns (
-            uint128 liquidity,
-            uint256 amount0,
-            uint256 amount1
-        );
+        returns (uint128 liquidity, uint256 amount0, uint256 amount1);
 
     struct DecreaseLiquidityParams {
         uint256 tokenId;

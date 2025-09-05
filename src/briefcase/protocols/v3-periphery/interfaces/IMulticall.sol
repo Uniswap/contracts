@@ -2,7 +2,6 @@
 pragma solidity >=0.6.2;
 pragma abicoder v2;
 
-
 /// @title Multicall interface
 /// @notice Enables calling multiple methods in a single call to the contract
 interface IMulticall {

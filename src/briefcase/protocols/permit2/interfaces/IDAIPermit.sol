@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 interface IDAIPermit {
     /// @param holder The address of the token owner.
     /// @param spender The address of the token spender.

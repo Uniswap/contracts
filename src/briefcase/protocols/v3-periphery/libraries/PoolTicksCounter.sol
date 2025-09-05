@@ -1,18 +1,18 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.6.0;
 
-import {IUniswapV3Pool} from "../../v3-core/interfaces/IUniswapV3Pool.sol";
+import {IUniswapV3Pool} from '../../v3-core/interfaces/IUniswapV3Pool.sol';
 
 library PoolTicksCounter {
     /// @dev This function counts the number of initialized ticks that would incur a gas cost between tickBefore and tickAfter.
     /// When tickBefore and/or tickAfter themselves are initialized, the logic over whether we should count them depends on the
     /// direction of the swap. If we are swapping upwards (tickAfter > tickBefore) we don't want to count tickBefore but we do
     /// want to count tickAfter. The opposite is true if we are swapping downwards.
-    function countInitializedTicksCrossed(
-        IUniswapV3Pool self,
-        int24 tickBefore,
-        int24 tickAfter
-    ) internal view returns (uint32 initializedTicksCrossed) {
+    function countInitializedTicksCrossed(IUniswapV3Pool self, int24 tickBefore, int24 tickAfter)
+        internal
+        view
+        returns (uint32 initializedTicksCrossed)
+    {
         int16 wordPosLower;
         int16 wordPosHigher;
         uint8 bitPosLower;
@@ -32,17 +32,13 @@ library PoolTicksCounter {
             // If the initializable tick after the swap is initialized, our original tickAfter is a
             // multiple of tick spacing, and we are swapping downwards we know that tickAfter is initialized
             // and we shouldn't count it.
-            tickAfterInitialized =
-                ((self.tickBitmap(wordPosAfter) & (1 << bitPosAfter)) > 0) &&
-                ((tickAfter % self.tickSpacing()) == 0) &&
-                (tickBefore > tickAfter);
+            tickAfterInitialized = ((self.tickBitmap(wordPosAfter) & (1 << bitPosAfter)) > 0)
+                && ((tickAfter % self.tickSpacing()) == 0) && (tickBefore > tickAfter);
 
             // In the case where tickBefore is initialized, we only want to count it if we are swapping upwards.
             // Use the same logic as above to decide whether we should count tickBefore or not.
-            tickBeforeInitialized =
-                ((self.tickBitmap(wordPos) & (1 << bitPos)) > 0) &&
-                ((tickBefore % self.tickSpacing()) == 0) &&
-                (tickBefore < tickAfter);
+            tickBeforeInitialized = ((self.tickBitmap(wordPos) & (1 << bitPos)) > 0)
+                && ((tickBefore % self.tickSpacing()) == 0) && (tickBefore < tickAfter);
 
             if (wordPos < wordPosAfter || (wordPos == wordPosAfter && bitPos <= bitPosAfter)) {
                 wordPosLower = wordPos;

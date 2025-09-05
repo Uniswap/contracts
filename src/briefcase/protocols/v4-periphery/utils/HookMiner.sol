@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.21;
 
-import {Hooks} from "../../v4-core/libraries/Hooks.sol";
+import {Hooks} from '../../v4-core/libraries/Hooks.sol';
 
 /// @title HookMiner
 /// @notice a minimal library for mining hook addresses
@@ -37,7 +37,7 @@ library HookMiner {
                 return (hookAddress, bytes32(salt));
             }
         }
-        revert("HookMiner: could not find salt");
+        revert('HookMiner: could not find salt');
     }
 
     /// @notice Precompute a contract address deployed via CREATE2

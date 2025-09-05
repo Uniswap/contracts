@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.24;
 
-import {Currency} from "../types/Currency.sol";
+import {Currency} from '../types/Currency.sol';
 
 /// @title a library to store callers' currency deltas in transient storage
 /// @dev this library implements the equivalent of a mapping, as transient storage can only be accessed in assembly

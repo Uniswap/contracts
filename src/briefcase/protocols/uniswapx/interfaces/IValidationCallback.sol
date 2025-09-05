@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity >=0.6.2;
 
-import {ResolvedOrder} from "../base/ReactorStructs.sol";
+import {ResolvedOrder} from '../base/ReactorStructs.sol';
 
 /// @notice Callback to validate an order
 interface IValidationCallback {

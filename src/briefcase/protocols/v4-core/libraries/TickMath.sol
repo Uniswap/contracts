@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {BitMath} from "./BitMath.sol";
-import {CustomRevert} from "./CustomRevert.sol";
+import {BitMath} from './BitMath.sol';
+import {CustomRevert} from './CustomRevert.sol';
 
 /// @title Math library for computing sqrt prices from ticks and vice versa
 /// @notice Computes sqrt price for ticks of size 1.0001, i.e. sqrt(1.0001^tick) as fixed point Q64.96 numbers. Supports
@@ -17,10 +17,10 @@ library TickMath {
 
     /// @dev The minimum tick that may be passed to #getSqrtPriceAtTick computed from log base 1.0001 of 2**-128
     /// @dev If ever MIN_TICK and MAX_TICK are not centered around 0, the absTick logic in getSqrtPriceAtTick cannot be used
-    int24 internal constant MIN_TICK = -887272;
+    int24 internal constant MIN_TICK = -887_272;
     /// @dev The maximum tick that may be passed to #getSqrtPriceAtTick computed from log base 1.0001 of 2**128
     /// @dev If ever MIN_TICK and MAX_TICK are not centered around 0, the absTick logic in getSqrtPriceAtTick cannot be used
-    int24 internal constant MAX_TICK = 887272;
+    int24 internal constant MAX_TICK = 887_272;
 
     /// @dev The minimum tick spacing value drawn from the range of type int16 that is greater than 0, i.e. min from the range [1, 32767]
     int24 internal constant MIN_TICK_SPACING = 1;
@@ -28,12 +28,12 @@ library TickMath {
     int24 internal constant MAX_TICK_SPACING = type(int16).max;
 
     /// @dev The minimum value that can be returned from #getSqrtPriceAtTick. Equivalent to getSqrtPriceAtTick(MIN_TICK)
-    uint160 internal constant MIN_SQRT_PRICE = 4295128739;
+    uint160 internal constant MIN_SQRT_PRICE = 4_295_128_739;
     /// @dev The maximum value that can be returned from #getSqrtPriceAtTick. Equivalent to getSqrtPriceAtTick(MAX_TICK)
-    uint160 internal constant MAX_SQRT_PRICE = 1461446703485210103287273052203988822378723970342;
+    uint160 internal constant MAX_SQRT_PRICE = 1_461_446_703_485_210_103_287_273_052_203_988_822_378_723_970_342;
     /// @dev A threshold used for optimized bounds check, equals `MAX_SQRT_PRICE - MIN_SQRT_PRICE - 1`
     uint160 internal constant MAX_SQRT_PRICE_MINUS_MIN_SQRT_PRICE_MINUS_ONE =
-        1461446703485210103287273052203988822378723970342 - 4295128739 - 1;
+        1_461_446_703_485_210_103_287_273_052_203_988_822_378_723_970_342 - 4_295_128_739 - 1;
 
     /// @notice Given a tickSpacing, compute the maximum usable tick
     function maxUsableTick(int24 tickSpacing) internal pure returns (int24) {
@@ -222,15 +222,15 @@ library TickMath {
                 log_2 := or(log_2, shl(50, f))
             }
 
-            int256 log_sqrt10001 = log_2 * 255738958999603826347141; // Q22.128 number
+            int256 log_sqrt10001 = log_2 * 255_738_958_999_603_826_347_141; // Q22.128 number
 
             // Magic number represents the ceiling of the maximum value of the error when approximating log_sqrt10001(x)
-            int24 tickLow = int24((log_sqrt10001 - 3402992956809132418596140100660247210) >> 128);
+            int24 tickLow = int24((log_sqrt10001 - 3_402_992_956_809_132_418_596_140_100_660_247_210) >> 128);
 
             // Magic number represents the minimum value of the error when approximating log_sqrt10001(x), when
             // sqrtPrice is from the range (2^-64, 2^64). This is safe as MIN_SQRT_PRICE is more than 2^-64. If MIN_SQRT_PRICE
             // is changed, this may need to be changed too
-            int24 tickHi = int24((log_sqrt10001 + 291339464771989622907027621153398088495) >> 128);
+            int24 tickHi = int24((log_sqrt10001 + 291_339_464_771_989_622_907_027_621_153_398_088_495) >> 128);
 
             tick = tickLow == tickHi ? tickLow : getSqrtPriceAtTick(tickHi) <= sqrtPriceX96 ? tickHi : tickLow;
         }

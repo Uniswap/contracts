@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-import {ERC20} from "../../lib-external/solmate/src/tokens/ERC20.sol";
-import {IAllowanceTransfer} from "../interfaces/IAllowanceTransfer.sol";
-import {IDAIPermit} from "../interfaces/IDAIPermit.sol";
-import {SafeCast160} from "./SafeCast160.sol";
+import {ERC20} from '../../lib-external/solmate/src/tokens/ERC20.sol';
+import {IAllowanceTransfer} from '../interfaces/IAllowanceTransfer.sol';
+import {IDAIPermit} from '../interfaces/IDAIPermit.sol';
+import {SafeCast160} from './SafeCast160.sol';
 
 /// @title Permit2Lib
 /// @notice Enables efficient transfers and EIP-2612/DAI

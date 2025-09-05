@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {BalanceDelta} from "../../v4-core/types/BalanceDelta.sol";
-import {PositionInfo} from "../libraries/PositionInfoLibrary.sol";
+import {BalanceDelta} from '../../v4-core/types/BalanceDelta.sol';
+import {PositionInfo} from '../libraries/PositionInfoLibrary.sol';
 
 /// @title ISubscriber
 /// @notice Interface that a Subscriber contract should implement to receive updates from the v4 position manager

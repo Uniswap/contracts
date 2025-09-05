@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IPoolManager} from "../interfaces/IPoolManager.sol";
-import {PoolId} from "../types/PoolId.sol";
-import {Position} from "./Position.sol";
+import {IPoolManager} from '../interfaces/IPoolManager.sol';
+import {PoolId} from '../types/PoolId.sol';
+import {Position} from './Position.sol';
 
 /// @notice A helper library to provide state getters that use extsload
 library StateLibrary {

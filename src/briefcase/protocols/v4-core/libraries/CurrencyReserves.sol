@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: BUSL-1.1
 pragma solidity ^0.8.24;
 
-import {Currency} from "../types/Currency.sol";
-import {CustomRevert} from "./CustomRevert.sol";
+import {Currency} from '../types/Currency.sol';
+import {CustomRevert} from './CustomRevert.sol';
 
 library CurrencyReserves {
     using CustomRevert for bytes4;

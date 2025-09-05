@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 /// @title IUniswapV4DeployerCompetition
 /// @notice Interface for the UniswapV4DeployerCompetition contract
 interface IUniswapV4DeployerCompetition {

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {Currency} from "../types/Currency.sol";
-import {PoolId} from "../types/PoolId.sol";
-import {PoolKey} from "../types/PoolKey.sol";
+import {Currency} from '../types/Currency.sol';
+import {PoolId} from '../types/PoolId.sol';
+import {PoolKey} from '../types/PoolKey.sol';
 
 /// @notice Interface for all protocol-fee related functions in the pool manager
 interface IProtocolFees {

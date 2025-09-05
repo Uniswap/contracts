@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-
 /// @title Math library for liquidity
 library LiquidityMath {
     /// @notice Add a signed liquidity delta to liquidity and revert if it overflows or underflows

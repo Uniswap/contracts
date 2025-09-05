@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 /// @title IERC7914
 interface IERC7914 {
     /// @notice Thrown when the caller's allowance is exceeded when transferring

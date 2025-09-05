@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity >=0.6.2;
 
-
 // SPDX-FileCopyrightText: 2021 Lido <info@lido.fi>
 // https://github.com/lidofinance/core/blob/master/contracts/0.6.12/WstETH.sol
 

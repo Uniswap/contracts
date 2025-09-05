@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {PoolKey} from "../../v4-core/types/PoolKey.sol";
+import {PoolKey} from '../../v4-core/types/PoolKey.sol';
 
 /// @title IPoolInitializer_v4
 /// @notice Interface for the PoolInitializer_v4 contract

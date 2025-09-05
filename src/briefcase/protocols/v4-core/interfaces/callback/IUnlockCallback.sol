@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 /// @notice Interface for the callback executed when an address unlocks the pool manager
 interface IUnlockCallback {
     /// @notice Called by the pool manager on `msg.sender` when the manager is unlocked

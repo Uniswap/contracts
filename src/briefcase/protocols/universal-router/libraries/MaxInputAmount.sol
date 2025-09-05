@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 pragma solidity ^0.8.24;
 
-
 /// @notice A library used to store the maximum desired amount of input tokens for exact output swaps; used for checking slippage
 library MaxInputAmount {
     // The slot holding the the maximum desired amount of input tokens, transiently. bytes32(uint256(keccak256("MaxAmountIn")) - 1)

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 /// @dev An uint16 array of max 16 values packed into a single uint256
 type Uint16Array is uint256;
 

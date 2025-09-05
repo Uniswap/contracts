@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-
 /// @notice Library to define different pool actions.
 /// @dev These are suggested common commands, however additional commands should be defined as required
 /// Some of these actions are not supported in the Router contracts or Position Manager contracts, but are left as they may be helpful commands for other peripheral contracts.

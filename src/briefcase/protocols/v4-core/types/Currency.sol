@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-import {IERC20Minimal} from "../interfaces/external/IERC20Minimal.sol";
-import {CustomRevert} from "../libraries/CustomRevert.sol";
+import {IERC20Minimal} from '../interfaces/external/IERC20Minimal.sol';
+import {CustomRevert} from '../libraries/CustomRevert.sol';
 
 type Currency is address;
 

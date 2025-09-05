@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
-
 /// @title IMulticall_v4
 /// @notice Interface for the Multicall_v4 contract
 interface IMulticall_v4 {
