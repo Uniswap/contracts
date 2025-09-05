@@ -40,6 +40,7 @@ import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/Stat
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
 import {WETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WETHHookDeployer.sol';
 import {WstETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WstETHHookDeployer.sol';
+import {WstETHRoutingHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WstETHRoutingHookDeployer.sol';
 
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {VmSafe} from 'forge-std/Vm.sol';
@@ -288,6 +289,7 @@ contract Deploy is Script {
         if (!config.readBoolOr('.protocols.hooks.deploy', false)) return;
         bool deployWETHHook = config.readBoolOr('.protocols.hooks.contracts.WETHHook.deploy', false);
         bool deployWstETHHook = config.readBoolOr('.protocols.hooks.contracts.WstETHHook.deploy', false);
+        bool deployWstETHRoutingHook = config.readBoolOr('.protocols.hooks.contracts.WstETHRoutingHook.deploy', false);
 
         if (poolManager == address(0)) {
             poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
@@ -301,6 +303,11 @@ contract Deploy is Script {
             bytes32 salt = config.readBytes32('.protocols.hooks.contracts.WstETHHook.params.salt.value');
             address wsteth = config.readAddress('.protocols.hooks.contracts.WstETHHook.params.wstETH.value');
             WstETHHookDeployer.deploy(poolManager, wsteth, salt);
+        }
+        if (deployWstETHRoutingHook) {
+            bytes32 salt = config.readBytes32('.protocols.hooks.contracts.WstETHRoutingHook.params.salt.value');
+            address wsteth = config.readAddress('.protocols.hooks.contracts.WstETHRoutingHook.params.wstETH.value');
+            WstETHRoutingHookDeployer.deploy(poolManager, wsteth, salt);
         }
     }
 
