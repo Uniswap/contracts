@@ -52,3 +52,6 @@
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/Openzeppelin/openzeppelin-contracts
+[submodule "src/pkgs/twap-auction"]
+	path = src/pkgs/twap-auction
+	url = https://github.com/Uniswap/twap-auction.git
