@@ -265,6 +265,22 @@
                             "type": "bytes32"
                         }
                     }
+                },
+                "WstETHRoutingHook": {
+                    "deploy": false,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "wstETH": {
+                            "name": "WstETH address",
+                            "type": "address"
+                        },
+                        "salt": {
+                            "type": "bytes32"
+                        }
+                    }
                 }
             }
         },
@@ -393,6 +409,16 @@
                         },
                         "feeToken": {
                             "name": "Fee token address (usually USDC)",
+                            "type": "address"
+                        }
+                    }
+                },
+                "ERC7914Detector": {
+                    "deploy": false,
+                    "address": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00",
+                    "params": {
+                        "caliburAddress": {
+                            "name": "Calibur address for ERC7914 detection",
                             "type": "address"
                         }
                     }

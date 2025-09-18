@@ -1,0 +1,56 @@
+{
+  "lib/base64": {
+    "rev": "dcbf852ba545b3d15de0ac0ef88dce934c090c8e"
+  },
+  "lib/forge-chronicles": {
+    "rev": "000cd249d0bad6caaa907c12f2d4a8a7608ac5f0"
+  },
+  "lib/forge-gas-snapshot": {
+    "rev": "9161f7c0b6c6788a89081e2b3b9c67592b71e689"
+  },
+  "lib/forge-std": {
+    "rev": "da591f56d8884c5824c0c1b3103fbcfd81123c4c"
+  },
+  "lib/openzeppelin-contracts": {
+    "rev": "acd4ff74de833399287ed6b31b4debf6b2b35527"
+  },
+  "lib/solidity-lib": {
+    "rev": "3fcc8ee6d5c7dea3283416cbcee601d89504a243"
+  },
+  "src/pkgs/permit2": {
+    "rev": "cc56ad0f3439c502c246fc5cfcc3db92bb8b7219"
+  },
+  "src/pkgs/swap-router-contracts": {
+    "rev": "70bc2e40dfca294c1cea9bf67a4036732ee54303"
+  },
+  "src/pkgs/uniswapx": {
+    "rev": "4c01ff07cb16df7ad7f5c2b8e9253005c1259275"
+  },
+  "src/pkgs/universal-router": {
+    "rev": "3663f6db6e2fe121753cd2d899699c2dc75dca86"
+  },
+  "src/pkgs/util-contracts": {
+    "rev": "0e84aa540ecafacb22f9e61a5e684c5c32a21f56"
+  },
+  "src/pkgs/v2-core": {
+    "rev": "ee547b17853e71ed4e0101ccfd52e70d5acded58"
+  },
+  "src/pkgs/v2-periphery": {
+    "rev": "0335e8f7e1bd1e8d8329fd300aea2ef2f36dd19f"
+  },
+  "src/pkgs/v3-core": {
+    "rev": "d8b1c635c275d2a9450bd6a78f3fa2484fef73eb"
+  },
+  "src/pkgs/v3-periphery": {
+    "rev": "0682387198a24c7cd63566a2c58398533860a5d1"
+  },
+  "src/pkgs/v4-core": {
+    "rev": "59d3ecf53afa9264a16bba0e38f4c5d2231f80bc"
+  },
+  "src/pkgs/v4-periphery": {
+    "rev": "60cd93803ac2b7fa65fd6cd351fd5fd4cc8c9db5"
+  },
+  "src/pkgs/view-quoter-v3": {
+    "rev": "d718d2f40a1ac6d8f152560c2da3853aa92e7898"
+  }
+}

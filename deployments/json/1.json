@@ -170,14 +170,82 @@
       "commitHash": "c797b9e"
     },
     "WstETHHook": {
-      "address": "0xa88aacf73df2bccfabcfd1e7b597185cac9f2888",
+      "address": "0xcdde8f9c3414a00f804e5c565eed9949ad17e888",
       "proxy": false,
-      "deploymentTxn": "0x6a51d7279a76de87263d6aa4caad6e49ddc79e2db47b8cee35ef39477642f1d4",
-      "timestamp": 1746213763,
-      "commitHash": "c797b9e"
+      "deploymentTxn": "0x8c5526a3239bd3994144bae9d762efa945485ac9da9c51f53734a02ff9c62da2",
+      "timestamp": 1753818223,
+      "commitHash": "320811c"
+    },
+    "WstETHRoutingHook": {
+      "address": "0x3ac6e14a142251eb3fe739399e0a8da81ed06888",
+      "proxy": false,
+      "deploymentTxn": "0xbe0998cacc36d9689aaa6ada9975df5bf480b486cdd568a50b8140007f8fca81",
+      "timestamp": 1753818223,
+      "commitHash": "320811c"
+    },
+    "ERC7914Detector": {
+      "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+      "proxy": false,
+      "deploymentTxn": "0xdf55d820307711320819d4fb080902214d130d4d0c4e3321341a8eea11980a6c",
+      "timestamp": 1756326351,
+      "commitHash": "320811c"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "ERC7914Detector": {
+          "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+          "proxy": false,
+          "deploymentTxn": "0xdf55d820307711320819d4fb080902214d130d4d0c4e3321341a8eea11980a6c",
+          "input": {
+            "constructor": {
+              "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            }
+          }
+        },
+        "WstETHHook": {
+          "address": "0xcdde8f9c3414a00f804e5c565eed9949ad17e888",
+          "proxy": false,
+          "deploymentTxn": "0x8c5526a3239bd3994144bae9d762efa945485ac9da9c51f53734a02ff9c62da2",
+          "input": {
+            "constructor": {
+              "_manager": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+              "_wsteth": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+            }
+          }
+        },
+        "WstETHRoutingHook": {
+          "address": "0x3ac6e14a142251eb3fe739399e0a8da81ed06888",
+          "proxy": false,
+          "deploymentTxn": "0xbe0998cacc36d9689aaa6ada9975df5bf480b486cdd568a50b8140007f8fca81",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+              "_wstETH": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+            }
+          }
+        }
+      },
+      "timestamp": 1756326351,
+      "commitHash": "320811c"
+    },
+    {
+      "contracts": {
+        "ERC7914Detector": {
+          "address": "0x9466235afff51af9e285614a21eff5d7aac2c802",
+          "proxy": false,
+          "deploymentTxn": "0x5e4c0ebb85e70c921418f5ac591914979c6063e632509b2b035d923c8cfffe9a",
+          "input": {
+            "constructor": {
+              "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            }
+          }
+        }
+      },
+      "timestamp": 1756325186,
+      "commitHash": "320811c"
+    },
     {
       "contracts": {
         "WETHHook": {
