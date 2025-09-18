@@ -36,7 +36,7 @@ jobs:
       # Fund wallet using unlimited faucet: https://docs.tenderly.co/virtual-testnets/unlimited-faucet
       - name: Fund Account
         env:
-          TENDERLY_ADMIN_RPC_URL: ${{ env.TENDERLY_ADMIN_RPC_URL }}
+          TENDERLY_ADMIN_RPC_URL: ${{ env.TENDERLY_ADMIN_RPC_URL_1 }}
           ADMIN_WALLET: ${{ vars.TENDERLY_ADMIN_WALLET }}
         run: |
           curl $TENDERLY_ADMIN_RPC_URL \
@@ -68,35 +68,33 @@ jobs:
       - name: Deploy Contracts
         env:
           PRIVATE_KEY: ${{ secrets.TENDERLY_PRIVATE_KEY }}
-          TENDERLY_PUBLIC_RPC_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}
-          FOUNDRY_VERIFIER_URL: ${{ env.TENDERLY_FOUNDRY_VERIFICATION_URL }}
+          TENDERLY_PUBLIC_RPC_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL_1 }}
+          FOUNDRY_VERIFIER_URL: ${{ env.TENDERLY_FOUNDRY_VERIFICATION_URL_1 }}
           TENDERLY_ACCESS_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}
         run: |
           forge script script/deploy/Deploy-all.s.sol \
             --private-key $PRIVATE_KEY \
-            --rpc-url $TENDERLY_PUBLIC_RPC_URL \
-            --verify \
-            --verifier-url $FOUNDRY_VERIFIER_URL \
             --slow \
+            --rpc-url $TENDERLY_PUBLIC_RPC_URL \
             --broadcast
 
       # Generate deployment logs
       - name: Generate Deployment Logs
-        # env:
-        #   TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_EXPLORER_URL }}
+        env:
+          TENDERLY_EXPLORER_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL_1 }}
         run: |
           rm -f deployments/1294121.md
           rm -f deployments/json/1294121.json
-          node lib/forge-chronicles Deploy-all.s.sol -c 1294121 --force
-        # -e $TENDERLY_EXPLORER_URL
+          node lib/forge-chronicles Deploy-all.s.sol -c 1294121 -e $TENDERLY_EXPLORER_URL --force
 
       # https://github.com/marketplace/actions/tenderly-virtual-testnet-setup#outputs
       - name: Add RPC URL to deployment logs
         env:
-          TENDERLY_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL }}
+          TENDERLY_URL: ${{ env.TENDERLY_PUBLIC_RPC_URL_1 }}
         run: |
           sed -i '2i\  "name": "Uniswap Tenderly Virtual Testnet",' deployments/json/1294121.json
           sed -i '3i\  "rpc_url": "'"$TENDERLY_URL"'",' deployments/json/1294121.json
+          cat deployments/json/1294121.json
 
       - name: Configure Git
         run: |
