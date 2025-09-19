@@ -84,6 +84,9 @@ quote_style = "single"
 sort_imports = true
 number_underscore = "thousands"
 
+[lint]
+lint_on_build = false
+
 [etherscan]
 # chain id 129412 is reserved for the tenderly testnet
 # config to deploy and verify contracts on tenderly testnet using CI
