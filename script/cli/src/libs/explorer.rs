@@ -49,7 +49,7 @@ impl ExplorerApiLib {
                 return Ok(ExplorerApiLib {
                     explorer,
                     api_key: api_key.to_string(),
-                    api_url: format!("https://api.etherscan.io/v2/api"),
+                    api_url: format!("https://api.etherscan.io/v2/api?chainid={}", chain_id),
                 });
             } else {
                 return Err(format!(
@@ -184,7 +184,20 @@ impl SupportedExplorerType {
 async fn get_etherscan_result(url: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
     match reqwest::get(url).await {
         Ok(response) => {
-            let json_response: serde_json::Value = response.json().await.unwrap();
+            let response_text = response.text().await?;
+            let json_response: serde_json::Value = match serde_json::from_str(&response_text) {
+                Ok(json) => json,
+                Err(e) => {
+                    log(format!(
+                        "Failed to parse JSON response. Raw response: {}",
+                        response_text
+                    ));
+                    return Err(format!(
+                        "Explorer Response Error: Failed to parse JSON response from explorer API. The response may be empty or invalid. Error: {}",
+                        e
+                    ).into());
+                }
+            };
             if let Some(message) = json_response["message"].as_str() {
                 if message == "OK" {
                     if let Some(result) = json_response["result"].as_array() {
