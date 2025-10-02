@@ -27,3 +27,4 @@ permit2=src/pkgs/permit2
 @uniswap/v2-core=src/pkgs/v2-core
 @uniswap/v3-core=src/pkgs/v3-core
 @uniswap/v4-core=src/pkgs/v4-core
+src/pkgs/twap-auction:solady=src/pkgs/twap-auction/lib/solady/src
