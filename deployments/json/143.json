@@ -50,7 +50,7 @@
       "timestamp": 1760583540166,
       "commitHash": "9874be3"
     },
-    "NonfungibleTokenPositionDescriptor":{
+    "NonfungibleTokenPositionDescriptor": {
       "implementation": "0x003aa18c6e682db80cf4aa17261ccbffd28690ce",
       "address": "0x315e413a11ab0df498ef83873012430ca36638ae",
       "proxy": true,
@@ -136,9 +136,35 @@
       "deploymentTxn": "0xa2d32b7b3bfd677fe54cc6bb0daf93131434651d74a2d72f453ae14a6355ab6e",
       "timestamp": 1760583540166,
       "commitHash": "9874be3"
+    },
+    "SwapRouter02": {
+      "address": "0xfe31f71c1b106eac32f1a19239c9a9a72ddfb900",
+      "proxy": false,
+      "deploymentTxn": "0xda8c3e0983d87ef991094374ffbe0d23c74c1dbad3bf2a306595a67794b8de89",
+      "timestamp": 1760625964160,
+      "commitHash": "559f3ae"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "SwapRouter02": {
+          "address": "0xfe31f71c1b106eac32f1a19239c9a9a72ddfb900",
+          "proxy": false,
+          "deploymentTxn": "0xda8c3e0983d87ef991094374ffbe0d23c74c1dbad3bf2a306595a67794b8de89",
+          "input": {
+            "constructor": {
+              "_factoryV2": "0x182a927119D56008d921126764bF884221b10f59",
+              "factoryV3": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+              "_positionManager": "0x7197E214c0b767cFB76Fb734ab638E2c192F4E53",
+              "_WETH9": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A"
+            }
+          }
+        }
+      },
+      "timestamp": 1760625964160,
+      "commitHash": "559f3ae"
+    },
     {
       "contracts": {
         "UniswapV2Factory": {
