@@ -23,6 +23,7 @@ pub struct SelectOrEnterComponent {
     env_confirm: SelectComponent,
     current_step: Step,
     selected_option: String,
+    selected_index: Option<usize>,
     env_var_name: String,
     env_var: String,
     hidden: bool,
@@ -60,10 +61,15 @@ impl SelectOrEnterComponent {
             env_confirm: SelectComponent::new(vec!["Yes".to_string(), "No".to_string()]),
             current_step,
             selected_option: "".to_string(),
+            selected_index: None,
             env_var: "".to_string(),
             env_var_name: "".to_string(),
             hidden,
         }
+    }
+
+    pub fn get_selected_index(&self) -> usize {
+        self.selected_index.unwrap_or(usize::MAX)
     }
 
     pub fn render(&self, buffer: &mut Buffer) {
@@ -113,10 +119,12 @@ impl SelectOrEnterComponent {
         else if self.current_step == Step::SelectFromList {
             let index = self.select.handle_input(event.clone());
             if index.borrow().is_some() {
-                if index.unwrap() == self.select.options.len() - 1 {
+                let idx = index.unwrap();
+                self.selected_index = Some(idx);
+                if idx == self.select.options.len() - 1 {
                     self.current_step = Step::EnterManually;
                 } else {
-                    self.set_selected_option(self.select.options[index.unwrap()].clone());
+                    self.set_selected_option(self.select.options[idx].clone());
                 }
             }
         } else if self.current_step == Step::EnterEnvVar {
