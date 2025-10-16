@@ -9,27 +9,32 @@ import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-r
 
 import {ERC7914DetectorDeployer} from '../../src/briefcase/deployers/util-contracts/ERC7914DetectorDeployer.sol';
 import {FeeCollectorDeployer} from '../../src/briefcase/deployers/util-contracts/FeeCollectorDeployer.sol';
-import {FeeOnTransferDetectorDeployer} from
-    '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
+import {
+    FeeOnTransferDetectorDeployer
+} from '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
 import {UniswapV2FactoryDeployer} from '../../src/briefcase/deployers/v2-core/UniswapV2FactoryDeployer.sol';
 import {UniswapV2Router02Deployer} from '../../src/briefcase/deployers/v2-periphery/UniswapV2Router02Deployer.sol';
 import {
     IUniswapV3Factory,
     UniswapV3FactoryDeployer
 } from '../../src/briefcase/deployers/v3-core/UniswapV3FactoryDeployer.sol';
-import {NonfungiblePositionManagerDeployer} from
-    '../../src/briefcase/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
-import {NonfungibleTokenPositionDescriptorDeployer} from
-    '../../src/briefcase/deployers/v3-periphery/NonfungibleTokenPositionDescriptorDeployer.sol';
+import {
+    NonfungiblePositionManagerDeployer
+} from '../../src/briefcase/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
+import {
+    NonfungibleTokenPositionDescriptorDeployer
+} from '../../src/briefcase/deployers/v3-periphery/NonfungibleTokenPositionDescriptorDeployer.sol';
 import {QuoterV2Deployer} from '../../src/briefcase/deployers/v3-periphery/QuoterV2Deployer.sol';
 import {SwapRouterDeployer} from '../../src/briefcase/deployers/v3-periphery/SwapRouterDeployer.sol';
 import {TickLensDeployer} from '../../src/briefcase/deployers/v3-periphery/TickLensDeployer.sol';
-import {UniswapInterfaceMulticallDeployer} from
-    '../../src/briefcase/deployers/v3-periphery/UniswapInterfaceMulticallDeployer.sol';
+import {
+    UniswapInterfaceMulticallDeployer
+} from '../../src/briefcase/deployers/v3-periphery/UniswapInterfaceMulticallDeployer.sol';
 import {V3MigratorDeployer} from '../../src/briefcase/deployers/v3-periphery/V3MigratorDeployer.sol';
 import {QuoterDeployer} from '../../src/briefcase/deployers/view-quoter-v3/QuoterDeployer.sol';
-import {TransparentUpgradeableProxy} from
-    'lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol';
+import {
+    TransparentUpgradeableProxy
+} from 'lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol';
 
 import {PoolManagerDeployer} from '../../src/briefcase/deployers/v4-core/PoolManagerDeployer.sol';
 

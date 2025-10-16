@@ -12,7 +12,7 @@ library BitMath {
     function mostSignificantBit(uint256 x) internal pure returns (uint8 r) {
         require(x > 0);
 
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             r := shl(7, lt(0xffffffffffffffffffffffffffffffff, x))
             r := or(r, shl(6, lt(0xffffffffffffffff, shr(r, x))))
             r := or(r, shl(5, lt(0xffffffff, shr(r, x))))
@@ -31,7 +31,7 @@ library BitMath {
     function leastSignificantBit(uint256 x) internal pure returns (uint8 r) {
         require(x > 0);
 
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             // Isolate the least significant bit.
             x := and(x, sub(0, x))
             // For the upper 3 bits of the result, use a De Bruijn-like lookup.
