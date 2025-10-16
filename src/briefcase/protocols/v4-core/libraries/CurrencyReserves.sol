@@ -13,26 +13,26 @@ library CurrencyReserves {
     bytes32 constant CURRENCY_SLOT = 0x27e098c505d44ec3574004bca052aabf76bd35004c182099d8c575fb238593b9;
 
     function getSyncedCurrency() internal view returns (Currency currency) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             currency := tload(CURRENCY_SLOT)
         }
     }
 
     function resetCurrency() internal {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             tstore(CURRENCY_SLOT, 0)
         }
     }
 
     function syncCurrencyAndReserves(Currency currency, uint256 value) internal {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             tstore(CURRENCY_SLOT, and(currency, 0xffffffffffffffffffffffffffffffffffffffff))
             tstore(RESERVES_OF_SLOT, value)
         }
     }
 
     function getSyncedReserves() internal view returns (uint256 value) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             value := tload(RESERVES_OF_SLOT)
         }
     }

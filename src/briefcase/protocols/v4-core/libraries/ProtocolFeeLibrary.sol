@@ -24,7 +24,7 @@ library ProtocolFeeLibrary {
 
     function isValidProtocolFee(uint24 self) internal pure returns (bool valid) {
         // Equivalent to: getZeroForOneFee(self) <= MAX_PROTOCOL_FEE && getOneForZeroFee(self) <= MAX_PROTOCOL_FEE
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             let isZeroForOneFeeOk := lt(and(self, 0xfff), FEE_0_THRESHOLD)
             let isOneForZeroFeeOk := lt(and(self, 0xfff000), FEE_1_THRESHOLD)
             valid := and(isZeroForOneFeeOk, isOneForZeroFeeOk)
@@ -37,7 +37,7 @@ library ProtocolFeeLibrary {
     /// @dev here `self` is just a single direction's protocol fee, not a packed type of 2 protocol fees
     function calculateSwapFee(uint16 self, uint24 lpFee) internal pure returns (uint24 swapFee) {
         // protocolFee + lpFee - (protocolFee * lpFee / 1_000_000)
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             self := and(self, 0xfff)
             lpFee := and(lpFee, 0xffffff)
             let numerator := mul(self, lpFee)

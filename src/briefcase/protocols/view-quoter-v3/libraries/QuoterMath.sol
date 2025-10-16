@@ -141,11 +141,11 @@ library QuoterMath {
             // compute values to swap to the target tick, price limit, or point where input/output amount is exhausted
             (state.sqrtPriceX96, step.amountIn, step.amountOut, step.feeAmount) = SwapMath.computeSwapStep(
                 state.sqrtPriceX96,
-                (
-                    quoteParams.zeroForOne
-                        ? step.sqrtPriceNextX96 < quoteParams.sqrtPriceLimitX96
-                        : step.sqrtPriceNextX96 > quoteParams.sqrtPriceLimitX96
-                ) ? quoteParams.sqrtPriceLimitX96 : step.sqrtPriceNextX96,
+                (quoteParams.zeroForOne
+                            ? step.sqrtPriceNextX96 < quoteParams.sqrtPriceLimitX96
+                            : step.sqrtPriceNextX96 > quoteParams.sqrtPriceLimitX96)
+                    ? quoteParams.sqrtPriceLimitX96
+                    : step.sqrtPriceNextX96,
                 state.liquidity,
                 state.amountSpecifiedRemaining,
                 quoteParams.fee

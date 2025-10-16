@@ -32,7 +32,7 @@ library PositionConfigIdLibrary {
 
     function hasSubscriber(PositionConfigId storage configId) internal view returns (bool subscribed) {
         bytes32 _id = configId.id;
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             subscribed := shr(255, _id)
         }
     }

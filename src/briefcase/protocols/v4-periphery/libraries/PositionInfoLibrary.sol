@@ -45,39 +45,39 @@ library PositionInfoLibrary {
 
     /// @dev This poolId is NOT compatible with the poolId used in UniswapV4 core. It is truncated to 25 bytes, and just used to lookup PoolKey in the poolKeys mapping.
     function poolId(PositionInfo info) internal pure returns (bytes25 _poolId) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             _poolId := and(MASK_UPPER_200_BITS, info)
         }
     }
 
     function tickLower(PositionInfo info) internal pure returns (int24 _tickLower) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             _tickLower := signextend(2, shr(TICK_LOWER_OFFSET, info))
         }
     }
 
     function tickUpper(PositionInfo info) internal pure returns (int24 _tickUpper) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             _tickUpper := signextend(2, shr(TICK_UPPER_OFFSET, info))
         }
     }
 
     function hasSubscriber(PositionInfo info) internal pure returns (bool _hasSubscriber) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             _hasSubscriber := and(MASK_8_BITS, info)
         }
     }
 
     /// @dev this does not actually set any storage
     function setSubscribe(PositionInfo info) internal pure returns (PositionInfo _info) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             _info := or(info, SET_SUBSCRIBE)
         }
     }
 
     /// @dev this does not actually set any storage
     function setUnsubscribe(PositionInfo info) internal pure returns (PositionInfo _info) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             _info := and(info, SET_UNSUBSCRIBE)
         }
     }
@@ -95,11 +95,10 @@ library PositionInfoLibrary {
     {
         bytes25 _poolId = bytes25(PoolId.unwrap(_poolKey.toId()));
         assembly {
-            info :=
-                or(
-                    or(and(MASK_UPPER_200_BITS, _poolId), shl(TICK_UPPER_OFFSET, and(MASK_24_BITS, _tickUpper))),
-                    shl(TICK_LOWER_OFFSET, and(MASK_24_BITS, _tickLower))
-                )
+            info := or(
+                or(and(MASK_UPPER_200_BITS, _poolId), shl(TICK_UPPER_OFFSET, and(MASK_24_BITS, _tickUpper))),
+                shl(TICK_LOWER_OFFSET, and(MASK_24_BITS, _tickLower))
+            )
         }
     }
 }
