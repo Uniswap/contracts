@@ -81,21 +81,19 @@ impl VerifierSelectionWorkflow {
                 }
             }
             3 => {
-                // Check if Sourcify was selected AND URL not yet provided
+                // Check if Sourcify was selected - if so, always prompt for verifier API URL
                 let state = STATE_MANAGER.workflow_state.lock()?;
                 let explorer = state.block_explorer.clone();
                 drop(state);
 
                 if let Some(explorer) = explorer {
-                    if explorer.explorer_type == SupportedExplorerType::Sourcify
-                        && explorer.sourcify_api_url.is_none()
-                    {
-                        // Sourcify selected but no URL provided yet - prompt for it
+                    if explorer.explorer_type == SupportedExplorerType::Sourcify {
+                        // Sourcify selected - always prompt for verifier API URL
                         Ok(WorkflowResult::NextScreen(Box::new(
                             SourcifyApiUrlScreen::new()?,
                         )))
                     } else {
-                        // Either not Sourcify, or Sourcify with URL already set - skip to API key screen
+                        // Not Sourcify - skip to API key screen
                         self.current_screen += 1;
                         self.get_screen()
                     }

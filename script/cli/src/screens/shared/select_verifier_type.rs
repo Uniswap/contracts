@@ -23,7 +23,7 @@ impl SelectVerifierTypeScreen {
 
         let options = vec![
             format!("Try as Blockscout (API URL: {})", api_url),
-            "Use Sourcify (custom API URL)".to_string(),
+            "Use Sourcify (enter custom API URL)".to_string(),
         ];
 
         Ok(SelectVerifierTypeScreen {
@@ -63,17 +63,14 @@ impl Screen for SelectVerifierTypeScreen {
                     Ok(ScreenResult::NextScreen(None))
                 }
                 1 => {
-                    // Set as Sourcify
-                    let mut state = STATE_MANAGER.workflow_state.lock()?;
-                    let explorer = state.block_explorer.as_mut().unwrap();
-
-                    // If there's a URL in the explorer.url field (from custom URL entry),
-                    // move it to sourcify_api_url so we don't need to prompt again
-                    if !explorer.url.is_empty() && explorer.sourcify_api_url.is_none() {
-                        explorer.sourcify_api_url = Some(explorer.url.clone());
-                    }
-
-                    explorer.explorer_type = SupportedExplorerType::Sourcify;
+                    // Set as Sourcify - will prompt for API URL in next screen
+                    STATE_MANAGER
+                        .workflow_state
+                        .lock()?
+                        .block_explorer
+                        .as_mut()
+                        .unwrap()
+                        .explorer_type = SupportedExplorerType::Sourcify;
                     Ok(ScreenResult::NextScreen(None))
                 }
                 _ => Ok(ScreenResult::Continue),

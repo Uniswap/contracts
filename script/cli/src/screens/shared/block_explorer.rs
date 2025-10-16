@@ -41,11 +41,11 @@ impl BlockExplorerScreen {
         }
 
         // Always add custom URL options at the end
-        pre_selected_explorers.push(format!("${{VERIFIER_API_URL_{}}}", chain_id));
+        pre_selected_explorers.push(format!("${{EXPLORER_URL_{}}}", chain_id));
 
         Ok(BlockExplorerScreen {
             select_or_enter: SelectOrEnterComponent::new(
-                "Select a block explorer or enter a custom URL\n\nNote: When entering a custom URL, for Blockscout, provide only the base URL (e.g., https://explorer.example.com)".to_string(),
+                "Select a block explorer or enter the explorer URL".to_string(),
                 false,
                 pre_selected_explorers,
                 |input, _| input,
