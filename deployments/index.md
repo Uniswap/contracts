@@ -10,6 +10,7 @@ This repository contains deployment information for the following networks:
 | 56 | BNB Smart Chain Mainnet | [View Deployment](./56.md) |
 | 130 | Unichain | [View Deployment](./130.md) |
 | 137 | Polygon Mainnet | [View Deployment](./137.md) |
+| 143 | Monad Mainnet | [View Deployment](./143.md) |
 | 480 | World Chain | [View Deployment](./480.md) |
 | 1301 | Unichain Sepolia Testnet | [View Deployment](./1301.md) |
 | 1868 | Soneium | [View Deployment](./1868.md) |
