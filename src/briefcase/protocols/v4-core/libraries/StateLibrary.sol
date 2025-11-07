@@ -50,7 +50,7 @@ library StateLibrary {
         //   24 bits  |24bits|24bits      |24 bits|160 bits
         // 0x000000   |000bb8|000000      |ffff75 |0000000000000000fe3aa841ba359daa0ea9eff7
         // ---------- | fee  |protocolfee | tick  | sqrtPriceX96
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             // bottom 160 bits of data
             sqrtPriceX96 := and(data, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
             // next 24 bits of data
@@ -87,7 +87,7 @@ library StateLibrary {
 
         // read all 3 words of the TickInfo struct
         bytes32[] memory data = manager.extsload(slot, 3);
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             let firstWord := mload(add(data, 32))
             liquidityNet := sar(128, firstWord)
             liquidityGross := and(firstWord, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
@@ -113,7 +113,7 @@ library StateLibrary {
         bytes32 slot = _getTickInfoSlot(poolId, tick);
 
         bytes32 value = manager.extsload(slot);
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             liquidityNet := sar(128, value)
             liquidityGross := and(value, 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF)
         }
@@ -137,7 +137,7 @@ library StateLibrary {
 
         // offset by 1 word, since the first word is liquidityGross + liquidityNet
         bytes32[] memory data = manager.extsload(bytes32(uint256(slot) + 1), 2);
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             feeGrowthOutside0X128 := mload(add(data, 32))
             feeGrowthOutside1X128 := mload(add(data, 64))
         }
@@ -167,7 +167,7 @@ library StateLibrary {
 
         // read the 2 words of feeGrowthGlobal
         bytes32[] memory data = manager.extsload(slot_feeGrowthGlobal0X128, 2);
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             feeGrowthGlobal0 := mload(add(data, 32))
             feeGrowthGlobal1 := mload(add(data, 64))
         }
@@ -198,11 +198,7 @@ library StateLibrary {
      * @param tick The tick to retrieve the bitmap for.
      * @return tickBitmap The bitmap of the tick.
      */
-    function getTickBitmap(IPoolManager manager, PoolId poolId, int16 tick)
-        internal
-        view
-        returns (uint256 tickBitmap)
-    {
+    function getTickBitmap(IPoolManager manager, PoolId poolId, int16 tick) internal view returns (uint256 tickBitmap) {
         // slot key of Pool.State value: `pools[poolId]`
         bytes32 stateSlot = _getPoolStateSlot(poolId);
 
@@ -261,7 +257,7 @@ library StateLibrary {
         // read all 3 words of the Position.State struct
         bytes32[] memory data = manager.extsload(slot, 3);
 
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             liquidity := mload(add(data, 32))
             feeGrowthInside0LastX128 := mload(add(data, 64))
             feeGrowthInside1LastX128 := mload(add(data, 96))

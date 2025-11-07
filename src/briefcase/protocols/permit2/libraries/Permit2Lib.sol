@@ -36,16 +36,15 @@ library Permit2Lib {
 
         bool success; // Call the token contract as normal, capturing whether it succeeded.
         assembly {
-            success :=
-                and(
-                    // Set success to whether the call reverted, if not we check it either
-                    // returned exactly 1 (can't just be non-zero data), or had no return data.
-                    or(eq(mload(0), 1), iszero(returndatasize())),
-                    // Counterintuitively, this call() must be positioned after the or() in the
-                    // surrounding and() because and() evaluates its arguments from right to left.
-                    // We use 0 and 32 to copy up to 32 bytes of return data into the first slot of scratch space.
-                    call(gas(), token, 0, add(inputData, 32), mload(inputData), 0, 32)
-                )
+            success := and(
+                // Set success to whether the call reverted, if not we check it either
+                // returned exactly 1 (can't just be non-zero data), or had no return data.
+                or(eq(mload(0), 1), iszero(returndatasize())),
+                // Counterintuitively, this call() must be positioned after the or() in the
+                // surrounding and() because and() evaluates its arguments from right to left.
+                // We use 0 and 32 to copy up to 32 bytes of return data into the first slot of scratch space.
+                call(gas(), token, 0, add(inputData, 32), mload(inputData), 0, 32)
+            )
         }
 
         // We'll fall back to using Permit2 if calling transferFrom on the token directly reverted.
@@ -87,17 +86,16 @@ library Permit2Lib {
             // If the token is WETH9, we know it doesn't have a DOMAIN_SEPARATOR, and we'll skip this step.
             // We make sure to mask the token address as its higher order bits aren't guaranteed to be clean.
             if iszero(eq(and(token, 0xffffffffffffffffffffffffffffffffffffffff), WETH9_ADDRESS)) {
-                success :=
-                    and(
-                        // Should resolve false if its not 32 bytes or its first word is 0.
-                        and(iszero(iszero(mload(0))), eq(returndatasize(), 32)),
-                        // We use 0 and 32 to copy up to 32 bytes of return data into the scratch space.
-                        // Counterintuitively, this call must be positioned second to the and() call in the
-                        // surrounding and() call or else returndatasize() will be zero during the computation.
-                        // We send a maximum of 5000 gas to prevent tokens with fallbacks from using a ton of gas.
-                        // which should be plenty to allow tokens to fetch their DOMAIN_SEPARATOR from storage, etc.
-                        staticcall(5000, token, add(inputData, 32), mload(inputData), 0, 32)
-                    )
+                success := and(
+                    // Should resolve false if its not 32 bytes or its first word is 0.
+                    and(iszero(iszero(mload(0))), eq(returndatasize(), 32)),
+                    // We use 0 and 32 to copy up to 32 bytes of return data into the scratch space.
+                    // Counterintuitively, this call must be positioned second to the and() call in the
+                    // surrounding and() call or else returndatasize() will be zero during the computation.
+                    // We send a maximum of 5000 gas to prevent tokens with fallbacks from using a ton of gas.
+                    // which should be plenty to allow tokens to fetch their DOMAIN_SEPARATOR from storage, etc.
+                    staticcall(5000, token, add(inputData, 32), mload(inputData), 0, 32)
+                )
 
                 domainSeparator := mload(0) // Copy the return value into the domainSeparator variable.
             }

@@ -70,7 +70,8 @@ pub fn parse_chain_config() -> HashMap<String, Chain> {
                                             .and_then(|s| s.as_str())
                                             .unwrap_or("")
                                             .to_string(),
-                                        explorer_type: SupportedExplorerType::Manual,
+                                        explorer_type: SupportedExplorerType::Unknown,
+                                        sourcify_api_url: None,
                                     };
                                     guess_explorer_type(&mut explorer);
                                     Some(explorer)
@@ -112,6 +113,7 @@ pub fn parse_chain_config() -> HashMap<String, Chain> {
     let etherscan_chainlist: serde_json::Value =
         serde_json::from_str(ETHERSCAN_CHAINLIST_DATA).expect("Failed to parse JSON");
 
+    // Add/upgrade explorers from Etherscan chainlist (authoritative for EtherscanV2 support)
     if let Some(result_array) = etherscan_chainlist.get("result").and_then(|v| v.as_array()) {
         for entry in result_array {
             if let Some(entry_obj) = entry.as_object() {
@@ -120,18 +122,50 @@ pub fn parse_chain_config() -> HashMap<String, Chain> {
                     .and_then(|v| v.as_str())
                     .unwrap_or_default()
                     .to_string();
+
+                let blockexplorer_url = entry_obj
+                    .get("blockexplorer")
+                    .and_then(|v| v.as_str())
+                    .unwrap_or_default()
+                    .trim_end_matches('/')  // Normalize URL
+                    .to_string();
+
+                if blockexplorer_url.is_empty() {
+                    continue;
+                }
+
                 if chains.contains_key(&chain_id) {
                     let mut explorers = chains.get_mut(&chain_id).unwrap().explorers.clone();
-                    if let Some(etherscan_explorer) = explorers
-                        .iter()
-                        .find(|e| e.explorer_type == SupportedExplorerType::Etherscan)
-                    {
-                        let mut v2_explorer = etherscan_explorer.clone();
-                        v2_explorer.explorer_type = SupportedExplorerType::EtherscanV2;
-                        explorers.push(v2_explorer);
-                        explorers.retain(|e| e.explorer_type != SupportedExplorerType::Etherscan);
-                        chains.get_mut(&chain_id).unwrap().explorers = explorers;
+
+                    // Find explorer with matching URL
+                    let mut found = false;
+                    for explorer in explorers.iter_mut() {
+                        let normalized_url = explorer.url.trim_end_matches('/');
+                        if normalized_url == blockexplorer_url {
+                            // Mark this explorer as EtherscanV2
+                            explorer.explorer_type = SupportedExplorerType::EtherscanV2;
+                            found = true;
+                            break;
+                        }
                     }
+
+                    // If no matching explorer found, create a new one
+                    if !found {
+                        let chain_name = entry_obj
+                            .get("chainname")
+                            .and_then(|v| v.as_str())
+                            .unwrap_or("Etherscan");
+
+                        explorers.push(Explorer {
+                            name: format!("{} (Etherscan)", chain_name),
+                            url: blockexplorer_url,
+                            standard: "EIP3091".to_string(),
+                            explorer_type: SupportedExplorerType::EtherscanV2,
+                            sourcify_api_url: None,
+                        });
+                    }
+
+                    chains.get_mut(&chain_id).unwrap().explorers = explorers;
                 }
             }
         }
@@ -141,11 +175,8 @@ pub fn parse_chain_config() -> HashMap<String, Chain> {
 }
 
 fn guess_explorer_type(explorer: &mut Explorer) {
-    if explorer.url.contains("scan") || explorer.name.contains("scan") {
-        explorer.explorer_type = SupportedExplorerType::Etherscan;
-    } else if explorer.url.contains("blockscout") || explorer.name.contains("blockscout") {
+    if explorer.url.contains("blockscout") || explorer.name.to_lowercase().contains("blockscout") {
         explorer.explorer_type = SupportedExplorerType::Blockscout;
-    } else {
-        explorer.explorer_type = SupportedExplorerType::Manual;
     }
+    // Leave as Unknown if we can't detect - user will choose in SelectVerifierTypeScreen
 }

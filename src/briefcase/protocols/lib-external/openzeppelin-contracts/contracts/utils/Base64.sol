@@ -85,7 +85,9 @@ library Base64 {
                 mstore8(sub(resultPtr, 1), 0x3d)
                 mstore8(sub(resultPtr, 2), 0x3d)
             }
-            case 2 { mstore8(sub(resultPtr, 1), 0x3d) }
+            case 2 {
+                mstore8(sub(resultPtr, 1), 0x3d)
+            }
         }
 
         return result;

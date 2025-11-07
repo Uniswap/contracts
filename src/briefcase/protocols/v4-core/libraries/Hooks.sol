@@ -93,7 +93,8 @@ library Hooks {
                 || permissions.afterDonate != self.hasPermission(AFTER_DONATE_FLAG)
                 || permissions.beforeSwapReturnDelta != self.hasPermission(BEFORE_SWAP_RETURNS_DELTA_FLAG)
                 || permissions.afterSwapReturnDelta != self.hasPermission(AFTER_SWAP_RETURNS_DELTA_FLAG)
-                || permissions.afterAddLiquidityReturnDelta != self.hasPermission(AFTER_ADD_LIQUIDITY_RETURNS_DELTA_FLAG)
+                || permissions.afterAddLiquidityReturnDelta
+                    != self.hasPermission(AFTER_ADD_LIQUIDITY_RETURNS_DELTA_FLAG)
                 || permissions.afterRemoveLiquidityReturnDelta
                     != self.hasPermission(AFTER_REMOVE_LIQUIDITY_RETURNS_DELTA_FLAG)
         ) {
@@ -129,14 +130,14 @@ library Hooks {
     /// @return result The complete data returned by the hook
     function callHook(IHooks self, bytes memory data) internal returns (bytes memory result) {
         bool success;
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             success := call(gas(), self, 0, add(data, 0x20), mload(data), 0, 0)
         }
         // Revert with FailedHookCall, containing any error message to bubble up
         if (!success) CustomRevert.bubbleUpAndRevertWith(address(self), bytes4(data), HookCallFailed.selector);
 
         // The call was successful, fetch the returned data
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             // allocate result byte array from the free memory pointer
             result := mload(0x40)
             // store new free memory pointer at the end of the array padded to 32 bytes
@@ -289,16 +290,18 @@ library Hooks {
         bytes calldata hookData,
         BeforeSwapDelta beforeSwapHookReturn
     ) internal returns (BalanceDelta, BalanceDelta) {
-        if (msg.sender == address(self)) return (swapDelta, BalanceDeltaLibrary.ZERO_DELTA);
+        if (msg.sender == address(self)) {
+            return (swapDelta, BalanceDeltaLibrary.ZERO_DELTA);
+        }
 
         int128 hookDeltaSpecified = beforeSwapHookReturn.getSpecifiedDelta();
         int128 hookDeltaUnspecified = beforeSwapHookReturn.getUnspecifiedDelta();
 
         if (self.hasPermission(AFTER_SWAP_FLAG)) {
             hookDeltaUnspecified += self.callHookWithReturnDelta(
-                abi.encodeCall(IHooks.afterSwap, (msg.sender, key, params, swapDelta, hookData)),
-                self.hasPermission(AFTER_SWAP_RETURNS_DELTA_FLAG)
-            ).toInt128();
+                    abi.encodeCall(IHooks.afterSwap, (msg.sender, key, params, swapDelta, hookData)),
+                    self.hasPermission(AFTER_SWAP_RETURNS_DELTA_FLAG)
+                ).toInt128();
         }
 
         BalanceDelta hookDelta;

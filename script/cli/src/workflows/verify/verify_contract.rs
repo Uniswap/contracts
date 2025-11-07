@@ -1,14 +1,13 @@
 use crate::errors;
 use crate::screens::screen_manager::ScreenResult;
-use crate::screens::shared::block_explorer::BlockExplorerScreen;
 use crate::screens::shared::chain_id::ChainIdScreen;
 use crate::screens::shared::enter_address::EnterAddressScreen;
-use crate::screens::shared::enter_explorer_api_key::EnterExplorerApiKeyScreen;
 use crate::screens::shared::rpc_url::get_rpc_url_screen;
 use crate::screens::shared::test_connection::TestConnectionScreen;
 use crate::screens::verify_contract::verify_contract_screen::VerifyContractScreen;
 use crate::state_manager::STATE_MANAGER;
 use crate::workflows::error_workflow::ErrorWorkflow;
+use crate::workflows::verifier_selection_workflow::VerifierSelectionWorkflow;
 use crate::workflows::workflow_manager::{process_nested_workflows, Workflow, WorkflowResult};
 
 pub struct VerifyContractWorkflow {
@@ -72,7 +71,7 @@ impl Workflow for VerifyContractWorkflow {
 }
 
 impl VerifyContractWorkflow {
-    fn get_screen(&self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
+    fn get_screen(&mut self) -> Result<WorkflowResult, Box<dyn std::error::Error>> {
         match self.current_screen {
             1 => Ok(WorkflowResult::NextScreen(Box::new(ChainIdScreen::new(
                 None,
@@ -81,13 +80,12 @@ impl VerifyContractWorkflow {
             3 => Ok(WorkflowResult::NextScreen(Box::new(
                 TestConnectionScreen::new()?,
             ))),
-            4 => Ok(WorkflowResult::NextScreen(Box::new(
-                BlockExplorerScreen::new()?,
-            ))),
+            4 => {
+                // Spawn verifier selection sub-workflow
+                self.child_workflows = vec![Box::new(VerifierSelectionWorkflow::new())];
+                self.child_workflows[0].next_screen(None)
+            }
             5 => Ok(WorkflowResult::NextScreen(Box::new(
-                EnterExplorerApiKeyScreen::new()?,
-            ))),
-            6 => Ok(WorkflowResult::NextScreen(Box::new(
                 EnterAddressScreen::new(
                     "Please enter the contract address to verify\n".to_string(),
                     Some(Box::new(|address| {
@@ -101,7 +99,7 @@ impl VerifyContractWorkflow {
                     })),
                 ),
             ))),
-            7 => Ok(WorkflowResult::NextScreen(Box::new(
+            6 => Ok(WorkflowResult::NextScreen(Box::new(
                 VerifyContractScreen::new()?,
             ))),
             _ => Ok(WorkflowResult::Finished),
