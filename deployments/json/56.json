@@ -1,6 +1,64 @@
 {
   "chainId": "56",
   "latest": {
+    "ERC7914Detector": {
+      "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+      "proxy": false,
+      "deploymentTxn": "0x0c92f6e93d802df807922c4524739f25bd6ab25051c7cc655d3700cb83087165",
+      "timestamp": 1756472573,
+      "commitHash": "320811c"
+    },
+    "MixedRouteQuoterV2": {
+      "address": "0xf0c802DCb0cF1C4f7B953756b49D940EED190221",
+      "proxy": false,
+      "deploymentTxn": "0xedd6de7e79c4815cf21f108d79c3911427c6cbbc38f75b09775c4aa414f08dd7",
+      "timestamp": 1740085039
+    },
+    "PoolManager": {
+      "address": "0x28e2ea090877bf75740558f6bfb36a5ffee9e9df",
+      "proxy": false,
+      "deploymentTxn": "0x64b395f1b0b3c734a477c802bc8cc3ce394f328c651290d0d166946048487bbe",
+      "timestamp": 1737493275,
+      "commitHash": "e6c327f"
+    },
+    "PositionDescriptor": {
+      "address": "0xf0432f360703ec3d33931a8356a75a77d8d380e1",
+      "implementation": "0x98eded8886c37eaab755e8fd064ba672b7593f9e",
+      "proxy": true,
+      "proxyType": "TransparentUpgradeableProxy",
+      "deploymentTxn": "0x71e3b52bc19b7d1debd4605127d1d74ce089c8b6dfba7867b4f98b5ad950f5f9",
+      "proxyAdmin": null,
+      "timestamp": 1737493275,
+      "commitHash": "e6c327f"
+    },
+    "PositionManager": {
+      "address": "0x7a4a5c919ae2541aed11041a1aeee68f1287f95b",
+      "proxy": false,
+      "deploymentTxn": "0xbdf1b9b925ffdae84e6f78d77cff05ce3f18daffadcf3985e149dd65cd558bc1",
+      "timestamp": 1737493275,
+      "commitHash": "e6c327f"
+    },
+    "V4Quoter": {
+      "address": "0x9f75dd27d6664c475b90e105573e550ff69437b0",
+      "proxy": false,
+      "deploymentTxn": "0x43879698fc528e9f48294acf2c423d4d3f10a31fb0565e915d2a201992dbf16a",
+      "timestamp": 1737493275,
+      "commitHash": "e6c327f"
+    },
+    "StateView": {
+      "address": "0xd13dd3d6e93f276fafc9db9e6bb47c1180aee0c4",
+      "proxy": false,
+      "deploymentTxn": "0xe5c716fd7b9122a51a55cdb24b2d0e984a4d51e4a202e1b9bc026a8267737695",
+      "timestamp": 1737493275,
+      "commitHash": "e6c327f"
+    },
+    "UniversalRouter": {
+      "address": "0x1906c1d672b88cd1b9ac7593301ca990f94eae07",
+      "proxy": false,
+      "deploymentTxn": "0x5226450df1d44d9a8073c0939b37d505c2ef6e19c52eeb1e00ba72ce96ccff7a",
+      "timestamp": 1737493275,
+      "commitHash": "e6c327f"
+    },
     "FeeOnTransferDetector": {
       "address": "0xCF6220e4496B091a6b391D48e770f1FbaC63E740",
       "proxy": false,
@@ -24,13 +82,6 @@
       "proxy": false,
       "deploymentTxn": "0x9e940f846abea7dcc1f0bd5c261f405c104628c855346f8cac966f52905ee0fa",
       "timestamp": 1707417014
-    },
-    "UniversalRouter": {
-      "address": "0x1906c1d672b88cd1b9ac7593301ca990f94eae07",
-      "proxy": false,
-      "deploymentTxn": "0x5226450df1d44d9a8073c0939b37d505c2ef6e19c52eeb1e00ba72ce96ccff7a",
-      "timestamp": 1737493275,
-      "commitHash": "e6c327f"
     },
     "UniswapV2Factory": {
       "address": "0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6",
@@ -85,50 +136,6 @@
       "proxy": false,
       "deploymentTxn": "0xb038ec7b72db4207e0c0d5433e1cabc41b4e4f9b9cac577173b3188fc508a6c3",
       "timestamp": 1675417539
-    },
-    "PoolManager": {
-      "address": "0x28e2ea090877bf75740558f6bfb36a5ffee9e9df",
-      "proxy": false,
-      "deploymentTxn": "0x64b395f1b0b3c734a477c802bc8cc3ce394f328c651290d0d166946048487bbe",
-      "timestamp": 1737493275,
-      "commitHash": "e6c327f"
-    },
-    "PositionDescriptor": {
-      "implementation": "0x98eded8886c37eaab755e8fd064ba672b7593f9e",
-      "address": "0xf0432f360703ec3d33931a8356a75a77d8d380e1",
-      "proxy": true,
-      "proxyType": "TransparentUpgradeableProxy",
-      "deploymentTxn": "0x71e3b52bc19b7d1debd4605127d1d74ce089c8b6dfba7867b4f98b5ad950f5f9",
-      "timestamp": 1737493275,
-      "commitHash": "e6c327f"
-    },
-    "PositionManager": {
-      "address": "0x7a4a5c919ae2541aed11041a1aeee68f1287f95b",
-      "proxy": false,
-      "deploymentTxn": "0xbdf1b9b925ffdae84e6f78d77cff05ce3f18daffadcf3985e149dd65cd558bc1",
-      "timestamp": 1737493275,
-      "commitHash": "e6c327f"
-    },
-    "V4Quoter": {
-      "address": "0x9f75dd27d6664c475b90e105573e550ff69437b0",
-      "proxy": false,
-      "deploymentTxn": "0x43879698fc528e9f48294acf2c423d4d3f10a31fb0565e915d2a201992dbf16a",
-      "timestamp": 1737493275,
-      "commitHash": "e6c327f"
-    },
-    "StateView": {
-      "address": "0xd13dd3d6e93f276fafc9db9e6bb47c1180aee0c4",
-      "proxy": false,
-      "deploymentTxn": "0xe5c716fd7b9122a51a55cdb24b2d0e984a4d51e4a202e1b9bc026a8267737695",
-      "timestamp": 1737493275,
-      "commitHash": "e6c327f"
-    },
-    "ERC7914Detector": {
-      "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
-      "proxy": false,
-      "deploymentTxn": "0x0c92f6e93d802df807922c4524739f25bd6ab25051c7cc655d3700cb83087165",
-      "timestamp": 1756472573,
-      "commitHash": "320811c"
     }
   },
   "history": [
@@ -147,6 +154,23 @@
       },
       "timestamp": 1756472573,
       "commitHash": "320811c"
+    },
+    {
+      "contracts": {
+        "MixedRouteQuoterV2": {
+          "address": "0xf0c802DCb0cF1C4f7B953756b49D940EED190221",
+          "proxy": false,
+          "deploymentTxn": "0xedd6de7e79c4815cf21f108d79c3911427c6cbbc38f75b09775c4aa414f08dd7",
+          "input": {
+            "constructor": {
+              "_uniswapV4PoolManager": "0x28e2Ea090877bF75740558f6BFB36A5ffeE9e9dF",
+              "_uniswapV3Poolfactory": "0xdB1d10011AD0Ff90774D0C6Bb92e5C5c8b4461F7",
+              "_uniswapV2Poolfactory": "0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6"
+            }
+          }
+        }
+      },
+      "timestamp": 1740085039
     },
     {
       "contracts": {
