@@ -34,9 +34,10 @@ additional_compiler_profiles = [
   { name = "v3-periphery-lowest", optimizer_runs = 1000, evm_version = "istanbul", via_ir = false },
   { name = "v3-periphery-low", optimizer_runs = 2000, evm_version = "istanbul", via_ir = false },
   { name = "v3-periphery-default", optimizer_runs = 1000000, evm_version = "istanbul", via_ir = false },
-  { name = "permit2", optimizer_runs = 1000000, via_ir = true },
+  { name = "permit2", optimizer_runs = 1000000, via_ir = true, evm_version = "london" },
   { name = "uniswapx", optimizer_runs = 1000000, via_ir = false },
   { name = "util-contracts", optimizer_runs = 200, via_ir = false, evm_version = "paris" },
+  { name = "mixed-quoter", optimizer_runs = 200, via_ir = true, evm_version = "cancun" },
 ]
 
 compilation_restrictions = [
@@ -54,6 +55,7 @@ compilation_restrictions = [
   { paths = "src/pkgs/v3-periphery/contracts/V3Migrator.sol", version = "0.7.6", via_ir = false, min_optimizer_runs = 1000000 },
   { paths = "src/pkgs/v3-periphery/**/libraries/**", version = "<0.8.0" },
   # permit2
+  { paths = "src/pkgs/permit2/src/Permit2.sol", version = "0.8.17", via_ir = true, optimizer_runs = 1000000, evm_version = "london" },
   { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
   # v4
   { paths = "src/pkgs/v4-core/src/PoolManager.sol", optimizer_runs = 44444444 },
@@ -62,8 +64,10 @@ compilation_restrictions = [
   { paths = "src/pkgs/v4-periphery/src/lens/**", version = "0.8.26", optimizer_runs = 44444444 },
   { paths = "src/pkgs/v4-periphery/src/hooks/**", version = "0.8.26", optimizer_runs = 44444444 },
   # router
-  { paths = "src/pkgs/universal-router/contracts/**", optimizer_runs = 44444444 },
+  { paths = "src/pkgs/universal-router/contracts/UniversalRouter.sol", optimizer_runs = 44444444 },
   { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
+  # mixed-quoter
+  { paths = "src/pkgs/mixed-quoter/src/**", version = "0.8.26", via_ir = true, optimizer_runs = 200, evm_version = "cancun" },
   # X
   { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "0.8.24" },
   # util-contracts: util-contracts specifies shanghai fork, but it was only supported from 0.8.20 onwards, so paris is the correct evm version
