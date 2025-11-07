@@ -135,9 +135,32 @@
       "deploymentTxn": "0x57f20b43c7f001cde3ced566ee11d83749678639d155234fcdd8a0b8d1a7c856",
       "timestamp": 1746214762,
       "commitHash": "c797b9e"
+    },
+    "ERC7914Detector": {
+      "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+      "proxy": false,
+      "deploymentTxn": "0x6da2799ec55636467d4eb25b495ba970a105150a478be5c1299acb2707803b7a",
+      "timestamp": 1762529020,
+      "commitHash": "952bce9"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "ERC7914Detector": {
+          "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+          "proxy": false,
+          "deploymentTxn": "0x6da2799ec55636467d4eb25b495ba970a105150a478be5c1299acb2707803b7a",
+          "input": {
+            "constructor": {
+              "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            }
+          }
+        }
+      },
+      "timestamp": 1762529020,
+      "commitHash": "952bce9"
+    },
     {
       "contracts": {
         "WETHHook": {
