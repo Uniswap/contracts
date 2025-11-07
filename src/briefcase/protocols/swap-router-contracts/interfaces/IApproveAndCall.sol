@@ -65,8 +65,5 @@ interface IApproveAndCall {
     /// @notice Calls the position manager's increaseLiquidity function
     /// @param params Calldata to pass along to the position manager
     /// @return result The result from the call
-    function increaseLiquidity(IncreaseLiquidityParams calldata params)
-        external
-        payable
-        returns (bytes memory result);
+    function increaseLiquidity(IncreaseLiquidityParams calldata params) external payable returns (bytes memory result);
 }

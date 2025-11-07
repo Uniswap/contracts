@@ -82,6 +82,16 @@ impl VerifyContractScreen {
             .parse::<Address>()?;
 
         tokio::spawn(async move {
+            let verifier = match explorer_api.explorer.explorer_type {
+                SupportedExplorerType::EtherscanV2 => "etherscan",
+                SupportedExplorerType::Blockscout => "blockscout",
+                SupportedExplorerType::Sourcify => "sourcify",
+                SupportedExplorerType::Unknown => {
+                    // This should never happen if the workflow is correct
+                    panic!("Unknown explorer type should have been resolved by workflow");
+                }
+            };
+
             let mut command = &mut Command::new("forge");
             command = command
                 .arg("verify-contract")
@@ -89,19 +99,15 @@ impl VerifyContractScreen {
                 .arg(format!("--rpc-url={}", rpc_url))
                 .arg("-vvvv")
                 .arg("--watch")
-                .arg(format!(
-                    "--verifier={}",
-                    if explorer_api.explorer.explorer_type == SupportedExplorerType::Blockscout {
-                        "blockscout"
-                    } else if explorer_api.explorer.explorer_type == SupportedExplorerType::EtherscanV2 {
-                        "etherscan"
-                    } else {
-                        // custom also works for etherscan
-                        "custom"
-                    }
-                ))
-                .arg(format!("--verifier-url={}", explorer_api.api_url))
-                .arg(format!("--verifier-api-key={}", explorer_api.api_key))
+                .arg(format!("--verifier={}", verifier))
+                .arg(format!("--verifier-url={}", explorer_api.api_url));
+
+            // Only add API key if it's not empty
+            if !explorer_api.api_key.is_empty() {
+                command = command.arg(format!("--verifier-api-key={}", explorer_api.api_key));
+            }
+
+            command = command
                 .arg("--guess-constructor-args")
                 .arg(format!("{}", contract_address));
 

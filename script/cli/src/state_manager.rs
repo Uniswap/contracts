@@ -1,4 +1,4 @@
-use crate::libs::explorer::{Explorer, SupportedExplorerType};
+use crate::libs::explorer::Explorer;
 use crate::libs::web3::Web3Lib;
 use crate::screens::verify_contract::verify_contract_screen::VerifyContractData;
 use crate::util::chain_config::{parse_chain_config, Chain};
@@ -68,17 +68,7 @@ impl StateManager {
     }
 
     pub fn get_chain(&self, chain_id: String) -> Option<Chain> {
-        let mut chain = self.chains.get(&chain_id).cloned();
-
-        // Manual override for Zora and Ink due to incorrect config
-        if chain_id == "7777777" || chain_id == "57073" {
-            if let Some(ref mut chain_data) = chain {
-                if chain_data.explorers.len() == 1 {
-                    chain_data.explorers[0].explorer_type = SupportedExplorerType::Blockscout;
-                }
-            }
-        }
-        chain
+        self.chains.get(&chain_id).cloned()
     }
 }
 

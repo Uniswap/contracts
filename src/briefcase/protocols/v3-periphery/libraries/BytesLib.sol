@@ -48,7 +48,9 @@ library BytesLib {
                 } lt(mc, end) {
                     mc := add(mc, 0x20)
                     cc := add(cc, 0x20)
-                } { mstore(mc, mload(cc)) }
+                } {
+                    mstore(mc, mload(cc))
+                }
 
                 mstore(tempBytes, _length)
 

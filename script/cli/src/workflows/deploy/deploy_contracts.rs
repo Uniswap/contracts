@@ -1,17 +1,15 @@
 use crate::errors;
 use crate::screens::deploy_contracts::execute_deploy_script::ExecuteDeployScriptScreen;
 use crate::screens::screen_manager::ScreenResult;
-use crate::screens::shared::block_explorer::BlockExplorerScreen;
 use crate::screens::shared::chain_id::ChainIdScreen;
-use crate::screens::shared::enter_explorer_api_key::EnterExplorerApiKeyScreen;
 use crate::screens::shared::generic_select_or_enter::GenericSelectOrEnterScreen;
 use crate::screens::shared::rpc_url::get_rpc_url_screen;
 use crate::screens::shared::test_connection::TestConnectionScreen;
-use crate::screens::shared::text_display_screen::TextDisplayScreen;
 use crate::state_manager::STATE_MANAGER;
 use crate::util::deploy_config_lib::get_config_dir;
 use crate::util::screen_util::validate_bytes32;
 use crate::workflows::error_workflow::ErrorWorkflow;
+use crate::workflows::verifier_selection_workflow::VerifierSelectionWorkflow;
 use crate::workflows::workflow_manager::{process_nested_workflows, Workflow, WorkflowResult};
 
 pub struct DeployContractsWorkflow {
@@ -90,22 +88,12 @@ impl DeployContractsWorkflow {
             3 => Ok(WorkflowResult::NextScreen(Box::new(
                 TestConnectionScreen::new()?,
             ))),
-            4 => match BlockExplorerScreen::new() {
-                Ok(screen) => Ok(WorkflowResult::NextScreen(Box::new(screen))),
-                Err(_) => {
-                    self.current_screen += 1;
-                    Ok(WorkflowResult::NextScreen(Box::new(
-                        TextDisplayScreen::new(
-                            "No explorer found, skipping contract verification during deployment."
-                                .to_string(),
-                        ),
-                    )))
-                }
-            },
+            4 => {
+                // Spawn verifier selection sub-workflow
+                self.child_workflows = vec![Box::new(VerifierSelectionWorkflow::new())];
+                self.child_workflows[0].next_screen(None)
+            }
             5 => Ok(WorkflowResult::NextScreen(Box::new(
-                EnterExplorerApiKeyScreen::new()?,
-            ))),
-            6 => Ok(WorkflowResult::NextScreen(Box::new(
                 GenericSelectOrEnterScreen::new(
                     "Enter your private key".to_string(),
                     vec!["${PRIVATE_KEY}".to_string()],
@@ -118,7 +106,7 @@ impl DeployContractsWorkflow {
                     }),
                 ),
             ))),
-            7 => Ok(WorkflowResult::NextScreen(Box::new(
+            6 => Ok(WorkflowResult::NextScreen(Box::new(
                 ExecuteDeployScriptScreen::new()?,
             ))),
             _ => Ok(WorkflowResult::Finished),

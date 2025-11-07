@@ -16,15 +16,14 @@ library TickBitmap {
     function compress(int24 tick, int24 tickSpacing) internal pure returns (int24 compressed) {
         // compressed = tick / tickSpacing;
         // if (tick < 0 && tick % tickSpacing != 0) compressed--;
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             tick := signextend(2, tick)
             tickSpacing := signextend(2, tickSpacing)
-            compressed :=
-                sub(
-                    sdiv(tick, tickSpacing),
-                    // if (tick < 0 && tick % tickSpacing != 0) then tick % tickSpacing < 0, vice versa
-                    slt(smod(tick, tickSpacing), 0)
-                )
+            compressed := sub(
+                sdiv(tick, tickSpacing),
+                // if (tick < 0 && tick % tickSpacing != 0) then tick % tickSpacing < 0, vice versa
+                slt(smod(tick, tickSpacing), 0)
+            )
         }
     }
 
@@ -33,7 +32,7 @@ library TickBitmap {
     /// @return wordPos The key in the mapping containing the word in which the bit is stored
     /// @return bitPos The bit position in the word where the flag is stored
     function position(int24 tick) internal pure returns (int16 wordPos, uint8 bitPos) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             // signed arithmetic shift right
             wordPos := sar(8, signextend(2, tick))
             bitPos := and(tick, 0xff)
@@ -50,7 +49,7 @@ library TickBitmap {
         //     (int16 wordPos, uint8 bitPos) = position(tick / tickSpacing);
         //     uint256 mask = 1 << bitPos;
         //     self[wordPos] ^= mask;
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             tick := signextend(2, tick)
             tickSpacing := signextend(2, tickSpacing)
             // ensure that the tick is spaced

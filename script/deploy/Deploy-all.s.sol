@@ -7,29 +7,35 @@ import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-co
 
 import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-router/UniversalRouterDeployer.sol';
 
+import {MixedRouteQuoterV2Deployer} from '../../src/briefcase/deployers/mixed-quoter/MixedRouteQuoterV2Deployer.sol';
 import {ERC7914DetectorDeployer} from '../../src/briefcase/deployers/util-contracts/ERC7914DetectorDeployer.sol';
 import {FeeCollectorDeployer} from '../../src/briefcase/deployers/util-contracts/FeeCollectorDeployer.sol';
-import {FeeOnTransferDetectorDeployer} from
-    '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
+import {
+    FeeOnTransferDetectorDeployer
+} from '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
 import {UniswapV2FactoryDeployer} from '../../src/briefcase/deployers/v2-core/UniswapV2FactoryDeployer.sol';
 import {UniswapV2Router02Deployer} from '../../src/briefcase/deployers/v2-periphery/UniswapV2Router02Deployer.sol';
 import {
     IUniswapV3Factory,
     UniswapV3FactoryDeployer
 } from '../../src/briefcase/deployers/v3-core/UniswapV3FactoryDeployer.sol';
-import {NonfungiblePositionManagerDeployer} from
-    '../../src/briefcase/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
-import {NonfungibleTokenPositionDescriptorDeployer} from
-    '../../src/briefcase/deployers/v3-periphery/NonfungibleTokenPositionDescriptorDeployer.sol';
+import {
+    NonfungiblePositionManagerDeployer
+} from '../../src/briefcase/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
+import {
+    NonfungibleTokenPositionDescriptorDeployer
+} from '../../src/briefcase/deployers/v3-periphery/NonfungibleTokenPositionDescriptorDeployer.sol';
 import {QuoterV2Deployer} from '../../src/briefcase/deployers/v3-periphery/QuoterV2Deployer.sol';
 import {SwapRouterDeployer} from '../../src/briefcase/deployers/v3-periphery/SwapRouterDeployer.sol';
 import {TickLensDeployer} from '../../src/briefcase/deployers/v3-periphery/TickLensDeployer.sol';
-import {UniswapInterfaceMulticallDeployer} from
-    '../../src/briefcase/deployers/v3-periphery/UniswapInterfaceMulticallDeployer.sol';
+import {
+    UniswapInterfaceMulticallDeployer
+} from '../../src/briefcase/deployers/v3-periphery/UniswapInterfaceMulticallDeployer.sol';
 import {V3MigratorDeployer} from '../../src/briefcase/deployers/v3-periphery/V3MigratorDeployer.sol';
 import {QuoterDeployer} from '../../src/briefcase/deployers/view-quoter-v3/QuoterDeployer.sol';
-import {TransparentUpgradeableProxy} from
-    'lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol';
+import {
+    TransparentUpgradeableProxy
+} from 'lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol';
 
 import {PoolManagerDeployer} from '../../src/briefcase/deployers/v4-core/PoolManagerDeployer.sol';
 
@@ -75,6 +81,8 @@ contract Deploy is Script {
         deployV4Hooks();
 
         deployViewQuoterV3();
+
+        deployMixedQuoter();
 
         deploySwapRouters();
 
@@ -349,6 +357,22 @@ contract Deploy is Script {
         }
         console.log('deploying View Quoter v3');
         QuoterDeployer.deploy(v3Factory);
+    }
+
+    function deployMixedQuoter() private {
+        if (!config.readBoolOr('.protocols.mixed-quoter.deploy', false)) return;
+
+        if (poolManager == address(0)) {
+            poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+        }
+        if (v3Factory == address(0)) {
+            v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
+        }
+        if (v2Factory == address(0)) {
+            v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
+        }
+        console.log('deploying Mixed Route Quoter V2');
+        MixedRouteQuoterV2Deployer.deploy(poolManager, v3Factory, v2Factory);
     }
 
     function deploySwapRouters() private {

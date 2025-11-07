@@ -96,20 +96,26 @@ impl ExecuteDeployScriptScreen {
                 let explorer_api =
                     ExplorerApiLib::new(explorer.clone().unwrap(), explorer_api_key.unwrap())
                         .unwrap();
+
+                let verifier = match explorer_api.explorer.explorer_type {
+                    SupportedExplorerType::EtherscanV2 => "etherscan",
+                    SupportedExplorerType::Blockscout => "blockscout",
+                    SupportedExplorerType::Sourcify => "sourcify",
+                    SupportedExplorerType::Unknown => {
+                        // This should never happen if the workflow is correct
+                        panic!("Unknown explorer type should have been resolved by workflow");
+                    }
+                };
+
                 command = command
                     .arg("--verify")
-                    .arg(format!(
-                        "--verifier={}",
-                        if explorer_api.explorer.explorer_type == SupportedExplorerType::Blockscout
-                        {
-                            "blockscout"
-                        } else {
-                            // custom also works for etherscan
-                            "custom"
-                        }
-                    ))
-                    .arg(format!("--verifier-url={}", explorer_api.api_url))
-                    .arg(format!("--verifier-api-key={}", explorer_api.api_key));
+                    .arg(format!("--verifier={}", verifier))
+                    .arg(format!("--verifier-url={}", explorer_api.api_url));
+
+                // Only add API key if it's not empty
+                if !explorer_api.api_key.is_empty() {
+                    command = command.arg(format!("--verifier-api-key={}", explorer_api.api_key));
+                }
             }
 
             match execute_command(command.arg("--broadcast").arg("--skip-simulation")) {

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >= 0.5.0;
+pragma solidity >=0.5.0;
 
 library DeployerHelper {
     function create(bytes memory initcode) internal returns (address contractAddress) {

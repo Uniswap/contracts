@@ -299,6 +299,30 @@
                 }
             }
         },
+        "mixed-quoter": {
+            "name": "Mixed Quoter",
+            "deploy": false,
+            "contracts": {
+                "MixedRouteQuoterV2": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "v3Factory": {
+                            "name": "Uniswap v3 factory address",
+                            "pointer": "protocols.v3.contracts.UniswapV3Factory"
+                        },
+                        "v2Factory": {
+                            "name": "Uniswap v2 factory address",
+                            "pointer": "protocols.v2.contracts.UniswapV2Factory"
+                        }
+                    }
+                }
+            }
+        },
         "swap-router-contracts": {
             "name": "Swap Router Contracts",
             "deploy": false,
