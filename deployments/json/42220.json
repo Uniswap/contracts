@@ -1,6 +1,46 @@
 {
   "chainId": "42220",
   "latest": {
+    "PositionManager": {
+      "address": "0xf7965f3981e4d5bc383bfbcb61501763e9068ca9",
+      "proxy": false,
+      "deploymentTxn": "0x3d659577beaa56a21ae578b1c20e41e4c89ee3472ffbe1a92bc5708a6639c9da",
+      "timestamp": 1759288616880,
+      "commitHash": "a9cf67d"
+    },
+    "V4Quoter": {
+      "address": "0x28566da1093609182dff2cb2a91cfd72e61d66cd",
+      "proxy": false,
+      "deploymentTxn": "0xc16ea827cbab0ddda9a5d23324481ac4827e8b9d29e3d8dd66e4e2da9b602f95",
+      "timestamp": 1759288616880,
+      "commitHash": "a9cf67d"
+    },
+    "StateView": {
+      "address": "0xbc21f8720babf4b20d195ee5c6e99c52b76f2bfb",
+      "proxy": false,
+      "deploymentTxn": "0xad211c66d4e5abba430f3e5ddfe7fd291b99e82b2840f5d35fe2d09cc9811b1b",
+      "timestamp": 1759288616880,
+      "commitHash": "a9cf67d"
+    },
+    "UniversalRouter": {
+      "address": "0xcb695bc5d3aa22cad1e6df07801b061a05a0233a",
+      "proxy": false,
+      "deploymentTxn": "0x787774bf1deca68698939a91baf1e8fecf381b95a0d32585fab7d6beb935cd56",
+      "timestamp": 1759288616880,
+      "commitHash": "a9cf67d"
+    },
+    "PositionDescriptor": {
+      "address": "0x5727E22b25fEEe05E8dFa83C752B86F19D102D8A",
+      "proxy": false,
+      "deploymentTxn": "0x481eed8b4be0ab9ebedc0d3a625143c4a480c40ea88a1573b545d24159353404",
+      "timestamp": 1755885925
+    },
+    "PoolManager": {
+      "address": "0x288dc841A52FCA2707c6947B3A777c5E56cd87BC",
+      "proxy": false,
+      "deploymentTxn": "0xf7fa3451efa757ea9a393af4936f0fb6264fbbd96e782a578a11fbb02c622238",
+      "timestamp": 1755885921
+    },
     "FeeOnTransferDetector": {
       "address": "0x8eEa35913DdeD795001562f9bA5b282d3ac04B60",
       "proxy": false,
@@ -18,12 +58,6 @@
       "proxy": false,
       "deploymentTxn": "0x2eea47c92eadfcdffbb62148e1c5172426dc1213e5cce87fba7ebea3cc2f52a5",
       "timestamp": 1713505377
-    },
-    "UniversalRouter": {
-      "address": "0x643770E279d5D0733F21d6DC03A8efbABf3255B4",
-      "proxy": false,
-      "deploymentTxn": "0x80abdadd6f1e9dbe19bf1d479515f806293d08fd8a10b4f274505cc0b59c7e9c",
-      "timestamp": 1694706731
     },
     "UniswapV2Factory": {
       "address": "0x79a530c8e2fA8748B7B40dd3629C0520c2cCf03f",
@@ -96,6 +130,98 @@
     }
   },
   "history": [
+    {
+      "contracts": {
+        "PositionManager": {
+          "address": "0xf7965f3981e4d5bc383bfbcb61501763e9068ca9",
+          "proxy": false,
+          "deploymentTxn": "0x3d659577beaa56a21ae578b1c20e41e4c89ee3472ffbe1a92bc5708a6639c9da",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x288dc841A52FCA2707c6947B3A777c5E56cd87BC",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "300000",
+              "_tokenDescriptor": "0x5727E22b25fEEe05E8dFa83C752B86F19D102D8A",
+              "_weth9": "0x471EcE3750Da237f93B8E339c536989b8978a438"
+            }
+          }
+        },
+        "V4Quoter": {
+          "address": "0x28566da1093609182dff2cb2a91cfd72e61d66cd",
+          "proxy": false,
+          "deploymentTxn": "0xc16ea827cbab0ddda9a5d23324481ac4827e8b9d29e3d8dd66e4e2da9b602f95",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x288dc841A52FCA2707c6947B3A777c5E56cd87BC"
+            }
+          }
+        },
+        "StateView": {
+          "address": "0xbc21f8720babf4b20d195ee5c6e99c52b76f2bfb",
+          "proxy": false,
+          "deploymentTxn": "0xad211c66d4e5abba430f3e5ddfe7fd291b99e82b2840f5d35fe2d09cc9811b1b",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x288dc841A52FCA2707c6947B3A777c5E56cd87BC"
+            }
+          }
+        },
+        "UniversalRouter": {
+          "address": "0xcb695bc5d3aa22cad1e6df07801b061a05a0233a",
+          "proxy": false,
+          "deploymentTxn": "0x787774bf1deca68698939a91baf1e8fecf381b95a0d32585fab7d6beb935cd56",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x471EcE3750Da237f93B8E339c536989b8978a438",
+                "v2Factory": "0x79a530c8e2fA8748B7B40dd3629C0520c2cCf03f",
+                "v3Factory": "0xAfE208a311B21f13EF87E33A90049fC17A7acDEc",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x288dc841A52FCA2707c6947B3A777c5E56cd87BC",
+                "v3NFTPositionManager": "0x3d79EdAaBC0EaB6F08ED885C05Fc0B014290D95A",
+                "v4PositionManager": "0xf7965f3981e4D5BC383BfBCb61501763e9068CA"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1759288616880,
+      "commitHash": "a9cf67d"
+    },
+    {
+      "contracts": {
+        "PositionDescriptor": {
+          "address": "0x5727E22b25fEEe05E8dFa83C752B86F19D102D8A",
+          "proxy": false,
+          "deploymentTxn": "0x481eed8b4be0ab9ebedc0d3a625143c4a480c40ea88a1573b545d24159353404",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x288dc841A52FCA2707c6947B3A777c5E56cd87BC",
+              "_wrappedNative": "0x0000000000000000000000000000000000000000",
+              "_nativeCurrencyLabelBytes": "0x4554480000000000000000000000000000000000000000000000000000000000"
+            }
+          }
+        }
+      },
+      "timestamp": 1755885925
+    },
+    {
+      "contracts": {
+        "PoolManager": {
+          "address": "0x288dc841A52FCA2707c6947B3A777c5E56cd87BC",
+          "proxy": false,
+          "deploymentTxn": "0xf7fa3451efa757ea9a393af4936f0fb6264fbbd96e782a578a11fbb02c622238",
+          "input": {
+            "constructor": {
+              "initialOwner": "0x0Eb863541278308c3A64F8E908BC646e27BFD071"
+            }
+          }
+        }
+      },
+      "timestamp": 1755885921
+    },
     {
       "contracts": {
         "FeeOnTransferDetector": {

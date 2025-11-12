@@ -4,7 +4,7 @@ default:
 
 # Build the project and copy the binary to the project root
 build:
-    cargo build --release
+    CLEAN=true cargo build --release
     cp ./target/release/deploy-cli ../../deploy-cli
 
 # Run tests
@@ -25,7 +25,7 @@ clean:
 
 # Build and run the project
 run:
-    cargo run -- --dir ../..
+    CLEAN=true cargo run -- --dir ../..
 
 # Watch the project and run it when the code changes
 watch:
@@ -33,4 +33,4 @@ watch:
 
 # Install the project
 install:
-    cargo install --path .
+    CLEAN=true cargo install --path .

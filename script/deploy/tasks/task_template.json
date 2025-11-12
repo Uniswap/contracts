@@ -233,6 +233,57 @@
                 }
             }
         },
+        "hooks": {
+            "name": "v4 Hooks",
+            "deploy": false,
+            "contracts": {
+                "WETHHook": {
+                    "deploy": false,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "salt": {
+                            "type": "bytes32"
+                        }
+                    },
+                    "dependencies": ["weth"]
+                },
+                "WstETHHook": {
+                    "deploy": false,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "wstETH": {
+                            "name": "WstETH address",
+                            "type": "address"
+                        },
+                        "salt": {
+                            "type": "bytes32"
+                        }
+                    }
+                },
+                "WstETHRoutingHook": {
+                    "deploy": false,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "wstETH": {
+                            "name": "WstETH address",
+                            "type": "address"
+                        },
+                        "salt": {
+                            "type": "bytes32"
+                        }
+                    }
+                }
+            }
+        },
         "view-quoter-v3": {
             "name": "View Quoter v3",
             "deploy": false,
@@ -243,6 +294,30 @@
                         "factory": {
                             "name": "Uniswap v3 factory address",
                             "pointer": "protocols.v3.contracts.UniswapV3Factory"
+                        }
+                    }
+                }
+            }
+        },
+        "mixed-quoter": {
+            "name": "Mixed Quoter",
+            "deploy": false,
+            "contracts": {
+                "MixedRouteQuoterV2": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "v3Factory": {
+                            "name": "Uniswap v3 factory address",
+                            "pointer": "protocols.v3.contracts.UniswapV3Factory"
+                        },
+                        "v2Factory": {
+                            "name": "Uniswap v2 factory address",
+                            "pointer": "protocols.v2.contracts.UniswapV2Factory"
                         }
                     }
                 }
@@ -358,6 +433,16 @@
                         },
                         "feeToken": {
                             "name": "Fee token address (usually USDC)",
+                            "type": "address"
+                        }
+                    }
+                },
+                "ERC7914Detector": {
+                    "deploy": false,
+                    "address": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00",
+                    "params": {
+                        "caliburAddress": {
+                            "name": "Calibur address for ERC7914 detection",
                             "type": "address"
                         }
                     }

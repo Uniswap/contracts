@@ -18,8 +18,8 @@ compile_and_flatten() {
   echo "processing $project/$subpath"
   echo ""
 
-  find "$input_dir" -type f -name "*.sol" | while read -r sol_file; do
-    relative_path=$(echo "$sol_file" | sed -E "s|$input_dir||")
+  find "$input_dir" -type f -name "*.sol" -print0 | while IFS= read -r -d '' sol_file; do
+    relative_path=$(echo "$sol_file" | sed -E "s|^$input_dir/||")
     output_file="$output_dir$relative_path"
 
     echo "Flattening $sol_file"
@@ -51,7 +51,11 @@ forge clean
 forge build
 
 echo "Inserting current initcode into deployers"
-python3 script/util/insert_initcode.py "src/briefcase/deployers" "out" 
+if ! python3 script/util/insert_initcode.py "src/briefcase/deployers" "out"; then
+  rm -rf "$tmp_dir"
+  forge fmt "src/briefcase" > /dev/null 2>&1
+  exit 1
+fi
 
 rm -rf "$tmp_dir"
 forge fmt "src/briefcase"

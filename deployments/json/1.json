@@ -1,6 +1,40 @@
 {
   "chainId": "1",
   "latest": {
+    "ERC7914Detector": {
+      "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+      "proxy": false,
+      "deploymentTxn": "0xdf55d820307711320819d4fb080902214d130d4d0c4e3321341a8eea11980a6c",
+      "timestamp": 1756326351,
+      "commitHash": "320811c"
+    },
+    "WstETHHook": {
+      "address": "0xcdde8f9c3414a00f804e5c565eed9949ad17e888",
+      "proxy": false,
+      "deploymentTxn": "0x8c5526a3239bd3994144bae9d762efa945485ac9da9c51f53734a02ff9c62da2",
+      "timestamp": 1756326351,
+      "commitHash": "320811c"
+    },
+    "WstETHRoutingHook": {
+      "address": "0x3ac6e14a142251eb3fe739399e0a8da81ed06888",
+      "proxy": false,
+      "deploymentTxn": "0xbe0998cacc36d9689aaa6ada9975df5bf480b486cdd568a50b8140007f8fca81",
+      "timestamp": 1756326351,
+      "commitHash": "320811c"
+    },
+    "WETHHook": {
+      "address": "0x57991106cb7aa27e2771beda0d6522f68524a888",
+      "proxy": false,
+      "deploymentTxn": "0x4d0a27817e26b192727a0d22086852f0394b788264de01ccf0293cfc63b25e99",
+      "timestamp": 1746213763,
+      "commitHash": "c797b9e"
+    },
+    "MixedRouteQuoterV2": {
+      "address": "0xE63C5F5005909E96b5aA9CE10744CCE70eC16CC3",
+      "proxy": false,
+      "deploymentTxn": "0xa066fbaed2170a828193d09be87073fc7ba003fa14214a2e08d41b07156f81f9",
+      "timestamp": 1738194683
+    },
     "PositionDescriptor": {
       "address": "0xd1428ba554f4c8450b763a0b2040a4935c63f06c",
       "implementation": "0xb5b6d1ba9d3c85d3e94331341c1c880b22e3f144",
@@ -69,16 +103,16 @@
       "deploymentTxn": "0x987a4ebc41d0713ffa5ffa7de5e5de8c243face6c92318272eeef3f78f3fe32c",
       "timestamp": 1713205295
     },
-    "ExclusiveDutchOrderReactor": {
-      "address": "0x6000da47483062A0D734Ba3dc7576Ce6A0B645C4",
-      "proxy": false,
-      "deploymentTxn": "0xa86efffcc790c0c65c83b0aab4c8cbfff1c6195a8276ef9f5dbe99f50e48d9f2",
-      "timestamp": 1690383395
-    },
     "OrderQuoter": {
       "address": "0x54539967a06Fc0E3C3ED0ee320Eb67362D13C5fF",
       "proxy": false,
       "deploymentTxn": "0x7743c23afeca03c875e3664159eb71381d981a0e689ed7e8adceea6db769f107",
+      "timestamp": 1690383395
+    },
+    "ExclusiveDutchOrderReactor": {
+      "address": "0x6000da47483062A0D734Ba3dc7576Ce6A0B645C4",
+      "proxy": false,
+      "deploymentTxn": "0xa86efffcc790c0c65c83b0aab4c8cbfff1c6195a8276ef9f5dbe99f50e48d9f2",
       "timestamp": 1690383395
     },
     "Permit2": {
@@ -187,17 +221,102 @@
     },
     {
       "contracts": {
-        "CaliburEntry": {
-          "address": "0xd9a0b49560bf5d698cdeb01d0182b366e8cdb9a9",
+        "ERC7914Detector": {
+          "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
           "proxy": false,
-          "deploymentTxn": "0xabfa0adabf08d979d9af13f5261f56608d231798aacb5d86890ed7406c634ba6",
+          "deploymentTxn": "0xdf55d820307711320819d4fb080902214d130d4d0c4e3321341a8eea11980a6c",
           "input": {
-            "constructor": {}
+            "constructor": {
+              "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            }
+          }
+        },
+        "WstETHHook": {
+          "address": "0xcdde8f9c3414a00f804e5c565eed9949ad17e888",
+          "proxy": false,
+          "deploymentTxn": "0x8c5526a3239bd3994144bae9d762efa945485ac9da9c51f53734a02ff9c62da2",
+          "input": {
+            "constructor": {
+              "_manager": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+              "_wsteth": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+            }
+          }
+        },
+        "WstETHRoutingHook": {
+          "address": "0x3ac6e14a142251eb3fe739399e0a8da81ed06888",
+          "proxy": false,
+          "deploymentTxn": "0xbe0998cacc36d9689aaa6ada9975df5bf480b486cdd568a50b8140007f8fca81",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+              "_wstETH": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+            }
           }
         }
       },
-      "timestamp": 1748020034,
-      "commitHash": "0a52cd5"
+      "timestamp": 1756326351,
+      "commitHash": "320811c"
+    },
+    {
+      "contracts": {
+        "ERC7914Detector": {
+          "address": "0x9466235afff51af9e285614a21eff5d7aac2c802",
+          "proxy": false,
+          "deploymentTxn": "0x5e4c0ebb85e70c921418f5ac591914979c6063e632509b2b035d923c8cfffe9a",
+          "input": {
+            "constructor": {
+              "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            }
+          }
+        }
+      },
+      "timestamp": 1756325186,
+      "commitHash": "320811c"
+    },
+    {
+      "contracts": {
+        "WETHHook": {
+          "address": "0x57991106cb7aa27e2771beda0d6522f68524a888",
+          "proxy": false,
+          "deploymentTxn": "0x4d0a27817e26b192727a0d22086852f0394b788264de01ccf0293cfc63b25e99",
+          "input": {
+            "constructor": {
+              "_manager": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+              "_weth": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+            }
+          }
+        },
+        "WstETHHook": {
+          "address": "0xa88aacf73df2bccfabcfd1e7b597185cac9f2888",
+          "proxy": false,
+          "deploymentTxn": "0x6a51d7279a76de87263d6aa4caad6e49ddc79e2db47b8cee35ef39477642f1d4",
+          "input": {
+            "constructor": {
+              "_manager": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+              "_wsteth": "0x7f39C581F595B53c5cb19bD0b3f8dA6c935E2Ca0"
+            }
+          }
+        }
+      },
+      "timestamp": 1746213763,
+      "commitHash": "c797b9e"
+    },
+    {
+      "contracts": {
+        "MixedRouteQuoterV2": {
+          "address": "0xE63C5F5005909E96b5aA9CE10744CCE70eC16CC3",
+          "proxy": false,
+          "deploymentTxn": "0xa066fbaed2170a828193d09be87073fc7ba003fa14214a2e08d41b07156f81f9",
+          "input": {
+            "constructor": {
+              "_uniswapV4PoolManager": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+              "_uniswapV3Poolfactory": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+              "_uniswapV2Poolfactory": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
+            }
+          }
+        }
+      },
+      "timestamp": 1738194683
     },
     {
       "contracts": {
@@ -370,6 +489,19 @@
     },
     {
       "contracts": {
+        "OrderQuoter": {
+          "address": "0x54539967a06Fc0E3C3ED0ee320Eb67362D13C5fF",
+          "proxy": false,
+          "deploymentTxn": "0x7743c23afeca03c875e3664159eb71381d981a0e689ed7e8adceea6db769f107",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1690383395
+    },
+    {
+      "contracts": {
         "ExclusiveDutchOrderReactor": {
           "address": "0x6000da47483062A0D734Ba3dc7576Ce6A0B645C4",
           "proxy": false,
@@ -379,19 +511,6 @@
               "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
               "_protocolFeeOwner": "0x1a9C8182C09F50C8318d769245beA52c32BE35BC"
             }
-          }
-        }
-      },
-      "timestamp": 1690383395
-    },
-    {
-      "contracts": {
-        "OrderQuoter": {
-          "address": "0x54539967a06Fc0E3C3ED0ee320Eb67362D13C5fF",
-          "proxy": false,
-          "deploymentTxn": "0x7743c23afeca03c875e3664159eb71381d981a0e689ed7e8adceea6db769f107",
-          "input": {
-            "constructor": {}
           }
         }
       },

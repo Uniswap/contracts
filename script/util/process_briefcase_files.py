@@ -236,6 +236,32 @@ def get_relative_path(src_path, dest_path):
     return relative_path
 
 
+def calculate_path_distance(relative_path):
+    """
+    Calculate the distance of a relative path for import priority.
+    Returns a tuple (traversal_count, total_segments) where:
+    - traversal_count: number of '../' segments (upward directory traversals)
+    - total_segments: total number of path segments
+    Lower values indicate closer/preferred paths.
+    """
+    # Normalize path separators
+    normalized_path = relative_path.replace(os.sep, '/')
+    # Remove leading './'
+    if normalized_path.startswith('./'):
+        normalized_path = normalized_path[2:]
+
+    # Split into segments
+    segments = normalized_path.split('/')
+
+    # Count upward traversals (..)
+    traversal_count = sum(1 for seg in segments if seg == '..')
+
+    # Total number of segments
+    total_segments = len(segments)
+
+    return (traversal_count, total_segments)
+
+
 def write_file(
     path, code_block, license, pragma, identifiers, functions, imports, overwrite=False
 ):
@@ -248,7 +274,9 @@ def write_file(
             file.write(license + "\n")
         file.write(pragma + "\n\n")
 
-        import_statements = []
+        # Phase 1: Collect all identifier-to-source mappings
+        # Maps identifier_name -> [(dest_path, relative_path, distance)]
+        identifier_sources = {}
 
         for dest_path in identifiers:
             if dest_path != path:
@@ -261,8 +289,43 @@ def write_file(
 
                 if used_identifiers:
                     relative_path = get_relative_path(dest_path, path)
-                    import_statement = create_import_statement(used_identifiers, relative_path)
-                    import_statements.append((relative_path, import_statement))
+                    distance = calculate_path_distance(relative_path)
+
+                    # Track each identifier and its potential sources
+                    for identifier in used_identifiers:
+                        if identifier not in identifier_sources:
+                            identifier_sources[identifier] = []
+                        identifier_sources[identifier].append((dest_path, relative_path, distance))
+
+        # Phase 2: Deduplicate - select closest source for each identifier
+        # Maps identifier_name -> (dest_path, relative_path)
+        selected_sources = {}
+
+        for identifier, sources in identifier_sources.items():
+            if len(sources) == 1:
+                # No collision, use the only source
+                dest_path, relative_path, _ = sources[0]
+                selected_sources[identifier] = (dest_path, relative_path)
+            else:
+                # Multiple sources - select the closest one
+                closest = min(sources, key=lambda x: x[2])
+                dest_path, relative_path, _ = closest
+                selected_sources[identifier] = (dest_path, relative_path)
+
+        # Phase 3: Group identifiers by destination file and create import statements
+        # Maps dest_path -> (relative_path, [identifiers])
+        imports_by_file = {}
+
+        for identifier, (dest_path, relative_path) in selected_sources.items():
+            if dest_path not in imports_by_file:
+                imports_by_file[dest_path] = (relative_path, [])
+            imports_by_file[dest_path][1].append(identifier)
+
+        # Create final import statements sorted by relative path
+        import_statements = []
+        for dest_path, (relative_path, identifier_list) in imports_by_file.items():
+            import_statement = create_import_statement(identifier_list, relative_path)
+            import_statements.append((relative_path, import_statement))
 
         # Sort by the relative path
         import_statements.sort(key=lambda x: x[0])

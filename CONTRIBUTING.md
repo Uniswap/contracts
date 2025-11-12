@@ -118,6 +118,10 @@ library <ContractName>Deployer {
      *
      * @notice This initcode is generated from the following contract:
      * - Source Contract: src/pkgs/<package-name>/src/<contract-name>.sol
+     * - solc: 0.X.X
+     * - optimizer_runs: <optimizer_runs>
+     * - via_ir: true/false
+     * - evm_version: <evm_version>
      */
     function initcode() internal pure returns (bytes memory) {
         return hex'';
@@ -127,7 +131,7 @@ library <ContractName>Deployer {
 
 The deploy function can run arbitrary logic to deploy the contract, e.g., deploying via create, create2, using a factory, or a proxy. The deployer function should return the address and interface of the deployed contract so it can be called in subsequent steps.
 
-After creating the deployer file, it's important to update the `Source Contract` path in the comment above the `initcode` function. This ensures that the correct contract is used for the initcode.
+After creating the deployer file, it's important to update the `Source Contract` path in the comment above the `initcode` function. This ensures that the correct contract is used for the initcode. Additionally, the `solc` version, `optimizer_runs`, `via_ir`, and `evm_version` should be specified. These additional fields are used as safeguards to ensure that the correct initcode is inserted into the deployer file.
 
 Finally, run `./script/util/create_briefcase.sh` to generate the initcode for the deployer and populate the bytecode in the initcode function.
 

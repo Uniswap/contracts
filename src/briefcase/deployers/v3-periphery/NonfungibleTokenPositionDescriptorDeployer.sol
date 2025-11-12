@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >= 0.7.0;
+pragma solidity >=0.7.0;
 
-import {INonfungibleTokenPositionDescriptor} from
-    '../../protocols/v3-periphery/interfaces/INonfungibleTokenPositionDescriptor.sol';
+import {
+    INonfungibleTokenPositionDescriptor
+} from '../../protocols/v3-periphery/interfaces/INonfungibleTokenPositionDescriptor.sol';
 import {DeployerHelper} from '../DeployerHelper.sol';
 import {NFTDescriptorDeployer} from './NFTDescriptorDeployer.sol';
 
@@ -22,6 +23,10 @@ library NonfungibleTokenPositionDescriptorDeployer {
      *
      * @notice This initcode is generated from the following contract:
      * - Source Contract: src/pkgs/v3-periphery/contracts/NonfungibleTokenPositionDescriptor.sol
+     * - solc: 0.7.6
+     * - optimizer_runs: 1000
+     * - via_ir: false
+     * - evm_version: istanbul
      */
     function initcode(address NFTDescriptor) internal pure returns (bytes memory) {
         return abi.encodePacked(

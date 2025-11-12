@@ -1,6 +1,12 @@
 {
   "chainId": "7777777",
   "latest": {
+    "MixedRouteQuoterV2": {
+      "address": "0x5f739c790a48E97eec0efb81bab5D152c0A0ecA0",
+      "proxy": false,
+      "deploymentTxn": "0x71957cd1ca4ce88aea4129d20001a7a6560223b3186668b1f026e189be017f75",
+      "timestamp": 1740086625
+    },
     "PoolManager": {
       "address": "0x0575338e4c17006ae181b47900a84404247ca30f",
       "proxy": false,
@@ -9,11 +15,12 @@
       "commitHash": "417770f"
     },
     "PositionDescriptor": {
-      "implementation": "0xb1efe9b87d9fb07eac9207ebe481f0148412d735",
       "address": "0x7d64630bbb4993b5578dbd65e400961c9e68d55a",
+      "implementation": "0xb1efe9b87d9fb07eac9207ebe481f0148412d735",
       "proxy": true,
       "proxyType": "TransparentUpgradeableProxy",
       "deploymentTxn": "0x67fe8b509bbfe794cf1f6ded0ccef888a2b0dcaa29571fe8c28bfbef50e2a581",
+      "proxyAdmin": null,
       "timestamp": 1737562927,
       "commitHash": "417770f"
     },
@@ -67,6 +74,23 @@
       },
       "timestamp": 1748029232,
       "commitHash": "0a52cd5"
+    },
+    {
+      "contracts": {
+        "MixedRouteQuoterV2": {
+          "address": "0x5f739c790a48E97eec0efb81bab5D152c0A0ecA0",
+          "proxy": false,
+          "deploymentTxn": "0x71957cd1ca4ce88aea4129d20001a7a6560223b3186668b1f026e189be017f75",
+          "input": {
+            "constructor": {
+              "_uniswapV4PoolManager": "0x0575338e4C17006aE181B47900A84404247CA30f",
+              "_uniswapV3Poolfactory": "0x7145F8aeef1f6510E92164038E1B6F8cB2c42Cbb",
+              "_uniswapV2Poolfactory": "0x0F797dC7efaEA995bB916f268D919d0a1950eE3C"
+            }
+          }
+        }
+      },
+      "timestamp": 1740086625
     },
     {
       "contracts": {

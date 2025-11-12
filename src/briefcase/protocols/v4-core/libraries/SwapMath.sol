@@ -22,7 +22,7 @@ library SwapMath {
         pure
         returns (uint160 sqrtPriceTargetX96)
     {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             // a flag to toggle between sqrtPriceNextX96 and sqrtPriceLimitX96
             // when zeroForOne == true, nextOrLimit reduces to sqrtPriceNextX96 >= sqrtPriceLimitX96
             // sqrtPriceTargetX96 = max(sqrtPriceNextX96, sqrtPriceLimitX96)
@@ -70,7 +70,7 @@ library SwapMath {
                     // `amountIn` is capped by the target price
                     sqrtPriceNextX96 = sqrtPriceTargetX96;
                     feeAmount = _feePips == MAX_SWAP_FEE
-                        ? amountIn // amountIn is always 0 here, as amountRemainingLessFee == 0 and amountRemainingLessFee >= amountIn
+                        ? amountIn  // amountIn is always 0 here, as amountRemainingLessFee == 0 and amountRemainingLessFee >= amountIn
                         : FullMath.mulDivRoundingUp(amountIn, _feePips, MAX_SWAP_FEE - _feePips);
                 } else {
                     // exhaust the remaining amount

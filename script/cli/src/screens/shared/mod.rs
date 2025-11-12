@@ -1,10 +1,13 @@
 pub mod block_explorer;
 pub mod chain_id;
+pub mod enter_address;
 pub mod enter_explorer_api_key;
 pub mod error_screen;
 pub mod generic_multi_select;
 pub mod generic_select;
 pub mod generic_select_or_enter;
 pub mod rpc_url;
+pub mod select_verifier_type;
+pub mod sourcify_api_url;
 pub mod test_connection;
 pub mod text_display_screen;

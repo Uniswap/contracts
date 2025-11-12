@@ -10,7 +10,7 @@ library UnsafeMath {
     /// @param y The divisor
     /// @return z The quotient, ceil(x / y)
     function divRoundingUp(uint256 x, uint256 y) internal pure returns (uint256 z) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             z := add(div(x, y), gt(mod(x, y), 0))
         }
     }
@@ -22,7 +22,7 @@ library UnsafeMath {
     /// @param denominator The divisor
     /// @return result The 256-bit result, floor(a×b÷denominator)
     function simpleMulDiv(uint256 a, uint256 b, uint256 denominator) internal pure returns (uint256 result) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             result := div(mul(a, b), denominator)
         }
     }

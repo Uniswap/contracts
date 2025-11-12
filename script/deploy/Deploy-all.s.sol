@@ -7,28 +7,35 @@ import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-co
 
 import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-router/UniversalRouterDeployer.sol';
 
+import {MixedRouteQuoterV2Deployer} from '../../src/briefcase/deployers/mixed-quoter/MixedRouteQuoterV2Deployer.sol';
+import {ERC7914DetectorDeployer} from '../../src/briefcase/deployers/util-contracts/ERC7914DetectorDeployer.sol';
 import {FeeCollectorDeployer} from '../../src/briefcase/deployers/util-contracts/FeeCollectorDeployer.sol';
-import {FeeOnTransferDetectorDeployer} from
-    '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
+import {
+    FeeOnTransferDetectorDeployer
+} from '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
 import {UniswapV2FactoryDeployer} from '../../src/briefcase/deployers/v2-core/UniswapV2FactoryDeployer.sol';
 import {UniswapV2Router02Deployer} from '../../src/briefcase/deployers/v2-periphery/UniswapV2Router02Deployer.sol';
 import {
     IUniswapV3Factory,
     UniswapV3FactoryDeployer
 } from '../../src/briefcase/deployers/v3-core/UniswapV3FactoryDeployer.sol';
-import {NonfungiblePositionManagerDeployer} from
-    '../../src/briefcase/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
-import {NonfungibleTokenPositionDescriptorDeployer} from
-    '../../src/briefcase/deployers/v3-periphery/NonfungibleTokenPositionDescriptorDeployer.sol';
+import {
+    NonfungiblePositionManagerDeployer
+} from '../../src/briefcase/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
+import {
+    NonfungibleTokenPositionDescriptorDeployer
+} from '../../src/briefcase/deployers/v3-periphery/NonfungibleTokenPositionDescriptorDeployer.sol';
 import {QuoterV2Deployer} from '../../src/briefcase/deployers/v3-periphery/QuoterV2Deployer.sol';
 import {SwapRouterDeployer} from '../../src/briefcase/deployers/v3-periphery/SwapRouterDeployer.sol';
 import {TickLensDeployer} from '../../src/briefcase/deployers/v3-periphery/TickLensDeployer.sol';
-import {UniswapInterfaceMulticallDeployer} from
-    '../../src/briefcase/deployers/v3-periphery/UniswapInterfaceMulticallDeployer.sol';
+import {
+    UniswapInterfaceMulticallDeployer
+} from '../../src/briefcase/deployers/v3-periphery/UniswapInterfaceMulticallDeployer.sol';
 import {V3MigratorDeployer} from '../../src/briefcase/deployers/v3-periphery/V3MigratorDeployer.sol';
 import {QuoterDeployer} from '../../src/briefcase/deployers/view-quoter-v3/QuoterDeployer.sol';
-import {TransparentUpgradeableProxy} from
-    'lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol';
+import {
+    TransparentUpgradeableProxy
+} from 'lib/openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol';
 
 import {PoolManagerDeployer} from '../../src/briefcase/deployers/v4-core/PoolManagerDeployer.sol';
 
@@ -38,6 +45,9 @@ import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-peripher
 import {CaliburEntryDeployer} from '../../src/briefcase/deployers/calibur/CaliburEntryDeployer.sol';
 import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
+import {WETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WETHHookDeployer.sol';
+import {WstETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WstETHHookDeployer.sol';
+import {WstETHRoutingHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WstETHRoutingHookDeployer.sol';
 
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {VmSafe} from 'forge-std/Vm.sol';
@@ -70,7 +80,11 @@ contract Deploy is Script {
 
         deployV4Contracts();
 
+        deployV4Hooks();
+
         deployViewQuoterV3();
+
+        deployMixedQuoter();
 
         deploySwapRouters();
 
@@ -283,6 +297,32 @@ contract Deploy is Script {
         }
     }
 
+    function deployV4Hooks() private {
+        if (!config.readBoolOr('.protocols.hooks.deploy', false)) return;
+        bool deployWETHHook = config.readBoolOr('.protocols.hooks.contracts.WETHHook.deploy', false);
+        bool deployWstETHHook = config.readBoolOr('.protocols.hooks.contracts.WstETHHook.deploy', false);
+        bool deployWstETHRoutingHook = config.readBoolOr('.protocols.hooks.contracts.WstETHRoutingHook.deploy', false);
+
+        if (poolManager == address(0)) {
+            poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+        }
+
+        if (deployWETHHook) {
+            bytes32 salt = config.readBytes32('.protocols.hooks.contracts.WETHHook.params.salt.value');
+            WETHHookDeployer.deploy(poolManager, weth(), salt);
+        }
+        if (deployWstETHHook) {
+            bytes32 salt = config.readBytes32('.protocols.hooks.contracts.WstETHHook.params.salt.value');
+            address wsteth = config.readAddress('.protocols.hooks.contracts.WstETHHook.params.wstETH.value');
+            WstETHHookDeployer.deploy(poolManager, wsteth, salt);
+        }
+        if (deployWstETHRoutingHook) {
+            bytes32 salt = config.readBytes32('.protocols.hooks.contracts.WstETHRoutingHook.params.salt.value');
+            address wsteth = config.readAddress('.protocols.hooks.contracts.WstETHRoutingHook.params.wstETH.value');
+            WstETHRoutingHookDeployer.deploy(poolManager, wsteth, salt);
+        }
+    }
+
     function deployPermit2() private {
         // TODO: handle permit2 more like WETH, get code at default address and check whether it's already deployed, if not, deploy it
         if (!config.readBoolOr('.protocols.permit2.deploy', false)) return;
@@ -323,6 +363,22 @@ contract Deploy is Script {
         QuoterDeployer.deploy(v3Factory);
     }
 
+    function deployMixedQuoter() private {
+        if (!config.readBoolOr('.protocols.mixed-quoter.deploy', false)) return;
+
+        if (poolManager == address(0)) {
+            poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+        }
+        if (v3Factory == address(0)) {
+            v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
+        }
+        if (v2Factory == address(0)) {
+            v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
+        }
+        console.log('deploying Mixed Route Quoter V2');
+        MixedRouteQuoterV2Deployer.deploy(poolManager, v3Factory, v2Factory);
+    }
+
     function deploySwapRouters() private {
         if (!config.readBoolOr('.protocols.swap-router-contracts.deploy', false)) return;
 
@@ -346,6 +402,8 @@ contract Deploy is Script {
         bool deployFeeCollector = config.readBoolOr('.protocols.util-contracts.contracts.FeeCollector.deploy', false);
         bool deployFeeOnTransferDetector =
             config.readBoolOr('.protocols.util-contracts.contracts.FeeOnTransferDetector.deploy', false);
+        bool deployERC7914Detector =
+            config.readBoolOr('.protocols.util-contracts.contracts.ERC7914Detector.deploy', false);
 
         if (deployFeeOnTransferDetector) {
             if (v2Factory == address(0)) {
@@ -367,6 +425,13 @@ contract Deploy is Script {
             }
             console.log('deploying Fee Collector');
             FeeCollectorDeployer.deploy(owner, universalRouter, permit2, feeToken);
+        }
+
+        if (deployERC7914Detector) {
+            address caliburAddress =
+                config.readAddress('.protocols.util-contracts.contracts.ERC7914Detector.params.caliburAddress.value');
+            console.log('deploying ERC7914Detector');
+            ERC7914DetectorDeployer.deploy(caliburAddress);
         }
     }
 

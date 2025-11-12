@@ -12,12 +12,15 @@ pub fn get_rpc_url_screen() -> Result<WorkflowResult, Box<dyn std::error::Error>
             .chains
             .contains_key(&chain_id.clone().unwrap())
     {
+        let chain_id_ref = chain_id.clone().unwrap();
         pre_selected_rpcs = STATE_MANAGER
-            .get_chain(chain_id.unwrap().clone())
+            .get_chain(chain_id_ref.clone())
             .unwrap()
             .rpc_url
             .clone();
-        pre_selected_rpcs.push("${RPC_URL}".to_string());
+
+        // Add chain-specific RPC URL env var to prevent accidental reuse across chains
+        pre_selected_rpcs.push(format!("${{RPC_URL_{}}}", chain_id_ref));
     }
     Ok(WorkflowResult::NextScreen(Box::new(
         GenericSelectOrEnterScreen::new(

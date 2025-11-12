@@ -55,3 +55,6 @@
 [submodule "src/pkgs/calibur"]
 	path = src/pkgs/calibur
 	url = https://github.com/Uniswap/calibur
+[submodule "src/pkgs/mixed-quoter"]
+	path = src/pkgs/mixed-quoter
+	url = https://github.com/Uniswap/mixed-quoter

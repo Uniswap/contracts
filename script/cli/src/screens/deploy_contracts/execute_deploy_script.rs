@@ -96,19 +96,25 @@ impl ExecuteDeployScriptScreen {
                 let explorer_api =
                     ExplorerApiLib::new(explorer.clone().unwrap(), explorer_api_key.unwrap())
                         .unwrap();
+
+                let verifier = match explorer_api.explorer.explorer_type {
+                    SupportedExplorerType::EtherscanV2 => "etherscan",
+                    SupportedExplorerType::Blockscout => "blockscout",
+                    SupportedExplorerType::Sourcify => "sourcify",
+                    SupportedExplorerType::Unknown => {
+                        // This should never happen if the workflow is correct
+                        panic!("Unknown explorer type should have been resolved by workflow");
+                    }
+                };
+
                 command = command
                     .arg("--verify")
-                    .arg(format!(
-                        "--verifier={}",
-                        if explorer_api.explorer_type == SupportedExplorerType::Blockscout {
-                            "blockscout"
-                        } else {
-                            "etherscan"
-                        }
-                    ))
+                    .arg(format!("--verifier={}", verifier))
                     .arg(format!("--verifier-url={}", explorer_api.api_url));
-                if explorer_api.explorer_type == SupportedExplorerType::Etherscan {
-                    command = command.arg(format!("--etherscan-api-key={}", explorer_api.api_key));
+
+                // Only add API key if it's not empty
+                if !explorer_api.api_key.is_empty() {
+                    command = command.arg(format!("--verifier-api-key={}", explorer_api.api_key));
                 }
             }
 
@@ -208,9 +214,7 @@ fn execute_command(command: &mut Command) -> Result<Option<String>, Box<dyn std:
             }
             Ok(None)
         }
-        Err(e) => {
-            Err(e.to_string().into())
-        }
+        Err(e) => Err(e.to_string().into()),
     }
 }
 
@@ -221,8 +225,7 @@ impl Screen for ExecuteDeployScriptScreen {
                 "Deployment failed: {}\n",
                 self.execution_error_message.lock().unwrap()
             ));
-            buffer
-                .append_row_text_color("> Press any key to continue", constants::SELECTION_COLOR);
+            buffer.append_row_text_color("> Press any key to continue", constants::SELECTION_COLOR);
         } else {
             buffer.append_row_text(&format!(
                 "{} Executing dry run\n",

@@ -171,7 +171,7 @@
       "contracts": {
         "PoolManager": {
           "deploy": false,
-          "address": null,
+          "address": "0x9a13f98cb987694c9f086b1f5eb990eea8264ec3",
           "lookup": {
             "latest": "PoolManager"
           },
@@ -250,6 +250,44 @@
             "poolManager": {
               "name": "Pool Manager",
               "pointer": "protocols.v4.contracts.PoolManager"
+            }
+          }
+        }
+      }
+    },
+    "hooks": {
+      "name": "v4 Hooks",
+      "deploy": true,
+      "contracts": {
+        "WETHHook": {
+          "deploy": true,
+          "params": {
+            "poolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            },
+            "salt": {
+              "type": "bytes32",
+              "value": "0x0000000000000000000000000000000000000000000000000000000000000a25"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "WstETHHook": {
+          "deploy": false,
+          "params": {
+            "poolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            },
+            "wstETH": {
+              "name": "WstETH address",
+              "type": "address"
+            },
+            "salt": {
+              "type": "bytes32"
             }
           }
         }
@@ -393,22 +431,6 @@
           }
         }
       }
-    },
-    "calibur": {
-      "name": "Calibur",
-      "deploy": true,
-      "contracts": {
-        "Calibur": {
-          "deploy": true,
-          "address": null,
-          "params": {
-            "salt": {
-              "type": "bytes32",
-              "value": "0x0000000000000000000000000000000000000000eca2ad36bee3874a279d0010"
-            }
-          }
-        }
-      }
     }
   },
   "dependencies": {
@@ -427,7 +449,8 @@
           "QuoterV2.input.constructor._WETH9",
           "UniswapV2Router02.input.constructor._WETH"
         ]
-      }
+      },
+      "value": "0x4200000000000000000000000000000000000006"
     }
   },
   "rename": true

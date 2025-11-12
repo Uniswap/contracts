@@ -34,9 +34,11 @@ additional_compiler_profiles = [
   { name = "v3-periphery-lowest", optimizer_runs = 1000, evm_version = "istanbul", via_ir = false },
   { name = "v3-periphery-low", optimizer_runs = 2000, evm_version = "istanbul", via_ir = false },
   { name = "v3-periphery-default", optimizer_runs = 1000000, evm_version = "istanbul", via_ir = false },
-  { name = "permit2", optimizer_runs = 1000000, via_ir = true },
+  { name = "permit2", optimizer_runs = 1000000, via_ir = true, evm_version = "london" },
   { name = "uniswapx", optimizer_runs = 1000000, via_ir = false },
-  { name = "calibur", optimizer_runs = 10000, via_ir = true }
+  { name = "calibur", optimizer_runs = 10000, via_ir = true },
+  { name = "util-contracts", optimizer_runs = 200, via_ir = false, evm_version = "paris" },
+  { name = "mixed-quoter", optimizer_runs = 200, via_ir = true, evm_version = "cancun" }
 ]
 
 compilation_restrictions = [
@@ -50,23 +52,29 @@ compilation_restrictions = [
   { paths = "src/pkgs/v3-periphery/contracts/NonfungiblePositionManager.sol", optimizer_runs = 2000 },
   { paths = "src/pkgs/v3-periphery/contracts/NonfungibleTokenPositionDescriptor.sol", optimizer_runs = 1000 },
   { paths = "src/pkgs/v3-periphery/contracts/libraries/NFTDescriptor.sol", optimizer_runs = 1000 },
-  { paths = "src/pkgs/v3-periphery/contracts/*.sol", version = "0.7.6", via_ir = false, max_optimizer_runs = 1000000 },
+  { paths = "src/pkgs/v3-periphery/contracts/SwapRouter.sol", version = "0.7.6", via_ir = false, min_optimizer_runs = 1000000 },
+  { paths = "src/pkgs/v3-periphery/contracts/V3Migrator.sol", version = "0.7.6", via_ir = false, min_optimizer_runs = 1000000 },
   { paths = "src/pkgs/v3-periphery/**/libraries/**", version = "<0.8.0" },
   # permit2
-  { paths = "src/pkgs/permit2/src/Permit2.sol", version = "0.8.17", via_ir = true, optimizer_runs = 1000000 },
+  { paths = "src/pkgs/permit2/src/Permit2.sol", version = "0.8.17", via_ir = true, optimizer_runs = 1000000, evm_version = "london" },
   { paths = "src/pkgs/permit2/src/**", version = "0.8.17", via_ir = true },
   # v4
   { paths = "src/pkgs/v4-core/src/PoolManager.sol", optimizer_runs = 44444444 },
   { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", version = "0.8.26", optimizer_runs = 1 },
   { paths = "src/pkgs/v4-periphery/src/PositionManager.sol", version = "0.8.26", optimizer_runs = 30000 },
   { paths = "src/pkgs/v4-periphery/src/lens/**", version = "0.8.26", optimizer_runs = 44444444 },
+  { paths = "src/pkgs/v4-periphery/src/hooks/**", version = "0.8.26", optimizer_runs = 44444444 },
   # router
-  { paths = "src/pkgs/universal-router/contracts/**", optimizer_runs = 44444444 },
+  { paths = "src/pkgs/universal-router/contracts/UniversalRouter.sol", optimizer_runs = 44444444 },
   { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
+  # mixed-quoter
+  { paths = "src/pkgs/mixed-quoter/src/**", version = "0.8.26", via_ir = true, optimizer_runs = 200, evm_version = "cancun" },
   # X
   { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "0.8.24" },
   # Calibur
   { paths = "src/pkgs/calibur/src/**", version = "=0.8.29", optimizer_runs = 10000, via_ir = true },
+  # util-contracts: util-contracts specifies shanghai fork, but it was only supported from 0.8.20 onwards, so paris is the correct evm version
+  { paths = "src/pkgs/util-contracts/src/**", version = "=0.8.19", optimizer_runs = 200, via_ir = false, evm_version = "paris" },
   # Briefcase
   { paths = "src/briefcase/protocols/v2-periphery/libraries/UniswapV2Library.sol", version = "<0.8.0" },
   { paths = "src/briefcase/protocols/lib-external/solidity-lib/**", version = "<0.8.0" },
@@ -82,6 +90,9 @@ tab_width = 4
 quote_style = "single"
 sort_imports = true
 number_underscore = "thousands"
+
+[lint]
+lint_on_build = false
 
 [etherscan]
 # chain id 129412 is reserved for the tenderly testnet

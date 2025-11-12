@@ -124,6 +124,20 @@
       "deploymentTxn": "0x3c7fe24fc0319f1597d783bfd792aa4a4051847234eb26ba5f3bb1d6f14fdbf7",
       "timestamp": 1748028920,
       "commitHash": "0a52cd5"
+    },
+    "WETHHook": {
+      "address": "0x730b109bad65152c67ecc94eb8b0968603dba888",
+      "proxy": false,
+      "deploymentTxn": "0xd1bd2428515d7d82628d89949978f517fec75f3f41b38b59434dfa5ac5dac90f",
+      "timestamp": 1746214521,
+      "commitHash": "c797b9e"
+    },
+    "ERC7914Detector": {
+      "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+      "proxy": false,
+      "deploymentTxn": "0xbec3c59bc540a2816c38d59072d375bb94ab3eb64d3377f6194e19928e5055b4",
+      "timestamp": 1756326519,
+      "commitHash": "320811c"
     }
   },
   "history": [
@@ -140,6 +154,55 @@
       },
       "timestamp": 1748028920,
       "commitHash": "0a52cd5"
+    },
+    {
+      "contracts": {
+        "ERC7914Detector": {
+          "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+          "proxy": false,
+          "deploymentTxn": "0xbec3c59bc540a2816c38d59072d375bb94ab3eb64d3377f6194e19928e5055b4",
+          "input": {
+            "constructor": {
+              "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            }
+          }
+        }
+      },
+      "timestamp": 1756326519,
+      "commitHash": "320811c"
+    },
+    {
+      "contracts": {
+        "ERC7914Detector": {
+          "address": "0xbb4ea619b4f348e8955cd85934d9705efebd3b12",
+          "proxy": false,
+          "deploymentTxn": "0x5e95a2ad533295ec2420f0652af6da8e35fa8583dd908d9bd38379155ad60475",
+          "input": {
+            "constructor": {
+              "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            }
+          }
+        }
+      },
+      "timestamp": 1756325966,
+      "commitHash": "320811c"
+    },
+    {
+      "contracts": {
+        "WETHHook": {
+          "address": "0x730b109bad65152c67ecc94eb8b0968603dba888",
+          "proxy": false,
+          "deploymentTxn": "0xd1bd2428515d7d82628d89949978f517fec75f3f41b38b59434dfa5ac5dac90f",
+          "input": {
+            "constructor": {
+              "_manager": "0x1F98400000000000000000000000000000000004",
+              "_weth": "0x4200000000000000000000000000000000000006"
+            }
+          }
+        }
+      },
+      "timestamp": 1746214521,
+      "commitHash": "c797b9e"
     },
     {
       "contracts": {
