@@ -136,20 +136,6 @@
       "timestamp": 1737578658,
       "commitHash": "77d52a7"
     },
-    "MinimalDelegation": {
-      "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
-      "proxy": false,
-      "deploymentTxn": "0x6887cac129a53c10d2d06579100a3e631af184b4235178320a8ab41054e3e57b",
-      "timestamp": 1746047637,
-      "commitHash": "17d6c48"
-    },
-    "Calibur": {
-      "address": "0x3cbad1e3b9049ecdb9588fb48dd61d80faf41bd5",
-      "proxy": false,
-      "deploymentTxn": "0x2f663c49940d7c7f828e410c41a68780ab2eb8e797bfb2dfe394282fbc0b733e",
-      "timestamp": 1747752964,
-      "commitHash": "0a52cd5"
-    },
     "CaliburEntry": {
       "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
       "proxy": false,
@@ -172,48 +158,6 @@
       },
       "timestamp": 1748029284,
       "commitHash": "0a52cd5"
-    },
-    {
-      "contracts": {
-        "Calibur": {
-          "address": "0x3cbad1e3b9049ecdb9588fb48dd61d80faf41bd5",
-          "proxy": false,
-          "deploymentTxn": "0x2f663c49940d7c7f828e410c41a68780ab2eb8e797bfb2dfe394282fbc0b733e",
-          "input": {
-            "constructor": {}
-          }
-        }
-      },
-      "timestamp": 1747752964,
-      "commitHash": "0a52cd5"
-    },
-    {
-      "contracts": {
-        "Calibur": {
-          "address": "0x458f5a9f47a01bea5d7a32662660559d9ed3312c",
-          "proxy": false,
-          "deploymentTxn": "0xbd6b366018a6d9fe73413bf25aa6b579cc1d33f2295ac8f23d34f2766f4ccd25",
-          "input": {
-            "constructor": {}
-          }
-        }
-      },
-      "timestamp": 1747173980,
-      "commitHash": "ae93235"
-    },
-    {
-      "contracts": {
-        "MinimalDelegation": {
-          "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
-          "proxy": false,
-          "deploymentTxn": "0x6887cac129a53c10d2d06579100a3e631af184b4235178320a8ab41054e3e57b",
-          "input": {
-            "constructor": {}
-          }
-        }
-      },
-      "timestamp": 1746047637,
-      "commitHash": "17d6c48"
     },
     {
       "contracts": {

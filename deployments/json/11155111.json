@@ -67,20 +67,6 @@
       "deploymentTxn": "0x363df5deeead44d8fd38425f3986e3e81946a6c59d8b68fe33926cc700713173",
       "timestamp": 1669385988
     },
-    "MinimalDelegation": {
-      "address": "0x064f01978b2975dd217a6da6c047db1742659b84",
-      "proxy": false,
-      "deploymentTxn": "0xd117a2cebbf82cd6d9e64f4f14543505c7b875addddfbf8b155ceb401a05075b",
-      "timestamp": 1743005904,
-      "commitHash": "b18d760"
-    },
-    "Calibur": {
-      "address": "0x3cbad1e3b9049ecdb9588fb48dd61d80faf41bd5",
-      "proxy": false,
-      "deploymentTxn": "0x5fa31003e8b9e7d12babd5b0e73fc63c8dadaea2174ff585d7eddf5543da367b",
-      "timestamp": 1747753248,
-      "commitHash": "0a52cd5"
-    },
     "CaliburEntry": {
       "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
       "proxy": false,
@@ -103,62 +89,6 @@
       },
       "timestamp": 1748029477,
       "commitHash": "0a52cd5"
-    },
-    {
-      "contracts": {
-        "Calibur": {
-          "address": "0x3cbad1e3b9049ecdb9588fb48dd61d80faf41bd5",
-          "proxy": false,
-          "deploymentTxn": "0x5fa31003e8b9e7d12babd5b0e73fc63c8dadaea2174ff585d7eddf5543da367b",
-          "input": {
-            "constructor": {}
-          }
-        }
-      },
-      "timestamp": 1747753248,
-      "commitHash": "0a52cd5"
-    },
-    {
-      "contracts": {
-        "Calibur": {
-          "address": "0x458f5a9f47a01bea5d7a32662660559d9ed3312c",
-          "proxy": false,
-          "deploymentTxn": "0x9f3b18abbdd786e10c40661f739d61201a6be242feda1555c60884bbcbd97cb7",
-          "input": {
-            "constructor": {}
-          }
-        }
-      },
-      "timestamp": 1747174304,
-      "commitHash": "ae93235"
-    },
-    {
-      "contracts": {
-        "MinimalDelegation": {
-          "address": "0x064f01978b2975dd217a6da6c047db1742659b84",
-          "proxy": false,
-          "deploymentTxn": "0xd117a2cebbf82cd6d9e64f4f14543505c7b875addddfbf8b155ceb401a05075b",
-          "input": {
-            "constructor": {}
-          }
-        }
-      },
-      "timestamp": 1743005904,
-      "commitHash": "b18d760"
-    },
-    {
-      "contracts": {
-        "MinimalDelegation": {
-          "address": "0xfdb69e70bae2ab8991a7ef25774fa798d0ebb978",
-          "proxy": false,
-          "deploymentTxn": "0x8d866032a60dc53db83a4d9e49a13f5af31f4e02441d8cb9d06e4d1c759c737c",
-          "input": {
-            "constructor": {}
-          }
-        }
-      },
-      "timestamp": 1743004241,
-      "commitHash": "fe42ade"
     },
     {
       "contracts": {

@@ -141,20 +141,6 @@
       "timestamp": 1737491485,
       "commitHash": "a60641e"
     },
-    "MinimalDelegation": {
-      "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
-      "proxy": false,
-      "deploymentTxn": "0xc40de003c58dccdbe9f09e7e3fb43065eb4c9c4940139be238d6a8441a62c0f6",
-      "timestamp": 1746630269,
-      "commitHash": "241e2b7"
-    },
-    "Calibur": {
-      "address": "0x3cbad1e3b9049ecdb9588fb48dd61d80faf41bd5",
-      "proxy": false,
-      "deploymentTxn": "0xe08e2774cabc5fd9b29289301ae5c03376bd4499dc07c1e589a3f9c92b99486a",
-      "timestamp": 1747752835,
-      "commitHash": "0a52cd5"
-    },
     "CaliburEntry": {
       "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
       "proxy": false,
@@ -177,48 +163,6 @@
       },
       "timestamp": 1748028984,
       "commitHash": "0a52cd5"
-    },
-    {
-      "contracts": {
-        "Calibur": {
-          "address": "0x3cbad1e3b9049ecdb9588fb48dd61d80faf41bd5",
-          "proxy": false,
-          "deploymentTxn": "0xe08e2774cabc5fd9b29289301ae5c03376bd4499dc07c1e589a3f9c92b99486a",
-          "input": {
-            "constructor": {}
-          }
-        }
-      },
-      "timestamp": 1747752835,
-      "commitHash": "0a52cd5"
-    },
-    {
-      "contracts": {
-        "Calibur": {
-          "address": "0x458f5a9f47a01bea5d7a32662660559d9ed3312c",
-          "proxy": false,
-          "deploymentTxn": "0xe7bfda5d74de1cbc3a041a81e58a9b2ebd1c132af1a1f1a15139c780b2dae5e2",
-          "input": {
-            "constructor": {}
-          }
-        }
-      },
-      "timestamp": 1747173697,
-      "commitHash": "ae93235"
-    },
-    {
-      "contracts": {
-        "MinimalDelegation": {
-          "address": "0x0c338ca25585035142a9a0a1eeeba267256f281f",
-          "proxy": false,
-          "deploymentTxn": "0xc40de003c58dccdbe9f09e7e3fb43065eb4c9c4940139be238d6a8441a62c0f6",
-          "input": {
-            "constructor": {}
-          }
-        }
-      },
-      "timestamp": 1746630269,
-      "commitHash": "241e2b7"
     },
     {
       "contracts": {

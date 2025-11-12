@@ -120,13 +120,6 @@
       "timestamp": 1737494278,
       "commitHash": "135b1f9"
     },
-    "Calibur": {
-      "address": "0x3cbad1e3b9049ecdb9588fb48dd61d80faf41bd5",
-      "proxy": false,
-      "deploymentTxn": "0xb1311221261e2da09e6fba648c964b1452e1aa1e4b54ac8d3ea79c38b8a9002d",
-      "timestamp": 1747752889,
-      "commitHash": "0a52cd5"
-    },
     "CaliburEntry": {
       "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
       "proxy": false,
@@ -148,20 +141,6 @@
         }
       },
       "timestamp": 1748029032,
-      "commitHash": "0a52cd5"
-    },
-    {
-      "contracts": {
-        "Calibur": {
-          "address": "0x3cbad1e3b9049ecdb9588fb48dd61d80faf41bd5",
-          "proxy": false,
-          "deploymentTxn": "0xb1311221261e2da09e6fba648c964b1452e1aa1e4b54ac8d3ea79c38b8a9002d",
-          "input": {
-            "constructor": {}
-          }
-        }
-      },
-      "timestamp": 1747752889,
       "commitHash": "0a52cd5"
     },
     {
