@@ -52,6 +52,9 @@
 [submodule "lib/openzeppelin-contracts"]
 	path = lib/openzeppelin-contracts
 	url = https://github.com/Openzeppelin/openzeppelin-contracts
+[submodule "src/pkgs/calibur"]
+	path = src/pkgs/calibur
+	url = https://github.com/Uniswap/calibur
 [submodule "src/pkgs/mixed-quoter"]
 	path = src/pkgs/mixed-quoter
 	url = https://github.com/Uniswap/mixed-quoter

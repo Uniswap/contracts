@@ -149,9 +149,30 @@
       "proxy": false,
       "deploymentTxn": "0xa2a1257ad6c87282cf939494e4daae37b78c372b5de25d44c7d4018265c7b0f6",
       "timestamp": 1622557217
+    },
+    "CaliburEntry": {
+      "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+      "proxy": false,
+      "deploymentTxn": "0x7b50a77ad5545257fa9f21ac84185039fb1941d7915ec9b004d8de65fd7d22fd",
+      "timestamp": 1755634518,
+      "commitHash": "0a52cd5"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "CaliburEntry": {
+          "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+          "proxy": false,
+          "deploymentTxn": "0x7b50a77ad5545257fa9f21ac84185039fb1941d7915ec9b004d8de65fd7d22fd",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1755634518,
+      "commitHash": "0a52cd5"
+    },
     {
       "contracts": {
         "ERC7914Detector": {

@@ -99,6 +99,13 @@
       "deploymentTxn": "0xdfce30caf2b347322780affc3b51413c2bb63c19da45e1262e9a07933ed0c3e1",
       "timestamp": 1727992437
     },
+    "CaliburEntry": {
+      "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+      "proxy": false,
+      "deploymentTxn": "0x977f7307df758c44eae777231efb9daf5335c0c95082803c076b1011b2a6d2de",
+      "timestamp": 1748029284,
+      "commitHash": "0a52cd5"
+    },
     "NonfungiblePositionManager": {
       "address": "0xB7F724d6dDDFd008eFf5cc2834edDE5F9eF0d075",
       "proxy": false,
@@ -126,6 +133,20 @@
     }
   },
   "history": [
+    {
+      "contracts": {
+        "CaliburEntry": {
+          "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+          "proxy": false,
+          "deploymentTxn": "0x977f7307df758c44eae777231efb9daf5335c0c95082803c076b1011b2a6d2de",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1748029284,
+      "commitHash": "0a52cd5"
+    },
     {
       "contracts": {
         "ERC7914Detector": {

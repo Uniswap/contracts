@@ -51,9 +51,30 @@
       "deploymentTxn": "0xe1a40a4c58cd6c958fbf912a2cb7f4f09f6d3c273e915e48f6e1588e8946ccec",
       "timestamp": 1737562927,
       "commitHash": "417770f"
+    },
+    "CaliburEntry": {
+      "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+      "proxy": false,
+      "deploymentTxn": "0x37297d700c225f308fba2b7477cf78c993e27f9912e20469e4d34d60e87d1e4e",
+      "timestamp": 1748029232,
+      "commitHash": "0a52cd5"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "CaliburEntry": {
+          "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+          "proxy": false,
+          "deploymentTxn": "0x37297d700c225f308fba2b7477cf78c993e27f9912e20469e4d34d60e87d1e4e",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1748029232,
+      "commitHash": "0a52cd5"
+    },
     {
       "contracts": {
         "MixedRouteQuoterV2": {
