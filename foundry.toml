@@ -62,13 +62,13 @@ compilation_restrictions = [
   { paths = "src/pkgs/v4-core/src/PoolManager.sol", optimizer_runs = 44444444 },
   { paths = "src/pkgs/v4-periphery/src/PositionDescriptor.sol", version = "0.8.26", optimizer_runs = 1 },
   { paths = "src/pkgs/v4-periphery/src/PositionManager.sol", version = "0.8.26", optimizer_runs = 30000 },
-  { paths = "src/pkgs/v4-periphery/src/lens/**", version = "0.8.26", optimizer_runs = 44444444 },
+  { paths = "src/pkgs/v4-periphery/src/lens/**", version = "=0.8.26", optimizer_runs = 44444444 },
   { paths = "src/pkgs/v4-periphery/src/hooks/**", version = "0.8.26", optimizer_runs = 44444444 },
   # router
   { paths = "src/pkgs/universal-router/contracts/UniversalRouter.sol", optimizer_runs = 44444444 },
   { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
   # mixed-quoter
-  { paths = "src/pkgs/mixed-quoter/src/**", version = "0.8.26", via_ir = true, optimizer_runs = 200, evm_version = "cancun" },
+  { paths = "src/pkgs/mixed-quoter/src/**", version = "=0.8.26", via_ir = true, optimizer_runs = 200, evm_version = "cancun" },
   # X
   { paths = "src/pkgs/uniswapx/src/base/BlockNumberish.sol", version = "0.8.24" },
   # Calibur

@@ -34,7 +34,7 @@ library WrappedSignatureLib {
     {
         signature = data.safeToBytes(0);
         hookData = data.safeToBytes(1);
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             if lt(signature.length, 64) {
                 mstore(0, INVALID_SIGNATURE_LENGTH_SELECTOR)
                 revert(0x1c, 4)
@@ -56,7 +56,7 @@ library WrappedSignatureLib {
         }
         signature = data.safeToBytes(1);
         hookData = data.safeToBytes(2);
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             if lt(signature.length, 64) {
                 mstore(0, INVALID_SIGNATURE_LENGTH_SELECTOR)
                 revert(0x1c, 4)

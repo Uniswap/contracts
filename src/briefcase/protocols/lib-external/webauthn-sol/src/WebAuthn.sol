@@ -112,9 +112,8 @@ library WebAuthn {
 
         // 12. Verify that the value of C.challenge equals the base64url encoding of options.challenge.
         bytes memory expectedChallenge = bytes(string.concat('"challenge":"', Base64.encodeURL(challenge), '"'));
-        string memory actualChallenge = webAuthnAuth.clientDataJSON.slice(
-            webAuthnAuth.challengeIndex, webAuthnAuth.challengeIndex + expectedChallenge.length
-        );
+        string memory actualChallenge = webAuthnAuth.clientDataJSON
+            .slice(webAuthnAuth.challengeIndex, webAuthnAuth.challengeIndex + expectedChallenge.length);
         if (keccak256(bytes(actualChallenge)) != keccak256(expectedChallenge)) {
             return false;
         }

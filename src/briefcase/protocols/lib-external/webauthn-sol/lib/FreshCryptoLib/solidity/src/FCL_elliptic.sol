@@ -144,7 +144,7 @@ library FCL_Elliptic_ZZ {
     /// @return result The modular inverse of the input integer. If the modular inverse doesn't exist, it revert the tx
 
     function SqrtMod(uint256 self) internal view returns (uint256 result) {
-        assembly ("memory-safe") {
+        assembly ('memory-safe') {
             // load the free memory pointer value
             let pointer := mload(0x40)
 
@@ -185,10 +185,10 @@ library FCL_Elliptic_ZZ {
 
         return result;
     }
+
     /**
      * /* @dev Convert from affine rep to XYZZ rep
      */
-
     function ecAff_SetZZ(uint256 x0, uint256 y0) internal pure returns (uint256[4] memory P) {
         unchecked {
             P[2] = 1; //ZZ
@@ -215,11 +215,7 @@ library FCL_Elliptic_ZZ {
      * /* @dev Convert from XYZZ rep to affine rep
      */
     /*    https://hyperelliptic.org/EFD/g1p/auto-shortw-xyzz-3.html#addition-add-2008-s*/
-    function ecZZ_SetAff(uint256 x, uint256 y, uint256 zz, uint256 zzz)
-        internal
-        view
-        returns (uint256 x1, uint256 y1)
-    {
+    function ecZZ_SetAff(uint256 x, uint256 y, uint256 zz, uint256 zzz) internal view returns (uint256 x1, uint256 y1) {
         uint256 zzzInv = FCL_pModInv(zzz); //1/zzz
         y1 = mulmod(y, zzzInv, p); //Y/zzz
         uint256 _b = mulmod(zz, zzzInv, p); //1/z
@@ -258,6 +254,7 @@ library FCL_Elliptic_ZZ {
      * @dev Sutherland2008 add a ZZ point with a normalized point and greedy formulae
      * warning: assume that P1(x1,y1)!=P2(x2,y2), true in multiplication loop with prime order (cofactor 1)
      */
+
     function ecZZ_AddN(uint256 x1, uint256 y1, uint256 zz1, uint256 zzz1, uint256 x2, uint256 y2)
         internal
         pure
@@ -291,6 +288,7 @@ library FCL_Elliptic_ZZ {
     function ecZZ_SetZero() internal pure returns (uint256 x, uint256 y, uint256 zz, uint256 zzz) {
         return (0, 0, 0, 0);
     }
+
     /**
      * @dev Check if point is the neutral of the curve
      */
@@ -334,6 +332,7 @@ library FCL_Elliptic_ZZ {
     /**
      * @dev Add two elliptic curve points in affine coordinates. Deal with P=Q
      */
+
     function ecAff_add(uint256 x0, uint256 y0, uint256 x1, uint256 y1) internal view returns (uint256, uint256) {
         uint256 zz0;
         uint256 zzz0;
@@ -359,7 +358,11 @@ library FCL_Elliptic_ZZ {
         uint256 Q1, //affine rep for input point Q
         uint256 scalar_u,
         uint256 scalar_v
-    ) internal view returns (uint256 X) {
+    )
+        internal
+        view
+        returns (uint256 X)
+    {
         uint256 zz;
         uint256 zzz;
         uint256 Y;
@@ -522,7 +525,11 @@ library FCL_Elliptic_ZZ {
         uint256 Q1, //affine rep for input point Q
         uint256 scalar_u,
         uint256 scalar_v
-    ) internal view returns (uint256 X, uint256 Y) {
+    )
+        internal
+        view
+        returns (uint256 X, uint256 Y)
+    {
         uint256 zz;
         uint256 zzz;
         uint256 index = 255;
@@ -674,7 +681,9 @@ library FCL_Elliptic_ZZ {
     function ecZZ_mulmuladd_S8_extcode(uint256 scalar_u, uint256 scalar_v, address dataPointer)
         internal
         view
-        returns (uint256 X /*, uint Y*/ )
+        returns (
+            uint256 X /*, uint Y*/
+        )
     {
         unchecked {
             uint256 zz; // third and  coordinates of the point
@@ -686,12 +695,21 @@ library FCL_Elliptic_ZZ {
                 zz = zz - 1;
                 //tbd case of msb octobit is null
                 T[0] = 64
-                    * (
-                        128 * ((scalar_v >> zz) & 1) + 64 * ((scalar_v >> (zz - 64)) & 1)
-                            + 32 * ((scalar_v >> (zz - 128)) & 1) + 16 * ((scalar_v >> (zz - 192)) & 1)
-                            + 8 * ((scalar_u >> zz) & 1) + 4 * ((scalar_u >> (zz - 64)) & 1)
-                            + 2 * ((scalar_u >> (zz - 128)) & 1) + ((scalar_u >> (zz - 192)) & 1)
-                    );
+                    * (128
+                        * ((scalar_v >> zz) & 1)
+                        + 64
+                        * ((scalar_v >> (zz - 64)) & 1)
+                        + 32
+                        * ((scalar_v >> (zz - 128)) & 1)
+                        + 16
+                        * ((scalar_v >> (zz - 192)) & 1)
+                        + 8
+                        * ((scalar_u >> zz) & 1)
+                        + 4
+                        * ((scalar_u >> (zz - 64)) & 1)
+                        + 2
+                        * ((scalar_u >> (zz - 128)) & 1)
+                        + ((scalar_u >> (zz - 192)) & 1));
             }
             assembly {
                 extcodecopy(dataPointer, T, mload(T), 64)
@@ -818,7 +836,9 @@ library FCL_Elliptic_ZZ {
     function ecZZ_mulmuladd_S8_hackmem(uint256 scalar_u, uint256 scalar_v, uint256 dataPointer)
         internal
         view
-        returns (uint256 X /*, uint Y*/ )
+        returns (
+            uint256 X /*, uint Y*/
+        )
     {
         uint256 zz; // third and  coordinates of the point
 
@@ -830,12 +850,21 @@ library FCL_Elliptic_ZZ {
                 zz = zz - 1;
                 //tbd case of msb octobit is null
                 T[0] = 64
-                    * (
-                        128 * ((scalar_v >> zz) & 1) + 64 * ((scalar_v >> (zz - 64)) & 1)
-                            + 32 * ((scalar_v >> (zz - 128)) & 1) + 16 * ((scalar_v >> (zz - 192)) & 1)
-                            + 8 * ((scalar_u >> zz) & 1) + 4 * ((scalar_u >> (zz - 64)) & 1)
-                            + 2 * ((scalar_u >> (zz - 128)) & 1) + ((scalar_u >> (zz - 192)) & 1)
-                    );
+                    * (128
+                        * ((scalar_v >> zz) & 1)
+                        + 64
+                        * ((scalar_v >> (zz - 64)) & 1)
+                        + 32
+                        * ((scalar_v >> (zz - 128)) & 1)
+                        + 16
+                        * ((scalar_v >> (zz - 192)) & 1)
+                        + 8
+                        * ((scalar_u >> zz) & 1)
+                        + 4
+                        * ((scalar_u >> (zz - 64)) & 1)
+                        + 2
+                        * ((scalar_u >> (zz - 128)) & 1)
+                        + ((scalar_u >> (zz - 192)) & 1));
             }
             assembly {
                 codecopy(T, add(mload(T), dataPointer), 64)
@@ -929,6 +958,7 @@ library FCL_Elliptic_ZZ {
      *     generation of contract bytecode for precomputations is done using sagemath code
      *     (see sage directory, WebAuthn_precompute.sage)
      */
+
     function ecdsa_precomputed_hackmem(bytes32 message, uint256[2] calldata rs, uint256 endcontract)
         internal
         view
@@ -955,4 +985,4 @@ library FCL_Elliptic_ZZ {
         }
         return X == 0;
     } //end  ecdsa_precomputed_verify()
-}
+} //EOF
