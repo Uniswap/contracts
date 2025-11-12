@@ -393,6 +393,10 @@
                         "v4PositionManager": {
                             "name": "Uniswap v4 position manager address",
                             "pointer": "protocols.v4.contracts.PositionManager"
+                        },
+                        "acrossSpokePool": {
+                            "name": "Across Spoke Pool address",
+                            "type": "address"
                         }
                     },
                     "dependencies": ["weth"],
