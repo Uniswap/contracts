@@ -255,43 +255,6 @@
         }
       }
     },
-    "hooks": {
-      "name": "v4 Hooks",
-      "deploy": false,
-      "contracts": {
-        "WETHHook": {
-          "deploy": false,
-          "params": {
-            "poolManager": {
-              "name": "Pool Manager",
-              "pointer": "protocols.v4.contracts.PoolManager"
-            },
-            "salt": {
-              "type": "bytes32"
-            }
-          },
-          "dependencies": [
-            "weth"
-          ]
-        },
-        "WstETHHook": {
-          "deploy": false,
-          "params": {
-            "poolManager": {
-              "name": "Pool Manager",
-              "pointer": "protocols.v4.contracts.PoolManager"
-            },
-            "wstETH": {
-              "name": "WstETH address",
-              "type": "address"
-            },
-            "salt": {
-              "type": "bytes32"
-            }
-          }
-        }
-      }
-    },
     "view-quoter-v3": {
       "name": "View Quoter v3",
       "deploy": false,
@@ -396,7 +359,7 @@
     },
     "util-contracts": {
       "name": "Utils",
-      "deploy": true,
+      "deploy": false,
       "contracts": {
         "FeeOnTransferDetector": {
           "deploy": false,
@@ -428,15 +391,20 @@
               "type": "address"
             }
           }
-        },
-        "ERC7914Detector": {
+        }
+      }
+    },
+    "minimal-delegation": {
+      "name": "Minimal Delegation",
+      "deploy": true,
+      "contracts": {
+        "MinimalDelegation": {
           "deploy": true,
-          "address": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00",
+          "address": null,
           "params": {
-            "caliburAddress": {
-              "name": "Calibur address for ERC7914 detection",
-              "type": "address",
-              "value": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            "salt": {
+              "type": "bytes32",
+              "value": "0x0000000000000000000000000000000000000000000000000000000000000000"
             }
           }
         }
