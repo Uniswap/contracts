@@ -1,0 +1,419 @@
+{
+  "chainId": "143",
+  "latest": {
+    "UniswapV2Factory": {
+      "address": "0x182a927119d56008d921126764bf884221b10f59",
+      "proxy": false,
+      "deploymentTxn": "0x43014ad5e9b613a1737e453c036c6226abb0d9a8581e0ca00f026df1c85ec7b8",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "UniswapV2Router02": {
+      "address": "0x4b2ab38dbf28d31d467aa8993f6c2585981d6804",
+      "proxy": false,
+      "deploymentTxn": "0xfc1cd30a25e19d807576703a4f600064bee15697aa91339880ad0c30289e2d0a",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "UniswapV3Factory": {
+      "address": "0x204faca1764b154221e35c0d20abb3c525710498",
+      "proxy": false,
+      "deploymentTxn": "0x42b890654a94ccc5e00f167108cb7b17f2e7064240bc9dde3699bbc3cef895f3",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "UniswapInterfaceMulticall": {
+      "address": "0xd1b797d92d87b688193a2b976efc8d577d204343",
+      "proxy": false,
+      "deploymentTxn": "0xbf785c180d82016057acfd46e517970bf2cf29394b51b84dd186d0ea840d0fa2",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "QuoterV2": {
+      "address": "0x661e93cca42afacb172121ef892830ca3b70f08d",
+      "proxy": false,
+      "deploymentTxn": "0x70a3651ad0940f225597f9d19ca1fc3574c8e4cee4a855f39d0e00582341fdb8",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "TickLens": {
+      "address": "0xf025e0fe9e331a0ef05c2ad3c4e9c64b625cda6f",
+      "proxy": false,
+      "deploymentTxn": "0x7f9087693aacbe6a62e747abc8e16bd71f7779c7d9dc857b51e0d766365d1239",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "NFTDescriptor": {
+      "address": "0x2e9d45bb7b30549f5216813ada9a6b7982c5b3ed",
+      "proxy": false,
+      "deploymentTxn": "0x99d4d3e416194ac14120f8478a3f781f1b3a23ad458f52afdeb87f438ca763f0",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "NonfungibleTokenPositionDescriptor": {
+      "implementation": "0x003aa18c6e682db80cf4aa17261ccbffd28690ce",
+      "address": "0x315e413a11ab0df498ef83873012430ca36638ae",
+      "proxy": true,
+      "deploymentTxn": "0x19f5a974dcefa4951459f6c30c195f5ecd845ed570169f00471cfa6159634193",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "NonfungiblePositionManager": {
+      "address": "0x7197e214c0b767cfb76fb734ab638e2c192f4e53",
+      "proxy": false,
+      "deploymentTxn": "0x49ca1d5e275ecc832ffe4b4fad4de1e4b11bead41f153f7a9611298dcb64322f",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "V3Migrator": {
+      "address": "0x7078c4537c04c2b2e52ddba06074dbdacf23ca15",
+      "proxy": false,
+      "deploymentTxn": "0x52d4ccfb5532b15d650bde2812c9cf3df5c6dc680278460fe6455a1d8fa6d520",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "SwapRouter": {
+      "address": "0xd6145b2d3f379919e8cdeda7b97e37c4b2ca9c40",
+      "proxy": false,
+      "deploymentTxn": "0x87c45a9f11aa9b80e7066b5e0886d2c7c6257ede799a3cefea73c52436f6075e",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "PoolManager": {
+      "address": "0x188d586ddcf52439676ca21a244753fa19f9ea8e",
+      "proxy": false,
+      "deploymentTxn": "0x9fd1bae9ecaa6cfa31d6a92ee90035e7636ab43273184a819d7e750e99466e28",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "PositionDescriptor": {
+      "implementation": "0x63023c02f457a24594ad8fd411f56092179655e2",
+      "address": "0x5770d2914355a6d0a39a70aeea9bcce55df4201b",
+      "proxy": true,
+      "proxyType": "TransparentUpgradeableProxy",
+      "deploymentTxn": "0x57dd679e2a4e32768e98c5a9713c9c4c27fa646c5fdaa51a340a53cf3f2c0408",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "PositionManager": {
+      "address": "0x5b7ec4a94ff9bedb700fb82ab09d5846972f4016",
+      "proxy": false,
+      "deploymentTxn": "0x9682d8755c005ff91759dfabeb2828d0ab7a8b3eae81fb394ca5d84db891ae74",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "V4Quoter": {
+      "address": "0xa222dd357a9076d1091ed6aa2e16c9742dd26891",
+      "proxy": false,
+      "deploymentTxn": "0xb1c7f17bce5e42495def6cfc12c2d23f848c412821398ce2dd886f4ff17bdddb",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "StateView": {
+      "address": "0x77395f3b2e73ae90843717371294fa97cc419d64",
+      "proxy": false,
+      "deploymentTxn": "0xef682adcf0193295561ad831c2c77cc51aa3a3b6a1eff59d463b1d8edbd724ce",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "Quoter": {
+      "address": "0x2d01411773c8c24805306e89a41f7855c3c4fe65",
+      "proxy": false,
+      "deploymentTxn": "0x276a86690a18401d9da40fb2b066288f524ce04d7b17f8aa54f260e4619ab926",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "UniversalRouter": {
+      "address": "0x0d97dc33264bfc1c226207428a79b26757fb9dc3",
+      "proxy": false,
+      "deploymentTxn": "0x62b939878338ea8f9b00ea64cca8dda634350d4cb11990ea52db0ca413c72a0a",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "FeeOnTransferDetector": {
+      "address": "0x5c834b6cac4173bfe288c5722a38e04b9e366e30",
+      "proxy": false,
+      "deploymentTxn": "0xa2d32b7b3bfd677fe54cc6bb0daf93131434651d74a2d72f453ae14a6355ab6e",
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    },
+    "SwapRouter02": {
+      "address": "0xfe31f71c1b106eac32f1a19239c9a9a72ddfb900",
+      "proxy": false,
+      "deploymentTxn": "0xda8c3e0983d87ef991094374ffbe0d23c74c1dbad3bf2a306595a67794b8de89",
+      "timestamp": 1760625964160,
+      "commitHash": "559f3ae"
+    },
+    "MixedRouteQuoterV2": {
+      "address": "0xdcd9f4e8972f619b325b0c3109412dfc4d184734",
+      "proxy": false,
+      "deploymentTxn": "0xf3815e9af498f1bc06d566f5dec58d9d4ee34473b9b7ef444529845278043b4c",
+      "timestamp": 1762555792263,
+      "commitHash": "40e3358"
+    },
+    "CaliburEntry": {
+      "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+      "proxy": false,
+      "deploymentTxn": "0x3a93330363fd12e738cf58624023046cd71b1ea6957581a74e3d23c8594ceb3c",
+      "timestamp": 1762991562777,
+      "commitHash": "00f5859"
+    }
+  },
+  "history": [
+    {
+      "contracts": {
+        "CaliburEntry": {
+          "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+          "proxy": false,
+          "deploymentTxn": "0x3a93330363fd12e738cf58624023046cd71b1ea6957581a74e3d23c8594ceb3c",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1762991562777,
+      "commitHash": "00f5859"
+    },
+    {
+      "contracts": {
+        "MixedRouteQuoterV2": {
+          "address": "0xdcd9f4e8972f619b325b0c3109412dfc4d184734",
+          "proxy": false,
+          "deploymentTxn": "0xf3815e9af498f1bc06d566f5dec58d9d4ee34473b9b7ef444529845278043b4c",
+          "input": {
+            "constructor": {
+              "_uniswapV4PoolManager": "0x188d586Ddcf52439676Ca21A244753fA19F9Ea8e",
+              "_uniswapV3Poolfactory": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+              "_uniswapV2Poolfactory": "0x182a927119D56008d921126764bF884221b10f59"
+            }
+          }
+        }
+      },
+      "timestamp": 1762555792263,
+      "commitHash": "40e3358"
+    },
+    {
+      "contracts": {
+        "SwapRouter02": {
+          "address": "0xfe31f71c1b106eac32f1a19239c9a9a72ddfb900",
+          "proxy": false,
+          "deploymentTxn": "0xda8c3e0983d87ef991094374ffbe0d23c74c1dbad3bf2a306595a67794b8de89",
+          "input": {
+            "constructor": {
+              "_factoryV2": "0x182a927119D56008d921126764bF884221b10f59",
+              "factoryV3": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+              "_positionManager": "0x7197E214c0b767cFB76Fb734ab638E2c192F4E53",
+              "_WETH9": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A"
+            }
+          }
+        }
+      },
+      "timestamp": 1760625964160,
+      "commitHash": "559f3ae"
+    },
+    {
+      "contracts": {
+        "UniswapV2Factory": {
+          "address": "0x182a927119d56008d921126764bf884221b10f59",
+          "proxy": false,
+          "deploymentTxn": "0x43014ad5e9b613a1737e453c036c6226abb0d9a8581e0ca00f026df1c85ec7b8",
+          "input": {
+            "constructor": {
+              "_feeToSetter": "0xE783DE89a7F0408687f051e3E6D0BEb62719EbAd"
+            }
+          }
+        },
+        "UniswapV2Router02": {
+          "address": "0x4b2ab38dbf28d31d467aa8993f6c2585981d6804",
+          "proxy": false,
+          "deploymentTxn": "0xfc1cd30a25e19d807576703a4f600064bee15697aa91339880ad0c30289e2d0a",
+          "input": {
+            "constructor": {
+              "_factory": "0x182a927119D56008d921126764bF884221b10f59",
+              "_WETH": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A"
+            }
+          }
+        },
+        "UniswapV3Factory": {
+          "address": "0x204faca1764b154221e35c0d20abb3c525710498",
+          "proxy": false,
+          "deploymentTxn": "0x42b890654a94ccc5e00f167108cb7b17f2e7064240bc9dde3699bbc3cef895f3",
+          "input": {
+            "constructor": {}
+          }
+        },
+        "UniswapInterfaceMulticall": {
+          "address": "0xd1b797d92d87b688193a2b976efc8d577d204343",
+          "proxy": false,
+          "deploymentTxn": "0xbf785c180d82016057acfd46e517970bf2cf29394b51b84dd186d0ea840d0fa2",
+          "input": {
+            "constructor": {}
+          }
+        },
+        "QuoterV2": {
+          "address": "0x661e93cca42afacb172121ef892830ca3b70f08d",
+          "proxy": false,
+          "deploymentTxn": "0x70a3651ad0940f225597f9d19ca1fc3574c8e4cee4a855f39d0e00582341fdb8",
+          "input": {
+            "constructor": {
+              "_factory": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+              "_WETH9": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A"
+            }
+          }
+        },
+        "TickLens": {
+          "address": "0xf025e0fe9e331a0ef05c2ad3c4e9c64b625cda6f",
+          "proxy": false,
+          "deploymentTxn": "0x7f9087693aacbe6a62e747abc8e16bd71f7779c7d9dc857b51e0d766365d1239",
+          "input": {
+            "constructor": {}
+          }
+        },
+        "NFTDescriptor": {
+          "address": "0x2e9d45bb7b30549f5216813ada9a6b7982c5b3ed",
+          "proxy": false,
+          "deploymentTxn": "0x99d4d3e416194ac14120f8478a3f781f1b3a23ad458f52afdeb87f438ca763f0",
+          "input": {
+            "constructor": {}
+          }
+        },
+        "NonfungiblePositionManager": {
+          "address": "0x7197e214c0b767cfb76fb734ab638e2c192f4e53",
+          "proxy": false,
+          "deploymentTxn": "0x49ca1d5e275ecc832ffe4b4fad4de1e4b11bead41f153f7a9611298dcb64322f",
+          "input": {
+            "constructor": {
+              "_factory": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+              "_WETH9": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A",
+              "_tokenDescriptor_": "0x315e413A11AB0df498eF83873012430ca36638Ae"
+            }
+          }
+        },
+        "V3Migrator": {
+          "address": "0x7078c4537c04c2b2e52ddba06074dbdacf23ca15",
+          "proxy": false,
+          "deploymentTxn": "0x52d4ccfb5532b15d650bde2812c9cf3df5c6dc680278460fe6455a1d8fa6d520",
+          "input": {
+            "constructor": {
+              "_factory": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+              "_WETH9": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A",
+              "_nonfungiblePositionManager": "0x7197E214c0b767cFB76Fb734ab638E2c192F4E53"
+            }
+          }
+        },
+        "SwapRouter": {
+          "address": "0xd6145b2d3f379919e8cdeda7b97e37c4b2ca9c40",
+          "proxy": false,
+          "deploymentTxn": "0x87c45a9f11aa9b80e7066b5e0886d2c7c6257ede799a3cefea73c52436f6075e",
+          "input": {
+            "constructor": {
+              "_factory": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+              "_WETH9": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A"
+            }
+          }
+        },
+        "PoolManager": {
+          "address": "0x188d586ddcf52439676ca21a244753fa19f9ea8e",
+          "proxy": false,
+          "deploymentTxn": "0x9fd1bae9ecaa6cfa31d6a92ee90035e7636ab43273184a819d7e750e99466e28",
+          "input": {
+            "constructor": {
+              "initialOwner": "0xE783DE89a7F0408687f051e3E6D0BEb62719EbAd"
+            }
+          }
+        },
+        "PositionDescriptor": {
+          "implementation": "0x63023c02f457a24594ad8fd411f56092179655e2",
+          "address": "0x5770d2914355a6d0a39a70aeea9bcce55df4201b",
+          "proxy": true,
+          "proxyType": "TransparentUpgradeableProxy",
+          "deploymentTxn": "0x57dd679e2a4e32768e98c5a9713c9c4c27fa646c5fdaa51a340a53cf3f2c0408",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x188d586Ddcf52439676Ca21A244753fA19F9Ea8e",
+              "_wrappedNative": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A",
+              "_nativeCurrencyLabelBytes": "0x4d4f4e0000000000000000000000000000000000000000000000000000000000"
+            },
+            "initializeData": "0x"
+          }
+        },
+        "PositionManager": {
+          "address": "0x5b7ec4a94ff9bedb700fb82ab09d5846972f4016",
+          "proxy": false,
+          "deploymentTxn": "0x9682d8755c005ff91759dfabeb2828d0ab7a8b3eae81fb394ca5d84db891ae74",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x188d586Ddcf52439676Ca21A244753fA19F9Ea8e",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "300000",
+              "_tokenDescriptor": "0x5770D2914355a6D0a39A70AeEa9bcCe55Df4201B",
+              "_weth9": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A"
+            }
+          }
+        },
+        "V4Quoter": {
+          "address": "0xa222dd357a9076d1091ed6aa2e16c9742dd26891",
+          "proxy": false,
+          "deploymentTxn": "0xb1c7f17bce5e42495def6cfc12c2d23f848c412821398ce2dd886f4ff17bdddb",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x188d586Ddcf52439676Ca21A244753fA19F9Ea8e"
+            }
+          }
+        },
+        "StateView": {
+          "address": "0x77395f3b2e73ae90843717371294fa97cc419d64",
+          "proxy": false,
+          "deploymentTxn": "0xef682adcf0193295561ad831c2c77cc51aa3a3b6a1eff59d463b1d8edbd724ce",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x188d586Ddcf52439676Ca21A244753fA19F9Ea8e"
+            }
+          }
+        },
+        "Quoter": {
+          "address": "0x2d01411773c8c24805306e89a41f7855c3c4fe65",
+          "proxy": false,
+          "deploymentTxn": "0x276a86690a18401d9da40fb2b066288f524ce04d7b17f8aa54f260e4619ab926",
+          "input": {
+            "constructor": {
+              "_factory": "0x204FAca1764B154221e35c0d20aBb3c525710498"
+            }
+          }
+        },
+        "UniversalRouter": {
+          "address": "0x0d97dc33264bfc1c226207428a79b26757fb9dc3",
+          "proxy": false,
+          "deploymentTxn": "0x62b939878338ea8f9b00ea64cca8dda634350d4cb11990ea52db0ca413c72a0a",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A",
+                "v2Factory": "0x182a927119D56008d921126764bF884221b10f59",
+                "v3Factory": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x188d586Ddcf52439676Ca21A244753fA19F9Ea8e",
+                "v3NFTPositionManager": "0x7197E214c0b767cFB76Fb734ab638E2c192F4E53",
+                "v4PositionManager": "0x5b7eC4a94fF9beDb700fb82aB09d5846972F401"
+              }
+            }
+          }
+        },
+        "FeeOnTransferDetector": {
+          "address": "0x5c834b6cac4173bfe288c5722a38e04b9e366e30",
+          "proxy": false,
+          "deploymentTxn": "0xa2d32b7b3bfd677fe54cc6bb0daf93131434651d74a2d72f453ae14a6355ab6e",
+          "input": {
+            "constructor": {
+              "_factoryV2": "0x182a927119D56008d921126764bF884221b10f59"
+            }
+          }
+        }
+      },
+      "timestamp": 1760583540166,
+      "commitHash": "9874be3"
+    }
+  ]
+}

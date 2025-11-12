@@ -461,6 +461,8 @@ contract Deploy is Script {
         if (positionManager == address(0)) {
             positionManager = config.readAddress('.protocols.v4.contracts.PositionManager.address');
         }
+        address acrossSpokePool =
+            config.readAddress('.protocols.universal-router.contracts.UniversalRouter.params.acrossSpokePool.value');
         console.log('deploying Universal Router');
         universalRouter = address(
             UniversalRouterDeployer.deploy(
@@ -472,7 +474,8 @@ contract Deploy is Script {
                 v3PoolInitCodeHash,
                 poolManager,
                 nonfungiblePositionManager,
-                positionManager
+                positionManager,
+                acrossSpokePool
             )
         );
     }
