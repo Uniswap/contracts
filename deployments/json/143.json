@@ -157,9 +157,33 @@
       "deploymentTxn": "0x3a93330363fd12e738cf58624023046cd71b1ea6957581a74e3d23c8594ceb3c",
       "timestamp": 1762991562777,
       "commitHash": "00f5859"
+    },
+    "WETHHook": {
+      "address": "0x3fad8a7205f943528915e67cf94fc792c8fce888",
+      "proxy": false,
+      "deploymentTxn": "0xf7d33e2d187de2fb75db98198c1e840d5ac7394cd3a756524699710bf3575e06",
+      "timestamp": 1763074970811,
+      "commitHash": "efab318"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "WETHHook": {
+          "address": "0x3fad8a7205f943528915e67cf94fc792c8fce888",
+          "proxy": false,
+          "deploymentTxn": "0xf7d33e2d187de2fb75db98198c1e840d5ac7394cd3a756524699710bf3575e06",
+          "input": {
+            "constructor": {
+              "_manager": "0x188d586Ddcf52439676Ca21A244753fA19F9Ea8e",
+              "_weth": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A"
+            }
+          }
+        }
+      },
+      "timestamp": 1763074970811,
+      "commitHash": "efab318"
+    },
     {
       "contracts": {
         "CaliburEntry": {
