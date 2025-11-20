@@ -9,11 +9,11 @@
       "commitHash": "a896bb6"
     },
     "UniversalRouter": {
-      "address": "0x986dadb82491834f6d17bd3287eb84be0b4d4cc7",
+      "address": "0x7f9b8d606e0f35e5073abf93695814530b28a37b",
       "proxy": false,
-      "deploymentTxn": "0x5f881cf2b90c29be2aabe94648fa8db12a133a400cc3e8ac2aecb23223240dbb",
-      "timestamp": 1739218927,
-      "commitHash": "3ad8685"
+      "deploymentTxn": "0x68a2eb98c2e52c2c2a7ec8f690e343b0da2380b63601e86776df836d8392a0a9",
+      "timestamp": 1763598857268,
+      "commitHash": "c0b6b96"
     },
     "UniswapInterfaceMulticall": {
       "address": "0xa72e4f582f7c3e2232a9f23a41e53c13d1a647a9",
@@ -135,17 +135,30 @@
   "history": [
     {
       "contracts": {
-        "CaliburEntry": {
-          "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+        "UniversalRouter": {
+          "address": "0x7f9b8d606e0f35e5073abf93695814530b28a37b",
           "proxy": false,
-          "deploymentTxn": "0x977f7307df758c44eae777231efb9daf5335c0c95082803c076b1011b2a6d2de",
+          "deploymentTxn": "0x68a2eb98c2e52c2c2a7ec8f690e343b0da2380b63601e86776df836d8392a0a9",
           "input": {
-            "constructor": {}
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x4200000000000000000000000000000000000006",
+                "v2Factory": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
+                "v3Factory": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x9cB26A7183B2F4515945Dc52CB4195B0d2D06C95",
+                "v3NFTPositionManager": "0xB7F724d6dDDFd008eFf5cc2834edDE5F9eF0d075",
+                "v4PositionManager": "0x12A98709BB5D0641D61458f85dcAFbE17AC2d05c",
+                "spokePool": "0x6999526e507Cc3b03b180BbE05E1Ff938259A87"
+              }
+            }
           }
         }
       },
-      "timestamp": 1748029284,
-      "commitHash": "0a52cd5"
+      "timestamp": 1763598857268,
+      "commitHash": "c0b6b96"
     },
     {
       "contracts": {
@@ -162,6 +175,20 @@
       },
       "timestamp": 1756328710,
       "commitHash": "320811c"
+    },
+    {
+      "contracts": {
+        "CaliburEntry": {
+          "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+          "proxy": false,
+          "deploymentTxn": "0x977f7307df758c44eae777231efb9daf5335c0c95082803c076b1011b2a6d2de",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1748029284,
+      "commitHash": "0a52cd5"
     },
     {
       "contracts": {
