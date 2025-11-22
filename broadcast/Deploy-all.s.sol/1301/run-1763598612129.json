@@ -1,7 +1,7 @@
 {
   "transactions": [
     {
-      "hash": "0x68a2eb98c2e52c2c2a7ec8f690e343b0da2380b63601e86776df836d8392a0a9",
+      "hash": null,
       "transactionType": "CREATE2",
       "contractName": "UniversalRouter",
       "contractAddress": "0x7f9b8d606e0f35e5073abf93695814530b28a37b",
@@ -21,36 +21,11 @@
       "isFixedGasLimit": false
     }
   ],
-  "receipts": [
-    {
-      "status": "0x1",
-      "cumulativeGasUsed": "0x4a1fb8",
-      "logs": [],
-      "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-      "type": "0x2",
-      "transactionHash": "0x68a2eb98c2e52c2c2a7ec8f690e343b0da2380b63601e86776df836d8392a0a9",
-      "transactionIndex": "0x3",
-      "blockHash": "0x8e4171f5f81b64f0243a27f54b87bcab3f07c13ec31a2d1079dbba8453ad6e1a",
-      "blockNumber": "0x230b4a5",
-      "gasUsed": "0x489009",
-      "effectiveGasPrice": "0x33",
-      "blobGasUsed": "0x4990d0",
-      "from": "0x2179a60856e37dfeaaca0ab043b931fe224b27b6",
-      "to": "0x4e59b44847b379578588920ca78fbf26c0b4956c",
-      "contractAddress": "0x7f9b8d606e0f35e5073abf93695814530b28a37b",
-      "daFootprintGasScalar": "0x190",
-      "l1BaseFeeScalar": "0x7d0",
-      "l1BlobBaseFee": "0x1",
-      "l1BlobBaseFeeScalar": "0xdbba0",
-      "l1Fee": "0x37ef",
-      "l1GasPrice": "0x9",
-      "l1GasUsed": "0x2f153"
-    }
-  ],
+  "receipts": [],
   "libraries": [],
   "pending": [],
   "returns": {},
-  "timestamp": 1763598857268,
+  "timestamp": 1763598612129,
   "chain": 1301,
   "commit": "c0b6b96"
 }
