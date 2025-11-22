@@ -59,7 +59,9 @@ interface IMixedRouteQuoterV1 {
     /// tokenOut The token being swapped out
     /// amountIn The desired input amount
     /// @return amountOut The amount of `tokenOut` that would be received
-    function quoteExactInputSingleV2(QuoteExactInputSingleV2Params memory params) external returns (uint256 amountOut);
+    function quoteExactInputSingleV2(QuoteExactInputSingleV2Params memory params)
+        external
+        returns (uint256 amountOut);
 
     /// @dev ExactOutput swaps are not supported by this new Quoter which is specialized for supporting routes
     ///      crossing both V2 liquidity pairs and V3 pools.

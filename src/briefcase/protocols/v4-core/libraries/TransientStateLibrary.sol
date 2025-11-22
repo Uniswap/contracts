@@ -11,6 +11,7 @@ import {NonzeroDeltaCount} from './NonzeroDeltaCount.sol';
 library TransientStateLibrary {
     /// @notice returns the reserves for the synced currency
     /// @param manager The pool manager contract.
+
     /// @return uint256 The reserves of the currency.
     /// @dev returns 0 if the reserves are not synced or value is 0.
     /// Checks the synced currency to only return valid reserve values (after a sync and before a settle).
@@ -33,7 +34,7 @@ library TransientStateLibrary {
     /// @param currency The currency for which to lookup the delta
     function currencyDelta(IPoolManager manager, address target, Currency currency) internal view returns (int256) {
         bytes32 key;
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             mstore(0, and(target, 0xffffffffffffffffffffffffffffffffffffffff))
             mstore(32, and(currency, 0xffffffffffffffffffffffffffffffffffffffff))
             key := keccak256(0, 64)

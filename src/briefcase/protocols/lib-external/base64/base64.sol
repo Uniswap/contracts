@@ -83,9 +83,7 @@ library Base64 {
             let lastBytes := mload(add(data, mload(data)))
             if eq(and(lastBytes, 0xFF), 0x3d) {
                 decodedLen := sub(decodedLen, 1)
-                if eq(and(lastBytes, 0xFFFF), 0x3d3d) {
-                    decodedLen := sub(decodedLen, 1)
-                }
+                if eq(and(lastBytes, 0xFFFF), 0x3d3d) { decodedLen := sub(decodedLen, 1) }
             }
 
             // set the actual output length

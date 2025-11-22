@@ -71,7 +71,8 @@ library PositionValue {
         returns (uint256 amount0, uint256 amount1)
     {
         (
-            ,,
+            ,
+            ,
             address token0,
             address token1,
             uint24 fee,
@@ -117,19 +118,17 @@ library PositionValue {
             feeParams.tickUpper
         );
 
-        amount0 =
-            FullMath.mulDiv(
-                    poolFeeGrowthInside0LastX128 - feeParams.positionFeeGrowthInside0LastX128,
-                    feeParams.liquidity,
-                    FixedPoint128.Q128
-                ) + feeParams.tokensOwed0;
+        amount0 = FullMath.mulDiv(
+            poolFeeGrowthInside0LastX128 - feeParams.positionFeeGrowthInside0LastX128,
+            feeParams.liquidity,
+            FixedPoint128.Q128
+        ) + feeParams.tokensOwed0;
 
-        amount1 =
-            FullMath.mulDiv(
-                    poolFeeGrowthInside1LastX128 - feeParams.positionFeeGrowthInside1LastX128,
-                    feeParams.liquidity,
-                    FixedPoint128.Q128
-                ) + feeParams.tokensOwed1;
+        amount1 = FullMath.mulDiv(
+            poolFeeGrowthInside1LastX128 - feeParams.positionFeeGrowthInside1LastX128,
+            feeParams.liquidity,
+            FixedPoint128.Q128
+        ) + feeParams.tokensOwed1;
     }
 
     function _getFeeGrowthInside(IUniswapV3Pool pool, int24 tickLower, int24 tickUpper)

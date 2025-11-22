@@ -104,10 +104,11 @@
       "timestamp": 1713205295
     },
     "OrderQuoter": {
-      "address": "0x54539967a06Fc0E3C3ED0ee320Eb67362D13C5fF",
+      "address": "0xc6ef4c96ee89e48eff1c35545dbeed4ad8dac9d4",
       "proxy": false,
-      "deploymentTxn": "0x7743c23afeca03c875e3664159eb71381d981a0e689ed7e8adceea6db769f107",
-      "timestamp": 1690383395
+      "deploymentTxn": "0x1d8dc0fa85e7d0a6ad41ea8d1bbce7f655625075b1c438e054559f32707fc90a",
+      "timestamp": 1763770696,
+      "commitHash": "185b4fc"
     },
     "ExclusiveDutchOrderReactor": {
       "address": "0x6000da47483062A0D734Ba3dc7576Ce6A0B645C4",
@@ -207,17 +208,17 @@
   "history": [
     {
       "contracts": {
-        "CaliburEntry": {
-          "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+        "OrderQuoter": {
+          "address": "0xc6ef4c96ee89e48eff1c35545dbeed4ad8dac9d4",
           "proxy": false,
-          "deploymentTxn": "0xf7d094c82512c971d821190e914eada76eec34da638736f09fa2fe1a9456d894",
+          "deploymentTxn": "0x1d8dc0fa85e7d0a6ad41ea8d1bbce7f655625075b1c438e054559f32707fc90a",
           "input": {
             "constructor": {}
           }
         }
       },
-      "timestamp": 1748028805,
-      "commitHash": "0a52cd5"
+      "timestamp": 1763770696,
+      "commitHash": "185b4fc"
     },
     {
       "contracts": {
@@ -272,6 +273,20 @@
       },
       "timestamp": 1756325186,
       "commitHash": "320811c"
+    },
+    {
+      "contracts": {
+        "CaliburEntry": {
+          "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+          "proxy": false,
+          "deploymentTxn": "0xf7d094c82512c971d821190e914eada76eec34da638736f09fa2fe1a9456d894",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1748028805,
+      "commitHash": "0a52cd5"
     },
     {
       "contracts": {

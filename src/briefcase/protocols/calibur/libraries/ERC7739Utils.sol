@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.23;
 
-import {
-    MessageHashUtils
-} from '../../lib-external/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol';
+import {MessageHashUtils} from
+    '../../lib-external/openzeppelin-contracts/contracts/utils/cryptography/MessageHashUtils.sol';
 import {PersonalSignLib} from './PersonalSignLib.sol';
 import {TypedDataSignLib} from './TypedDataSignLib.sol';
 
@@ -79,7 +78,7 @@ library ERC7739Utils {
             }
         }
         // If we didn't find a valid contentsName, return empty strings
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             contentsName.offset := 0
             contentsName.length := 0
             contentsType.offset := 0

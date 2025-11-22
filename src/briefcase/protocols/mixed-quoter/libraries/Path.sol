@@ -37,7 +37,11 @@ library Path {
     /// @return tokenA The first token of the given pool
     /// @return fee The fee level of the pool
     /// @return tokenB The second token of the given pool
-    function decodeFirstV3Pool(bytes calldata path) internal pure returns (address tokenA, uint24 fee, address tokenB) {
+    function decodeFirstV3Pool(bytes calldata path)
+        internal
+        pure
+        returns (address tokenA, uint24 fee, address tokenB)
+    {
         // calls the function in V3Path library
         (tokenA, fee, tokenB) = path.decodeFirstPool();
         fee = (fee << Constants.FEE_SHIFT) >> Constants.FEE_SHIFT;
@@ -80,7 +84,11 @@ library Path {
         Currency currency0 = Currency.wrap(token0);
         Currency currency1 = Currency.wrap(token1);
         return PoolKey({
-            currency0: currency0, currency1: currency1, fee: fee, tickSpacing: int24(tickSpacing), hooks: IHooks(hooks)
+            currency0: currency0,
+            currency1: currency1,
+            fee: fee,
+            tickSpacing: int24(tickSpacing),
+            hooks: IHooks(hooks)
         });
     }
 

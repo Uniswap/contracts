@@ -8,7 +8,7 @@ pragma solidity ^0.8.24;
 library TransientNativeAllowance {
     /// @notice calculates which storage slot a transient native allowance should be stored in for a given spender
     function _computeSlot(address spender) internal pure returns (bytes32 hashSlot) {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             mstore(0, and(spender, 0xffffffffffffffffffffffffffffffffffffffff))
             hashSlot := keccak256(0, 32)
         }
@@ -17,7 +17,7 @@ library TransientNativeAllowance {
     /// @notice Returns the transient allowance for a given spender
     function get(address spender) internal view returns (uint256 allowance) {
         bytes32 hashSlot = _computeSlot(spender);
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             allowance := tload(hashSlot)
         }
     }
@@ -25,7 +25,7 @@ library TransientNativeAllowance {
     /// @notice Sets the transient allowance for a given spender
     function set(address spender, uint256 allowance) internal {
         bytes32 hashSlot = _computeSlot(spender);
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             tstore(hashSlot, allowance)
         }
     }

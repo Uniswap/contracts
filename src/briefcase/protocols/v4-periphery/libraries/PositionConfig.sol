@@ -14,7 +14,7 @@ struct PositionConfig {
 library PositionConfigLibrary {
     function toId(PositionConfig calldata config) internal pure returns (bytes32 id) {
         // id = keccak256(abi.encodePacked(currency0, currency1, fee, tickSpacing, hooks, tickLower, tickUpper))) >> 1
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             let fmp := mload(0x40)
             mstore(add(fmp, 0x34), calldataload(add(config, 0xc0))) // tickUpper: [0x51, 0x54)
             mstore(add(fmp, 0x31), calldataload(add(config, 0xa0))) // tickLower: [0x4E, 0x51)

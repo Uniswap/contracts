@@ -25,7 +25,7 @@ library QuoterRevert {
     function bubbleReason(bytes memory revertData) internal pure {
         // mload(revertData): the length of the revert data
         // add(revertData, 0x20): a pointer to the start of the revert data
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             revert(add(revertData, 0x20), mload(revertData))
         }
     }
@@ -42,7 +42,7 @@ library QuoterRevert {
         // reason -> reason+0x1f is the length of the reason string
         // reason+0x20 -> reason+0x23 is the selector of QuoteSwap
         // reason+0x24 -> reason+0x43 is the quoteAmount
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             quoteAmount := mload(add(reason, 0x24))
         }
     }

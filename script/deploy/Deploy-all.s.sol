@@ -48,6 +48,7 @@ import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4Quo
 import {WETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WETHHookDeployer.sol';
 import {WstETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WstETHHookDeployer.sol';
 import {WstETHRoutingHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WstETHRoutingHookDeployer.sol';
+import {OrderQuoterDeployer} from '../../src/briefcase/deployers/uniswapx/OrderQuoterDeployer.sol';
 
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {VmSafe} from 'forge-std/Vm.sol';
@@ -93,6 +94,8 @@ contract Deploy is Script {
         deployUtilsContracts();
 
         deployCalibur();
+
+        deployUniswapX();
 
         vm.stopBroadcast();
 
@@ -486,6 +489,17 @@ contract Deploy is Script {
         bytes32 salt = config.readBytes32('.protocols.calibur.contracts.Calibur.params.salt.value');
         console.log('deploying Calibur');
         calibur = address(CaliburEntryDeployer.deploy(salt));
+    }
+
+    function deployUniswapX() private {
+        if (!config.readBoolOr('.protocols.uniswapx.deploy', false)) return;
+
+        bool deployOrderQuoter = config.readBoolOr('.protocols.uniswapx.contracts.OrderQuoter.deploy', false);
+
+        if (deployOrderQuoter) {
+            console.log('deploying OrderQuoter');
+            OrderQuoterDeployer.deploy();
+        }
     }
 
     function weth() internal returns (address) {

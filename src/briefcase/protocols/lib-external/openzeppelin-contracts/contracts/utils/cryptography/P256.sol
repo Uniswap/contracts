@@ -147,7 +147,7 @@ library P256 {
      * In particular this function checks that x < P and y < P.
      */
     function isValidPublicKey(bytes32 x, bytes32 y) internal pure returns (bool result) {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             let p := P
             let lhs := mulmod(y, y, p) // y^2
             let rhs := addmod(mulmod(addmod(mulmod(x, x, p), A, p), x, p), B, p) // ((x^2 + a) * x) + b = x^3 + ax + b
@@ -175,7 +175,7 @@ library P256 {
         if (jz == 0) return (0, 0);
         uint256 p = P; // cache P on the stack
         uint256 zinv = Math.invModPrime(jz, p);
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             let zzinv := mulmod(zinv, zinv, p)
             ax := mulmod(jx, zzinv, p)
             ay := mulmod(jy, mulmod(zzinv, zinv, p), p)
@@ -198,7 +198,7 @@ library P256 {
         pure
         returns (uint256 rx, uint256 ry, uint256 rz)
     {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             let p := P
             let z1 := mload(add(p1, 0x40))
             let zz1 := mulmod(z1, z1, p) // zz1 = z1²
@@ -214,17 +214,13 @@ library P256 {
                 let hh := mulmod(h, h, p) // h²
 
                 // x' = r²-h³-2*u1*h²
-                rx := addmod(
-                    addmod(mulmod(r, r, p), sub(p, mulmod(h, hh, p)), p),
-                    sub(p, mulmod(2, mulmod(u1, hh, p), p)),
-                    p
-                )
+                rx :=
+                    addmod(addmod(mulmod(r, r, p), sub(p, mulmod(h, hh, p)), p), sub(p, mulmod(2, mulmod(u1, hh, p), p)), p)
                 // y' = r*(u1*h²-x')-s1*h³
-                ry := addmod(
-                    mulmod(r, addmod(mulmod(u1, hh, p), sub(p, rx), p), p),
-                    sub(p, mulmod(s1, mulmod(h, hh, p), p)),
-                    p
-                )
+                ry :=
+                    addmod(
+                        mulmod(r, addmod(mulmod(u1, hh, p), sub(p, rx), p), p), sub(p, mulmod(s1, mulmod(h, hh, p), p)), p
+                    )
                 // z' = h*z1*z2
                 rz := mulmod(h, mulmod(z1, z2, p), p)
             }
@@ -258,7 +254,7 @@ library P256 {
      * Reference: https://www.hyperelliptic.org/EFD/g1p/auto-shortw-jacobian.html#doubling-dbl-1998-cmo-2
      */
     function _jDouble(uint256 x, uint256 y, uint256 z) private pure returns (uint256 rx, uint256 ry, uint256 rz) {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             let p := P
             let yy := mulmod(y, y, p)
             let zz := mulmod(z, z, p)

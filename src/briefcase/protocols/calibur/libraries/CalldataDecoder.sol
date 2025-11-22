@@ -14,7 +14,7 @@ library CalldataDecoder {
 
     /// @notice Removes the selector from the calldata and returns the encoded params.
     function removeSelector(bytes calldata data) internal pure returns (bytes calldata params) {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             if lt(data.length, 4) {
                 mstore(0, SLICE_ERROR_SELECTOR)
                 revert(0x1c, 4)
@@ -30,7 +30,7 @@ library CalldataDecoder {
     // @param _arg The index of the argument to extract
     function toBytes(bytes calldata _bytes, uint256 _arg) internal pure returns (bytes calldata res) {
         uint256 length;
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             // The offset of the `_arg`-th element is `32 * arg`, which stores the offset of the length pointer.
             // shl(5, x) is equivalent to mul(32, x)
             let lengthPtr :=
@@ -57,7 +57,7 @@ library CalldataDecoder {
     // @param _arg The index of the argument to extract
     function safeToBytes(bytes calldata _bytes, uint256 _arg) internal pure returns (bytes calldata res) {
         uint256 length;
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             // The offset of the `_arg`-th element is `32 * arg`, which stores the offset of the length pointer.
             // shl(5, x) is equivalent to mul(32, x)
             let lengthPtr :=

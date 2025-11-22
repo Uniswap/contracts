@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.7.0;
 
-import {
-    INonfungibleTokenPositionDescriptor
-} from '../../protocols/v3-periphery/interfaces/INonfungibleTokenPositionDescriptor.sol';
+import {INonfungibleTokenPositionDescriptor} from
+    '../../protocols/v3-periphery/interfaces/INonfungibleTokenPositionDescriptor.sol';
 import {DeployerHelper} from '../DeployerHelper.sol';
 import {NFTDescriptorDeployer} from './NFTDescriptorDeployer.sol';
 

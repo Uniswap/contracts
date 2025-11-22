@@ -27,7 +27,7 @@ library CalldataDecoder {
         pure
         returns (bytes calldata actions, bytes[] calldata params)
     {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             // Strict encoding requires that the data begin with:
             // 0x00: 0x40 (offset to `actions.length`)
             // 0x20: 0x60 + actions.length (offset to `params.length`)
@@ -77,7 +77,7 @@ library CalldataDecoder {
         returns (uint256 tokenId, uint256 liquidity, uint128 amount0, uint128 amount1, bytes calldata hookData)
     {
         // no length check performed, as there is a length check in `toBytes`
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             tokenId := calldataload(params.offset)
             liquidity := calldataload(add(params.offset, 0x20))
             amount0 := calldataload(add(params.offset, 0x40))
@@ -94,7 +94,7 @@ library CalldataDecoder {
         returns (uint256 tokenId, uint128 amount0Max, uint128 amount1Max, bytes calldata hookData)
     {
         // no length check performed, as there is a length check in `toBytes`
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             tokenId := calldataload(params.offset)
             amount0Max := calldataload(add(params.offset, 0x20))
             amount1Max := calldataload(add(params.offset, 0x40))
@@ -119,7 +119,7 @@ library CalldataDecoder {
         )
     {
         // no length check performed, as there is a length check in `toBytes`
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             poolKey := params.offset
             tickLower := calldataload(add(params.offset, 0xa0))
             tickUpper := calldataload(add(params.offset, 0xc0))
@@ -146,7 +146,7 @@ library CalldataDecoder {
         )
     {
         // no length check performed, as there is a length check in `toBytes`
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             poolKey := params.offset
             tickLower := calldataload(add(params.offset, 0xa0))
             tickUpper := calldataload(add(params.offset, 0xc0))
@@ -165,7 +165,7 @@ library CalldataDecoder {
         returns (uint256 tokenId, uint128 amount0Min, uint128 amount1Min, bytes calldata hookData)
     {
         // no length check performed, as there is a length check in `toBytes`
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             tokenId := calldataload(params.offset)
             amount0Min := calldataload(add(params.offset, 0x20))
             amount1Min := calldataload(add(params.offset, 0x40))
@@ -181,7 +181,7 @@ library CalldataDecoder {
         returns (IV4Router.ExactInputParams calldata swapParams)
     {
         // ExactInputParams is a variable length struct so we just have to look up its location
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             // only safety checks for the minimum length, where path is empty
             // 0xa0 = 5 * 0x20 -> 3 elements, path offset, and path length 0
             if lt(params.length, 0xa0) {
@@ -199,7 +199,7 @@ library CalldataDecoder {
         returns (IV4Router.ExactInputSingleParams calldata swapParams)
     {
         // ExactInputSingleParams is a variable length struct so we just have to look up its location
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             // only safety checks for the minimum length, where hookData is empty
             // 0x140 = 10 * 0x20 -> 8 elements, bytes offset, and bytes length 0
             if lt(params.length, 0x140) {
@@ -217,7 +217,7 @@ library CalldataDecoder {
         returns (IV4Router.ExactOutputParams calldata swapParams)
     {
         // ExactOutputParams is a variable length struct so we just have to look up its location
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             // only safety checks for the minimum length, where path is empty
             // 0xa0 = 5 * 0x20 -> 3 elements, path offset, and path length 0
             if lt(params.length, 0xa0) {
@@ -235,7 +235,7 @@ library CalldataDecoder {
         returns (IV4Router.ExactOutputSingleParams calldata swapParams)
     {
         // ExactOutputSingleParams is a variable length struct so we just have to look up its location
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             // only safety checks for the minimum length, where hookData is empty
             // 0x140 = 10 * 0x20 -> 8 elements, bytes offset, and bytes length 0
             if lt(params.length, 0x140) {
@@ -248,7 +248,7 @@ library CalldataDecoder {
 
     /// @dev equivalent to: abi.decode(params, (Currency)) in calldata
     function decodeCurrency(bytes calldata params) internal pure returns (Currency currency) {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             if lt(params.length, 0x20) {
                 mstore(0, SLICE_ERROR_SELECTOR)
                 revert(0x1c, 4)
@@ -259,7 +259,7 @@ library CalldataDecoder {
 
     /// @dev equivalent to: abi.decode(params, (Currency, Currency)) in calldata
     function decodeCurrencyPair(bytes calldata params) internal pure returns (Currency currency0, Currency currency1) {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             if lt(params.length, 0x40) {
                 mstore(0, SLICE_ERROR_SELECTOR)
                 revert(0x1c, 4)
@@ -275,7 +275,7 @@ library CalldataDecoder {
         pure
         returns (Currency currency0, Currency currency1, address _address)
     {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             if lt(params.length, 0x60) {
                 mstore(0, SLICE_ERROR_SELECTOR)
                 revert(0x1c, 4)
@@ -292,7 +292,7 @@ library CalldataDecoder {
         pure
         returns (Currency currency, address _address)
     {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             if lt(params.length, 0x40) {
                 mstore(0, SLICE_ERROR_SELECTOR)
                 revert(0x1c, 4)
@@ -308,7 +308,7 @@ library CalldataDecoder {
         pure
         returns (Currency currency, address _address, uint256 amount)
     {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             if lt(params.length, 0x60) {
                 mstore(0, SLICE_ERROR_SELECTOR)
                 revert(0x1c, 4)
@@ -320,8 +320,12 @@ library CalldataDecoder {
     }
 
     /// @dev equivalent to: abi.decode(params, (Currency, uint256)) in calldata
-    function decodeCurrencyAndUint256(bytes calldata params) internal pure returns (Currency currency, uint256 amount) {
-        assembly ('memory-safe') {
+    function decodeCurrencyAndUint256(bytes calldata params)
+        internal
+        pure
+        returns (Currency currency, uint256 amount)
+    {
+        assembly ("memory-safe") {
             if lt(params.length, 0x40) {
                 mstore(0, SLICE_ERROR_SELECTOR)
                 revert(0x1c, 4)
@@ -333,7 +337,7 @@ library CalldataDecoder {
 
     /// @dev equivalent to: abi.decode(params, (uint256)) in calldata
     function decodeUint256(bytes calldata params) internal pure returns (uint256 amount) {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             if lt(params.length, 0x20) {
                 mstore(0, SLICE_ERROR_SELECTOR)
                 revert(0x1c, 4)
@@ -348,7 +352,7 @@ library CalldataDecoder {
         pure
         returns (Currency currency, uint256 amount, bool boolean)
     {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             if lt(params.length, 0x60) {
                 mstore(0, SLICE_ERROR_SELECTOR)
                 revert(0x1c, 4)
@@ -364,7 +368,7 @@ library CalldataDecoder {
     /// @param _arg The index of the argument to extract
     function toBytes(bytes calldata _bytes, uint256 _arg) internal pure returns (bytes calldata res) {
         uint256 length;
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             // The offset of the `_arg`-th element is `32 * arg`, which stores the offset of the length pointer.
             // shl(5, x) is equivalent to mul(32, x)
             let lengthPtr :=
