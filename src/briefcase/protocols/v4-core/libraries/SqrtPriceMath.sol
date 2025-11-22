@@ -55,7 +55,7 @@ library SqrtPriceMath {
                 // if the product overflows, we know the denominator underflows
                 // in addition, we must check that the denominator does not underflow
                 // equivalent: if (product / amount != sqrtPX96 || numerator1 <= product) revert PriceOverflow();
-                assembly ('memory-safe') {
+                assembly ("memory-safe") {
                     if iszero(
                         and(
                             eq(div(product, amount), and(sqrtPX96, 0xffffffffffffffffffffffffffffffffffffffff)),
@@ -90,18 +90,22 @@ library SqrtPriceMath {
         // if we're adding (subtracting), rounding down requires rounding the quotient down (up)
         // in both cases, avoid a mulDiv for most inputs
         if (add) {
-            uint256 quotient = (amount <= type(uint160).max
+            uint256 quotient = (
+                amount <= type(uint160).max
                     ? (amount << FixedPoint96.RESOLUTION) / liquidity
-                    : FullMath.mulDiv(amount, FixedPoint96.Q96, liquidity));
+                    : FullMath.mulDiv(amount, FixedPoint96.Q96, liquidity)
+            );
 
             return (uint256(sqrtPX96) + quotient).toUint160();
         } else {
-            uint256 quotient = (amount <= type(uint160).max
+            uint256 quotient = (
+                amount <= type(uint160).max
                     ? UnsafeMath.divRoundingUp(amount << FixedPoint96.RESOLUTION, liquidity)
-                    : FullMath.mulDivRoundingUp(amount, FixedPoint96.Q96, liquidity));
+                    : FullMath.mulDivRoundingUp(amount, FixedPoint96.Q96, liquidity)
+            );
 
             // equivalent: if (sqrtPX96 <= quotient) revert NotEnoughLiquidity();
-            assembly ('memory-safe') {
+            assembly ("memory-safe") {
                 if iszero(gt(and(sqrtPX96, 0xffffffffffffffffffffffffffffffffffffffff), quotient)) {
                     mstore(0, 0x4323a555) // selector for NotEnoughLiquidity()
                     revert(0x1c, 0x04)
@@ -127,7 +131,7 @@ library SqrtPriceMath {
         returns (uint160)
     {
         // equivalent: if (sqrtPX96 == 0 || liquidity == 0) revert InvalidPriceOrLiquidity();
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             if or(
                 iszero(and(sqrtPX96, 0xffffffffffffffffffffffffffffffffffffffff)),
                 iszero(and(liquidity, 0xffffffffffffffffffffffffffffffff))
@@ -156,7 +160,7 @@ library SqrtPriceMath {
         returns (uint160)
     {
         // equivalent: if (sqrtPX96 == 0 || liquidity == 0) revert InvalidPriceOrLiquidity();
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             if or(
                 iszero(and(sqrtPX96, 0xffffffffffffffffffffffffffffffffffffffff)),
                 iszero(and(liquidity, 0xffffffffffffffffffffffffffffffff))
@@ -189,7 +193,7 @@ library SqrtPriceMath {
             if (sqrtPriceAX96 > sqrtPriceBX96) (sqrtPriceAX96, sqrtPriceBX96) = (sqrtPriceBX96, sqrtPriceAX96);
 
             // equivalent: if (sqrtPriceAX96 == 0) revert InvalidPrice();
-            assembly ('memory-safe') {
+            assembly ("memory-safe") {
                 if iszero(and(sqrtPriceAX96, 0xffffffffffffffffffffffffffffffffffffffff)) {
                     mstore(0, 0x00bfc921) // selector for InvalidPrice()
                     revert(0x1c, 0x04)
@@ -200,21 +204,16 @@ library SqrtPriceMath {
             uint256 numerator2 = sqrtPriceBX96 - sqrtPriceAX96;
 
             return roundUp
-                ? UnsafeMath.divRoundingUp(
-                    FullMath.mulDivRoundingUp(numerator1, numerator2, sqrtPriceBX96), sqrtPriceAX96
-                )
+                ? UnsafeMath.divRoundingUp(FullMath.mulDivRoundingUp(numerator1, numerator2, sqrtPriceBX96), sqrtPriceAX96)
                 : FullMath.mulDiv(numerator1, numerator2, sqrtPriceBX96) / sqrtPriceAX96;
         }
     }
 
     /// @notice Equivalent to: `a >= b ? a - b : b - a`
     function absDiff(uint160 a, uint160 b) internal pure returns (uint256 res) {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             let diff :=
-                sub(
-                    and(a, 0xffffffffffffffffffffffffffffffffffffffff),
-                    and(b, 0xffffffffffffffffffffffffffffffffffffffff)
-                )
+                sub(and(a, 0xffffffffffffffffffffffffffffffffffffffff), and(b, 0xffffffffffffffffffffffffffffffffffffffff))
             // mask = 0 if a >= b else -1 (all 1s)
             let mask := sar(255, diff)
             // if a >= b, res = a - b = 0 ^ (a - b)
@@ -248,7 +247,7 @@ library SqrtPriceMath {
          * Cannot overflow because `type(uint128).max * type(uint160).max >> 96 < (1 << 192)`.
          */
         amount1 = FullMath.mulDiv(_liquidity, numerator, denominator);
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             amount1 := add(amount1, and(gt(mulmod(_liquidity, numerator, denominator), 0), roundUp))
         }
     }

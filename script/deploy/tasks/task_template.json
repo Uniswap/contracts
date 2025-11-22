@@ -468,6 +468,16 @@
                     }
                 }
             }
+        },
+        "uniswapx": {
+            "name": "UniswapX",
+            "deploy": false,
+            "contracts": {
+                "OrderQuoter": {
+                    "deploy": false,
+                    "address": null
+                }
+            }
         }
     },
     "dependencies": {

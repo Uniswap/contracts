@@ -8,7 +8,7 @@ import {Currency} from '../types/Currency.sol';
 library CurrencyDelta {
     /// @notice calculates which storage slot a delta should be stored in for a given account and currency
     function _computeSlot(address target, Currency currency) internal pure returns (bytes32 hashSlot) {
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             mstore(0, and(target, 0xffffffffffffffffffffffffffffffffffffffff))
             mstore(32, and(currency, 0xffffffffffffffffffffffffffffffffffffffff))
             hashSlot := keccak256(0, 64)
@@ -17,7 +17,7 @@ library CurrencyDelta {
 
     function getDelta(Currency currency, address target) internal view returns (int256 delta) {
         bytes32 hashSlot = _computeSlot(target, currency);
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             delta := tload(hashSlot)
         }
     }
@@ -31,11 +31,11 @@ library CurrencyDelta {
     {
         bytes32 hashSlot = _computeSlot(target, currency);
 
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             previous := tload(hashSlot)
         }
         next = previous + delta;
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             tstore(hashSlot, next)
         }
     }

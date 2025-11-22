@@ -20,7 +20,7 @@ library ERC721PermitHash {
         returns (bytes32 digest)
     {
         // equivalent to: keccak256(abi.encode(PERMIT_TYPEHASH, spender, tokenId, nonce, deadline));
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             let fmp := mload(0x40)
             mstore(fmp, PERMIT_TYPEHASH)
             mstore(add(fmp, 0x20), and(spender, 0xffffffffffffffffffffffffffffffffffffffff))
@@ -50,7 +50,7 @@ library ERC721PermitHash {
         returns (bytes32 digest)
     {
         // equivalent to: keccak256(abi.encode(PERMIT_FOR_ALL_TYPEHASH, operator, approved, nonce, deadline));
-        assembly ('memory-safe') {
+        assembly ("memory-safe") {
             let fmp := mload(0x40)
             mstore(fmp, PERMIT_FOR_ALL_TYPEHASH)
             mstore(add(fmp, 0x20), and(operator, 0xffffffffffffffffffffffffffffffffffffffff))
