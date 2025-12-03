@@ -2,10 +2,11 @@
   "chainId": "43114",
   "latest": {
     "UniversalRouter": {
-      "address": "0x4Dae2f939ACf50408e13d58534Ff8c2776d45265",
+      "address": "0x0cf1f86b331a03179646341d10a2a87515087221",
       "proxy": false,
-      "deploymentTxn": "0x474852bafd923ab30f94a338d1d031aa7a7560d12d7b14dffacc02eb33265ec6",
-      "timestamp": 1705003421
+      "deploymentTxn": "0x817e32060d0ae01625bbd4e88590012453f4ad21a62e1d40d18ba967505e53d7",
+      "timestamp": 1763597658826,
+      "commitHash": "6ce39dd"
     },
     "UniswapV2Factory": {
       "address": "0x9e5A52f57b3038F1B8EeE45F28b3C1967e22799C",
@@ -63,6 +64,33 @@
     }
   },
   "history": [
+    {
+      "contracts": {
+        "UniversalRouter": {
+          "address": "0x0cf1f86b331a03179646341d10a2a87515087221",
+          "proxy": false,
+          "deploymentTxn": "0x817e32060d0ae01625bbd4e88590012453f4ad21a62e1d40d18ba967505e53d7",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+                "v2Factory": "0x9e5A52f57b3038F1B8EeE45F28b3C1967e22799C",
+                "v3Factory": "0x740b1c1de25031C31FF4fC9A62f554A55cdC1baD",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x06380C0e0912312B5150364B9DC4542BA0DbBc85",
+                "v3NFTPositionManager": "0x655C406EBFa14EE2006250925e54ec43AD184f8B",
+                "v4PositionManager": "0xB74b1F14d2754AcfcbBe1a221023a5cf50Ab8ACD",
+                "spokePool": "0x5302086A3a25d473aAbBd0356eFf8Dd811a4d89"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1763597658826,
+      "commitHash": "6ce39dd"
+    },
     {
       "contracts": {
         "UniversalRouter": {

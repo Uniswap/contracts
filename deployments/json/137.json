@@ -46,11 +46,11 @@
       "commitHash": "e6c327f"
     },
     "UniversalRouter": {
-      "address": "0x1095692a6237d83c6a72f3f5efedb9a670c49223",
+      "address": "0xe27610fd9dd05fc061366bc9da414ca6f948f204",
       "proxy": false,
-      "deploymentTxn": "0x06116d3c7a4f3179e9493c62f7ab2799c16a7301aac1f59ed97c72ba2af59335",
-      "timestamp": 1737492197,
-      "commitHash": "e6c327f"
+      "deploymentTxn": "0x696626ea8d2cc585d9d47284996e14cc221e24c67d7b5e46a57002ac79eb7ae5",
+      "timestamp": 1763596111610,
+      "commitHash": "da7429d"
     },
     "FeeOnTransferDetector": {
       "address": "0xC988e19819a63C0e487c6Ad8d6668Ac773923BF2",
@@ -153,6 +153,33 @@
     }
   },
   "history": [
+    {
+      "contracts": {
+        "UniversalRouter": {
+          "address": "0xe27610fd9dd05fc061366bc9da414ca6f948f204",
+          "proxy": false,
+          "deploymentTxn": "0x696626ea8d2cc585d9d47284996e14cc221e24c67d7b5e46a57002ac79eb7ae5",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+                "v2Factory": "0x9e5A52f57b3038F1B8EeE45F28b3C1967e22799C",
+                "v3Factory": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x67366782805870060151383F4BbFF9daB53e5cD6",
+                "v3NFTPositionManager": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+                "v4PositionManager": "0x1Ec2eBf4F37E7363FDfe3551602425af0B3ceef9",
+                "spokePool": "0x9295ee1d8C5b022Be115A2AD3c30C72E34e7F09"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1763596111610,
+      "commitHash": "da7429d"
+    },
     {
       "contracts": {
         "MixedRouteQuoterV2": {

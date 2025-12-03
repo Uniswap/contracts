@@ -124,11 +124,11 @@
       "commitHash": "9874be3"
     },
     "UniversalRouter": {
-      "address": "0x0d97dc33264bfc1c226207428a79b26757fb9dc3",
+      "address": "0xbc2a036e5027b9ae57bba847ef88e1b14823f7b1",
       "proxy": false,
-      "deploymentTxn": "0x62b939878338ea8f9b00ea64cca8dda634350d4cb11990ea52db0ca413c72a0a",
-      "timestamp": 1760583540166,
-      "commitHash": "9874be3"
+      "deploymentTxn": "0xccf467c3c20e45ba72c4d092272db1d214140bd1d2004865e2cb954e213fd8c2",
+      "timestamp": 1763599362037,
+      "commitHash": "7d170b7"
     },
     "FeeOnTransferDetector": {
       "address": "0x5c834b6cac4173bfe288c5722a38e04b9e366e30",
@@ -167,6 +167,33 @@
     }
   },
   "history": [
+    {
+      "contracts": {
+        "UniversalRouter": {
+          "address": "0xbc2a036e5027b9ae57bba847ef88e1b14823f7b1",
+          "proxy": false,
+          "deploymentTxn": "0xccf467c3c20e45ba72c4d092272db1d214140bd1d2004865e2cb954e213fd8c2",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A",
+                "v2Factory": "0x182a927119D56008d921126764bF884221b10f59",
+                "v3Factory": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x188d586Ddcf52439676Ca21A244753fA19F9Ea8e",
+                "v3NFTPositionManager": "0x7197E214c0b767cFB76Fb734ab638E2c192F4E53",
+                "v4PositionManager": "0x5b7eC4a94fF9beDb700fb82aB09d5846972F4016",
+                "spokePool": "0x000000000000000000000000000000000000000"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1763599362037,
+      "commitHash": "7d170b7"
+    },
     {
       "contracts": {
         "WETHHook": {
