@@ -90,9 +90,9 @@ contract Deploy is Script {
 
         deployUniversalRouter();
 
-        deployUtilsContracts();
-
         deployCalibur();
+
+        deployUtilsContracts();
 
         vm.stopBroadcast();
 
@@ -428,10 +428,11 @@ contract Deploy is Script {
         }
 
         if (deployERC7914Detector) {
-            address caliburAddress =
-                config.readAddress('.protocols.util-contracts.contracts.ERC7914Detector.params.caliburAddress.value');
+            if (calibur == address(0)) {
+                calibur = config.readAddress('.protocols.calibur.contracts.Calibur.address');
+            }
             console.log('deploying ERC7914Detector');
-            ERC7914DetectorDeployer.deploy(caliburAddress);
+            ERC7914DetectorDeployer.deploy(calibur);
         }
     }
 

@@ -406,6 +406,22 @@
                 }
             }
         },
+        "calibur": {
+            "name": "Calibur",
+            "deploy": false,
+            "contracts": {
+                "Calibur": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "salt": {
+                            "type": "bytes32",
+                            "value": "0x0000000000000000000000000000000000000000eca2ad36bee3874a279d0010"
+                        }
+                    }
+                }
+            }
+        },
         "util-contracts": {
             "name": "Utils",
             "deploy": false,
@@ -447,23 +463,7 @@
                     "params": {
                         "caliburAddress": {
                             "name": "Calibur address for ERC7914 detection",
-                            "type": "address"
-                        }
-                    }
-                }
-            }
-        },
-        "calibur": {
-            "name": "Calibur",
-            "deploy": false,
-            "contracts": {
-                "Calibur": {
-                    "deploy": false,
-                    "address": null,
-                    "params": {
-                        "salt": {
-                            "type": "bytes32",
-                            "value": "0x0000000000000000000000000000000000000000eca2ad36bee3874a279d0010"
+                            "pointer": "protocols.calibur.contracts.Calibur"
                         }
                     }
                 }
