@@ -14,6 +14,10 @@ library UnsupportedProtocolDeployer {
      *
      * @notice This initcode is generated from the following contract:
      * - Source Contract: src/pkgs/universal-router/contracts/deploy/UnsupportedProtocol.sol
+     * - solc: 0.8.30
+     * - optimizer_runs: 200
+     * - via_ir: false
+     * - evm_version: cancun
      */
     function initcode() internal pure returns (bytes memory) {
         return hex'6080604052348015600e575f5ffd5b50603580601a5f395ff3fe6080604052348015600e575f5ffd5b5060405163ea3559ef60e01b815260040160405180910390fdfea164736f6c634300081e000a';
