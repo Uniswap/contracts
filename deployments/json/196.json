@@ -1,0 +1,28 @@
+{
+  "chainId": "196",
+  "latest": {
+    "UnsupportedProtocol": {
+      "address": "0xf2d4fe1f8156e23c89fba9929f75e171a3fe605c",
+      "proxy": false,
+      "deploymentTxn": "0x0285817aa30c9f94ed1a39d0f64c9a51e8a49813d9b07a7c0ee8537c89adf6c2",
+      "timestamp": 1764861402009,
+      "commitHash": "f777a04"
+    }
+  },
+  "history": [
+    {
+      "contracts": {
+        "UnsupportedProtocol": {
+          "address": "0xf2d4fe1f8156e23c89fba9929f75e171a3fe605c",
+          "proxy": false,
+          "deploymentTxn": "0x0285817aa30c9f94ed1a39d0f64c9a51e8a49813d9b07a7c0ee8537c89adf6c2",
+          "input": {
+            "constructor": {}
+          }
+        }
+      },
+      "timestamp": 1764861402009,
+      "commitHash": "f777a04"
+    }
+  ]
+}
