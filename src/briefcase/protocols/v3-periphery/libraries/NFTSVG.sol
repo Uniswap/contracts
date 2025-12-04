@@ -183,11 +183,11 @@ library NFTSVG {
         );
     }
 
-    function generateSVGCardMantle(
-        string memory quoteTokenSymbol,
-        string memory baseTokenSymbol,
-        string memory feeTier
-    ) private pure returns (string memory svg) {
+    function generateSVGCardMantle(string memory quoteTokenSymbol, string memory baseTokenSymbol, string memory feeTier)
+        private
+        pure
+        returns (string memory svg)
+    {
         svg = string(
             abi.encodePacked(
                 '<g mask="url(#fade-symbol)"><rect fill="none" x="0px" y="0px" width="290px" height="200px" /> <text y="70px" x="32px" fill="white" font-family="\'Courier New\', monospace" font-weight="200" font-size="36px">',

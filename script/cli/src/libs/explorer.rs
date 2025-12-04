@@ -11,6 +11,7 @@ pub enum SupportedExplorerType {
     EtherscanV2,
     Blockscout,
     Sourcify,
+    Oklink,
 }
 
 #[derive(Default, Clone)]
@@ -20,6 +21,7 @@ pub struct Explorer {
     pub standard: String,
     pub explorer_type: SupportedExplorerType,
     pub sourcify_api_url: Option<String>,
+    pub oklink_api_url: Option<String>,
 }
 
 #[derive(Default, Clone)]
@@ -50,6 +52,12 @@ impl ExplorerApiLib {
                     .sourcify_api_url
                     .clone()
                     .ok_or("Sourcify API URL required")?
+            }
+            SupportedExplorerType::Oklink => {
+                explorer
+                    .oklink_api_url
+                    .clone()
+                    .ok_or("OKLink API URL required")?
             }
             SupportedExplorerType::Unknown => {
                 return Err(format!(
@@ -152,6 +160,10 @@ impl SupportedExplorerType {
                 // Chain-specific Sourcify keys to avoid cross-chain reuse
                 format!("SOURCIFY_API_KEY_{}", chain_id)
             }
+            SupportedExplorerType::Oklink => {
+                // Chain-specific OKLink keys to avoid cross-chain reuse
+                format!("OKLINK_API_KEY_{}", chain_id)
+            }
         }
     }
 
@@ -161,6 +173,7 @@ impl SupportedExplorerType {
             SupportedExplorerType::EtherscanV2 => "Etherscan v2".to_string(),
             SupportedExplorerType::Blockscout => "Blockscout".to_string(),
             SupportedExplorerType::Sourcify => "Sourcify".to_string(),
+            SupportedExplorerType::Oklink => "OKLink".to_string(),
         }
     }
 }

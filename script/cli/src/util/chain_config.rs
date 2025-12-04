@@ -72,6 +72,7 @@ pub fn parse_chain_config() -> HashMap<String, Chain> {
                                             .to_string(),
                                         explorer_type: SupportedExplorerType::Unknown,
                                         sourcify_api_url: None,
+                                        oklink_api_url: None,
                                     };
                                     guess_explorer_type(&mut explorer);
                                     Some(explorer)
@@ -162,6 +163,7 @@ pub fn parse_chain_config() -> HashMap<String, Chain> {
                             standard: "EIP3091".to_string(),
                             explorer_type: SupportedExplorerType::EtherscanV2,
                             sourcify_api_url: None,
+                            oklink_api_url: None,
                         });
                     }
 

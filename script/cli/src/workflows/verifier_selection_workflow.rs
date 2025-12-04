@@ -1,6 +1,7 @@
 use crate::libs::explorer::SupportedExplorerType;
 use crate::screens::shared::block_explorer::BlockExplorerScreen;
 use crate::screens::shared::enter_explorer_api_key::EnterExplorerApiKeyScreen;
+use crate::screens::shared::oklink_api_url::OklinkApiUrlScreen;
 use crate::screens::shared::select_verifier_type::SelectVerifierTypeScreen;
 use crate::screens::shared::sourcify_api_url::SourcifyApiUrlScreen;
 use crate::state_manager::STATE_MANAGER;
@@ -81,7 +82,7 @@ impl VerifierSelectionWorkflow {
                 }
             }
             3 => {
-                // Check if Sourcify was selected - if so, always prompt for verifier API URL
+                // Check if Sourcify or OKLink was selected - if so, always prompt for verifier API URL
                 let state = STATE_MANAGER.workflow_state.lock()?;
                 let explorer = state.block_explorer.clone();
                 drop(state);
@@ -92,8 +93,13 @@ impl VerifierSelectionWorkflow {
                         Ok(WorkflowResult::NextScreen(Box::new(
                             SourcifyApiUrlScreen::new()?,
                         )))
+                    } else if explorer.explorer_type == SupportedExplorerType::Oklink {
+                        // OKLink selected - always prompt for verifier API URL
+                        Ok(WorkflowResult::NextScreen(Box::new(
+                            OklinkApiUrlScreen::new()?,
+                        )))
                     } else {
-                        // Not Sourcify - skip to API key screen
+                        // Not Sourcify or OKLink - skip to API key screen
                         self.current_screen += 1;
                         self.get_screen()
                     }

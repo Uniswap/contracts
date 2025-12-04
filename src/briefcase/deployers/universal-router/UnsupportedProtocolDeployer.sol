@@ -6,7 +6,7 @@ import {DeployerHelper} from '../DeployerHelper.sol';
 library UnsupportedProtocolDeployer {
     function deploy() internal returns (address unsupported) {
         bytes memory initcode_ = abi.encodePacked(initcode());
-        unsupported = address(DeployerHelper.create2(initcode_));
+        unsupported = address(DeployerHelper.create(initcode_));
     }
 
     /**

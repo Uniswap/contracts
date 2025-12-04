@@ -6,6 +6,7 @@ pub mod error_screen;
 pub mod generic_multi_select;
 pub mod generic_select;
 pub mod generic_select_or_enter;
+pub mod oklink_api_url;
 pub mod rpc_url;
 pub mod select_verifier_type;
 pub mod sourcify_api_url;
