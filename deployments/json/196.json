@@ -149,9 +149,47 @@
       "deploymentTxn": "0xf96a806ecf2d375119e64d58ca6993c21047862eb4c9f91276a9b1a2ed24cb23",
       "timestamp": 1764875909160,
       "commitHash": "f09f3a7"
+    },
+    "CaliburEntry": {
+      "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+      "proxy": false,
+      "deploymentTxn": "0xe00e6798eb016405c740c24272368395e578193cb9ab8e68284a0e19d6dac77a",
+      "timestamp": 1764932489402,
+      "commitHash": "cdb2417"
+    },
+    "ERC7914Detector": {
+      "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+      "proxy": false,
+      "deploymentTxn": "0x955cd44ebeeffae2c133e28ab977bf6573f250bb3fce8c3b42c4f81372bbe776",
+      "timestamp": 1764932489402,
+      "commitHash": "cdb2417"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "CaliburEntry": {
+          "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+          "proxy": false,
+          "deploymentTxn": "0xe00e6798eb016405c740c24272368395e578193cb9ab8e68284a0e19d6dac77a",
+          "input": {
+            "constructor": {}
+          }
+        },
+        "ERC7914Detector": {
+          "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+          "proxy": false,
+          "deploymentTxn": "0x955cd44ebeeffae2c133e28ab977bf6573f250bb3fce8c3b42c4f81372bbe776",
+          "input": {
+            "constructor": {
+              "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            }
+          }
+        }
+      },
+      "timestamp": 1764932489402,
+      "commitHash": "cdb2417"
+    },
     {
       "contracts": {
         "UniswapV2Factory": {
