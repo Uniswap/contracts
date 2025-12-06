@@ -39,7 +39,8 @@ additional_compiler_profiles = [
   { name = "calibur", optimizer_runs = 10000, via_ir = true },
   { name = "util-contracts", optimizer_runs = 200, via_ir = false, evm_version = "paris" },
   { name = "mixed-quoter", optimizer_runs = 200, via_ir = true, evm_version = "cancun" },
-  { name = "universal-router", optimizer_runs = 4444, via_ir = true, evm_version = "cancun" }
+  { name = "universal-router", optimizer_runs = 4444, via_ir = true, evm_version = "cancun" },
+  { name = "unsupported-protocol", optimizer_runs = 200, via_ir = false, evm_version = "cancun" },
 ]
 
 compilation_restrictions = [
@@ -68,6 +69,7 @@ compilation_restrictions = [
   # router
   { paths = "src/pkgs/universal-router/contracts/UniversalRouter.sol", optimizer_runs = 4444 },
   { paths = "src/pkgs/swap-router-contracts/contracts/**", version = "0.7.6", via_ir = false, optimizer_runs = 1000000 },
+  { paths = "src/pkgs/universal-router/contracts/deploy/UnsupportedProtocol.sol", version = "=0.8.30", optimizer_runs = 200, via_ir = false, evm_version = "cancun" },
   # mixed-quoter
   { paths = "src/pkgs/mixed-quoter/src/**", version = "=0.8.26", via_ir = true, optimizer_runs = 200, evm_version = "cancun" },
   # X

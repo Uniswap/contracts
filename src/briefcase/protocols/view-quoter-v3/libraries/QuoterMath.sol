@@ -142,8 +142,8 @@ library QuoterMath {
             (state.sqrtPriceX96, step.amountIn, step.amountOut, step.feeAmount) = SwapMath.computeSwapStep(
                 state.sqrtPriceX96,
                 (quoteParams.zeroForOne
-                            ? step.sqrtPriceNextX96 < quoteParams.sqrtPriceLimitX96
-                            : step.sqrtPriceNextX96 > quoteParams.sqrtPriceLimitX96)
+                        ? step.sqrtPriceNextX96 < quoteParams.sqrtPriceLimitX96
+                        : step.sqrtPriceNextX96 > quoteParams.sqrtPriceLimitX96)
                     ? quoteParams.sqrtPriceLimitX96
                     : step.sqrtPriceNextX96,
                 state.liquidity,

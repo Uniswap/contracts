@@ -43,6 +43,9 @@ import {PositionDescriptorDeployer} from '../../src/briefcase/deployers/v4-perip
 import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionManagerDeployer.sol';
 
 import {CaliburEntryDeployer} from '../../src/briefcase/deployers/calibur/CaliburEntryDeployer.sol';
+import {
+    UnsupportedProtocolDeployer
+} from '../../src/briefcase/deployers/universal-router/UnsupportedProtocolDeployer.sol';
 import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
 import {WETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WETHHookDeployer.sol';
@@ -71,6 +74,8 @@ contract Deploy is Script {
         config = vm.readFile(string.concat('./script/deploy/tasks/', vm.toString(block.chainid), '/task-pending.json'));
 
         vm.startBroadcast();
+
+        deployUnsupportedProtocol();
 
         deployPermit2();
 
@@ -103,6 +108,12 @@ contract Deploy is Script {
             );
             vm.writeFile(output_filename, config);
         }
+    }
+
+    function deployUnsupportedProtocol() private {
+        if (!config.readBoolOr('.protocols.unsupported-protocol.deploy', false)) return;
+        console.log('deploying Unsupported Protocol');
+        UnsupportedProtocolDeployer.deploy();
     }
 
     function deployV2Contracts() private {

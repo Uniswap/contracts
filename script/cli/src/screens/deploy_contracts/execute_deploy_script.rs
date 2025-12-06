@@ -101,6 +101,7 @@ impl ExecuteDeployScriptScreen {
                     SupportedExplorerType::EtherscanV2 => "etherscan",
                     SupportedExplorerType::Blockscout => "blockscout",
                     SupportedExplorerType::Sourcify => "sourcify",
+                    SupportedExplorerType::Oklink => "oklink",
                     SupportedExplorerType::Unknown => {
                         // This should never happen if the workflow is correct
                         panic!("Unknown explorer type should have been resolved by workflow");

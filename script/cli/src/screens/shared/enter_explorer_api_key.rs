@@ -39,6 +39,7 @@ impl Screen for EnterExplorerApiKeyScreen {
             SupportedExplorerType::EtherscanV2 => "(Required for Etherscan verification)",
             SupportedExplorerType::Blockscout => "(Keep empty if no API key required)",
             SupportedExplorerType::Sourcify => "(Keep empty if no API key required)",
+            SupportedExplorerType::Oklink => "(Keep empty if no API key required)",
             SupportedExplorerType::Unknown => {
                 // This should never happen due to validation in new()
                 return Err("Invalid explorer type: Unknown".into());

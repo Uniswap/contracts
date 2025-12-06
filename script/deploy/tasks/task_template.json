@@ -1,5 +1,15 @@
 {
     "protocols": {
+        "unsupported-protocol": {
+            "name": "Unsupported Protocol",
+            "deploy": false,
+            "contracts": {
+                "UnsupportedProtocol": {
+                    "deploy": false,
+                    "address": null
+                }
+            }
+        },
         "permit2": {
             "name": "Permit 2",
             "deploy": false,
