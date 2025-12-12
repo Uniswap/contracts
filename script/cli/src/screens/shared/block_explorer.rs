@@ -81,6 +81,7 @@ impl Screen for BlockExplorerScreen {
                     standard: "custom".to_string(),
                     explorer_type: SupportedExplorerType::Unknown,
                     sourcify_api_url: None,
+                    oklink_api_url: None,
                 };
                 STATE_MANAGER.workflow_state.lock()?.block_explorer = Some(custom_explorer);
             }
