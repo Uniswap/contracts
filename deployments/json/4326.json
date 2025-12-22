@@ -1,13 +1,6 @@
 {
   "chainId": "4326",
   "latest": {
-    "UnsupportedProtocol": {
-      "address": "0xd6145b2d3f379919e8cdeda7b97e37c4b2ca9c40",
-      "proxy": false,
-      "deploymentTxn": "0xf05c8bed1bcb20a476ae15091a2bcfd64f9f42f9e40a81da2c174e43c3c1dd05",
-      "timestamp": 1766155751063,
-      "commitHash": "de68dde"
-    },
     "UniswapV2Factory": {
       "address": "0x9b7f6a5c2ea87ed485bc8eb92a21aab84b077453",
       "proxy": false,
@@ -86,11 +79,12 @@
       "commitHash": "de68dde"
     },
     "PositionDescriptor": {
-      "implementation": "0x9c9af4e341aee42e027a15c7e41c2cc6de9ce559",
       "address": "0x8701c69c81bb483aa3138c6e0a5d4e9c081a22a6",
+      "implementation": "0x9c9af4e341aee42e027a15c7e41c2cc6de9ce559",
       "proxy": true,
       "proxyType": "TransparentUpgradeableProxy",
       "deploymentTxn": "0x8bee614eab3365527399fb0a812e70548bd1694071fad5fc84787f7a5d6b62f4",
+      "proxyAdmin": "0x1be65727662173Aa93103fC85c6438CCa9DFF974",
       "timestamp": 1766435087739,
       "commitHash": "de68dde"
     },
@@ -162,6 +156,23 @@
       "proxy": false,
       "deploymentTxn": "0x5791b9d34db78b135cfc2ea9e4e2923f9f2a3b9ea74f6f94501a4d0eeb30f34b",
       "timestamp": 1766435087739,
+      "commitHash": "de68dde"
+    },
+    "UnsupportedProtocol": {
+      "address": "0xd6145b2d3f379919e8cdeda7b97e37c4b2ca9c40",
+      "proxy": false,
+      "deploymentTxn": "0xf05c8bed1bcb20a476ae15091a2bcfd64f9f42f9e40a81da2c174e43c3c1dd05",
+      "timestamp": 1766155751063,
+      "commitHash": "de68dde"
+    },
+    "NonfungibleTokenPositionDescriptor": {
+      "address": "0x8d9f62d363486ebadd3f3d735301a99a487a8fd8",
+      "implementation": "0x92eb5227b772DD62402d273dDA0FADfA24AB522d",
+      "proxy": true,
+      "proxyType": "TransparentUpgradeableProxy",
+      "proxyAdmin": "0xdaFBcEB5cA32Dc1DD27A413dA361F32636694BC4",
+      "deploymentTxn": "0x9ab6cb3e6d4b41c2fb6d4f6c40e589dd02848ec44b9b1629a23435fda46e4f74",
+      "timestamp": 1766434450,
       "commitHash": "de68dde"
     }
   },
@@ -455,6 +466,22 @@
       },
       "timestamp": 1766155279683,
       "commitHash": "de68dde"
+    },
+    {
+      "contracts": {
+        "NonfungibleTokenPositionDescriptor": {
+          "address": "0x92eb5227b772DD62402d273dDA0FADfA24AB522d",
+          "proxy": false,
+          "deploymentTxn": "0x3e09f5feb60789f4cd7065c23e5d7983feeda2559781fedf697959b14eccb7ea",
+          "input": {
+            "constructor": {
+              "_WETH9": "0x4200000000000000000000000000000000000006",
+              "_nativeCurrencyLabelBytes": "0x4554480000000000000000000000000000000000000000000000000000000000"
+            }
+          }
+        }
+      },
+      "timestamp": 1766434450
     }
   ]
 }
