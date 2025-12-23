@@ -19,7 +19,25 @@ jobs:
 
       - name: Update Submodules
         run: |
-          git submodule update --init --remote src/pkgs
+          # Initialize all submodules first
+          git submodule update --init src/pkgs
+
+          # Read pinned submodules (if config exists)
+          PINNED=""
+          if [ -f .pinned-submodules ]; then
+            PINNED=$(grep -v '^#' .pinned-submodules | grep -v '^$' || true)
+          fi
+
+          # Update each submodule, skipping pinned ones
+          for submodule in src/pkgs/*/; do
+            submodule="${submodule%/}"  # Remove trailing slash
+            if echo "$PINNED" | grep -q "^${submodule}$"; then
+              echo "Skipping pinned submodule: $submodule"
+            else
+              echo "Updating submodule: $submodule"
+              git submodule update --remote "$submodule"
+            fi
+          done
 
       - name: Configure Git
         run: |
