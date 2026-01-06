@@ -4,6 +4,7 @@ use crate::screens::screen_manager::ScreenResult;
 use crate::screens::shared::chain_id::ChainIdScreen;
 use crate::screens::shared::generic_select_or_enter::GenericSelectOrEnterScreen;
 use crate::screens::shared::rpc_url::get_rpc_url_screen;
+use crate::screens::shared::skip_verification::SkipVerificationScreen;
 use crate::screens::shared::test_connection::TestConnectionScreen;
 use crate::state_manager::STATE_MANAGER;
 use crate::util::deploy_config_lib::get_config_dir;
@@ -88,12 +89,23 @@ impl DeployContractsWorkflow {
             3 => Ok(WorkflowResult::NextScreen(Box::new(
                 TestConnectionScreen::new()?,
             ))),
-            4 => {
-                // Spawn verifier selection sub-workflow
-                self.child_workflows = vec![Box::new(VerifierSelectionWorkflow::new())];
-                self.child_workflows[0].next_screen(None)
+            4 => Ok(WorkflowResult::NextScreen(Box::new(
+                SkipVerificationScreen::new()?,
+            ))),
+            5 => {
+                // Check if user chose to skip verification
+                let skip_verification = STATE_MANAGER.workflow_state.lock()?.skip_verification;
+                if skip_verification {
+                    // Skip to private key screen
+                    self.current_screen += 1;
+                    self.get_screen()
+                } else {
+                    // Spawn verifier selection sub-workflow
+                    self.child_workflows = vec![Box::new(VerifierSelectionWorkflow::new())];
+                    self.child_workflows[0].next_screen(None)
+                }
             }
-            5 => Ok(WorkflowResult::NextScreen(Box::new(
+            6 => Ok(WorkflowResult::NextScreen(Box::new(
                 GenericSelectOrEnterScreen::new(
                     "Enter your private key".to_string(),
                     vec!["${PRIVATE_KEY}".to_string()],
@@ -106,7 +118,7 @@ impl DeployContractsWorkflow {
                     }),
                 ),
             ))),
-            6 => Ok(WorkflowResult::NextScreen(Box::new(
+            7 => Ok(WorkflowResult::NextScreen(Box::new(
                 ExecuteDeployScriptScreen::new()?,
             ))),
             _ => Ok(WorkflowResult::Finished),

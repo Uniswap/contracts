@@ -9,6 +9,7 @@ pub mod generic_select_or_enter;
 pub mod oklink_api_url;
 pub mod rpc_url;
 pub mod select_verifier_type;
+pub mod skip_verification;
 pub mod sourcify_api_url;
 pub mod test_connection;
 pub mod text_display_screen;

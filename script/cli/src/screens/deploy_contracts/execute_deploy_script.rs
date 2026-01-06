@@ -4,9 +4,12 @@ use crate::screens::screen_manager::{Screen, ScreenResult};
 use crate::state_manager::STATE_MANAGER;
 use crate::ui::{get_spinner_frame, Buffer};
 use crate::util::deploy_config_lib::get_config_dir;
+use alloy::primitives::keccak256;
 use crossterm::event::Event;
 use regex::Regex;
+use serde_json::Value;
 use std::io::BufRead;
+use std::path::PathBuf;
 use std::process::Command;
 use std::sync::{Arc, Mutex};
 
@@ -64,6 +67,8 @@ impl ExecuteDeployScriptScreen {
             .explorer_api_key
             .clone();
 
+        let skip_verification = STATE_MANAGER.workflow_state.lock()?.skip_verification;
+
         tokio::spawn(async move {
             let mut command = &mut Command::new("forge");
             command = command
@@ -92,9 +97,9 @@ impl ExecuteDeployScriptScreen {
                 }
             }
 
-            if explorer.is_some() && explorer_api_key.is_some() {
+            if !skip_verification && explorer.is_some() && explorer_api_key.is_some() {
                 let explorer_api =
-                    ExplorerApiLib::new(explorer.clone().unwrap(), explorer_api_key.unwrap())
+                    ExplorerApiLib::new(explorer.clone().unwrap(), explorer_api_key.clone().unwrap())
                         .unwrap();
 
                 let verifier = match explorer_api.explorer.explorer_type {
@@ -133,8 +138,24 @@ impl ExecuteDeployScriptScreen {
                 }
             }
 
-            let _ =
-                std::fs::remove_file(get_config_dir(chain_id.clone()).join("task-pending.json"));
+            // Read the task from pending file before deleting (STATE_MANAGER task may be empty)
+            let task_file_path = get_config_dir(chain_id.clone()).join("task-pending.json");
+            let task = match std::fs::read_to_string(&task_file_path) {
+                Ok(contents) => serde_json::from_str(&contents).unwrap_or(Value::Null),
+                Err(_) => Value::Null,
+            };
+
+            let _ = std::fs::remove_file(&task_file_path);
+
+            // Build tag arguments for forge-chronicles by matching bytecode
+            // Only processes protocols that have a "tag" field in the task JSON
+            let artifacts = collect_tagged_artifacts(&working_dir, &task);
+            let tag_args = if artifacts.is_empty() {
+                Vec::new()
+            } else {
+                let transactions = get_broadcast_transactions(&working_dir, &chain_id);
+                build_tag_args(&transactions, &artifacts)
+            };
 
             let mut command = &mut Command::new("node");
             command = command
@@ -144,7 +165,12 @@ impl ExecuteDeployScriptScreen {
                 .arg(chain_id.clone())
                 .arg("--force");
 
-            if explorer.is_some() {
+            // Add tag arguments
+            for tag in &tag_args {
+                command = command.arg("--tag").arg(tag);
+            }
+
+            if !skip_verification && explorer.is_some() {
                 command = command.arg("-e").arg(explorer.unwrap().url);
             }
 
@@ -217,6 +243,207 @@ fn execute_command(command: &mut Command) -> Result<Option<String>, Box<dyn std:
         }
         Err(e) => Err(e.to_string().into()),
     }
+}
+
+/// Transaction data from broadcast JSON
+struct BroadcastTransaction {
+    initcode: String,
+    initcode_hash_stub: String,
+}
+
+/// Parse broadcast JSON and extract all transactions with their initcode hashes
+fn get_broadcast_transactions(working_dir: &PathBuf, chain_id: &str) -> Vec<BroadcastTransaction> {
+    let broadcast_path = working_dir
+        .join("broadcast")
+        .join("Deploy-all.s.sol")
+        .join(chain_id)
+        .join("run-latest.json");
+
+    let contents = match std::fs::read_to_string(&broadcast_path) {
+        Ok(c) => c,
+        Err(e) => {
+            crate::errors::log(format!(
+                "Warning: Could not read broadcast JSON for tags: {}",
+                e
+            ));
+            return Vec::new();
+        }
+    };
+
+    let broadcast: Value = match serde_json::from_str(&contents) {
+        Ok(v) => v,
+        Err(e) => {
+            crate::errors::log(format!(
+                "Warning: Could not parse broadcast JSON for tags: {}",
+                e
+            ));
+            return Vec::new();
+        }
+    };
+
+    let mut transactions = Vec::new();
+    if let Some(txs) = broadcast["transactions"].as_array() {
+        for tx in txs {
+            if let Some(input) = tx["transaction"]["input"].as_str() {
+                let hash_stub = compute_initcode_hash_stub(input);
+                if !hash_stub.is_empty() {
+                    transactions.push(BroadcastTransaction {
+                        initcode: input.to_string(),
+                        initcode_hash_stub: hash_stub,
+                    });
+                }
+            }
+        }
+    }
+    transactions
+}
+
+/// Compute keccak256 of initcode and return first 8 hex chars (4 bytes)
+fn compute_initcode_hash_stub(initcode: &str) -> String {
+    let hex_str = initcode.strip_prefix("0x").unwrap_or(initcode);
+    let bytes = match alloy::hex::decode(hex_str) {
+        Ok(b) => b,
+        Err(_) => return String::new(),
+    };
+    let hash = keccak256(&bytes);
+    format!("{:x}", hash)[..8].to_string()
+}
+
+/// Artifact data: bytecode and associated tag
+struct ArtifactInfo {
+    bytecode: String, // without 0x prefix, lowercase
+    tag: String,
+}
+
+/// Build list of artifact bytecodes with their tags
+fn collect_tagged_artifacts(working_dir: &PathBuf, task: &Value) -> Vec<ArtifactInfo> {
+    let mut artifacts = Vec::new();
+
+    if let Some(protocols) = task["protocols"].as_object() {
+        for (protocol_key, protocol) in protocols {
+            let tag = match protocol["tag"].as_str() {
+                Some(t) => t,
+                None => continue,
+            };
+
+            if let Some(contracts) = protocol["contracts"].as_object() {
+                for (contract_name, contract) in contracts {
+                    if !contract["deploy"].as_bool().unwrap_or(false) {
+                        continue;
+                    }
+
+                    // Find all artifacts for this contract name
+                    for artifact_path in find_contract_artifacts(working_dir, contract_name) {
+                        if let Ok(contents) = std::fs::read_to_string(&artifact_path) {
+                            if let Ok(artifact) = serde_json::from_str::<Value>(&contents) {
+                                // Check if artifact's source path matches this protocol
+                                // The compilationTarget contains the source path like:
+                                // "src/pkgs/universal-router/contracts/UniversalRouter.sol": "UniversalRouter"
+                                // We need to match with path delimiters to avoid "universal-router" matching "universal-router-2_0"
+                                let compilation_target = &artifact["metadata"]["settings"]["compilationTarget"];
+                                let pattern = format!("/{}/", protocol_key);
+                                let source_matches = compilation_target
+                                    .as_object()
+                                    .map(|obj| obj.keys().any(|k| k.contains(&pattern)))
+                                    .unwrap_or(false);
+
+                                if !source_matches {
+                                    continue;
+                                }
+
+                                if let Some(bytecode) = artifact["bytecode"]["object"].as_str() {
+                                    let bytecode = bytecode
+                                        .strip_prefix("0x")
+                                        .unwrap_or(bytecode)
+                                        .to_lowercase();
+
+                                    if !bytecode.is_empty() {
+                                        artifacts.push(ArtifactInfo {
+                                            bytecode,
+                                            tag: tag.to_string(),
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    artifacts
+}
+
+/// Find matching tag for a transaction by checking if its initcode contains any known bytecode
+fn find_tag_for_transaction(initcode: &str, artifacts: &[ArtifactInfo]) -> Option<String> {
+    let initcode = initcode
+        .strip_prefix("0x")
+        .unwrap_or(initcode)
+        .to_lowercase();
+
+    for artifact in artifacts {
+        if initcode.contains(&artifact.bytecode) {
+            return Some(artifact.tag.clone());
+        }
+    }
+    None
+}
+
+/// Read the 'out' directory from foundry.toml, defaulting to "out"
+fn get_foundry_out_dir(working_dir: &PathBuf) -> String {
+    let foundry_toml = working_dir.join("foundry.toml");
+    if let Ok(contents) = std::fs::read_to_string(&foundry_toml) {
+        for line in contents.lines() {
+            let line = line.trim();
+            if line.starts_with("out") {
+                if let Some(value) = line.split('=').nth(1) {
+                    let value = value.trim().trim_matches('"').trim_matches('\'');
+                    if !value.is_empty() {
+                        return value.to_string();
+                    }
+                }
+            }
+        }
+    }
+    "out".to_string()
+}
+
+/// Recursively find all artifact files for a contract name in the out directory
+fn find_contract_artifacts(working_dir: &PathBuf, contract_name: &str) -> Vec<PathBuf> {
+    let out_dir = working_dir.join(get_foundry_out_dir(working_dir));
+    let target_filename = format!("{}.json", contract_name);
+    let mut artifacts = Vec::new();
+
+    fn search_dir(dir: &PathBuf, target: &str, results: &mut Vec<PathBuf>) {
+        if let Ok(entries) = std::fs::read_dir(dir) {
+            for entry in entries.flatten() {
+                let path = entry.path();
+                if path.is_dir() {
+                    search_dir(&path, target, results);
+                } else if path.file_name().map(|n| n.to_string_lossy()) == Some(target.into()) {
+                    results.push(path);
+                }
+            }
+        }
+    }
+
+    search_dir(&out_dir, &target_filename, &mut artifacts);
+    artifacts
+}
+
+/// Build tag arguments by checking if transaction initcode contains artifact bytecode
+fn build_tag_args(transactions: &[BroadcastTransaction], artifacts: &[ArtifactInfo]) -> Vec<String> {
+    let mut tag_args = Vec::new();
+    let mut seen_hashes: std::collections::HashSet<String> = std::collections::HashSet::new();
+
+    for tx in transactions {
+        if let Some(tag) = find_tag_for_transaction(&tx.initcode, artifacts) {
+            if seen_hashes.insert(tx.initcode_hash_stub.clone()) {
+                tag_args.push(format!("{}:{}", tx.initcode_hash_stub, tag));
+            }
+        }
+    }
+    tag_args
 }
 
 impl Screen for ExecuteDeployScriptScreen {

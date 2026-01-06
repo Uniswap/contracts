@@ -1,0 +1,599 @@
+{
+  "protocols": {
+    "unsupported-protocol": {
+      "name": "Unsupported Protocol",
+      "deploy": false,
+      "contracts": {
+        "UnsupportedProtocol": {
+          "deploy": false,
+          "address": null
+        }
+      }
+    },
+    "permit2": {
+      "name": "Permit 2",
+      "deploy": false,
+      "contracts": {
+        "Permit2": {
+          "deploy": false,
+          "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+          "lookup": {
+            "latest": "Permit2",
+            "history": [
+              "UniversalRouter.input.constructor.params.permit2"
+            ]
+          },
+          "params": {
+            "salt": {
+              "type": "bytes32",
+              "value": "0x0000000000000000000000000000000000000000d3af2663da51c10215000000"
+            }
+          }
+        }
+      }
+    },
+    "v2": {
+      "name": "Uniswap v2",
+      "deploy": false,
+      "contracts": {
+        "UniswapV2Factory": {
+          "deploy": false,
+          "address": "0xDf38F24fE153761634Be942F9d859f3DBA857E95",
+          "lookup": {
+            "latest": "UniswapV2Factory",
+            "history": [
+              "UniversalRouter.input.constructor.params.v2Factory"
+            ]
+          },
+          "params": {
+            "feeToSetter": {
+              "type": "address"
+            }
+          }
+        },
+        "UniswapV2Router02": {
+          "deploy": false,
+          "address": null,
+          "params": {
+            "factory": {
+              "name": "Uniswap v2 factory address",
+              "pointer": "protocols.v2.contracts.UniswapV2Factory"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        }
+      }
+    },
+    "v3": {
+      "name": "Uniswap v3",
+      "deploy": false,
+      "contracts": {
+        "UniswapV3Factory": {
+          "deploy": false,
+          "address": "0x4B2ab38DBF28D31D467aA8993f6c2585981D6804",
+          "lookup": {
+            "latest": "UniswapV3Factory",
+            "history": [
+              "UniversalRouter.input.constructor.params.v3Factory"
+            ]
+          },
+          "params": {
+            "initialOwner": {
+              "type": "address"
+            }
+          }
+        },
+        "UniswapInterfaceMulticall": {
+          "deploy": false
+        },
+        "QuoterV2": {
+          "deploy": false,
+          "address": null,
+          "params": {
+            "factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "TickLens": {
+          "deploy": false
+        },
+        "NonfungibleTokenPositionDescriptor": {
+          "deploy": false,
+          "address": null,
+          "lookup": {
+            "latest": "NonfungibleTokenPositionDescriptor"
+          },
+          "params": {
+            "nativeCurrencyLabel": {
+              "name": "Native token symbol",
+              "type": "string",
+              "value": "ETH"
+            },
+            "proxyAdminOwner": {
+              "type": "address"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "NonfungiblePositionManager": {
+          "deploy": false,
+          "address": "0x315e413A11AB0df498eF83873012430ca36638Ae",
+          "lookup": {
+            "latest": "NonfungiblePositionManager"
+          },
+          "params": {
+            "factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            },
+            "tokenDescriptor": {
+              "name": "NFT Position Descriptor address",
+              "pointer": "protocols.v3.contracts.NonfungibleTokenPositionDescriptor"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "V3Migrator": {
+          "deploy": false,
+          "params": {
+            "factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            },
+            "nonfungiblePositionManager": {
+              "name": "Uniswap v3 position manager address",
+              "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "SwapRouter": {
+          "deploy": false,
+          "address": null,
+          "params": {
+            "factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        }
+      }
+    },
+    "v4": {
+      "name": "Uniswap v4",
+      "deploy": false,
+      "contracts": {
+        "PoolManager": {
+          "deploy": false,
+          "address": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32",
+          "lookup": {
+            "latest": "PoolManager"
+          },
+          "params": {
+            "initialOwner": {
+              "type": "address"
+            }
+          }
+        },
+        "PositionDescriptor": {
+          "deploy": false,
+          "address": null,
+          "lookup": {
+            "latest": "PositionDescriptor"
+          },
+          "params": {
+            "poolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            },
+            "nativeCurrencyLabel": {
+              "name": "Native token symbol",
+              "type": "string",
+              "value": "ETH"
+            },
+            "proxyAdminOwner": {
+              "type": "address"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "PositionManager": {
+          "deploy": false,
+          "address": "0xcF1EAFC6928dC385A342E7C6491d371d2871458b",
+          "lookup": {
+            "latest": "PositionManager"
+          },
+          "params": {
+            "poolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            },
+            "permit2": {
+              "name": "Permit 2 address",
+              "pointer": "protocols.permit2.contracts.Permit2"
+            },
+            "unsubscribeGasLimit": {
+              "name": "Unsubscribe gas limit",
+              "type": "uint256"
+            },
+            "positionDescriptor": {
+              "name": "Position Descriptor address",
+              "pointer": "protocols.v4.contracts.PositionDescriptor"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "V4Quoter": {
+          "deploy": false,
+          "address": null,
+          "params": {
+            "poolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            }
+          }
+        },
+        "StateView": {
+          "deploy": false,
+          "address": null,
+          "params": {
+            "poolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            }
+          }
+        }
+      }
+    },
+    "hooks": {
+      "name": "v4 Hooks",
+      "deploy": false,
+      "contracts": {
+        "WETHHook": {
+          "deploy": false,
+          "params": {
+            "poolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            },
+            "salt": {
+              "type": "bytes32"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        },
+        "WstETHHook": {
+          "deploy": false,
+          "params": {
+            "poolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            },
+            "wstETH": {
+              "name": "WstETH address",
+              "type": "address"
+            },
+            "salt": {
+              "type": "bytes32"
+            }
+          }
+        },
+        "WstETHRoutingHook": {
+          "deploy": false,
+          "params": {
+            "poolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            },
+            "wstETH": {
+              "name": "WstETH address",
+              "type": "address"
+            },
+            "salt": {
+              "type": "bytes32"
+            }
+          }
+        }
+      }
+    },
+    "view-quoter-v3": {
+      "name": "View Quoter v3",
+      "deploy": false,
+      "contracts": {
+        "Quoter": {
+          "deploy": false,
+          "params": {
+            "factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            }
+          }
+        }
+      }
+    },
+    "mixed-quoter": {
+      "name": "Mixed Quoter",
+      "deploy": false,
+      "contracts": {
+        "MixedRouteQuoterV2": {
+          "deploy": false,
+          "address": null,
+          "params": {
+            "poolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            },
+            "v3Factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            },
+            "v2Factory": {
+              "name": "Uniswap v2 factory address",
+              "pointer": "protocols.v2.contracts.UniswapV2Factory"
+            }
+          }
+        }
+      }
+    },
+    "swap-router-contracts": {
+      "name": "Swap Router Contracts",
+      "deploy": false,
+      "contracts": {
+        "SwapRouter02": {
+          "deploy": false,
+          "params": {
+            "factoryV2": {
+              "name": "Uniswap v2 factory address",
+              "pointer": "protocols.v2.contracts.UniswapV2Factory"
+            },
+            "factoryV3": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            },
+            "positionManager": {
+              "name": "Uniswap v3 position manager address",
+              "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ]
+        }
+      }
+    },
+    "universal-router": {
+      "name": "Universal Router (Latest)",
+      "tag": "v2.1",
+      "deploy": false,
+      "contracts": {
+        "UniversalRouter": {
+          "deploy": false,
+          "params": {
+            "permit2": {
+              "name": "Permit 2 address",
+              "pointer": "protocols.permit2.contracts.Permit2"
+            },
+            "v2Factory": {
+              "name": "Uniswap v2 factory address",
+              "pointer": "protocols.v2.contracts.UniswapV2Factory"
+            },
+            "v3Factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            },
+            "v2PairInitCodeHash": {
+              "name": "Uniswap v2 pair init code hash",
+              "type": "bytes32",
+              "value": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+              "lookup": {
+                "history": [
+                  "UniversalRouter.input.constructor.params.pairInitCodeHash"
+                ]
+              }
+            },
+            "v3PoolInitCodeHash": {
+              "name": "Uniswap v3 pool init code hash",
+              "type": "bytes32",
+              "value": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+              "lookup": {
+                "history": [
+                  "UniversalRouter.input.constructor.params.poolInitCodeHash"
+                ]
+              }
+            },
+            "v4PoolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            },
+            "v3NFTPositionManager": {
+              "name": "Uniswap v3 position manager address",
+              "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
+            },
+            "v4PositionManager": {
+              "name": "Uniswap v4 position manager address",
+              "pointer": "protocols.v4.contracts.PositionManager"
+            },
+            "acrossSpokePool": {
+              "name": "Across Spoke Pool address",
+              "type": "address"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ],
+          "lookup": {
+            "latest": "UniversalRouter"
+          }
+        }
+      }
+    },
+    "universal-router-2_0": {
+      "name": "Universal Router (2.0)",
+      "tag": "v2.0",
+      "deploy": true,
+      "contracts": {
+        "UniversalRouter": {
+          "deploy": true,
+          "params": {
+            "permit2": {
+              "name": "Permit 2 address",
+              "pointer": "protocols.permit2.contracts.Permit2"
+            },
+            "v2Factory": {
+              "name": "Uniswap v2 factory address",
+              "pointer": "protocols.v2.contracts.UniswapV2Factory"
+            },
+            "v3Factory": {
+              "name": "Uniswap v3 factory address",
+              "pointer": "protocols.v3.contracts.UniswapV3Factory"
+            },
+            "v2PairInitCodeHash": {
+              "name": "Uniswap v2 pair init code hash",
+              "type": "bytes32",
+              "value": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+              "lookup": {
+                "history": [
+                  "UniversalRouter.input.constructor.params.pairInitCodeHash"
+                ]
+              }
+            },
+            "v3PoolInitCodeHash": {
+              "name": "Uniswap v3 pool init code hash",
+              "type": "bytes32",
+              "value": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+              "lookup": {
+                "history": [
+                  "UniversalRouter.input.constructor.params.poolInitCodeHash"
+                ]
+              }
+            },
+            "v4PoolManager": {
+              "name": "Pool Manager",
+              "pointer": "protocols.v4.contracts.PoolManager"
+            },
+            "v3NFTPositionManager": {
+              "name": "Uniswap v3 position manager address",
+              "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
+            },
+            "v4PositionManager": {
+              "name": "Uniswap v4 position manager address",
+              "pointer": "protocols.v4.contracts.PositionManager"
+            }
+          },
+          "dependencies": [
+            "weth"
+          ],
+          "lookup": {
+            "latest": "UniversalRouter"
+          }
+        }
+      }
+    },
+    "calibur": {
+      "name": "Calibur",
+      "deploy": false,
+      "contracts": {
+        "Calibur": {
+          "deploy": false,
+          "address": null,
+          "params": {
+            "salt": {
+              "type": "bytes32",
+              "value": "0x0000000000000000000000000000000000000000eca2ad36bee3874a279d0010"
+            }
+          }
+        }
+      }
+    },
+    "util-contracts": {
+      "name": "Utils",
+      "deploy": false,
+      "contracts": {
+        "FeeOnTransferDetector": {
+          "deploy": false,
+          "address": null,
+          "params": {
+            "factoryV2": {
+              "name": "Uniswap v2 factory address",
+              "pointer": "protocols.v2.contracts.UniswapV2Factory"
+            }
+          }
+        },
+        "FeeCollector": {
+          "deploy": false,
+          "address": null,
+          "params": {
+            "owner": {
+              "type": "address"
+            },
+            "universalRouter": {
+              "name": "Universal Router address",
+              "pointer": "protocols.universal-router.contracts.UniversalRouter"
+            },
+            "permit2": {
+              "name": "Permit 2 address",
+              "pointer": "protocols.permit2.contracts.Permit2"
+            },
+            "feeToken": {
+              "name": "Fee token address (usually USDC)",
+              "type": "address"
+            }
+          }
+        },
+        "ERC7914Detector": {
+          "deploy": false,
+          "address": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00",
+          "params": {
+            "caliburAddress": {
+              "name": "Calibur address for ERC7914 detection",
+              "pointer": "protocols.calibur.contracts.Calibur"
+            }
+          }
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "weth": {
+      "type": "address",
+      "lookup": {
+        "history": [
+          "UniversalRouter.input.constructor.params.weth9",
+          "QuoterV2.input.constructor._WETH9",
+          "V3Migrator.input.constructor._WETH9",
+          "NonfungiblePositionManager.input.constructor._WETH9",
+          "NonFungibleTokenPositionDescriptor.input.constructor._WETH9",
+          "SwapRouter.input.constructor._WETH9",
+          "SwapRouter02.input.constructor._WETH9",
+          "Quoter.input.constructor._WETH9",
+          "QuoterV2.input.constructor._WETH9",
+          "UniswapV2Router02.input.constructor._WETH"
+        ]
+      },
+      "value": "0xe538905cf8410324e03A5A23C1c177a474D59b2b"
+    }
+  },
+  "rename": true
+}

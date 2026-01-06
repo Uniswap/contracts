@@ -1,3 +1,4 @@
 # Submodules listed here will not be auto-updated by CI
 # Add one submodule path per line
 src/pkgs/uniswapx
+src/pkgs/universal-router-2_0
