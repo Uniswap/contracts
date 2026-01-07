@@ -6,10 +6,17 @@ use crate::state_manager::STATE_MANAGER;
 use crate::util::screen_util::{validate_address, validate_bytes32, validate_number};
 use crate::workflows::error_workflow::ErrorWorkflow;
 use crate::workflows::workflow_manager::{process_nested_workflows, Workflow, WorkflowResult};
+use alloy::primitives::Address;
 use serde_json::Map;
 use serde_json::Value;
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
+
+/// Converts an address string to checksummed format (EIP-55).
+/// Returns None if the address is invalid.
+fn to_checksummed(address: &str) -> Option<String> {
+    address.parse::<Address>().ok().map(|a| a.to_checksum(None))
+}
 
 type Screens = Vec<Box<dyn Fn() -> Box<dyn Screen> + Send>>;
 
@@ -316,7 +323,9 @@ fn lookup_deployment_log(mut lookup: Value) -> Result<HashSet<String>, Box<dyn s
         let latest_address =
             deployments_json["latest"][lookup["latest"].as_str().unwrap()]["address"].as_str();
         if let Some(latest_address) = latest_address {
-            options.insert(latest_address.to_string());
+            if let Some(checksummed) = to_checksummed(latest_address) {
+                options.insert(checksummed);
+            }
         }
     }
     if lookup["history"].is_array() {
@@ -330,12 +339,26 @@ fn lookup_deployment_log(mut lookup: Value) -> Result<HashSet<String>, Box<dyn s
                 .split('.')
                 .collect::<Vec<&str>>();
             for deployment in deployments_json["history"].as_array().unwrap() {
-                let mut option = &deployment["contracts"].clone();
-                for part in param_path.iter() {
-                    option = &option[part];
-                }
-                if option.is_string() {
-                    options.insert(option.as_str().unwrap().to_string());
+                let contracts = &deployment["contracts"];
+
+                // First part is contract name - find matching key (with or without tag)
+                let contract_name = param_path[0];
+                let matching_key = contracts.as_object().and_then(|obj| {
+                    obj.keys().find(|k| {
+                        *k == contract_name || k.starts_with(&format!("{}#", contract_name))
+                    })
+                });
+
+                if let Some(key) = matching_key {
+                    let mut option = &contracts[key];
+                    for part in param_path.iter().skip(1) {
+                        option = &option[*part];
+                    }
+                    if option.is_string() {
+                        if let Some(checksummed) = to_checksummed(option.as_str().unwrap()) {
+                            options.insert(checksummed);
+                        }
+                    }
                 }
             }
         }

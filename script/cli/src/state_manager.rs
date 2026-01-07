@@ -30,6 +30,7 @@ pub struct WorkflowState {
     pub verify_contract_data: VerifyContractData,
     pub task: Value,
     pub private_key: Option<String>,
+    pub skip_verification: bool,
 }
 
 impl WorkflowState {
@@ -44,6 +45,7 @@ impl WorkflowState {
             verify_contract_data: VerifyContractData { address: None },
             task: serde_json::json!({}),
             private_key: None,
+            skip_verification: false,
         }
     }
 

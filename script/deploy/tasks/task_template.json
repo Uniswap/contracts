@@ -358,7 +358,8 @@
             }
         },
         "universal-router": {
-            "name": "Universal Router",
+            "name": "Universal Router (Latest)",
+            "tag": "v2.1",
             "deploy": false,
             "contracts": {
                 "UniversalRouter": {
@@ -407,6 +408,62 @@
                         "acrossSpokePool": {
                             "name": "Across Spoke Pool address",
                             "type": "address"
+                        }
+                    },
+                    "dependencies": ["weth"],
+                    "lookup": {
+                        "latest": "UniversalRouter"
+                    }
+                }
+            }
+        },
+        "universal-router-2_0": {
+            "name": "Universal Router (2.0)",
+            "tag": "v2.0",
+            "deploy": false,
+            "contracts": {
+                "UniversalRouter": {
+                    "deploy": false,
+                    "params": {
+                        "permit2": {
+                            "name": "Permit 2 address",
+                            "pointer": "protocols.permit2.contracts.Permit2"
+                        },
+                        "v2Factory": {
+                            "name": "Uniswap v2 factory address",
+                            "pointer": "protocols.v2.contracts.UniswapV2Factory"
+                        },
+                        "v3Factory": {
+                            "name": "Uniswap v3 factory address",
+                            "pointer": "protocols.v3.contracts.UniswapV3Factory"
+                        },
+                        "v2PairInitCodeHash": {
+                            "name": "Uniswap v2 pair init code hash",
+                            "type": "bytes32",
+                            "value": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                            "lookup": {
+                                "history": ["UniversalRouter.input.constructor.params.pairInitCodeHash"]
+                            }
+                        },
+                        "v3PoolInitCodeHash": {
+                            "name": "Uniswap v3 pool init code hash",
+                            "type": "bytes32",
+                            "value": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                            "lookup": {
+                                "history": ["UniversalRouter.input.constructor.params.poolInitCodeHash"]
+                            }
+                        },
+                        "v4PoolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "v3NFTPositionManager": {
+                            "name": "Uniswap v3 position manager address",
+                            "pointer": "protocols.v3.contracts.NonfungiblePositionManager"
+                        },
+                        "v4PositionManager": {
+                            "name": "Uniswap v4 position manager address",
+                            "pointer": "protocols.v4.contracts.PositionManager"
                         }
                     },
                     "dependencies": ["weth"],

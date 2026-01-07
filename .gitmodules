@@ -58,3 +58,6 @@
 [submodule "src/pkgs/mixed-quoter"]
 	path = src/pkgs/mixed-quoter
 	url = https://github.com/Uniswap/mixed-quoter
+[submodule "src/pkgs/universal-router-2_0"]
+	path = src/pkgs/universal-router-2_0
+	url = https://github.com/Uniswap/universal-router

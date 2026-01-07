@@ -5,6 +5,9 @@ import {IPermit2, Permit2Deployer} from '../../src/briefcase/deployers/permit2/P
 
 import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-contracts/SwapRouter02Deployer.sol';
 
+import {
+    UniversalRouter2_0Deployer
+} from '../../src/briefcase/deployers/universal-router-2_0/UniversalRouter2_0Deployer.sol';
 import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-router/UniversalRouterDeployer.sol';
 
 import {MixedRouteQuoterV2Deployer} from '../../src/briefcase/deployers/mixed-quoter/MixedRouteQuoterV2Deployer.sol';
@@ -68,6 +71,7 @@ contract Deploy is Script {
     address poolManager;
     address positionManager;
     address universalRouter;
+    address universalRouter2_0;
     address calibur;
 
     function run() public {
@@ -94,6 +98,8 @@ contract Deploy is Script {
         deploySwapRouters();
 
         deployUniversalRouter();
+
+        deployUniversalRouter2_0();
 
         deployCalibur();
 
@@ -488,6 +494,50 @@ contract Deploy is Script {
                 nonfungiblePositionManager,
                 positionManager,
                 acrossSpokePool
+            )
+        );
+    }
+
+    function deployUniversalRouter2_0() private {
+        if (!config.readBoolOr('.protocols.universal-router-2_0.deploy', false)) return;
+
+        if (permit2 == address(0)) {
+            permit2 = config.readAddress('.protocols.permit2.contracts.Permit2.address');
+        }
+        if (v2Factory == address(0)) {
+            v2Factory = config.readAddress('.protocols.v2.contracts.UniswapV2Factory.address');
+        }
+        if (v3Factory == address(0)) {
+            v3Factory = config.readAddress('.protocols.v3.contracts.UniswapV3Factory.address');
+        }
+        bytes32 v2PairInitCodeHash = config.readBytes32(
+            '.protocols.universal-router-2_0.contracts.UniversalRouter.params.v2PairInitCodeHash.value'
+        );
+        bytes32 v3PoolInitCodeHash = config.readBytes32(
+            '.protocols.universal-router-2_0.contracts.UniversalRouter.params.v3PoolInitCodeHash.value'
+        );
+        if (poolManager == address(0)) {
+            poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+        }
+        if (nonfungiblePositionManager == address(0)) {
+            nonfungiblePositionManager =
+                config.readAddress('.protocols.v3.contracts.NonfungiblePositionManager.address');
+        }
+        if (positionManager == address(0)) {
+            positionManager = config.readAddress('.protocols.v4.contracts.PositionManager.address');
+        }
+        console.log('deploying Universal Router 2.0');
+        universalRouter2_0 = address(
+            UniversalRouter2_0Deployer.deploy(
+                permit2,
+                weth(),
+                v2Factory,
+                v3Factory,
+                v2PairInitCodeHash,
+                v3PoolInitCodeHash,
+                poolManager,
+                nonfungiblePositionManager,
+                positionManager
             )
         );
     }
