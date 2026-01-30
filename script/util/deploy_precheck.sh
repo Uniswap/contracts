@@ -2,7 +2,7 @@
 
 # Check if RPC URL is provided
 if [ -z "$1" ]; then
-  echo "Usage: ./check_evm.sh <RPC_URL>"
+  echo "Usage: ./deploy_precheck.sh <RPC_URL>"
   exit 1
 fi
 
