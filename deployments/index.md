@@ -1,4 +1,4 @@
-# contracts Deployments
+#  Deployments
 
 This repository contains deployment information for the following networks:
 
@@ -15,6 +15,7 @@ This repository contains deployment information for the following networks:
 | 480 | World Chain | [View Deployment](./480.md) |
 | 1301 | Unichain Sepolia Testnet | [View Deployment](./1301.md) |
 | 1868 | Soneium | [View Deployment](./1868.md) |
+| 4326 | Chain 4326 | [View Deployment](./4326.md) |
 | 8453 | Base | [View Deployment](./8453.md) |
 | 10143 | Monad Testnet | [View Deployment](./10143.md) |
 | 42161 | Arbitrum One | [View Deployment](./42161.md) |
