@@ -5,11 +5,14 @@ on:
   pull_request:
     branches: [main, master, staging, dev, feat/**, fix/**]
 
+permissions: {}
 jobs:
   pre-commit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v2
         with:
           submodules: recursive
