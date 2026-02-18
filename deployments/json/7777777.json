@@ -5,13 +5,13 @@
       "address": "0x5f739c790a48E97eec0efb81bab5D152c0A0ecA0",
       "proxy": false,
       "deploymentTxn": "0x71957cd1ca4ce88aea4129d20001a7a6560223b3186668b1f026e189be017f75",
-      "timestamp": 1740086625
+      "timestamp": 1740086625000
     },
     "PoolManager": {
       "address": "0x0575338e4c17006ae181b47900a84404247ca30f",
       "proxy": false,
       "deploymentTxn": "0xed269d1cb90357c04a748b58442eff2b921c0897a3aefc873e8e47efc8a79428",
-      "timestamp": 1737562927,
+      "timestamp": 1737562927000,
       "commitHash": "417770f"
     },
     "PositionDescriptor": {
@@ -21,28 +21,28 @@
       "proxyType": "TransparentUpgradeableProxy",
       "deploymentTxn": "0x67fe8b509bbfe794cf1f6ded0ccef888a2b0dcaa29571fe8c28bfbef50e2a581",
       "proxyAdmin": null,
-      "timestamp": 1737562927,
+      "timestamp": 1737562927000,
       "commitHash": "417770f"
     },
     "PositionManager": {
       "address": "0xf66c7b99e2040f0d9b326b3b7c152e9663543d63",
       "proxy": false,
       "deploymentTxn": "0x8ef749646dcb66b545698126a05348caa08f376688e5e4547c835906496278e2",
-      "timestamp": 1737562927,
+      "timestamp": 1737562927000,
       "commitHash": "417770f"
     },
     "V4Quoter": {
       "address": "0x5edaccc0660e0a2c44b06e07ce8b915e625dc2c6",
       "proxy": false,
       "deploymentTxn": "0xed25f535944ff06edb131670426a3ef7896265956d84cdc21b0259396e6b3eac",
-      "timestamp": 1737562927,
+      "timestamp": 1737562927000,
       "commitHash": "417770f"
     },
     "StateView": {
       "address": "0x385785af07d63b50d0a0ea57c4ff89d06adf7328",
       "proxy": false,
       "deploymentTxn": "0xfa9d7db99154711ec9eded8f7b78f1f779c3c0fbe8bca5bcfc1ab5f2f201899a",
-      "timestamp": 1737562927,
+      "timestamp": 1737562927000,
       "commitHash": "417770f"
     },
     "UniversalRouter": {
@@ -56,7 +56,7 @@
       "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
       "proxy": false,
       "deploymentTxn": "0x37297d700c225f308fba2b7477cf78c993e27f9912e20469e4d34d60e87d1e4e",
-      "timestamp": 1748029232,
+      "timestamp": 1748029232000,
       "commitHash": "0a52cd5"
     }
   },
@@ -99,7 +99,7 @@
           }
         }
       },
-      "timestamp": 1748029232,
+      "timestamp": 1748029232000,
       "commitHash": "0a52cd5"
     },
     {
@@ -117,7 +117,7 @@
           }
         }
       },
-      "timestamp": 1740086625
+      "timestamp": 1740086625000
     },
     {
       "contracts": {
@@ -201,7 +201,7 @@
           }
         }
       },
-      "timestamp": 1737562927,
+      "timestamp": 1737562927000,
       "commitHash": "417770f"
     }
   ]

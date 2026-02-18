@@ -12,55 +12,55 @@
       "address": "0x9e5A52f57b3038F1B8EeE45F28b3C1967e22799C",
       "proxy": false,
       "deploymentTxn": "0xd06a069b11fc0c998b404c5736957cc16c71cf1f7dbf8a7d4244c84036ea6edd",
-      "timestamp": 1699995804
+      "timestamp": 1699995804000
     },
     "Permit2": {
       "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
       "proxy": false,
       "deploymentTxn": "0x38fd76c2165d920c7e006defd67eeeb0069bf93e41741eec3bbb83d196610a56",
-      "timestamp": 1681695225
+      "timestamp": 1681695225000
     },
     "SwapRouter02": {
       "address": "0xbb00FF08d01D300023C629E8fFfFcb65A5a578cE",
       "proxy": false,
       "deploymentTxn": "0xb850c93d83a7a6452455f67de001a119d039a7c9f90b32d6db88d996828e6571",
-      "timestamp": 1679633082
+      "timestamp": 1679633082000
     },
     "QuoterV2": {
       "address": "0xbe0F5544EC67e9B3b2D979aaA43f18Fd87E6257F",
       "proxy": false,
       "deploymentTxn": "0x0bb040c74bb4ec21e36348fe5d4124c50b64186e32a25297580506f385144d6a",
-      "timestamp": 1679633073
+      "timestamp": 1679633073000
     },
     "V3Migrator": {
       "address": "0x44f5f1f5E452ea8d29C890E8F6e893fC0f1f0f97",
       "proxy": false,
       "deploymentTxn": "0x7965658ea1d0212702e3a5c6b207c5b90a02249b59cb768a04b3700b717b59d0",
-      "timestamp": 1679632948
+      "timestamp": 1679632948000
     },
     "NonfungiblePositionManager": {
       "address": "0x655C406EBFa14EE2006250925e54ec43AD184f8B",
       "proxy": false,
       "deploymentTxn": "0xb42356d4faf2f356692ded36df50f38f1c58b6676588f2565cc223314bcff476",
-      "timestamp": 1679632934
+      "timestamp": 1679632934000
     },
     "TickLens": {
       "address": "0xEB9fFC8bf81b4fFd11fb6A63a6B0f098c6e21950",
       "proxy": false,
       "deploymentTxn": "0x0063414ac4cffe173e8e17d49dadb0cae62b9b7ddac45cce029b46b8302c2adb",
-      "timestamp": 1679632887
+      "timestamp": 1679632887000
     },
     "UniswapInterfaceMulticall": {
       "address": "0x0139141Cd4Ee88dF3Cdb65881D411bAE271Ef0C2",
       "proxy": false,
       "deploymentTxn": "0x7be87c985373fdb92293a46c8e435ca6181da4c88e13adfe48e65d796a3c34a8",
-      "timestamp": 1679632856
+      "timestamp": 1679632856000
     },
     "UniswapV3Factory": {
       "address": "0x740b1c1de25031C31FF4fC9A62f554A55cdC1baD",
       "proxy": false,
       "deploymentTxn": "0xe800494c82f8d26226091df3c0b5317e1990bda57e90b7a5305e102f55267b6d",
-      "timestamp": 1679632828
+      "timestamp": 1679632828000
     }
   },
   "history": [
@@ -125,7 +125,7 @@
           }
         }
       },
-      "timestamp": 1705003421
+      "timestamp": 1705003421000
     },
     {
       "contracts": {
@@ -140,7 +140,7 @@
           }
         }
       },
-      "timestamp": 1699995804
+      "timestamp": 1699995804000
     },
     {
       "contracts": {
@@ -176,7 +176,7 @@
           }
         }
       },
-      "timestamp": 1693250996
+      "timestamp": 1693250996000
     },
     {
       "contracts": {
@@ -189,7 +189,7 @@
           }
         }
       },
-      "timestamp": 1681695225
+      "timestamp": 1681695225000
     },
     {
       "contracts": {
@@ -207,7 +207,7 @@
           }
         }
       },
-      "timestamp": 1679633082
+      "timestamp": 1679633082000
     },
     {
       "contracts": {
@@ -223,7 +223,7 @@
           }
         }
       },
-      "timestamp": 1679633073
+      "timestamp": 1679633073000
     },
     {
       "contracts": {
@@ -240,7 +240,7 @@
           }
         }
       },
-      "timestamp": 1679632948
+      "timestamp": 1679632948000
     },
     {
       "contracts": {
@@ -257,7 +257,7 @@
           }
         }
       },
-      "timestamp": 1679632934
+      "timestamp": 1679632934000
     },
     {
       "contracts": {
@@ -270,7 +270,7 @@
           }
         }
       },
-      "timestamp": 1679632887
+      "timestamp": 1679632887000
     },
     {
       "contracts": {
@@ -283,7 +283,7 @@
           }
         }
       },
-      "timestamp": 1679632856
+      "timestamp": 1679632856000
     },
     {
       "contracts": {
@@ -296,7 +296,7 @@
           }
         }
       },
-      "timestamp": 1679632828
+      "timestamp": 1679632828000
     }
   ]
 }

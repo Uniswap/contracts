@@ -5,7 +5,7 @@
       "address": "0x9D0F15f2cf58655fDDcD1EE6129C547fDaeD01b1",
       "proxy": false,
       "deploymentTxn": "0x0dc3f9872372c7300f44eab71ca53d1c0d63729aba1ea6d1cf5d43e27ac966dc",
-      "timestamp": 1713550173
+      "timestamp": 1713550173000
     },
     "UniversalRouter": {
       "address": "0x77c0097c1acf6fd84878d3f7c0603e3f04e8bec7",
@@ -18,55 +18,55 @@
       "address": "0xBB66Eb1c5e875933D44DAe661dbD80e5D9B03035",
       "proxy": false,
       "deploymentTxn": "0xbfb5e6699175ffcfa5d31d5b8e665fca5bbc83091bb549c34d023a8af6ccce0c",
-      "timestamp": 1709866763
+      "timestamp": 1709866763000
     },
     "QuoterV2": {
       "address": "0x6Cdcd65e03c1CEc3730AeeCd45bc140D57A25C77",
       "proxy": false,
       "deploymentTxn": "0x343afb1f9cdb58dbb987d3e3fa7c6b827c63567a5535b15d104d83d524b74091",
-      "timestamp": 1709611753
+      "timestamp": 1709611753000
     },
     "V3Migrator": {
       "address": "0x15CA7043CD84C5D21Ae76Ba0A1A967d42c40ecE0",
       "proxy": false,
       "deploymentTxn": "0x7fe95a3158222f8f05c2c3211cdced5355000fcd363db488c326f5c3302e1247",
-      "timestamp": 1709611721
+      "timestamp": 1709611721000
     },
     "NonfungiblePositionManager": {
       "address": "0xB218e4f7cF0533d4696fDfC419A0023D33345F28",
       "proxy": false,
       "deploymentTxn": "0xa29f77fb4dd5674f8b02ced199763d21cfb2b7bbfe20f17ddd2aa53701883f91",
-      "timestamp": 1709611709
+      "timestamp": 1709611709000
     },
     "TickLens": {
       "address": "0x2E95185bCdD928a3e984B7e2D6560Ab1b17d7274",
       "proxy": false,
       "deploymentTxn": "0x812288a1d7e42abc975ae1f8a5ef30e165e4dcc2e78af286601efec98fa908d1",
-      "timestamp": 1709611665
+      "timestamp": 1709611665000
     },
     "UniswapV3Factory": {
       "address": "0x792edAdE80af5fC680d96a2eD80A44247D2Cf6Fd",
       "proxy": false,
       "deploymentTxn": "0x5fab23b4bbd2136cc0f7de89dc55d33a06edf8ce5785ef1d9f21e970a1d2a5e9",
-      "timestamp": 1709611621
+      "timestamp": 1709611621000
     },
     "UniswapV2Factory": {
       "address": "0x5C346464d33F90bABaf70dB6388507CC889C1070",
       "proxy": false,
       "deploymentTxn": "0x58ae141ffc660448ba4c0056a470b8beadd2af5320ee238a4fe64f0183990c42",
-      "timestamp": 1709608625
+      "timestamp": 1709608625000
     },
     "Permit2": {
       "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
       "proxy": false,
       "deploymentTxn": "0xe3e05638f2d61c5d9f53d2fbc70373fa62c90e37ad41b78ae1074975d8548831",
-      "timestamp": 1709127805
+      "timestamp": 1709127805000
     },
     "PoolManager": {
       "address": "0x1631559198a9e474033433b2958dabc135ab6446",
       "proxy": false,
       "deploymentTxn": "0x858e71e5e3e23c717ed95db9be8c6beba5f0b2a6eac4147dffc2e4c269e1216b",
-      "timestamp": 1737564586,
+      "timestamp": 1737564586000,
       "commitHash": "417770f"
     },
     "PositionDescriptor": {
@@ -75,28 +75,28 @@
       "proxy": true,
       "proxyType": "TransparentUpgradeableProxy",
       "deploymentTxn": "0x901075a66b3c4cb79c9a345b3ee20c70f1e7b4fb013aeced3810568141890d54",
-      "timestamp": 1737564586,
+      "timestamp": 1737564586000,
       "commitHash": "417770f"
     },
     "PositionManager": {
       "address": "0x4ad2f4cca2682cbb5b950d660dd458a1d3f1baad",
       "proxy": false,
       "deploymentTxn": "0xf350e81c346a68270e88ae2e6817db932d1863de1c9ece767ffa6a27f755a42d",
-      "timestamp": 1737564586,
+      "timestamp": 1737564586000,
       "commitHash": "417770f"
     },
     "V4Quoter": {
       "address": "0x6f71cdcb0d119ff72c6eb501abceb576fbf62bcf",
       "proxy": false,
       "deploymentTxn": "0x2754031f93ec1e505b9236cb24779b5688c2cae91188ed4067e0ec00fb0f5df2",
-      "timestamp": 1737564586,
+      "timestamp": 1737564586000,
       "commitHash": "417770f"
     },
     "StateView": {
       "address": "0x12a88ae16f46dce4e8b15368008ab3380885df30",
       "proxy": false,
       "deploymentTxn": "0x7075aad6676517bfbe235b27534e98c7817e1cae5916a9f1f1d04fc17c76c2fa",
-      "timestamp": 1737564586,
+      "timestamp": 1737564586000,
       "commitHash": "417770f"
     }
   },
@@ -210,7 +210,7 @@
           }
         }
       },
-      "timestamp": 1737564586,
+      "timestamp": 1737564586000,
       "commitHash": "417770f"
     },
     {
@@ -226,7 +226,7 @@
           }
         }
       },
-      "timestamp": 1713550173
+      "timestamp": 1713550173000
     },
     {
       "contracts": {
@@ -262,7 +262,7 @@
           }
         }
       },
-      "timestamp": 1711042703
+      "timestamp": 1711042703000
     },
     {
       "contracts": {
@@ -278,7 +278,7 @@
           }
         }
       },
-      "timestamp": 1709866763
+      "timestamp": 1709866763000
     },
     {
       "contracts": {
@@ -294,7 +294,7 @@
           }
         }
       },
-      "timestamp": 1709611753
+      "timestamp": 1709611753000
     },
     {
       "contracts": {
@@ -311,7 +311,7 @@
           }
         }
       },
-      "timestamp": 1709611721
+      "timestamp": 1709611721000
     },
     {
       "contracts": {
@@ -328,7 +328,7 @@
           }
         }
       },
-      "timestamp": 1709611709
+      "timestamp": 1709611709000
     },
     {
       "contracts": {
@@ -341,7 +341,7 @@
           }
         }
       },
-      "timestamp": 1709611665
+      "timestamp": 1709611665000
     },
     {
       "contracts": {
@@ -354,7 +354,7 @@
           }
         }
       },
-      "timestamp": 1709611621
+      "timestamp": 1709611621000
     },
     {
       "contracts": {
@@ -369,7 +369,7 @@
           }
         }
       },
-      "timestamp": 1709608625
+      "timestamp": 1709608625000
     },
     {
       "contracts": {
@@ -382,7 +382,7 @@
           }
         }
       },
-      "timestamp": 1709127805
+      "timestamp": 1709127805000
     }
   ]
 }

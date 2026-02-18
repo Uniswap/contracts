@@ -33,67 +33,67 @@
       "address": "0x5727E22b25fEEe05E8dFa83C752B86F19D102D8A",
       "proxy": false,
       "deploymentTxn": "0x481eed8b4be0ab9ebedc0d3a625143c4a480c40ea88a1573b545d24159353404",
-      "timestamp": 1755885925
+      "timestamp": 1755885925000
     },
     "PoolManager": {
       "address": "0x288dc841A52FCA2707c6947B3A777c5E56cd87BC",
       "proxy": false,
       "deploymentTxn": "0xf7fa3451efa757ea9a393af4936f0fb6264fbbd96e782a578a11fbb02c622238",
-      "timestamp": 1755885921
+      "timestamp": 1755885921000
     },
     "FeeOnTransferDetector": {
       "address": "0x8eEa35913DdeD795001562f9bA5b282d3ac04B60",
       "proxy": false,
       "deploymentTxn": "0x501b87d5d9fb8062b2c3bac854e78335af5d2936aefa105ea500e654b6d58f28",
-      "timestamp": 1720537243
+      "timestamp": 1720537243000
     },
     "FeeCollector": {
       "address": "0x21d06974F8863B1b0C236Bc3C5526DbF0051eaB5",
       "proxy": false,
       "deploymentTxn": "0x745f97e68d64e8fa921655390650a51cdd991efd068a01a3ec0b7604ca82d519",
-      "timestamp": 1715295090
+      "timestamp": 1715295090000
     },
     "Quoter": {
       "address": "0x5e55C9e631FAE526cd4B0526C4818D6e0a9eF0e3",
       "proxy": false,
       "deploymentTxn": "0x2eea47c92eadfcdffbb62148e1c5172426dc1213e5cce87fba7ebea3cc2f52a5",
-      "timestamp": 1713505377
+      "timestamp": 1713505377000
     },
     "UniswapV2Factory": {
       "address": "0x79a530c8e2fA8748B7B40dd3629C0520c2cCf03f",
       "proxy": false,
       "deploymentTxn": "0x206b36c0e14e3104353316dd4665cd1f6b914138cb0d1828a4b318c37660f815",
-      "timestamp": 1694203288
+      "timestamp": 1694203288000
     },
     "Permit2": {
       "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
       "proxy": false,
       "deploymentTxn": "0x9a6705ac635b93a4e27c28f4697673e55482877e6f86dfa9d5f9d64f532aca8d",
-      "timestamp": 1668658153
+      "timestamp": 1668658153000
     },
     "SwapRouter02": {
       "address": "0x5615CDAb10dc425a742d643d949a7F474C01abc4",
       "proxy": false,
       "deploymentTxn": "0x9532d83a4891926dd02aaaa724bfa7537ba345b84f2137051df3aaf1cdf9a529",
-      "timestamp": 1657161226
+      "timestamp": 1657161226000
     },
     "QuoterV2": {
       "address": "0x82825d0554fA07f7FC52Ab63c961F330fdEFa8E8",
       "proxy": false,
       "deploymentTxn": "0x203e4271907c3f144500fd6000c965051e85c1b4f8873ef17ff1efa7c923df9f",
-      "timestamp": 1657161216
+      "timestamp": 1657161216000
     },
     "V3Migrator": {
       "address": "0x3cFd4d48EDfDCC53D3f173F596f621064614C582",
       "proxy": false,
       "deploymentTxn": "0x6ae01ec123e3e32ba79ac1dee18061f9b2cc49301bda81497f7145d52f281689",
-      "timestamp": 1657161196
+      "timestamp": 1657161196000
     },
     "NonfungiblePositionManager": {
       "address": "0x3d79EdAaBC0EaB6F08ED885C05Fc0B014290D95A",
       "proxy": false,
       "deploymentTxn": "0x8b1baccaf090e44b232f7d6edff42263e457f65d170882b39fcd781a9dcb97fd",
-      "timestamp": 1657161186
+      "timestamp": 1657161186000
     },
     "NonfungibleTokenPositionDescriptor": {
       "address": "0x505B43c452AA4443e0a6B84bb37771494633Fde9",
@@ -102,31 +102,31 @@
       "proxyType": "TransparentUpgradeableProxy",
       "deploymentTxn": "0x918fd541ea632d848747ff2033ee84de5de502aa8f5716bdecce1be6769a89bd",
       "proxyAdmin": "0xc1b262Dd7643D4B7cA9e51631bBd900a564BF49A",
-      "timestamp": 1657161176
+      "timestamp": 1657161176000
     },
     "NFTDescriptor": {
       "address": "0xa9Fd765d85938D278cb0b108DbE4BF7186831186",
       "proxy": false,
       "deploymentTxn": "0x3ad182d389e6dd96a8f4bdac35529691d53e44a8af2daea8f526b63499d393ab",
-      "timestamp": 1657161156
+      "timestamp": 1657161156000
     },
     "TickLens": {
       "address": "0x5f115D9113F88e0a0Db1b5033D90D4a9690AcD3D",
       "proxy": false,
       "deploymentTxn": "0xe0b27a0f782ce657b4942e3695345f32139024153c6a6709f0d1837c0b4ef2bc",
-      "timestamp": 1657161146
+      "timestamp": 1657161146000
     },
     "UniswapInterfaceMulticall": {
       "address": "0x633987602DE5C4F337e3DbF265303A1080324204",
       "proxy": false,
       "deploymentTxn": "0x468ef5d731b1148c91e2b78a40f1743339be189d81c2b1024cbdf4842cc88f12",
-      "timestamp": 1657161126
+      "timestamp": 1657161126000
     },
     "UniswapV3Factory": {
       "address": "0xAfE208a311B21f13EF87E33A90049fC17A7acDEc",
       "proxy": false,
       "deploymentTxn": "0x21cd0e2e7f504d56b78b474756c4c1f08ec0bffb54a9a5b98338f5c94cb48028",
-      "timestamp": 1657161096
+      "timestamp": 1657161096000
     },
     "MixedRouteQuoterV2": {
       "address": "0x182a927119d56008d921126764bf884221b10f59",
@@ -257,7 +257,7 @@
           }
         }
       },
-      "timestamp": 1755885925
+      "timestamp": 1755885925000
     },
     {
       "contracts": {
@@ -272,7 +272,7 @@
           }
         }
       },
-      "timestamp": 1755885921
+      "timestamp": 1755885921000
     },
     {
       "contracts": {
@@ -287,7 +287,7 @@
           }
         }
       },
-      "timestamp": 1720537243
+      "timestamp": 1720537243000
     },
     {
       "contracts": {
@@ -305,7 +305,7 @@
           }
         }
       },
-      "timestamp": 1715295090
+      "timestamp": 1715295090000
     },
     {
       "contracts": {
@@ -320,7 +320,7 @@
           }
         }
       },
-      "timestamp": 1713505377
+      "timestamp": 1713505377000
     },
     {
       "contracts": {
@@ -356,7 +356,7 @@
           }
         }
       },
-      "timestamp": 1694706731
+      "timestamp": 1694706731000
     },
     {
       "contracts": {
@@ -371,7 +371,7 @@
           }
         }
       },
-      "timestamp": 1694203288
+      "timestamp": 1694203288000
     },
     {
       "contracts": {
@@ -407,7 +407,7 @@
           }
         }
       },
-      "timestamp": 1693250287
+      "timestamp": 1693250287000
     },
     {
       "contracts": {
@@ -440,7 +440,7 @@
           }
         }
       },
-      "timestamp": 1669722815
+      "timestamp": 1669722815000
     },
     {
       "contracts": {
@@ -453,7 +453,7 @@
           }
         }
       },
-      "timestamp": 1668658153
+      "timestamp": 1668658153000
     },
     {
       "contracts": {
@@ -471,7 +471,7 @@
           }
         }
       },
-      "timestamp": 1657161226
+      "timestamp": 1657161226000
     },
     {
       "contracts": {
@@ -487,7 +487,7 @@
           }
         }
       },
-      "timestamp": 1657161216
+      "timestamp": 1657161216000
     },
     {
       "contracts": {
@@ -504,7 +504,7 @@
           }
         }
       },
-      "timestamp": 1657161196
+      "timestamp": 1657161196000
     },
     {
       "contracts": {
@@ -521,7 +521,7 @@
           }
         }
       },
-      "timestamp": 1657161186
+      "timestamp": 1657161186000
     },
     {
       "contracts": {
@@ -545,7 +545,7 @@
           }
         }
       },
-      "timestamp": 1657161176
+      "timestamp": 1657161176000
     },
     {
       "contracts": {
@@ -558,7 +558,7 @@
           }
         }
       },
-      "timestamp": 1657161156
+      "timestamp": 1657161156000
     },
     {
       "contracts": {
@@ -571,7 +571,7 @@
           }
         }
       },
-      "timestamp": 1657161146
+      "timestamp": 1657161146000
     },
     {
       "contracts": {
@@ -584,7 +584,7 @@
           }
         }
       },
-      "timestamp": 1657161126
+      "timestamp": 1657161126000
     },
     {
       "contracts": {
@@ -597,7 +597,7 @@
           }
         }
       },
-      "timestamp": 1657161096
+      "timestamp": 1657161096000
     }
   ]
 }
