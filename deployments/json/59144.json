@@ -1,6 +1,13 @@
 {
   "chainId": "59144",
   "latest": {
+    "WETHHook": {
+      "address": "0x9da2fdf778d73fa37464624cad047fb145966888",
+      "proxy": false,
+      "deploymentTxn": "0xf12d15059e889f0912cc126d21e60fa8244941a60c3cf76a72c8e97018ee32a3",
+      "timestamp": 1771467867611,
+      "commitHash": "0fb3340"
+    },
     "CaliburEntry": {
       "address": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00",
       "proxy": false,
@@ -196,6 +203,23 @@
     }
   },
   "history": [
+    {
+      "contracts": {
+        "WETHHook": {
+          "address": "0x9da2fdf778d73fa37464624cad047fb145966888",
+          "proxy": false,
+          "deploymentTxn": "0xf12d15059e889f0912cc126d21e60fa8244941a60c3cf76a72c8e97018ee32a3",
+          "input": {
+            "constructor": {
+              "_manager": "0x248083Fb965359d82b06C1F5322480Dcfc1AD857",
+              "_weth": "0xe5D7C2a44FfDDf6b295A15c148167daaAf5Cf34f"
+            }
+          }
+        }
+      },
+      "timestamp": 1771467867611,
+      "commitHash": "0fb3340"
+    },
     {
       "contracts": {
         "UniswapV2Router02": {
