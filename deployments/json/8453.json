@@ -37,12 +37,25 @@
       "deploymentTxn": "0x039224ce16ebe5574f51da761acbdfbd21099d6230c39fcd8ff566bbfd6a50a9",
       "timestamp": 1707413501000
     },
-    "UniversalRouter": {
+    "UniversalRouter#v2.1": {
       "address": "0xf3a4f4094bd2c6c06ca2f61789d8727b8d1e7259",
       "proxy": false,
       "deploymentTxn": "0x5011641b1bee40f6357a6d23563d9ef1e6eb765d5f9d2908f59e8d087713091a",
       "timestamp": 1763597784466,
       "commitHash": "1f66908"
+    },
+    "UniversalRouter#v2.0": {
+      "address": "0x6ff5693b99212da76ad316178a184ab56d299b43",
+      "proxy": false,
+      "deploymentTxn": "0x0efe6f4f59683fd326dcefe5c07f7b072740ae02fcbe81dbc1755e4aba5fe1f2",
+      "timestamp": 1737491485000,
+      "commitHash": "a60641e"
+    },
+    "UniversalRouter#v1.2": {
+      "address": "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD",
+      "proxy": false,
+      "deploymentTxn": "0x07554308e2650c4a0da846426322d62c2afc2ec05eacd0f383ab1a8524e1b8db",
+      "timestamp": 1705003883000
     },
     "UniswapV2Factory": {
       "address": "0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6",
@@ -161,12 +174,33 @@
       "deploymentTxn": "0x18eaf38c7be1c336bea3fde5638af076232c9d3c537203b8c9671e0962e3baac",
       "timestamp": 1756326906000,
       "commitHash": "320811c"
+    },
+    "NonfungibleTokenPositionDescriptor": {
+      "address": "0x4615C383F85D0a2BbED973d83ccecf5CB7121463",
+      "implementation": "0x4f225937EDc33EFD6109c4ceF7b560B2D6401009",
+      "proxy": true,
+      "proxyType": "TransparentUpgradeableProxy",
+      "proxyAdmin": "0x3334d83e224aF5ef9C2E7DDA7c7C98Efd9621fA9",
+      "deploymentTxn": "0xb8c713d81dc3a8deea0ced18ddfbd7e0557192dc5a1aa191f5f82dd52d10a928",
+      "timestamp": 1689532765000
+    },
+    "UnsupportedProtocol": {
+      "address": "0x9E18Efb3BE848940b0C92D300504Fb08C287FE85",
+      "proxy": false,
+      "deploymentTxn": "0x9f580586d774aff6baba5c535065b9835a248df840e6d6fddd6dc1541bbde8dd",
+      "timestamp": 1689694099000
+    },
+    "OrderQuoter": {
+      "address": "0x88440407634f89873c5d9439987ac4be9725fea8",
+      "proxy": false,
+      "deploymentTxn": "0xbd1d9b1a36c659e0bb69e51cc6f7941c34fa9cce4fbfde0f7881e4d3b1cbf105",
+      "timestamp": 1722874175000
     }
   },
   "history": [
     {
       "contracts": {
-        "UniversalRouter": {
+        "UniversalRouter#v2.1": {
           "address": "0xf3a4f4094bd2c6c06ca2f61789d8727b8d1e7259",
           "proxy": false,
           "deploymentTxn": "0x5011641b1bee40f6357a6d23563d9ef1e6eb765d5f9d2908f59e8d087713091a",
@@ -299,7 +333,7 @@
             }
           }
         },
-        "UniversalRouter": {
+        "UniversalRouter#v2.0": {
           "address": "0x6ff5693b99212da76ad316178a184ab56d299b43",
           "proxy": false,
           "deploymentTxn": "0x0efe6f4f59683fd326dcefe5c07f7b072740ae02fcbe81dbc1755e4aba5fe1f2",
@@ -334,6 +368,14 @@
               "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
               "_protocolFeeOwner": "0x31FAfd4889FA1269F7a13A66eE0fB458f27D72A9"
             }
+          }
+        },
+        "OrderQuoter": {
+          "address": "0x88440407634f89873c5d9439987ac4be9725fea8",
+          "proxy": false,
+          "deploymentTxn": "0xbd1d9b1a36c659e0bb69e51cc6f7941c34fa9cce4fbfde0f7881e4d3b1cbf105",
+          "input": {
+            "constructor": {}
           }
         }
       },
@@ -422,7 +464,7 @@
     },
     {
       "contracts": {
-        "UniversalRouter": {
+        "UniversalRouter#v1.2": {
           "address": "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD",
           "proxy": false,
           "deploymentTxn": "0x07554308e2650c4a0da846426322d62c2afc2ec05eacd0f383ab1a8524e1b8db",
@@ -473,7 +515,7 @@
     },
     {
       "contracts": {
-        "UniversalRouter": {
+        "UniversalRouter#v1.2": {
           "address": "0xeC8B0F7Ffe3ae75d7FfAb09429e3675bb63503e4",
           "proxy": false,
           "deploymentTxn": "0x206d9ba66f1c41cca67e97c94c598b6cfd12ceccd6b8be61d4ae815618f87a41",
@@ -509,7 +551,7 @@
     },
     {
       "contracts": {
-        "UniversalRouter": {
+        "UniversalRouter#v1.2": {
           "address": "0x198EF79F1F515F02dFE9e3115eD9fC07183f02fC",
           "proxy": false,
           "deploymentTxn": "0xaed9ca12d91e59bea86e59c19c6029e4892ad7f9d96b9308cfa7aab1756dadf8",
@@ -538,6 +580,14 @@
                 "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54"
               }
             }
+          }
+        },
+        "UnsupportedProtocol": {
+          "address": "0x9E18Efb3BE848940b0C92D300504Fb08C287FE85",
+          "proxy": false,
+          "deploymentTxn": "0x9f580586d774aff6baba5c535065b9835a248df840e6d6fddd6dc1541bbde8dd",
+          "input": {
+            "constructor": {}
           }
         }
       },
@@ -623,6 +673,26 @@
         }
       },
       "timestamp": 1689532775000
+    },
+    {
+      "contracts": {
+        "NonfungibleTokenPositionDescriptor": {
+          "address": "0x4615C383F85D0a2BbED973d83ccecf5CB7121463",
+          "implementation": "0x4f225937EDc33EFD6109c4ceF7b560B2D6401009",
+          "proxy": true,
+          "proxyType": "TransparentUpgradeableProxy",
+          "proxyAdmin": "0x3334d83e224aF5ef9C2E7DDA7c7C98Efd9621fA9",
+          "deploymentTxn": "0xb8c713d81dc3a8deea0ced18ddfbd7e0557192dc5a1aa191f5f82dd52d10a928",
+          "input": {
+            "constructor": {
+              "_implementation": "0x4f225937EDc33EFD6109c4ceF7b560B2D6401009",
+              "_admin": "0x3334d83e224aF5ef9C2E7DDA7c7C98Efd9621fA9"
+            },
+            "initializeData": "0x"
+          }
+        }
+      },
+      "timestamp": 1689532765000
     },
     {
       "contracts": {
