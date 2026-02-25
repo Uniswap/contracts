@@ -61,3 +61,10 @@
 [submodule "src/pkgs/universal-router-2_0"]
 	path = src/pkgs/universal-router-2_0
 	url = https://github.com/Uniswap/universal-router
+[submodule "lib/v4-hooks-public"]
+	path = lib/v4-hooks-public
+	url = https://github.com/Uniswap/v4-hooks-public
+	branch = aggregator-hooks
+[submodule "lib/v4-core"]
+	path = lib/v4-core
+	url = https://github.com/Uniswap/v4-core
