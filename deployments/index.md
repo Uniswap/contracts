@@ -22,6 +22,7 @@ This repository contains deployment information for the following networks:
 | 42220 | Celo Mainnet | [View Deployment](./42220.md) |
 | 43114 | Avalanche C-Chain | [View Deployment](./43114.md) |
 | 57073 | Ink | [View Deployment](./57073.md) |
+| 59144 | Linea | [View Deployment](./59144.md) |
 | 81457 | Blast | [View Deployment](./81457.md) |
 | 7777777 | Zora | [View Deployment](./7777777.md) |
 | 11155111 | Sepolia | [View Deployment](./11155111.md) |
