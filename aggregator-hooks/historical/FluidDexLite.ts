@@ -26,27 +26,28 @@ import fs from "node:fs";
 import path from "node:path";
 import { ethers } from "ethers";
 import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from "@src/cli";
+import type { Address } from "../creation-modules/types.js";
 
 const OUTPUT_FILE = "fluiddexlite-pools.json";
-const DEFAULT_RESOLVER = "0x26b696D0dfDAB6c894Aa9a6575fCD07BB25BbD2C";
+const DEFAULT_RESOLVER: Address = "0x26b696D0dfDAB6c894Aa9a6575fCD07BB25BbD2C";
 
 /** Fluid native token; map to address(0) for Uniswap v4 pool init */
-const FLUID_NATIVE = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
-const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+const FLUID_NATIVE: Address = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+const ZERO_ADDRESS: Address = "0x0000000000000000000000000000000000000000";
 
-function toUniswapV4Currency(addr: string): string {
-  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase() ? ZERO_ADDRESS : ethers.getAddress(addr);
+function toUniswapV4Currency(addr: string): Address {
+  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase() ? ZERO_ADDRESS : (ethers.getAddress(addr) as Address);
 }
 
 /** Same shape as createPools.ts FluidDexLitePoolConfig */
 type CreatePoolsFluidLiteConfig = {
   poolType: "fluiddexlite";
   dexSalt: string;
-  currency0: string;
-  currency1: string;
+  currency0: Address;
+  currency1: Address;
   fee: number | null;
   tickSpacing: number | null;
-  sqrtPriceX96: string | null;
+  sqrtPriceX96: bigint | null;
 };
 
 const RESOLVER_ABI = [
@@ -54,14 +55,20 @@ const RESOLVER_ABI = [
   "function getDexState(tuple(address token0, address token1, bytes32 salt) dexKey) external view returns (tuple(tuple(uint256 fee, uint256 revenueCut, uint256 rebalancingStatus, bool isCenterPriceShiftActive, uint256 centerPrice, address centerPriceAddress, bool isRangePercentShiftActive, uint256 upperRangePercent, uint256 lowerRangePercent, bool isThresholdPercentShiftActive, uint256 upperShiftThresholdPercent, uint256 lowerShiftThresholdPercent, uint256 token0Decimals, uint256 token1Decimals, uint256 totalToken0AdjustedAmount, uint256 totalToken1AdjustedAmount) dexVariables, tuple(uint256 lastInteractionTimestamp, uint256 rebalancingShiftingTime, uint256 maxCenterPrice, uint256 minCenterPrice, uint256 shiftPercentage, uint256 centerPriceShiftingTime, uint256 startTimestamp) centerPriceShift, tuple(uint256 oldUpperRangePercent, uint256 oldLowerRangePercent, uint256 shiftingTime, uint256 startTimestamp) rangeShift, tuple(uint256 oldUpperThresholdPercent, uint256 oldLowerThresholdPercent, uint256 shiftingTime, uint256 startTimestamp) thresholdShift) dexState)",
 ] as const;
 
-/** Fluid fee uses 1e4 basis (10000 = 100%). Uniswap v4 uses 1e6 (10000 = 1%). */
+/**
+ * Converts Fluid fee (1e4 basis) to Uniswap v4 fee (1e6 basis).
+ * Fluid: 10000 = 100%. Uniswap v4: 10000 = 1%.
+ *
+ * @param fluidFee - Fluid fee in 1e4 basis (bigint or number)
+ * @returns Uniswap v4 fee as uint24 (max 16_777_215)
+ */
 function fluidFeeToUniswapV4(fluidFee: bigint | number): number {
   const MAX_U24 = 16_777_215;
   const converted = Number(fluidFee) * 100; // fluidFee * 1e6 / 1e4
   return Math.min(Math.max(0, Math.floor(converted)), MAX_U24);
 }
 
-function ensureDirForFile(filePath: string) {
+function ensureDirForFile(filePath: string): void {
   const dir = path.dirname(path.resolve(filePath));
   fs.mkdirSync(dir, { recursive: true });
 }
@@ -87,7 +94,7 @@ async function main() {
     process.exit(1);
   }
 
-  const resolver = ethers.getAddress(resolverRaw);
+  const resolver = ethers.getAddress(resolverRaw) as Address;
   const outputDir = (args["output-dir"] as string) ?? "detected";
 
   const provider = new ethers.JsonRpcProvider(rpcUrl);

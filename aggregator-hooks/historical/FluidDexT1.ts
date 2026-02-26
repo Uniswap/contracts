@@ -28,19 +28,20 @@ import fs from "node:fs";
 import path from "node:path";
 import { JsonRpcProvider, Contract, Interface, getAddress } from "ethers";
 import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from "@src/cli";
+import type { Address } from "../creation-modules/types.js";
 
 const OUTPUT_FILE = "fluiddext1-pools.json";
-const DEFAULT_FACTORY = "0x91716c4eDA1fB55e84Bf8b4c7085f84285c19085";
+const DEFAULT_FACTORY: Address = "0x91716c4eDA1fB55e84Bf8b4c7085f84285c19085";
 
 /** Same shape as createPools.ts FluidDexT1PoolConfig */
 type CreatePoolsFluidDexT1Config = {
   poolType: "fluiddext1";
-  fluidPool: string;
-  currency0: string;
-  currency1: string;
+  fluidPool: Address;
+  currency0: Address;
+  currency1: Address;
   fee: number | null;
   tickSpacing: number | null;
-  sqrtPriceX96: string | null;
+  sqrtPriceX96: bigint | null;
 };
 
 const FACTORY_ABI = [
@@ -55,21 +56,21 @@ const RESOLVER_ABI = [
 ] as const;
 
 /** Fluid native token; map to address(0) for Uniswap v4 pool init */
-const FLUID_NATIVE = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
-const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+const FLUID_NATIVE: Address = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+const ZERO_ADDRESS: Address = "0x0000000000000000000000000000000000000000";
 
-function toUniswapV4Currency(addr: string): string {
-  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase() ? ZERO_ADDRESS : getAddress(addr);
+function toUniswapV4Currency(addr: string): Address {
+  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase() ? ZERO_ADDRESS : (getAddress(addr) as Address);
 }
 
 function pRateLimit(rps: number): () => Promise<void> {
   if (rps <= 0) return async () => {};
   const minGapMs = 1000 / rps;
   let nextAllowed = 0;
-  return async function acquire() {
+  return async function acquire(): Promise<void> {
     const now = Date.now();
     if (now < nextAllowed) {
-      await new Promise((r) => setTimeout(r, nextAllowed - now));
+      await new Promise<void>((r) => setTimeout(r, nextAllowed - now));
     }
     nextAllowed = Math.max(now, nextAllowed) + minGapMs;
   };
@@ -79,7 +80,7 @@ function pLimit(concurrency: number) {
   let active = 0;
   const queue: Array<() => void> = [];
 
-  const next = () => {
+  const next = (): void => {
     active--;
     const fn = queue.shift();
     if (fn) fn();
@@ -98,8 +99,7 @@ function pLimit(concurrency: number) {
   };
 }
 
-/** Return [currency0, currency1] with currency0 < currency1 (lexicographic on mapped addrs) */
-function orderCurrencies(token0: string, token1: string): [string, string] {
+function orderCurrencies(token0: Address, token1: Address): [Address, Address] {
   const mapped = [toUniswapV4Currency(token0), toUniswapV4Currency(token1)].sort((a, b) =>
     a.toLowerCase().localeCompare(b.toLowerCase()),
   );
@@ -131,7 +131,7 @@ async function main() {
     process.exit(1);
   }
 
-  const factoryAddr = getAddress(factoryAddrRaw.toLowerCase());
+  const factoryAddr = getAddress(factoryAddrRaw.toLowerCase()) as Address;
   const outputDir = (args["output-dir"] as string) ?? "detected";
   const chunkSize = BigInt(Math.max(1, toInt(args["chunk-blocks"], 100_000)));
   const startBlock = BigInt(Math.max(0, toInt(args["start-block"], 0)));
@@ -153,7 +153,7 @@ async function main() {
   if (startBlock < 0n) throw new Error("start-block must be >= 0");
   if (endBlock < startBlock) throw new Error("end-block must be >= start-block");
 
-  const byDexAddr = new Map<string, string>();
+  const byDexAddr = new Map<Address, string>();
 
   if (mode === "logs" || mode === "both") {
     const iface = new Interface(FACTORY_ABI as unknown as string[]);
@@ -171,7 +171,7 @@ async function main() {
 
       for (const log of logs) {
         const parsed = iface.parseLog(log);
-        const dex = getAddress(parsed!.args.dex);
+        const dex = getAddress(parsed!.args.dex) as Address;
         const dexId = parsed!.args.dexId.toString();
         if (!byDexAddr.has(dex)) byDexAddr.set(dex, dexId);
       }
@@ -187,7 +187,7 @@ async function main() {
     console.error(`[enumerate] totalDexes() = ${total}`);
 
     for (let i = 1n; i <= total; i++) {
-      const dex = getAddress(await factory.getDexAddress(i));
+      const dex = getAddress(await factory.getDexAddress(i)) as Address;
       const ok = await factory.isDex(dex);
       if (!ok) continue;
 
@@ -208,10 +208,10 @@ async function main() {
   for (const fluidPool of uniqueDexes) {
     const config = await limit(async () => {
       await rateLimitAcquire();
-      let token0: string;
-      let token1: string;
+      let token0: Address;
+      let token1: Address;
       try {
-        [token0, token1] = await resolver.getPoolTokens(fluidPool);
+        [token0, token1] = (await resolver.getPoolTokens(fluidPool)) as [Address, Address];
       } catch {
         return null;
       }

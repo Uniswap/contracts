@@ -92,7 +92,7 @@ for ((i=0; i<MAX_ATTEMPTS; i++)); do
     
     FORGE_OUTPUT=$(mktemp)
     START_SEC=$(date +%s)
-    SALT_OFFSET=$OFFSET CONSTRUCTOR_ARGS=$CONSTRUCTOR_ARGS PROTOCOL_ID=$PROTOCOL_ID DEPLOYER=$DEPLOYER_ADDRESS forge script lib/v4-hooks-public/script/MineAggregatorHook.s.sol:MineAggregatorHookScript --via-ir --gas-limit 30000000000 $VERBOSE_FLAG > "$FORGE_OUTPUT" 2>&1 &
+    SALT_OFFSET=$OFFSET CONSTRUCTOR_ARGS=$CONSTRUCTOR_ARGS PROTOCOL_ID=$PROTOCOL_ID DEPLOYER=$DEPLOYER_ADDRESS forge script lib/v4-hooks-public/script/MineAggregatorHook.s.sol:MineAggregatorHookScript --gas-limit 30000000000 $VERBOSE_FLAG > "$FORGE_OUTPUT" 2>&1 &
     FORGE_PID=$!
     
     # Heartbeat: update same line every 15s so user knows it's still running

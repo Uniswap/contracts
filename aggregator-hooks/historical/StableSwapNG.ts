@@ -25,32 +25,33 @@ import fs from "node:fs";
 import path from "node:path";
 import { JsonRpcProvider, Contract, getAddress, ZeroAddress } from "ethers";
 import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from "@src/cli";
+import type { Address } from "../creation-modules/types.js";
 
 const OUTPUT_FILE = "stableswapng-pools.json";
-const DEFAULT_FACTORY = "0x6A8cbed756804B16E05E741eDaBd5cB544AE21bf";
+const DEFAULT_FACTORY: Address = "0x6A8cbed756804B16E05E741eDaBd5cB544AE21bf";
 
 type PoolMeta = {
-  pool: string;
+  pool: Address;
   kind: "plain" | "meta";
   nCoins?: number;
-  coins?: string[];
-  basePool?: string;
+  coins?: Address[];
+  basePool?: Address;
 };
 
 /** Same shape as createPools.ts StableSwapPoolConfig for stableswapng pool type */
 type CreatePoolsStableSwapConfig = {
   poolType: "stableswapng";
-  curvePool: string;
-  tokens: string[];
+  curvePool: Address;
+  tokens: Address[];
   fee: number | null;
   tickSpacing: number | null;
-  sqrtPriceX96: string | null;
+  sqrtPriceX96: bigint | null;
 };
 
 const CREATE_POOLS_DEFAULTS = {
-  fee: null,
-  tickSpacing: null,
-  sqrtPriceX96: null,
+  fee: null as number | null,
+  tickSpacing: null as number | null,
+  sqrtPriceX96: null as bigint | null,
 } as const;
 
 const FACTORY_ABI = [
@@ -61,7 +62,7 @@ const FACTORY_ABI = [
   "function get_base_pool(address) view returns (address)",
 ];
 
-function saveJson(filePath: string, data: unknown) {
+function saveJson(filePath: string, data: unknown): void {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 }
 
@@ -69,10 +70,10 @@ function pRateLimit(rps: number): () => Promise<void> {
   if (rps <= 0) return async () => {};
   const minGapMs = 1000 / rps;
   let nextAllowed = 0;
-  return async function acquire() {
+  return async function acquire(): Promise<void> {
     const now = Date.now();
     if (now < nextAllowed) {
-      await new Promise((r) => setTimeout(r, nextAllowed - now));
+      await new Promise<void>((r) => setTimeout(r, nextAllowed - now));
     }
     nextAllowed = Math.max(now, nextAllowed) + minGapMs;
   };
@@ -82,7 +83,7 @@ function pLimit(concurrency: number) {
   let active = 0;
   const queue: Array<() => void> = [];
 
-  const next = () => {
+  const next = (): void => {
     active--;
     const fn = queue.shift();
     if (fn) fn();
@@ -101,13 +102,13 @@ function pLimit(concurrency: number) {
   };
 }
 
-function uniqAddresses(addrs: string[]): string[] {
-  const s = new Set<string>();
+function uniqAddresses(addrs: string[]): Address[] {
+  const s = new Set<Address>();
   for (const a of addrs) {
     if (!a) continue;
     const norm = a.toLowerCase();
     if (norm === ZeroAddress.toLowerCase()) continue;
-    s.add(getAddress(a));
+    s.add(getAddress(a) as Address);
   }
   return [...s];
 }
@@ -134,7 +135,7 @@ async function main() {
     process.exit(1);
   }
 
-  const factoryAddress = getAddress(factoryAddrRaw);
+  const factoryAddress = getAddress(factoryAddrRaw) as Address;
   const outputDir = (args["output-dir"] as string) ?? "detected";
   const chunkSize = toInt(args["chunk"], 500);
   const concurrency = Math.max(1, toInt(getEnvForChain("CONCURRENCY", chainId), 8));
@@ -157,9 +158,9 @@ async function main() {
   console.log(`Starting at index: ${startIndex}`);
   console.log(`chunkSize=${chunkSize} concurrency=${concurrency} rps=${rps > 0 ? rps : "unlimited"}`);
 
-  const pools: string[] = [];
+  const pools: Address[] = [];
   const metas: PoolMeta[] = [];
-  const metaByPool = new Map<string, PoolMeta>();
+  const metaByPool = new Map<Address, PoolMeta>();
 
   for (let i = startIndex; i < poolCount; i += chunkSize) {
     const end = Math.min(poolCount, i + chunkSize);
@@ -169,7 +170,7 @@ async function main() {
         limit(async () => {
           await rateLimitAcquire();
           const addr: string = await factory.pool_list(i + k);
-          return getAddress(addr);
+          return getAddress(addr) as Address;
         }),
       ),
     );
@@ -186,7 +187,7 @@ async function main() {
           await rateLimitAcquire();
           const basePoolRaw = await factory.get_base_pool(pool);
 
-          const basePool = getAddress(basePoolRaw);
+          const basePool = getAddress(basePoolRaw) as Address;
           const coins = uniqAddresses(coinsRaw);
 
           return {
