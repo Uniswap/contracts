@@ -103,7 +103,7 @@ function orderCurrencies(token0: Address, token1: Address): [Address, Address] {
   const mapped = [toUniswapV4Currency(token0), toUniswapV4Currency(token1)].sort((a, b) =>
     a.toLowerCase().localeCompare(b.toLowerCase()),
   );
-  return [mapped[0], mapped[1]];
+  return [mapped[0]!, mapped[1]!];
 }
 
 async function main() {

@@ -133,6 +133,10 @@ npx tsx src/createPools.ts detected/1/fluiddexlite-pools-curated.json 0xFactoryA
 | `RPC_URL` or `RPC_URL_<chainId>` | RPC endpoint (use `RPC_URL_1` etc. when `--chain-id` is set) |
 | `PRIVATE_KEY` | Signing key for transactions (required even with `--dry-run`) |
 
+### Security
+
+- `PRIVATE_KEY` is passed to forge via the process environment only (not the command line).
+
 ### Dry run and verbose
 
 Use `--dry-run` to simulate without broadcasting:

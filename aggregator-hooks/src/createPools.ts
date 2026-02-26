@@ -493,7 +493,8 @@ function selfDeployPool(
     ...module.buildSelfDeployEnvVars(poolConfig, immutables),
   };
 
-  const envString = Object.entries(envVars)
+  const { PRIVATE_KEY: _pk, ...publicEnvVars } = envVars;
+  const envString = Object.entries(publicEnvVars)
     .map(([key, value]) => `${key}="${value}"`)
     .join(" ");
 
