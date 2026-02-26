@@ -1,24 +1,24 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "baseUrl": ".",
-    "paths": {
-      "@src/cli": ["src/cli.ts"]
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "baseUrl": ".",
+        "paths": {
+            "@src/cli": ["src/cli.ts"]
+        },
+        "lib": ["ES2022"],
+        "outDir": "dist",
+        "rootDir": ".",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true
     },
-    "lib": ["ES2022"],
-    "outDir": "dist",
-    "rootDir": ".",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true
-  },
-  "include": ["src/**/*.ts", "creation-modules/*.ts", "historical/**/*.ts", "polling/**/*.ts"],
-  "exclude": ["node_modules", "dist"]
+    "include": ["src/**/*.ts", "creation-modules/*.ts", "historical/**/*.ts", "polling/**/*.ts"],
+    "exclude": ["node_modules", "dist"]
 }

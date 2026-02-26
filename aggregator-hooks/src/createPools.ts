@@ -113,8 +113,8 @@ function parseArgs(): ParsedArgs {
   const factoryAddress: Address | null = selfDeploy
     ? null
     : positionalArgs[1]
-      ? (ethers.getAddress(positionalArgs[1]) as Address)
-      : null;
+    ? (ethers.getAddress(positionalArgs[1]) as Address)
+    : null;
 
   if (selfDeploy && positionalArgs.length >= 2 && positionalArgs[1].startsWith("0x")) {
     console.error("Error: --self-deploy and factoryAddress are mutually exclusive");
@@ -246,7 +246,9 @@ function loadJsonFile(filePath: string): PoolConfig[] {
     for (let i = 1; i < pools.length; i++) {
       if (pools[i].poolType !== firstType) {
         throw new Error(
-          `Pool ${i + 1} has poolType "${pools[i].poolType}" but all configs must have the same poolType (first is "${firstType}")`,
+          `Pool ${i + 1} has poolType "${
+            pools[i].poolType
+          }" but all configs must have the same poolType (first is "${firstType}")`,
         );
       }
     }
@@ -640,7 +642,9 @@ async function main() {
       process.exit(1);
     }
     console.log(
-      `Loaded ${allPools.length} pool configuration(s)${startAt > 1 ? `, processing from index ${startAt} (${pools.length} remaining)` : ""}`,
+      `Loaded ${allPools.length} pool configuration(s)${
+        startAt > 1 ? `, processing from index ${startAt} (${pools.length} remaining)` : ""
+      }`,
     );
     console.log("");
 
@@ -727,7 +731,9 @@ async function main() {
     const module = CREATION_MODULES[poolType];
 
     console.log(
-      `Loaded ${allPools.length} pool configuration(s) (poolType: ${poolType})${startAt > 1 ? `, processing from index ${startAt} (${pools.length} remaining)` : ""}`,
+      `Loaded ${allPools.length} pool configuration(s) (poolType: ${poolType})${
+        startAt > 1 ? `, processing from index ${startAt} (${pools.length} remaining)` : ""
+      }`,
     );
     console.log("");
 

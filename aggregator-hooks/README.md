@@ -10,16 +10,16 @@ Aggregator Hook factories should be deployed before running any of these scripts
 
 ### Historical discovery (one-time full scrape)
 
-| Script | Description |
-|--------|-------------|
-| `historical/FluidDexLite.ts` | Scrape LogInitialize events from FluidDexLite |
-| `historical/FluidDexT1.ts` | Scrape LogDexDeployed events from FluidDexFactory |
+| Script                       | Description                                                       |
+| ---------------------------- | ----------------------------------------------------------------- |
+| `historical/FluidDexLite.ts` | Scrape LogInitialize events from FluidDexLite                     |
+| `historical/FluidDexT1.ts`   | Scrape LogDexDeployed events from FluidDexFactory                 |
 | `historical/StableSwapNG.ts` | Enumerate pool_count + pool_list from Curve StableSwap-NG factory |
 
 ### Pool creation
 
-| Script | Description |
-|--------|-------------|
+| Script               | Description                                          |
+| -------------------- | ---------------------------------------------------- |
 | `src/createPools.ts` | Create Uniswap v4 hooks from discovered pool configs |
 
 ---
@@ -30,11 +30,11 @@ All discovery scripts use chain-ID-suffixed env vars. Use `VAR_<chainId>` (e.g. 
 
 ### By script
 
-| Script | Required | Optional |
-|--------|----------|----------|
-| **fluiddexlite** | `RPC_URL` | `DEX_LITE_RESOLVER_ADDRESS` (default mainnet resolver) |
-| **fluiddext1** | `RPC_URL`, `FLUID_DEX_RESOLVER` | `FLUID_DEX_FACTORY`, `FACTORY_ADDRESS`, `RPS`, `CONCURRENCY` |
-| **stableswapng** | `RPC_URL` | `FACTORY_ADDRESS`, `RPS`, `CONCURRENCY` |
+| Script           | Required                        | Optional                                                     |
+| ---------------- | ------------------------------- | ------------------------------------------------------------ |
+| **fluiddexlite** | `RPC_URL`                       | `DEX_LITE_RESOLVER_ADDRESS` (default mainnet resolver)       |
+| **fluiddext1**   | `RPC_URL`, `FLUID_DEX_RESOLVER` | `FLUID_DEX_FACTORY`, `FACTORY_ADDRESS`, `RPS`, `CONCURRENCY` |
+| **stableswapng** | `RPC_URL`                       | `FACTORY_ADDRESS`, `RPS`, `CONCURRENCY`                      |
 
 ---
 
@@ -44,26 +44,26 @@ All discovery scripts require `--chain-id <n>`.
 
 ### Common args
 
-| Arg | Default | Description |
-|-----|---------|-------------|
-| `--chain-id` | (required) | Chain ID; selects env vars |
-| `--output-dir` | `detected` | Output base dir; files go to `output-dir/chain-id/<filename>.json` |
-| `--chunk-blocks` | 100000 | Block chunk size for getLogs |
-| `--start-block` | — | Start scan from this block |
+| Arg              | Default    | Description                                                        |
+| ---------------- | ---------- | ------------------------------------------------------------------ |
+| `--chain-id`     | (required) | Chain ID; selects env vars                                         |
+| `--output-dir`   | `detected` | Output base dir; files go to `output-dir/chain-id/<filename>.json` |
+| `--chunk-blocks` | 100000     | Block chunk size for getLogs                                       |
+| `--start-block`  | —          | Start scan from this block                                         |
 
 ### Discovery args
 
-| Arg | Default | Description |
-|-----|---------|-------------|
-| `--end-block` | latest | End block for event scan |
+| Arg           | Default | Description              |
+| ------------- | ------- | ------------------------ |
+| `--end-block` | latest  | End block for event scan |
 
 ### Script-specific args
 
-| Script | Arg | Default | Description |
-|--------|-----|---------|-------------|
-| fluiddext1 | `--mode` | enumerate | `logs` \| `enumerate` \| `both` |
-| stableswapng | `--chunk` | 500 | pool_list batch size |
-| stableswapng | `--start-index` | 0 | Start pool_list index |
+| Script       | Arg             | Default   | Description                     |
+| ------------ | --------------- | --------- | ------------------------------- |
+| fluiddext1   | `--mode`        | enumerate | `logs` \| `enumerate` \| `both` |
+| stableswapng | `--chunk`       | 500       | pool_list batch size            |
+| stableswapng | `--start-index` | 0         | Start pool_list index           |
 
 ---
 
@@ -71,10 +71,10 @@ All discovery scripts require `--chain-id <n>`.
 
 - **Output**: `{OUTPUT_DIR}/{CHAIN_ID}/{OUTPUT_FILE}.json`
 
-| Script | Output file |
-|--------|-------------|
+| Script       | Output file             |
+| ------------ | ----------------------- |
 | fluiddexlite | fluiddexlite-pools.json |
-| fluiddext1 | fluiddext1-pools.json |
+| fluiddext1   | fluiddext1-pools.json   |
 | stableswapng | stableswapng-pools.json |
 
 ---
@@ -108,18 +108,18 @@ npx tsx src/createPools.ts detected/1/fluiddexlite-pools-curated.json 0xFactoryA
 
 ### Arguments
 
-| Arg | Required | Default | Description |
-|-----|----------|---------|-------------|
-| `jsonFile` | yes | — | Path to JSON file with pool configs (each must have `poolType`) |
-| `factoryAddress` | yes* | — | Factory contract address (*required when not using `--self-deploy`) |
-| `--self-deploy` | no | — | Deploy hooks from wallet instead of via factory |
-| `--chain-id <n>` | no | — | Chain ID; selects `RPC_URL_<n>` from env |
-| `--registry-dir <path>` | no | `created-pools` | Append deployed pools to `deployed-<poolType>.json` in this dir |
-| `--dry-run` | no | — | Simulate forge scripts without broadcasting |
-| `--verbose`, `-v` | no | — | Run forge scripts with `-vvvv` |
-| `--start-at <n>` | no | 1 | Start at 1-based pool index (skip earlier pools). Use to resume. |
-| `--jobs <n>`, `-j <n>` | no | 1 | Parallel salt mining workers (1–16). Speeds up mining. |
-| `--priority-gas-price <price>` | no | RPC default | Max priority fee per gas for EIP1559 (e.g. `3gwei`). Speeds up tx inclusion. |
+| Arg                            | Required | Default         | Description                                                                  |
+| ------------------------------ | -------- | --------------- | ---------------------------------------------------------------------------- |
+| `jsonFile`                     | yes      | —               | Path to JSON file with pool configs (each must have `poolType`)              |
+| `factoryAddress`               | yes\*    | —               | Factory contract address (\*required when not using `--self-deploy`)         |
+| `--self-deploy`                | no       | —               | Deploy hooks from wallet instead of via factory                              |
+| `--chain-id <n>`               | no       | —               | Chain ID; selects `RPC_URL_<n>` from env                                     |
+| `--registry-dir <path>`        | no       | `created-pools` | Append deployed pools to `deployed-<poolType>.json` in this dir              |
+| `--dry-run`                    | no       | —               | Simulate forge scripts without broadcasting                                  |
+| `--verbose`, `-v`              | no       | —               | Run forge scripts with `-vvvv`                                               |
+| `--start-at <n>`               | no       | 1               | Start at 1-based pool index (skip earlier pools). Use to resume.             |
+| `--jobs <n>`, `-j <n>`         | no       | 1               | Parallel salt mining workers (1–16). Speeds up mining.                       |
+| `--priority-gas-price <price>` | no       | RPC default     | Max priority fee per gas for EIP1559 (e.g. `3gwei`). Speeds up tx inclusion. |
 
 **Modes:**
 
@@ -128,10 +128,10 @@ npx tsx src/createPools.ts detected/1/fluiddexlite-pools-curated.json 0xFactoryA
 
 ### Environment variables
 
-| Env | Description |
-|-----|-------------|
-| `RPC_URL` or `RPC_URL_<chainId>` | RPC endpoint (use `RPC_URL_1` etc. when `--chain-id` is set) |
-| `PRIVATE_KEY` | Signing key for transactions (required even with `--dry-run`) |
+| Env                              | Description                                                   |
+| -------------------------------- | ------------------------------------------------------------- |
+| `RPC_URL` or `RPC_URL_<chainId>` | RPC endpoint (use `RPC_URL_1` etc. when `--chain-id` is set)  |
+| `PRIVATE_KEY`                    | Signing key for transactions (required even with `--dry-run`) |
 
 ### Security
 
@@ -169,6 +169,7 @@ The `createPools` script and `mine_hook.sh` run from the **contracts/** director
 > **Note:** When running `createPools` via `npx tsx src/createPools.ts`, run it from **aggregator-hooks/** so it loads `aggregator-hooks/.env`. The forge scripts invoked by createPools run from contracts/ but inherit env vars from the parent process.
 
 1. **v4-hooks-public** (aggregator-hooks branch): Already added as submodule. Ensure it's on the `aggregator-hooks` branch:
+
    ```bash
    cd lib/v4-hooks-public && git fetch origin aggregator-hooks && git checkout aggregator-hooks
    git submodule update --init --recursive
