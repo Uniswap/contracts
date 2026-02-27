@@ -16,6 +16,32 @@ Aggregator Hook factories should be deployed before running any of these scripts
 | `historical/FluidDexT1.ts`   | Scrape LogDexDeployed events from FluidDexFactory                 |
 | `historical/StableSwapNG.ts` | Enumerate pool_count + pool_list from Curve StableSwap-NG factory |
 
+### Polling discovery (incremental, checkpoint-based)
+
+Polling scripts scan only new blocks since the last run. They load and update a checkpoint file to avoid re-processing. Use these for ongoing discovery (e.g. cron) instead of historical one-time scrapes.
+
+| Script                    | Description                                                                  |
+| ------------------------- | ---------------------------------------------------------------------------- |
+| `polling/FluidDexLite.ts` | Scan LogInitialize events from FluidDexLite since checkpoint                 |
+| `polling/FluidDexT1.ts`   | Scan LogDexDeployed events from FluidDexFactory; fetch tokens via resolver   |
+| `polling/StableSwapNG.ts` | Scan PlainPoolDeployed/MetaPoolDeployed events; fetch new pools from factory |
+
+All polling scripts append new pools to the same output files used by historical scripts, in createPools format.
+
+**Polling options:**
+
+| Arg                | Default       | Description                                                     |
+| ------------------ | ------------- | --------------------------------------------------------------- |
+| `--checkpoint-dir` | `checkpoints` | Where to store/load checkpoint files (`{dir}/{chainId}/*.json`) |
+| `--start-block`    | —             | Override checkpoint; start scan from this block                 |
+
+**Polling env vars:**
+
+| Env               | Default | Description                                                                 |
+| ----------------- | ------- | --------------------------------------------------------------------------- |
+| `FINALITY_BLOCKS` | 10      | Blocks to subtract from latest; checkpoint stops before finality for safety |
+| `LOOKBACK_BLOCKS` | 200000  | Blocks to scan when checkpoint is missing and no `--start-block` given      |
+
 ### Pool creation
 
 | Script               | Description                                          |
@@ -35,6 +61,8 @@ All discovery scripts use chain-ID-suffixed env vars. Use `VAR_<chainId>` (e.g. 
 | **fluiddexlite** | `RPC_URL`                       | `DEX_LITE_RESOLVER_ADDRESS` (default mainnet resolver)       |
 | **fluiddext1**   | `RPC_URL`, `FLUID_DEX_RESOLVER` | `FLUID_DEX_FACTORY`, `FACTORY_ADDRESS`, `RPS`, `CONCURRENCY` |
 | **stableswapng** | `RPC_URL`                       | `FACTORY_ADDRESS`, `RPS`, `CONCURRENCY`                      |
+
+**Polling scripts** use the same env vars as their historical counterparts (fluiddexlite, fluiddext1, stableswapng), plus `FINALITY_BLOCKS` and `LOOKBACK_BLOCKS` (see Polling env vars above). FluidDexLite polling also requires `DEX_LITE_ADDRESS`.
 
 ---
 
@@ -59,11 +87,12 @@ All discovery scripts require `--chain-id <n>`.
 
 ### Script-specific args
 
-| Script       | Arg             | Default   | Description                     |
-| ------------ | --------------- | --------- | ------------------------------- |
-| fluiddext1   | `--mode`        | enumerate | `logs` \| `enumerate` \| `both` |
-| stableswapng | `--chunk`       | 500       | pool_list batch size            |
-| stableswapng | `--start-index` | 0         | Start pool_list index           |
+| Script       | Arg                | Default       | Description                     |
+| ------------ | ------------------ | ------------- | ------------------------------- |
+| fluiddext1   | `--mode`           | enumerate     | `logs` \| `enumerate` \| `both` |
+| stableswapng | `--chunk`          | 500           | pool_list batch size            |
+| stableswapng | `--start-index`    | 0             | Start pool_list index           |
+| **polling**  | `--checkpoint-dir` | `checkpoints` | Checkpoint storage directory    |
 
 ---
 
@@ -76,6 +105,8 @@ All discovery scripts require `--chain-id <n>`.
 | fluiddexlite | fluiddexlite-pools.json |
 | fluiddext1   | fluiddext1-pools.json   |
 | stableswapng | stableswapng-pools.json |
+
+Polling scripts write to the same output paths and append new pools. Checkpoints go to `{checkpoint-dir}/{chainId}/{protocol}_checkpoint.json`.
 
 ---
 
@@ -97,6 +128,11 @@ npx tsx historical/FluidDexT1.ts --chain-id 8453 --output-dir output
 
 # Historical stableswapng with custom chunk
 npx tsx historical/StableSwapNG.ts --chain-id 1 --chunk 200
+
+# Polling (incremental; use cron or run periodically)
+npx tsx polling/FluidDexLite.ts --chain-id 1
+npx tsx polling/FluidDexT1.ts --chain-id 8453 --output-dir output
+npx tsx polling/StableSwapNG.ts --chain-id 1 --checkpoint-dir checkpoints
 
 # createPools with chain-id (uses RPC_URL_1 from env)
 npx tsx src/createPools.ts detected/1/fluiddexlite-pools-curated.json 0xFactoryAddr --chain-id 1
