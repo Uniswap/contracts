@@ -28,6 +28,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { JsonRpcProvider, Contract, Interface, getAddress } from "ethers";
 import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from "@src/cli";
+import { FLUIDDEXT1_HISTORICAL_FACTORY_ABI, FLUIDDEXT1_RESOLVER_ABI } from "../abis/index.js";
 import type { Address } from "../creation-modules/types.js";
 
 const OUTPUT_FILE = "fluiddext1-pools.json";
@@ -43,17 +44,6 @@ type CreatePoolsFluidDexT1Config = {
   tickSpacing: number | null;
   sqrtPriceX96: bigint | null;
 };
-
-const FACTORY_ABI = [
-  "event LogDexDeployed(address indexed dex, uint256 indexed dexId)",
-  "function totalDexes() external view returns (uint256)",
-  "function getDexAddress(uint256 dexId) public view returns (address)",
-  "function isDex(address dex) public view returns (bool)",
-] as const;
-
-const RESOLVER_ABI = [
-  "function getPoolTokens(address pool) external view returns (address token0, address token1)",
-] as const;
 
 /** Fluid native token; map to address(0) for Uniswap v4 pool init */
 const FLUID_NATIVE: Address = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
@@ -144,8 +134,8 @@ async function main() {
   const limit = pLimit(concurrency);
 
   const provider = new JsonRpcProvider(rpcUrl);
-  const factory = new Contract(factoryAddr, FACTORY_ABI, provider);
-  const resolver = new Contract(getAddress(reservesResolverAddr.toLowerCase()), RESOLVER_ABI, provider);
+  const factory = new Contract(factoryAddr, FLUIDDEXT1_HISTORICAL_FACTORY_ABI, provider);
+  const resolver = new Contract(getAddress(reservesResolverAddr.toLowerCase()), FLUIDDEXT1_RESOLVER_ABI, provider);
 
   const latest = BigInt(await provider.getBlockNumber());
   const endBlock = endBlockRaw ? BigInt(String(endBlockRaw)) : latest;
@@ -156,7 +146,7 @@ async function main() {
   const byDexAddr = new Map<Address, string>();
 
   if (mode === "logs" || mode === "both") {
-    const iface = new Interface(FACTORY_ABI as unknown as string[]);
+    const iface = new Interface(FLUIDDEXT1_HISTORICAL_FACTORY_ABI as unknown as string[]);
     const topic0 = iface.getEvent("LogDexDeployed")!.topicHash;
 
     for (let from = startBlock; from <= endBlock; from += chunkSize) {

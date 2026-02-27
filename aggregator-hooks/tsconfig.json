@@ -19,6 +19,6 @@
         "declarationMap": true,
         "sourceMap": true
     },
-    "include": ["src/**/*.ts", "creation-modules/*.ts", "historical/**/*.ts", "polling/**/*.ts"],
+    "include": ["src/**/*.ts", "creation-modules/*.ts", "historical/**/*.ts", "polling/**/*.ts", "abis/**/*.ts"],
     "exclude": ["node_modules", "dist"]
 }

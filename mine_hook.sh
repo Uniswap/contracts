@@ -53,6 +53,13 @@ MAX_ATTEMPTS=${3:-500}  # Default to 500 attempts
 DEPLOYER_ADDRESS=${4:-0x4e59b44847b379578588920cA78FbF26c0B4956C}  # Default to CREATE2_DEPLOYER
 SALT_INCREMENT=160444  # Must match MAX_LOOP in AggregatorHookMiner.sol
 
+# Validate DEPLOYER_ADDRESS format (0x + 40 hex chars)
+if ! [[ "$DEPLOYER_ADDRESS" =~ ^0x[0-9a-fA-F]{40}$ ]]; then
+    echo "Error: Invalid DEPLOYER_ADDRESS '$DEPLOYER_ADDRESS'"
+    echo "Expected format: 0x followed by 40 hex characters (e.g., 0x4e59b44847b379578588920cA78FbF26c0B4956C)"
+    exit 1
+fi
+
 # Random base offset (0 to 1 quadrillion) so each run searches a different salt region.
 # Avoids createCollision when redeploying pools with the same constructor args.
 # Use 4 bytes (not 8): bash uses signed 64-bit; od -tu8 can overflow to negative, breaking Solidity's uint256 env parsing and causing the same salts to be searched repeatedly.

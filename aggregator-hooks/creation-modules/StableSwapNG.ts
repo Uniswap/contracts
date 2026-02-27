@@ -3,6 +3,7 @@
  */
 import { ethers } from "ethers";
 import { mustEnvForChain } from "../src/cli.js";
+import { STABLESWAP_FACTORY_ABI } from "../abis/index.js";
 import {
   DEFAULT_SQRT_PRICE_X96,
   type Address,
@@ -20,11 +21,6 @@ export interface StableSwapNGPoolConfig {
   sqrtPriceX96: bigint | null;
 }
 
-const FACTORY_ABI = [
-  "function POOL_MANAGER() external view returns (address)",
-  "function createPool(bytes32 salt, address curvePool, address[] calldata tokens, uint24 fee, int24 tickSpacing, uint160 sqrtPriceX96) external returns (address hook)",
-];
-
 const PROTOCOL_ID = 0xc2;
 
 const orderPair = (a: Address, b: Address): [Address, Address] => (a.toLowerCase() < b.toLowerCase() ? [a, b] : [b, a]);
@@ -32,7 +28,7 @@ const orderPair = (a: Address, b: Address): [Address, Address] => (a.toLowerCase
 export const stableswapngModule: CreationModule<StableSwapNGPoolConfig> = {
   poolType: "stableswapng",
   protocolId: PROTOCOL_ID,
-  factoryAbi: FACTORY_ABI,
+  factoryAbi: STABLESWAP_FACTORY_ABI,
 
   getHookParams(config) {
     return {
@@ -72,7 +68,7 @@ export const stableswapngModule: CreationModule<StableSwapNGPoolConfig> = {
   },
 
   async readFactoryImmutables(provider, factoryAddress) {
-    const factory = new ethers.Contract(factoryAddress, FACTORY_ABI, provider);
+    const factory = new ethers.Contract(factoryAddress, STABLESWAP_FACTORY_ABI, provider);
     const poolManager = await factory.POOL_MANAGER();
     return { poolManager: poolManager as Address };
   },

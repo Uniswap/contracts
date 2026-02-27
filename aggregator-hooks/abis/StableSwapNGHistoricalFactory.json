@@ -1,0 +1,7 @@
+[
+    "function pool_count() view returns (uint256)",
+    "function pool_list(uint256) view returns (address)",
+    "function get_n_coins(address) view returns (uint256)",
+    "function get_coins(address) view returns (address[])",
+    "function get_base_pool(address) view returns (address)"
+]

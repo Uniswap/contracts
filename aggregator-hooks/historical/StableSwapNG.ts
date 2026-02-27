@@ -25,6 +25,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { JsonRpcProvider, Contract, getAddress, ZeroAddress } from "ethers";
 import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from "@src/cli";
+import { STABLESWAPNG_HISTORICAL_FACTORY_ABI } from "../abis/index.js";
 import type { Address } from "../creation-modules/types.js";
 
 const OUTPUT_FILE = "stableswapng-pools.json";
@@ -53,14 +54,6 @@ const CREATE_POOLS_DEFAULTS = {
   tickSpacing: null as number | null,
   sqrtPriceX96: null as bigint | null,
 } as const;
-
-const FACTORY_ABI = [
-  "function pool_count() view returns (uint256)",
-  "function pool_list(uint256) view returns (address)",
-  "function get_n_coins(address) view returns (uint256)",
-  "function get_coins(address) view returns (address[])",
-  "function get_base_pool(address) view returns (address)",
-];
 
 function saveJson(filePath: string, data: unknown): void {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
@@ -144,7 +137,7 @@ async function main() {
   const startIndex = toInt(args["start-index"], 0);
 
   const provider = new JsonRpcProvider(rpcUrl);
-  const factory = new Contract(factoryAddress, FACTORY_ABI, provider);
+  const factory = new Contract(factoryAddress, STABLESWAPNG_HISTORICAL_FACTORY_ABI, provider);
   const limit = pLimit(concurrency);
 
   const poolCountBn: bigint = await factory.pool_count();

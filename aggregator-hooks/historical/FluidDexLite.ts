@@ -26,6 +26,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { ethers } from "ethers";
 import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from "@src/cli";
+import { FLUIDDEXLITE_RESOLVER_ABI } from "../abis/index.js";
 import type { Address } from "../creation-modules/types.js";
 
 const OUTPUT_FILE = "fluiddexlite-pools.json";
@@ -49,11 +50,6 @@ type CreatePoolsFluidLiteConfig = {
   tickSpacing: number | null;
   sqrtPriceX96: bigint | null;
 };
-
-const RESOLVER_ABI = [
-  "function getAllDexes() external view returns (tuple(address token0, address token1, bytes32 salt)[] memory)",
-  "function getDexState(tuple(address token0, address token1, bytes32 salt) dexKey) external view returns (tuple(tuple(uint256 fee, uint256 revenueCut, uint256 rebalancingStatus, bool isCenterPriceShiftActive, uint256 centerPrice, address centerPriceAddress, bool isRangePercentShiftActive, uint256 upperRangePercent, uint256 lowerRangePercent, bool isThresholdPercentShiftActive, uint256 upperShiftThresholdPercent, uint256 lowerShiftThresholdPercent, uint256 token0Decimals, uint256 token1Decimals, uint256 totalToken0AdjustedAmount, uint256 totalToken1AdjustedAmount) dexVariables, tuple(uint256 lastInteractionTimestamp, uint256 rebalancingShiftingTime, uint256 maxCenterPrice, uint256 minCenterPrice, uint256 shiftPercentage, uint256 centerPriceShiftingTime, uint256 startTimestamp) centerPriceShift, tuple(uint256 oldUpperRangePercent, uint256 oldLowerRangePercent, uint256 shiftingTime, uint256 startTimestamp) rangeShift, tuple(uint256 oldUpperThresholdPercent, uint256 oldLowerThresholdPercent, uint256 shiftingTime, uint256 startTimestamp) thresholdShift) dexState)",
-] as const;
 
 /**
  * Converts Fluid fee (1e4 basis) to Uniswap v4 fee (1e6 basis).
@@ -98,7 +94,7 @@ async function main() {
   const outputDir = (args["output-dir"] as string) ?? "detected";
 
   const provider = new ethers.JsonRpcProvider(rpcUrl);
-  const resolverContract = new ethers.Contract(resolver, RESOLVER_ABI as unknown as string[], provider);
+  const resolverContract = new ethers.Contract(resolver, FLUIDDEXLITE_RESOLVER_ABI as unknown as string[], provider);
 
   console.error(`[enum] FluidDexLiteResolver at ${resolver}`);
   const dexKeys = (await resolverContract.getAllDexes()) as Array<{
@@ -115,8 +111,8 @@ async function main() {
     const [currency0, currency1] = [mapped[0], mapped[1]];
 
     let fee: number | null = null;
+    const dexKey = { token0: dk.token0, token1: dk.token1, salt: dk.salt };
     try {
-      const dexKey = { token0: dk.token0, token1: dk.token1, salt: dk.salt };
       const dexState = (await resolverContract.getDexState(dexKey)) as {
         dexVariables: { fee: bigint | number };
       };
@@ -126,6 +122,7 @@ async function main() {
       }
     } catch {
       // getDexState reverted; keep fee null
+      console.error(`getDexState reverted for dexKey: ${JSON.stringify(dexKey)}`);
     }
 
     configs.push({

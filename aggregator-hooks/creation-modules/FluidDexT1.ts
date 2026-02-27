@@ -3,6 +3,7 @@
  */
 import { ethers } from "ethers";
 import { mustEnvForChain } from "../src/cli.js";
+import { FLUIDDEXT1_FACTORY_ABI } from "../abis/index.js";
 import { DEFAULT_SQRT_PRICE_X96, type Address, type CreationModule, type FactoryImmutables } from "./types.js";
 
 export interface FluidDexT1PoolConfig {
@@ -15,13 +16,6 @@ export interface FluidDexT1PoolConfig {
   sqrtPriceX96: bigint | null;
 }
 
-const FACTORY_ABI = [
-  "function POOL_MANAGER() external view returns (address)",
-  "function fluidDexReservesResolver() external view returns (address)",
-  "function FLUID_LIQUIDITY() external view returns (address)",
-  "function createPool(bytes32 salt, address fluidPool, address currency0, address currency1, uint24 fee, int24 tickSpacing, uint160 sqrtPriceX96) external returns (address hook)",
-];
-
 const PROTOCOL_ID = 0xf1;
 
 const orderPair = (a: Address, b: Address): [Address, Address] => (a.toLowerCase() < b.toLowerCase() ? [a, b] : [b, a]);
@@ -29,7 +23,7 @@ const orderPair = (a: Address, b: Address): [Address, Address] => (a.toLowerCase
 export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
   poolType: "fluiddext1",
   protocolId: PROTOCOL_ID,
-  factoryAbi: FACTORY_ABI,
+  factoryAbi: FLUIDDEXT1_FACTORY_ABI,
 
   getHookParams(config) {
     return {
@@ -66,7 +60,7 @@ export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
   },
 
   async readFactoryImmutables(provider, factoryAddress) {
-    const factory = new ethers.Contract(factoryAddress, FACTORY_ABI, provider);
+    const factory = new ethers.Contract(factoryAddress, FLUIDDEXT1_FACTORY_ABI, provider);
     const [poolManager, fluidDexReservesResolver, fluidLiquidity] = await Promise.all([
       factory.POOL_MANAGER(),
       factory.fluidDexReservesResolver(),

@@ -3,11 +3,12 @@
 import "dotenv/config";
 import { ethers } from "ethers";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
-import { execSync, spawn } from "child_process";
+import { execFileSync, spawn } from "child_process";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
-import { getEnvForChain, mustEnvForChain, toInt } from "./cli.js";
+import { getEnvForChain, toInt } from "./cli.js";
+import { createLogger, type Logger } from "./logger.js";
 import {
   CREATION_MODULES,
   POOL_TYPES,
@@ -193,7 +194,7 @@ function parseArgs(): ParsedArgs {
   };
 }
 
-function appendToRegistryFile(registryDir: string, poolType: string, entry: PoolDeployedEntry): void {
+function appendToRegistryFile(registryDir: string, poolType: string, entry: PoolDeployedEntry, log: Logger): void {
   const fileName = `deployed-${poolType}.json`;
   const filePath = join(registryDir, fileName);
 
@@ -211,7 +212,7 @@ function appendToRegistryFile(registryDir: string, poolType: string, entry: Pool
     mkdirSync(registryDir, { recursive: true });
   }
   writeFileSync(filePath, JSON.stringify(poolsDeployed, null, 2));
-  console.log(`Appended to registry: ${filePath}`);
+  log.info(`Appended to registry: ${filePath}`);
 }
 
 function parseSqrtPriceX96(v: unknown): bigint | null {
@@ -222,7 +223,7 @@ function parseSqrtPriceX96(v: unknown): bigint | null {
   return null;
 }
 
-function loadJsonFile(filePath: string): PoolConfig[] {
+function loadJsonFile(filePath: string, log: Logger): PoolConfig[] {
   try {
     const content = readFileSync(filePath, "utf-8");
     const pools = JSON.parse(content);
@@ -258,11 +259,10 @@ function loadJsonFile(filePath: string): PoolConfig[] {
       sqrtPriceX96: parseSqrtPriceX96(p.sqrtPriceX96),
     })) as PoolConfig[];
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(`Error loading JSON file: ${error.message}`);
-    } else {
-      console.error("Unknown error loading JSON file");
-    }
+    log.error(
+      "Error loading JSON file:",
+      error instanceof Error ? error : new Error("Unknown error loading JSON file"),
+    );
     process.exit(1);
   }
 }
@@ -368,27 +368,27 @@ function runMineHookWorker(
 async function mineSalt(
   constructorArgs: string,
   protocolId: number,
+  log: Logger,
   deployerAddress?: Address,
-  verbose = false,
   jobs = 1,
 ): Promise<string> {
   const scriptPath = join(projectRoot, "mine_hook.sh");
   const protocolIdHex = `0x${protocolId.toString(16).toUpperCase()}`;
 
-  console.log(`Mining salt for protocol ${protocolIdHex}...`);
-  console.log(`Constructor args: ${constructorArgs.substring(0, 66)}...`);
-  if (deployerAddress) console.log(`Deployer address: ${deployerAddress}`);
-  if (jobs > 1) console.log(`Running ${jobs} parallel mining workers...`);
+  log.info(`Mining salt for protocol ${protocolIdHex}...`);
+  log.info(`Constructor args: ${constructorArgs.substring(0, 66)}...`);
+  if (deployerAddress) log.info(`Deployer address: ${deployerAddress}`);
+  if (jobs > 1) log.info(`Running ${jobs} parallel mining workers...`);
 
   const baseArgs = [scriptPath, constructorArgs, protocolIdHex];
   if (deployerAddress) baseArgs.push("500", deployerAddress);
 
-  const execEnv = { ...process.env, ...(verbose && { FORGE_VERBOSE: "1" }) };
+  const execEnv = { ...process.env, ...(log.verboseEnabled && { FORGE_VERBOSE: "1" }) };
 
   try {
     if (jobs === 1) {
       const result = await runMineHookWorker(scriptPath, baseArgs, execEnv, projectRoot, true);
-      console.log(`✓ Found salt: ${result.salt}`);
+      log.success(`Found salt: ${result.salt}`);
       return result.salt;
     }
 
@@ -457,16 +457,16 @@ async function mineSalt(
       });
     });
 
-    console.log(`✓ Found salt: ${salt}`);
+    log.success(`Found salt: ${salt}`);
     return salt;
   } catch (error) {
-    console.error("Error mining salt:");
-    if (error instanceof Error) {
-      console.error(error.message);
-      const execErr = error as { stdout?: string; stderr?: string };
-      if (execErr.stdout) console.error("\n--- Forge/mine_hook output (from failed worker) ---\n", execErr.stdout);
-      if (execErr.stderr) console.error("\n--- Forge/mine_hook stderr ---\n", execErr.stderr);
-    }
+    log.error("Error mining salt:", error);
+    const execErr = error as { stdout?: string; stderr?: string };
+    log.dumpForgeOutput({
+      stdout: execErr.stdout,
+      stderr: execErr.stderr,
+      label: "Forge/mine_hook (from failed worker)",
+    });
     throw error;
   }
 }
@@ -478,7 +478,7 @@ function selfDeployPool(
   salt: string,
   rpcUrl: string,
   dryRun: boolean,
-  verbose = false,
+  log: Logger,
   priorityGasPrice: string | null = null,
 ): Address | "deployed" {
   const module = CREATION_MODULES[poolType];
@@ -495,45 +495,44 @@ function selfDeployPool(
     ...module.buildSelfDeployEnvVars(poolConfig, immutables),
   };
 
-  const { PRIVATE_KEY: _pk, ...publicEnvVars } = envVars;
-  const envString = Object.entries(publicEnvVars)
-    .map(([key, value]) => `${key}="${value}"`)
-    .join(" ");
-
-  console.log(`Self-deploying hook via SelfCreateHook.s.sol...`);
-  if (dryRun) console.log("(dry run - no broadcast)");
-  console.log(`Protocol: ${poolType}, Salt: ${salt.substring(0, 18)}...`);
+  log.info(`Self-deploying hook via SelfCreateHook.s.sol...`);
+  if (dryRun) log.info("(dry run - no broadcast)");
+  log.info(`Protocol: ${poolType}, Salt: ${salt.substring(0, 18)}...`);
 
   try {
-    const broadcastFlag = dryRun ? "" : " --broadcast";
-    const verboseFlag = verbose ? " -vvvv" : "";
-    const priorityFeeFlag = priorityGasPrice ? ` --priority-gas-price ${priorityGasPrice}` : "";
-    const command = `${envString} forge script script/SelfCreateHook.s.sol:SelfCreateHookScript --rpc-url "${rpcUrl}"${broadcastFlag}${priorityFeeFlag}${verboseFlag}`;
-    const output = execSync(command, {
-      encoding: "utf-8",
-      cwd: projectRoot,
-      env: { ...process.env, ...envVars },
-    });
+    const output = execFileSync(
+      "forge",
+      [
+        "script",
+        "script/SelfCreateHook.s.sol:SelfCreateHookScript",
+        "--rpc-url",
+        rpcUrl,
+        ...(dryRun ? [] : ["--broadcast"]),
+        ...(priorityGasPrice ? ["--priority-gas-price", priorityGasPrice] : []),
+        ...(log.verboseEnabled ? ["-vvvv"] : []),
+      ],
+      {
+        encoding: "utf-8",
+        cwd: projectRoot,
+        env: { ...process.env, ...envVars },
+      },
+    );
 
-    if (verbose) console.log("\n--- Forge script output ---\n", output);
+    if (log.verboseEnabled) log.verbose(`\n--- Forge script output ---\n${output}`);
 
     const hookMatch = output.match(/Hook Address:\s*(0x[a-fA-F0-9]{40})/);
     if (hookMatch) {
       const addr = ethers.getAddress(hookMatch[1]) as Address;
-      console.log(`✓ Hook deployed at: ${addr}`);
+      log.success(`Hook deployed at: ${addr}`);
       return addr;
     }
 
-    console.log(`✓ Self-deploy completed`);
+    log.success(`Self-deploy completed`);
     return "deployed";
   } catch (error) {
-    console.error("Error in self-deploy:");
-    if (error instanceof Error) {
-      console.error(error.message);
-      const execErr = error as { stdout?: string; stderr?: string };
-      if (execErr.stdout) console.error("\n--- Forge stdout ---\n", execErr.stdout);
-      if (execErr.stderr) console.error("\n--- Forge stderr ---\n", execErr.stderr);
-    }
+    log.error("Error in self-deploy:", error);
+    const execErr = error as { stdout?: string; stderr?: string };
+    log.dumpForgeOutput({ stdout: execErr.stdout, stderr: execErr.stderr, label: "Forge" });
     throw error;
   }
 }
@@ -544,6 +543,7 @@ async function createPool(
   poolConfig: PoolConfig,
   poolType: string,
   salt: string,
+  log: Logger,
 ): Promise<{ hookAddress: Address | ""; blockNumber: number; txHash: string }> {
   const module = CREATION_MODULES[poolType];
   if (!module) throw new Error(`Unknown pool type: ${poolType}`);
@@ -551,19 +551,19 @@ async function createPool(
   const args = module.buildCreatePoolArgs(poolConfig, salt);
   const factory = new ethers.Contract(factoryAddress, module.factoryAbi, signer);
 
-  console.log(`Calling createPool on factory ${factoryAddress}...`);
-  console.log(`Args:`, args.map((a, i) => `${i}: ${String(a).substring(0, 66)}...`).join(", "));
+  log.info(`Calling createPool on factory ${factoryAddress}...`);
+  log.info(`Args: ${args.map((a, i) => `${i}: ${String(a).substring(0, 66)}...`).join(", ")}`);
 
   try {
     const tx = await factory.createPool(...args);
-    console.log(`✓ Transaction sent: ${tx.hash}`);
+    log.success(`Transaction sent: ${tx.hash}`);
 
     const receipt = await tx.wait();
-    console.log(`✓ Transaction confirmed in block ${receipt!.blockNumber}`);
+    log.success(`Transaction confirmed in block ${receipt!.blockNumber}`);
 
-    const hookDeployedEvent = receipt!.logs.find((log: ethers.Log) => {
+    const hookDeployedEvent = receipt!.logs.find((l: ethers.Log) => {
       try {
-        const parsed = factory.interface.parseLog({ topics: log.topics as string[], data: log.data });
+        const parsed = factory.interface.parseLog({ topics: l.topics as string[], data: l.data });
         return parsed?.name === "HookDeployed";
       } catch {
         return false;
@@ -576,7 +576,7 @@ async function createPool(
         data: hookDeployedEvent.data,
       });
       const hookAddress = ethers.getAddress((parsed?.args.hook || parsed?.args[0]) as string) as Address;
-      console.log(`✓ Hook deployed at: ${hookAddress}`);
+      log.success(`Hook deployed at: ${hookAddress}`);
       return {
         hookAddress,
         blockNumber: Number(receipt!.blockNumber),
@@ -590,12 +590,7 @@ async function createPool(
       txHash: tx.hash,
     };
   } catch (error) {
-    console.error("Error creating pool:");
-    if (error instanceof Error) {
-      console.error(error.message);
-      if ("data" in error && error.data) console.error("Error data:", error.data);
-      if ("reason" in error && error.reason) console.error("Revert reason:", error.reason);
-    }
+    log.error("Error creating pool:", error);
     throw error;
   }
 }
@@ -615,38 +610,40 @@ async function main() {
     priorityGasPrice,
   } = parseArgs();
 
-  console.log("=== Pool Creation Script ===");
-  console.log(`JSON File: ${jsonFile}`);
-  console.log(`Mode: ${selfDeploy ? "Self-Deploy" : "Factory"}`);
-  if (factoryAddress) console.log(`Factory Address: ${factoryAddress}`);
-  console.log(`RPC URL: ${rpcUrl}`);
-  if (registryDir) console.log(`Registry dir: ${registryDir}`);
-  if (dryRun) console.log("DRY RUN: forge scripts will simulate without broadcasting");
-  if (verbose) console.log("VERBOSE: forge scripts will run with -vvvv");
-  if (startAt > 1) console.log(`Starting at pool index: ${startAt} (skipping first ${startAt - 1} pool(s))`);
-  if (jobs > 1) console.log(`Salt mining: ${jobs} parallel workers`);
-  if (priorityGasPrice) console.log(`Priority gas price: ${priorityGasPrice}`);
-  console.log("");
+  const log = createLogger({ verbose });
 
   const provider = new ethers.JsonRpcProvider(rpcUrl);
   const privateKey = process.env.PRIVATE_KEY!;
   const signer = new ethers.Wallet(privateKey, provider);
-  console.log(`Using signer: ${signer.address}`);
-  console.log("");
+
+  log.banner({
+    title: "Pool Creation Script",
+    jsonFile,
+    mode: selfDeploy ? "Self-Deploy" : "Factory",
+    factoryAddress: factoryAddress ?? undefined,
+    rpcUrl,
+    registryDir,
+    dryRun,
+    verbose,
+    startAt,
+    jobs,
+    priorityGasPrice,
+    signerAddress: signer.address,
+  });
 
   if (selfDeploy) {
-    const allPools = loadJsonFile(jsonFile);
+    const allPools = loadJsonFile(jsonFile, log);
     const pools = startAt > 1 ? allPools.slice(startAt - 1) : allPools;
     if (startAt > 1 && pools.length === 0) {
-      console.error(`Error: --start-at ${startAt} exceeds pool count (${allPools.length})`);
+      log.error(`Error: --start-at ${startAt} exceeds pool count (${allPools.length})`);
       process.exit(1);
     }
-    console.log(
+    log.info(
       `Loaded ${allPools.length} pool configuration(s)${
         startAt > 1 ? `, processing from index ${startAt} (${pools.length} remaining)` : ""
       }`,
     );
-    console.log("");
+    log.info("");
 
     const chainId = parsedChainId ?? Number((await provider.getNetwork()).chainId);
 
@@ -657,11 +654,11 @@ async function main() {
       const module = CREATION_MODULES[poolType];
       const immutables = module.getImmutablesFromEnv(chainId);
 
-      console.log(`\n--- Processing Pool ${i + 1}/${allPools.length} (${poolType}) ---`);
+      log.section(`Processing Pool ${i + 1}/${allPools.length} (${poolType})`);
 
       try {
         const constructorArgs = module.encodeConstructorArgs(poolConfig, immutables);
-        const salt = await mineSalt(constructorArgs, module.protocolId, CREATE2_DEPLOYER, verbose, jobs);
+        const salt = await mineSalt(constructorArgs, module.protocolId, log, CREATE2_DEPLOYER, jobs);
         const hookAddress = selfDeployPool(
           poolConfig,
           poolType,
@@ -669,7 +666,7 @@ async function main() {
           salt,
           rpcUrl,
           dryRun,
-          verbose,
+          log,
           priorityGasPrice,
         );
 
@@ -677,114 +674,116 @@ async function main() {
           const poolKeys = module.buildPoolKeys(poolConfig, hookAddress);
           if (poolKeys.length > 0) {
             const blockNumber = Number(await provider.getBlockNumber());
-            appendToRegistryFile(registryDir, poolType, {
-              poolKeys,
-              metadata: {
-                externalPool: module.getExternalPool(poolConfig),
-                hookAddress,
-                blockNumber,
+            appendToRegistryFile(
+              registryDir,
+              poolType,
+              {
+                poolKeys,
+                metadata: {
+                  externalPool: module.getExternalPool(poolConfig),
+                  hookAddress,
+                  blockNumber,
+                },
               },
-            });
+              log,
+            );
           }
         }
-        console.log(`✓ Successfully created pool ${i + 1}`);
+        log.success(`Successfully created pool ${i + 1}`);
       } catch (error) {
-        console.error(`✗ Failed to create pool ${i + 1}:`);
-        if (error instanceof Error) {
-          console.error(error.message);
-          const execErr = error as { stdout?: string; stderr?: string };
-          if (execErr.stdout) console.error("\n--- Forge stdout ---\n", execErr.stdout);
-          if (execErr.stderr) console.error("\n--- Forge stderr ---\n", execErr.stderr);
-          const forgeOutput = [execErr.stdout, execErr.stderr].filter(Boolean).join("\n");
-          if (forgeOutput) {
-            const verification = await verifyDeploymentOnForgeFailure(
-              provider,
-              immutables.poolManager,
-              poolConfig,
-              poolType,
-              forgeOutput,
-            );
-            if (verification?.hookDeployed) {
-              console.error("");
-              console.error("Verification (possible false positive):");
-              console.error(`  Hook has code at ${verification.hookAddress} → deployment likely succeeded`);
-              if (verification.poolsInitialized > 0) {
-                console.error(
-                  `  Found ${verification.poolsInitialized} Initialize event(s) for this hook → pool(s) initialized on-chain`,
-                );
-              }
-              console.error("  Check block explorer to confirm.");
+        log.error(`Failed to create pool ${i + 1}:`, error);
+        const execErr = error as { stdout?: string; stderr?: string };
+        log.dumpForgeOutput({ stdout: execErr.stdout, stderr: execErr.stderr, label: "Forge" });
+        const forgeOutput = [execErr.stdout, execErr.stderr].filter(Boolean).join("\n");
+        if (forgeOutput) {
+          const verification = await verifyDeploymentOnForgeFailure(
+            provider,
+            immutables.poolManager,
+            poolConfig,
+            poolType,
+            forgeOutput,
+          );
+          if (verification?.hookDeployed) {
+            log.error("");
+            log.error("Verification (possible false positive):");
+            log.error(`  Hook has code at ${verification.hookAddress} → deployment likely succeeded`);
+            if (verification.poolsInitialized > 0) {
+              log.error(
+                `  Found ${verification.poolsInitialized} Initialize event(s) for this hook → pool(s) initialized on-chain`,
+              );
             }
+            log.error("  Check block explorer to confirm.");
           }
         }
         continue;
       }
     }
   } else {
-    const allPools = loadJsonFile(jsonFile);
+    const allPools = loadJsonFile(jsonFile, log);
     const pools = startAt > 1 ? allPools.slice(startAt - 1) : allPools;
     if (startAt > 1 && pools.length === 0) {
-      console.error(`Error: --start-at ${startAt} exceeds pool count (${allPools.length})`);
+      log.error(`Error: --start-at ${startAt} exceeds pool count (${allPools.length})`);
       process.exit(1);
     }
     const poolType = pools[0].poolType as string;
     const module = CREATION_MODULES[poolType];
 
-    console.log(
+    log.info(
       `Loaded ${allPools.length} pool configuration(s) (poolType: ${poolType})${
         startAt > 1 ? `, processing from index ${startAt} (${pools.length} remaining)` : ""
       }`,
     );
-    console.log("");
+    log.info("");
 
-    console.log("Reading factory immutables...");
+    log.info("Reading factory immutables...");
     const factoryImmutables = await module.readFactoryImmutables(provider, factoryAddress!);
-    console.log(`POOL_MANAGER: ${factoryImmutables.poolManager}`);
+    log.info(`POOL_MANAGER: ${factoryImmutables.poolManager}`);
     for (const [key, val] of Object.entries(factoryImmutables)) {
-      if (key !== "poolManager" && val) console.log(`${key}: ${val}`);
+      if (key !== "poolManager" && val) log.info(`${key}: ${val}`);
     }
-    console.log("");
+    log.info("");
 
     for (let j = 0; j < pools.length; j++) {
       const i = startAt - 1 + j;
       const poolConfig = pools[j];
 
-      console.log(`\n--- Processing Pool ${i + 1}/${allPools.length} ---`);
+      log.section(`Processing Pool ${i + 1}/${allPools.length}`);
 
       try {
         const constructorArgs = module.encodeConstructorArgs(poolConfig, factoryImmutables);
-        const salt = await mineSalt(constructorArgs, module.protocolId, factoryAddress!, false, jobs);
-        const result = await createPool(signer, factoryAddress!, poolConfig, poolType, salt);
+        const salt = await mineSalt(constructorArgs, module.protocolId, log, factoryAddress!, jobs);
+        const result = await createPool(signer, factoryAddress!, poolConfig, poolType, salt, log);
 
         if (registryDir && result.hookAddress) {
           const poolKeys = module.buildPoolKeys(poolConfig, result.hookAddress);
           if (poolKeys.length > 0) {
-            appendToRegistryFile(registryDir, poolType, {
-              poolKeys,
-              metadata: {
-                externalPool: module.getExternalPool(poolConfig),
-                hookAddress: result.hookAddress,
-                txHash: result.txHash,
-                blockNumber: result.blockNumber,
+            appendToRegistryFile(
+              registryDir,
+              poolType,
+              {
+                poolKeys,
+                metadata: {
+                  externalPool: module.getExternalPool(poolConfig),
+                  hookAddress: result.hookAddress,
+                  txHash: result.txHash,
+                  blockNumber: result.blockNumber,
+                },
               },
-            });
+              log,
+            );
           }
         }
-        console.log(`✓ Successfully created pool ${i + 1}`);
+        log.success(`Successfully created pool ${i + 1}`);
       } catch (error) {
-        console.error(`✗ Failed to create pool ${i + 1}:`);
-        if (error instanceof Error) {
-          console.error(error.message);
-          const execErr = error as { stdout?: string; stderr?: string };
-          if (execErr.stdout) console.error("\n--- Forge stdout ---\n", execErr.stdout);
-          if (execErr.stderr) console.error("\n--- Forge stderr ---\n", execErr.stderr);
-        }
+        log.error(`Failed to create pool ${i + 1}:`, error);
+        const execErr = error as { stdout?: string; stderr?: string };
+        log.dumpForgeOutput({ stdout: execErr.stdout, stderr: execErr.stderr, label: "Forge" });
         continue;
       }
     }
   }
 
-  console.log("\n=== Done ===");
+  log.info("\n=== Done ===");
 }
 
 main().catch((error) => {

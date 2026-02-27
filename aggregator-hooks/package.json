@@ -4,7 +4,7 @@
     "description": "Aggregator hook pool discovery and creation scripts",
     "type": "module",
     "scripts": {
-        "build": "tsc",
+        "build": "tsc && cp abis/*.json dist/abis/",
         "stableswapng": "tsx historical/StableSwapNG.ts",
         "fluiddext1": "tsx historical/FluidDexT1.ts",
         "fluiddexlite": "tsx historical/FluidDexLite.ts",
