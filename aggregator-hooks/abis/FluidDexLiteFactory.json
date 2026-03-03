@@ -1,0 +1,6 @@
+[
+    "function POOL_MANAGER() external view returns (address)",
+    "function FLUID_DEX_LITE() external view returns (address)",
+    "function FLUID_DEX_LITE_RESOLVER() external view returns (address)",
+    "function createPool(bytes32 salt, bytes32 dexSalt, address currency0, address currency1, uint24 fee, int24 tickSpacing, uint160 sqrtPriceX96) external returns (address hook)"
+]

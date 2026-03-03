@@ -1,0 +1,6 @@
+[
+    "event LogDexDeployed(address indexed dex, uint256 indexed dexId)",
+    "function totalDexes() external view returns (uint256)",
+    "function getDexAddress(uint256 dexId) public view returns (address)",
+    "function isDex(address dex) public view returns (bool)"
+]
