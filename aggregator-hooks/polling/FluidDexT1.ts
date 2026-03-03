@@ -27,13 +27,7 @@ import "dotenv/config";
 import fs from "node:fs";
 import path from "node:path";
 import { ethers } from "ethers";
-import {
-  parseArgs,
-  getEnvForChain,
-  toInt,
-  resolveOutputPath,
-  resolveCheckpointPath,
-} from "@src/cli";
+import { parseArgs, getEnvForChain, toInt, resolveOutputPath, resolveCheckpointPath } from "@src/cli";
 
 const OUTPUT_FILE = "fluiddext1-pools.json";
 const CHECKPOINT_FILE = "fluiddext1_checkpoint.json";
@@ -44,9 +38,7 @@ const FLUID_NATIVE = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 function toUniswapV4Currency(addr: string): string {
-  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase()
-    ? ZERO_ADDRESS
-    : ethers.getAddress(addr);
+  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase() ? ZERO_ADDRESS : ethers.getAddress(addr);
 }
 
 type Checkpoint = {
@@ -67,13 +59,9 @@ type CreatePoolsFluidDexT1Config = {
   sqrtPriceX96: string | null;
 };
 
-const FACTORY_ABI = [
-  "event LogDexDeployed(address indexed dex, uint256 indexed dexId)",
-];
+const FACTORY_ABI = ["event LogDexDeployed(address indexed dex, uint256 indexed dexId)"];
 
-const RESOLVER_ABI = [
-  "function getPoolTokens(address pool) external view returns (address token0, address token1)",
-];
+const RESOLVER_ABI = ["function getPoolTokens(address pool) external view returns (address token0, address token1)"];
 
 function ensureDirForFile(filePath: string) {
   fs.mkdirSync(path.dirname(path.resolve(filePath)), { recursive: true });
@@ -100,8 +88,7 @@ function loadExistingKeys(outFile: string): Set<string> {
   try {
     const arr = safeReadJson<CreatePoolsFluidDexT1Config[]>(outFile);
     if (!Array.isArray(arr)) return keys;
-    for (const x of arr)
-      keys.add(`${x.fluidPool}:${x.currency0}:${x.currency1}`);
+    for (const x of arr) keys.add(`${x.fluidPool}:${x.currency0}:${x.currency1}`);
   } catch {
     // ignore
   }
@@ -140,9 +127,7 @@ async function main() {
   const rpcUrl = getEnvForChain("RPC_URL", chainId);
   const resolverAddr = getEnvForChain("FLUID_DEX_RESOLVER", chainId);
   const factoryRaw =
-    getEnvForChain("FLUID_DEX_FACTORY", chainId) ??
-    getEnvForChain("FACTORY_ADDRESS", chainId) ??
-    DEFAULT_FACTORY;
+    getEnvForChain("FLUID_DEX_FACTORY", chainId) ?? getEnvForChain("FACTORY_ADDRESS", chainId) ?? DEFAULT_FACTORY;
 
   if (!rpcUrl || !resolverAddr) {
     throw new Error("Missing required env: RPC_URL and FLUID_DEX_RESOLVER");
@@ -159,11 +144,7 @@ async function main() {
   const startBlockArg = args["start-block"];
 
   const provider = new ethers.JsonRpcProvider(rpcUrl);
-  const resolver = new ethers.Contract(
-    ethers.getAddress(resolverAddr),
-    RESOLVER_ABI,
-    provider,
-  );
+  const resolver = new ethers.Contract(ethers.getAddress(resolverAddr), RESOLVER_ABI, provider);
 
   const iface = new ethers.Interface(FACTORY_ABI as unknown as string[]);
   const topic0 = iface.getEvent("LogDexDeployed")!.topicHash;
@@ -177,10 +158,7 @@ async function main() {
   let fromBlock: number;
   if (startBlockArg != null) {
     fromBlock = Math.max(0, toInt(startBlockArg, 0));
-  } else if (
-    cp?.chainId === chainId &&
-    cp?.factory?.toLowerCase() === factory.toLowerCase()
-  ) {
+  } else if (cp?.chainId === chainId && cp?.factory?.toLowerCase() === factory.toLowerCase()) {
     fromBlock = cp.lastProcessedBlock + 1;
   } else {
     fromBlock = Math.max(0, toBlock - lookbackBlocks);
@@ -193,15 +171,8 @@ async function main() {
       lastProcessedBlock: toBlock,
       updatedAt: new Date().toISOString(),
     };
-    ensureDirForFile(cpPath);
-    fs.writeFileSync(cpPath, JSON.stringify(newCp, null, 2) + "\n");
-    console.log(
-      JSON.stringify(
-        { ok: true, note: "No new blocks to scan", fromBlock, toBlock },
-        null,
-        2,
-      ),
-    );
+    atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + "\n");
+    console.log(JSON.stringify({ ok: true, note: "No new blocks to scan", fromBlock, toBlock }, null, 2));
     return;
   }
 
@@ -272,11 +243,8 @@ async function main() {
       lastProcessedBlock: end,
       updatedAt: new Date().toISOString(),
     };
-    ensureDirForFile(cpPath);
-    fs.writeFileSync(cpPath, JSON.stringify(interimCp, null, 2) + "\n");
-    console.error(
-      `[scan] ${start}..${end} logs=${logs.length} new=${newRecords.length}`,
-    );
+    atomicWriteFile(cpPath, JSON.stringify(interimCp, null, 2) + "\n");
+    console.error(`[scan] ${start}..${end} logs=${logs.length} new=${newRecords.length}`);
   }
 
   console.log(

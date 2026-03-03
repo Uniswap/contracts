@@ -26,13 +26,7 @@ import "dotenv/config";
 import fs from "node:fs";
 import path from "node:path";
 import { ethers } from "ethers";
-import {
-  parseArgs,
-  getEnvForChain,
-  toInt,
-  resolveOutputPath,
-  resolveCheckpointPath,
-} from "@src/cli";
+import { parseArgs, getEnvForChain, toInt, resolveOutputPath, resolveCheckpointPath } from "@src/cli";
 
 const OUTPUT_FILE = "fluiddexlite-pools.json";
 const CHECKPOINT_FILE = "dexlite_checkpoint.json";
@@ -42,9 +36,7 @@ const FLUID_NATIVE = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
 function toUniswapV4Currency(addr: string): string {
-  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase()
-    ? ZERO_ADDRESS
-    : ethers.getAddress(addr);
+  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase() ? ZERO_ADDRESS : ethers.getAddress(addr);
 }
 
 type Checkpoint = {
@@ -167,11 +159,7 @@ async function main() {
   let fromBlock: number;
   if (startBlockArg != null) {
     fromBlock = Math.max(0, toInt(startBlockArg, 0));
-  } else if (
-    cp &&
-    cp.chainId === chainId &&
-    cp.dexLite.toLowerCase() === dexLite.toLowerCase()
-  ) {
+  } else if (cp && cp.chainId === chainId && cp.dexLite.toLowerCase() === dexLite.toLowerCase()) {
     fromBlock = cp.lastProcessedBlock + 1;
   } else {
     fromBlock = Math.max(0, toBlock - lookbackBlocks);
@@ -261,8 +249,7 @@ async function main() {
     }
 
     if (newRecords.length > 0) {
-      const existing =
-        safeReadJson<CreatePoolsFluidLiteConfig[]>(outPath) ?? [];
+      const existing = safeReadJson<CreatePoolsFluidLiteConfig[]>(outPath) ?? [];
       const merged = existing.concat(newRecords);
       atomicWriteFile(outPath, JSON.stringify(merged, null, 2) + "\n");
     }
@@ -275,9 +262,7 @@ async function main() {
     };
     atomicWriteFile(cpPath, JSON.stringify(interimCp, null, 2) + "\n");
 
-    console.error(
-      `[scan] ${start}..${end} logs=${logs.length} new=${newRecords.length}`,
-    );
+    console.error(`[scan] ${start}..${end} logs=${logs.length} new=${newRecords.length}`);
   }
 
   console.log(

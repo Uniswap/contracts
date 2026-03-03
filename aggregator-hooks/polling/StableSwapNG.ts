@@ -29,13 +29,7 @@ import "dotenv/config";
 import fs from "node:fs";
 import path from "node:path";
 import { ethers } from "ethers";
-import {
-  parseArgs,
-  getEnvForChain,
-  toInt,
-  resolveOutputPath,
-  resolveCheckpointPath,
-} from "@src/cli";
+import { parseArgs, getEnvForChain, toInt, resolveOutputPath, resolveCheckpointPath } from "@src/cli";
 
 const OUTPUT_FILE = "stableswapng-pools.json";
 const CHECKPOINT_FILE = "stableswapng_checkpoint.json";
@@ -45,6 +39,7 @@ type Checkpoint = {
   chainId: number;
   factory: string;
   lastProcessedBlock: number;
+  lastKnownPoolCount: number;
   updatedAt: string;
 };
 
@@ -106,8 +101,7 @@ function pRateLimit(rps: number): () => Promise<void> {
   let nextAllowed = 0;
   return async function acquire() {
     const now = Date.now();
-    if (now < nextAllowed)
-      await new Promise((r) => setTimeout(r, nextAllowed - now));
+    if (now < nextAllowed) await new Promise((r) => setTimeout(r, nextAllowed - now));
     nextAllowed = Math.max(now, nextAllowed) + minGapMs;
   };
 }
@@ -160,8 +154,7 @@ async function main() {
   }
 
   const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const factoryRaw =
-    getEnvForChain("FACTORY_ADDRESS", chainId) ?? DEFAULT_FACTORY;
+  const factoryRaw = getEnvForChain("FACTORY_ADDRESS", chainId) ?? DEFAULT_FACTORY;
 
   if (!rpcUrl) {
     throw new Error("Missing required env: RPC_URL (or RPC_URL_<chainId>)");
@@ -177,10 +170,7 @@ async function main() {
   const lookbackBlocks = getEnvInt("LOOKBACK_BLOCKS", chainId, 200000);
   const startBlockArg = args["start-block"];
 
-  const concurrency = Math.max(
-    1,
-    toInt(getEnvForChain("CONCURRENCY", chainId), 8),
-  );
+  const concurrency = Math.max(1, toInt(getEnvForChain("CONCURRENCY", chainId), 8));
   const rps = toInt(getEnvForChain("RPS", chainId), 80);
   const rateLimit = pRateLimit(rps);
   const limit = pLimit(concurrency);
@@ -201,68 +191,73 @@ async function main() {
   let fromBlock: number;
   if (startBlockArg != null) {
     fromBlock = Math.max(0, toInt(startBlockArg, 0));
-  } else if (
-    cp?.chainId === chainId &&
-    cp?.factory?.toLowerCase() === factory.toLowerCase()
-  ) {
+  } else if (cp?.chainId === chainId && cp?.factory?.toLowerCase() === factory.toLowerCase()) {
     fromBlock = cp.lastProcessedBlock + 1;
   } else {
     fromBlock = Math.max(0, toBlock - lookbackBlocks);
   }
 
-  if (fromBlock > toBlock) {
+  const poolCountBn = await contract.pool_count();
+  const poolCount = Number(poolCountBn);
+  if (!Number.isFinite(poolCount) || poolCount < 0) {
+    throw new Error(`Unexpected pool_count: ${poolCountBn}`);
+  }
+
+  const lastKnownPoolCount =
+    cp?.chainId === chainId && cp?.factory?.toLowerCase() === factory.toLowerCase() ? cp.lastKnownPoolCount ?? 0 : 0;
+
+  if (fromBlock > toBlock && poolCount <= lastKnownPoolCount) {
     const newCp: Checkpoint = {
       chainId,
       factory,
       lastProcessedBlock: toBlock,
+      lastKnownPoolCount: poolCount,
       updatedAt: new Date().toISOString(),
     };
     atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + "\n");
     console.log(
-      JSON.stringify(
-        { ok: true, note: "No new blocks to scan", fromBlock, toBlock },
-        null,
-        2,
-      ),
+      JSON.stringify({ ok: true, note: "No new blocks or pools to process", fromBlock, toBlock, poolCount }, null, 2),
     );
     return;
   }
 
-  // Scan for PlainPoolDeployed and MetaPoolDeployed events
   let eventCount = 0;
-  for (let start = fromBlock; start <= toBlock; start += chunkBlocks) {
-    const end = Math.min(toBlock, start + chunkBlocks - 1);
+  if (fromBlock <= toBlock) {
+    for (let start = fromBlock; start <= toBlock; start += chunkBlocks) {
+      const end = Math.min(toBlock, start + chunkBlocks - 1);
 
-    const logs = await provider.getLogs({
-      address: factory,
-      fromBlock: start,
-      toBlock: end,
-      topics: [[plainTopic, metaTopic]],
-    });
+      const logs = await provider.getLogs({
+        address: factory,
+        fromBlock: start,
+        toBlock: end,
+        topics: [[plainTopic, metaTopic]],
+      });
 
-    eventCount += logs.length;
-    console.error(
-      `[scan] ${start}..${end} events=${logs.length} total=${eventCount}`,
-    );
+      eventCount += logs.length;
+      console.error(`[scan] ${start}..${end} events=${logs.length} total=${eventCount}`);
+    }
   }
 
-  // Update checkpoint
-  const newCp: Checkpoint = {
-    chainId,
-    factory,
-    lastProcessedBlock: toBlock,
-    updatedAt: new Date().toISOString(),
-  };
-  atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + "\n");
+  const startIndex = Math.max(0, lastKnownPoolCount);
+  const fetchCount = poolCount - startIndex;
 
-  if (eventCount === 0) {
+  if (fetchCount <= 0) {
+    const newCp: Checkpoint = {
+      chainId,
+      factory,
+      lastProcessedBlock: Math.max(toBlock, cp?.lastProcessedBlock ?? 0),
+      lastKnownPoolCount: poolCount,
+      updatedAt: new Date().toISOString(),
+    };
+    atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + "\n");
     console.log(
       JSON.stringify(
         {
           ok: true,
           chainId,
           factory,
-          eventCount: 0,
+          eventCount,
+          newPools: 0,
           outFile: resolveOutputPath(outputDir, chainId, OUTPUT_FILE),
           checkpointFile: cpPath,
         },
@@ -272,17 +267,6 @@ async function main() {
     );
     return;
   }
-
-  // Fetch the last eventCount pools: indices (poolCount - eventCount) .. (poolCount - 1)
-  const poolCountBn = await contract.pool_count();
-  const poolCount = Number(poolCountBn);
-  if (!Number.isFinite(poolCount) || poolCount < eventCount) {
-    console.error(
-      `pool_count=${poolCount} < eventCount=${eventCount}; capping to poolCount`,
-    );
-  }
-  const fetchCount = Math.min(eventCount, poolCount);
-  const startIndex = Math.max(0, poolCount - fetchCount);
 
   const outPath = resolveOutputPath(outputDir, chainId, OUTPUT_FILE);
   const seenAddrs = loadExistingPoolAddrs(outPath);
@@ -323,6 +307,15 @@ async function main() {
   if (newCount > 0) {
     atomicWriteFile(outPath, JSON.stringify(allRecords, null, 2) + "\n");
   }
+
+  const newCp: Checkpoint = {
+    chainId,
+    factory,
+    lastProcessedBlock: Math.max(toBlock, cp?.lastProcessedBlock ?? 0),
+    lastKnownPoolCount: poolCount,
+    updatedAt: new Date().toISOString(),
+  };
+  atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + "\n");
 
   console.log(
     JSON.stringify(
