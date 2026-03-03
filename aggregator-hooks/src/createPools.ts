@@ -15,11 +15,21 @@ import {
   type Address,
   type PoolConfig,
   type PoolDeployedEntry,
+  type PoolKeyRecord,
   type FactoryImmutables,
 } from "../creation-modules/index.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = join(__dirname, "..", "..");
+
+/** Compute PoolId = keccak256(abi.encode(poolKey)) matching Uniswap v4 PoolIdLibrary.toId() */
+function computePoolId(poolKey: PoolKeyRecord): string {
+  const encoded = ethers.AbiCoder.defaultAbiCoder().encode(
+    ["address", "address", "uint24", "int24", "address"],
+    [poolKey.currency0, poolKey.currency1, poolKey.fee, poolKey.tickSpacing, poolKey.hooks],
+  );
+  return ethers.keccak256(encoded);
+}
 
 // Foundry's default CREATE2 deployer
 const CREATE2_DEPLOYER = "0x4e59b44847b379578588920cA78FbF26c0B4956C";
@@ -682,6 +692,7 @@ async function main() {
                 metadata: {
                   externalPool: module.getExternalPool(poolConfig),
                   hookAddress,
+                  poolId: computePoolId(poolKeys[0]),
                   blockNumber,
                 },
               },
@@ -765,6 +776,7 @@ async function main() {
                 metadata: {
                   externalPool: module.getExternalPool(poolConfig),
                   hookAddress: result.hookAddress,
+                  poolId: computePoolId(poolKeys[0]),
                   txHash: result.txHash,
                   blockNumber: result.blockNumber,
                 },
