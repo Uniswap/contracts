@@ -64,6 +64,9 @@ export interface CreationModule<TConfig = unknown> {
   /** Factory contract ABI for createPool and reading immutables */
   factoryAbi: string[];
 
+  /** Solidity contract identifier for forge verify-contract (path:ContractName) */
+  contractIdentifier: string;
+
   /** Resolve hook params with defaults */
   getHookParams(config: TConfig): HookParams;
 

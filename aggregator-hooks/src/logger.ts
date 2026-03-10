@@ -13,6 +13,7 @@ export interface BannerConfig {
   startAt?: number;
   jobs?: number;
   priorityGasPrice?: string | null;
+  verify?: boolean;
   signerAddress?: string;
 }
 
@@ -64,6 +65,7 @@ export function createLogger(opts: { verbose: boolean }): Logger {
           : []),
         ...(config.jobs && config.jobs > 1 ? [`Salt mining: ${config.jobs} parallel workers`] : []),
         ...(config.priorityGasPrice ? [`Priority gas price: ${config.priorityGasPrice}`] : []),
+        ...(config.verify ? ["Contract verification: enabled (--verify)"] : []),
         ...(config.signerAddress ? [`Using signer: ${config.signerAddress}`] : []),
       ];
       lines.forEach((line) => console.log(line));

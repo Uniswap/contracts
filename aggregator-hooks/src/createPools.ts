@@ -34,6 +34,14 @@ function computePoolId(poolKey: PoolKeyRecord): string {
 // Foundry's default CREATE2 deployer
 const CREATE2_DEPLOYER = "0x4e59b44847b379578588920cA78FbF26c0B4956C";
 
+interface VerifyOptions {
+  enabled: boolean;
+  etherscanApiKey: string | null;
+  verifierUrl: string | null;
+  verifier: string | null;
+  compilerVersion: string | null;
+}
+
 interface ParsedArgs {
   jsonFile: string;
   factoryAddress: Address | null;
@@ -46,6 +54,7 @@ interface ParsedArgs {
   startAt: number;
   jobs: number;
   priorityGasPrice: string | null;
+  verify: VerifyOptions;
 }
 
 function isPoolType(s: unknown): s is string {
@@ -68,6 +77,10 @@ function parseArgs(): ParsedArgs {
     "--jobs",
     "-j",
     "--priority-gas-price",
+    "--verify",
+    "--verifier-url",
+    "--verifier",
+    "--compiler-version",
   ];
   const positionalArgs: string[] = [];
   for (let i = 0; i < args.length; i++) {
@@ -79,7 +92,10 @@ function parseArgs(): ParsedArgs {
         a === "--start-at" ||
         a === "--jobs" ||
         a === "-j" ||
-        a === "--priority-gas-price"
+        a === "--priority-gas-price" ||
+        a === "--verifier-url" ||
+        a === "--verifier" ||
+        a === "--compiler-version"
       )
         i++;
       continue;
@@ -113,10 +129,18 @@ function parseArgs(): ParsedArgs {
     console.error(
       "  --priority-gas-price <price>: Max priority fee per gas for EIP1559 (e.g. 3gwei). Speeds up tx inclusion.",
     );
+    console.error("  --verify: Submit hook contract for block explorer verification after deployment");
+    console.error("  --verifier <name>: Verifier backend (etherscan|blockscout|sourcify). Default: etherscan");
+    console.error("  --verifier-url <url>: Custom verifier API URL (e.g. for blockscout)");
+    console.error(
+      "  --compiler-version <ver>: Solc version used to compile the hook (e.g. 0.8.24). Required when the factory",
+    );
+    console.error("                            was deployed with a different solc than the current local environment.");
     console.error("");
     console.error("Environment variables:");
     console.error("  RPC_URL_<chainId>: RPC endpoint (required when --chain-id set)");
     console.error("  PRIVATE_KEY: Private key for signing transactions (required)");
+    console.error("  ETHERSCAN_API_KEY or ETHERSCAN_API_KEY_<chainId>: API key for block explorer verification");
     process.exit(1);
   }
 
@@ -124,8 +148,8 @@ function parseArgs(): ParsedArgs {
   const factoryAddress: Address | null = selfDeploy
     ? null
     : positionalArgs[1]
-    ? (ethers.getAddress(positionalArgs[1]) as Address)
-    : null;
+      ? (ethers.getAddress(positionalArgs[1]) as Address)
+      : null;
 
   if (selfDeploy && positionalArgs.length >= 2 && positionalArgs[1].startsWith("0x")) {
     console.error("Error: --self-deploy and factoryAddress are mutually exclusive");
@@ -189,6 +213,15 @@ function parseArgs(): ParsedArgs {
     priorityGasPriceIndex !== -1 && args[priorityGasPriceIndex + 1] ? args[priorityGasPriceIndex + 1] : null;
   const priorityGasPrice = priorityGasPriceRaw?.trim() || null;
 
+  const verifyEnabled = args.includes("--verify");
+  const verifierIndex = args.indexOf("--verifier");
+  const verifier = verifierIndex !== -1 && args[verifierIndex + 1] ? args[verifierIndex + 1] : null;
+  const verifierUrlIndex = args.indexOf("--verifier-url");
+  const verifierUrl = verifierUrlIndex !== -1 && args[verifierUrlIndex + 1] ? args[verifierUrlIndex + 1] : null;
+  const compilerVersionIndex = args.indexOf("--compiler-version");
+  const compilerVersion =
+    compilerVersionIndex !== -1 && args[compilerVersionIndex + 1] ? args[compilerVersionIndex + 1] : null;
+
   return {
     jsonFile,
     factoryAddress,
@@ -201,6 +234,13 @@ function parseArgs(): ParsedArgs {
     startAt,
     jobs,
     priorityGasPrice,
+    verify: {
+      enabled: verifyEnabled,
+      etherscanApiKey: null, // resolved later from env once chainId is known
+      verifierUrl,
+      verifier,
+      compilerVersion,
+    },
   };
 }
 
@@ -223,6 +263,98 @@ function appendToRegistryFile(registryDir: string, poolType: string, entry: Pool
   }
   writeFileSync(filePath, JSON.stringify(poolsDeployed, null, 2));
   log.info(`Appended to registry: ${filePath}`);
+}
+
+/**
+ * Read the solc version from a forge build artifact.
+ * The artifact lives at out/<ContractName>.sol/<ContractName>.json and
+ * contains a "metadata" object with compiler.version (e.g. "0.8.24+commit.e11b9ed9").
+ * Returns null if the artifact is missing or unparseable.
+ */
+function readCompilerVersionFromArtifact(contractIdentifier: string): string | null {
+  try {
+    // contractIdentifier: "path/to/Foo.sol:Foo"
+    const contractName = contractIdentifier.split(":")[1];
+    const solFile = contractIdentifier.split(":")[0].split("/").pop()!; // "Foo.sol"
+    const artifactPath = join(projectRoot, "out", solFile, `${contractName}.json`);
+    if (!existsSync(artifactPath)) return null;
+    const artifact = JSON.parse(readFileSync(artifactPath, "utf-8")) as {
+      metadata?: { compiler?: { version?: string } };
+    };
+    return artifact?.metadata?.compiler?.version ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function verifyContract(
+  hookAddress: Address,
+  contractIdentifier: string,
+  constructorArgs: string,
+  chainId: number,
+  verifyOptions: VerifyOptions,
+  log: Logger,
+): void {
+  // Resolve verifier URL: explicit flag > BLOCKSCOUT_API_URL env > none
+  const resolvedVerifierUrl = verifyOptions.verifierUrl ?? getEnvForChain("BLOCKSCOUT_API_URL", chainId) ?? null;
+
+  // If a Blockscout URL is in play but no verifier was explicitly named, use blockscout
+  const isBlockscout =
+    verifyOptions.verifier === "blockscout" || (!verifyOptions.verifier && resolvedVerifierUrl != null);
+  const verifier = verifyOptions.verifier ?? (isBlockscout ? "blockscout" : "etherscan");
+
+  // API key: explicit flag > ETHERSCAN_API_KEY env (blockscout public instances don't require one)
+  const apiKey = verifyOptions.etherscanApiKey ?? getEnvForChain("ETHERSCAN_API_KEY", chainId) ?? null;
+
+  // Compiler version: explicit flag > build artifact > let forge auto-detect
+  // In factory mode this matters: the factory embeds the hook bytecode at its own compile time,
+  // so the solc version used then must match what forge verify-contract uses now.
+  const compilerVersion = verifyOptions.compilerVersion ?? readCompilerVersionFromArtifact(contractIdentifier);
+  if (!compilerVersion) {
+    log.info(
+      `  Warning: compiler version not found in build artifacts. If the factory was compiled with a different` +
+        ` solc than is installed locally, verification may fail. Pass --compiler-version <ver> to fix this.`,
+    );
+  } else {
+    log.info(`  Compiler version: ${compilerVersion}`);
+  }
+
+  log.info(`Submitting ${contractIdentifier} at ${hookAddress} for verification (verifier: ${verifier})...`);
+
+  const forgeArgs = [
+    "verify-contract",
+    hookAddress,
+    contractIdentifier,
+    "--constructor-args",
+    constructorArgs,
+    "--chain-id",
+    chainId.toString(),
+    "--verifier",
+    verifier,
+    "--watch",
+  ];
+
+  if (apiKey) forgeArgs.push("--etherscan-api-key", apiKey);
+  if (resolvedVerifierUrl) forgeArgs.push("--verifier-url", resolvedVerifierUrl);
+  if (compilerVersion) forgeArgs.push("--compiler-version", compilerVersion);
+
+  try {
+    const output = execFileSync("forge", forgeArgs, {
+      encoding: "utf-8",
+      cwd: projectRoot,
+    });
+    log.success(`Verification submitted successfully for ${hookAddress}`);
+    if (output.trim()) log.verbose(`\n--- forge verify-contract output ---\n${output}`);
+  } catch (error) {
+    const execErr = error as { stdout?: string; stderr?: string; message?: string };
+    log.error(
+      `Verification failed for ${hookAddress} (non-fatal): ${execErr.message ?? "unknown error"}`,
+      error instanceof Error ? error : new Error(String(error)),
+    );
+    if (execErr.stdout || execErr.stderr) {
+      log.dumpForgeOutput({ stdout: execErr.stdout, stderr: execErr.stderr, label: "forge verify-contract" });
+    }
+  }
 }
 
 function parseSqrtPriceX96(v: unknown): bigint | null {
@@ -618,6 +750,7 @@ async function main() {
     startAt,
     jobs,
     priorityGasPrice,
+    verify,
   } = parseArgs();
 
   const log = createLogger({ verbose });
@@ -638,6 +771,7 @@ async function main() {
     startAt,
     jobs,
     priorityGasPrice,
+    verify: verify.enabled,
     signerAddress: signer.address,
   });
 
@@ -680,24 +814,29 @@ async function main() {
           priorityGasPrice,
         );
 
-        if (registryDir && hookAddress && hookAddress !== "deployed") {
-          const poolKeys = module.buildPoolKeys(poolConfig, hookAddress);
-          if (poolKeys.length > 0) {
-            const blockNumber = Number(await provider.getBlockNumber());
-            appendToRegistryFile(
-              registryDir,
-              poolType,
-              {
-                poolKeys,
-                metadata: {
-                  externalPool: module.getExternalPool(poolConfig),
-                  hookAddress,
-                  poolId: computePoolId(poolKeys[0]),
-                  blockNumber,
+        if (hookAddress && hookAddress !== "deployed") {
+          if (registryDir) {
+            const poolKeys = module.buildPoolKeys(poolConfig, hookAddress);
+            if (poolKeys.length > 0) {
+              const blockNumber = Number(await provider.getBlockNumber());
+              appendToRegistryFile(
+                registryDir,
+                poolType,
+                {
+                  poolKeys,
+                  metadata: {
+                    externalPool: module.getExternalPool(poolConfig),
+                    hookAddress,
+                    poolId: computePoolId(poolKeys[0]),
+                    blockNumber,
+                  },
                 },
-              },
-              log,
-            );
+                log,
+              );
+            }
+          }
+          if (verify.enabled && !dryRun) {
+            verifyContract(hookAddress, module.contractIdentifier, constructorArgs, chainId, verify, log);
           }
         }
         log.success(`Successfully created pool ${i + 1}`);
@@ -748,6 +887,7 @@ async function main() {
 
     log.info("Reading factory immutables...");
     const factoryImmutables = await module.readFactoryImmutables(provider, factoryAddress!);
+    const chainId = parsedChainId ?? Number((await provider.getNetwork()).chainId);
     log.info(`POOL_MANAGER: ${factoryImmutables.poolManager}`);
     for (const [key, val] of Object.entries(factoryImmutables)) {
       if (key !== "poolManager" && val) log.info(`${key}: ${val}`);
@@ -765,24 +905,29 @@ async function main() {
         const salt = await mineSalt(constructorArgs, module.protocolId, log, factoryAddress!, jobs);
         const result = await createPool(signer, factoryAddress!, poolConfig, poolType, salt, log);
 
-        if (registryDir && result.hookAddress) {
-          const poolKeys = module.buildPoolKeys(poolConfig, result.hookAddress);
-          if (poolKeys.length > 0) {
-            appendToRegistryFile(
-              registryDir,
-              poolType,
-              {
-                poolKeys,
-                metadata: {
-                  externalPool: module.getExternalPool(poolConfig),
-                  hookAddress: result.hookAddress,
-                  poolId: computePoolId(poolKeys[0]),
-                  txHash: result.txHash,
-                  blockNumber: result.blockNumber,
+        if (result.hookAddress) {
+          if (registryDir) {
+            const poolKeys = module.buildPoolKeys(poolConfig, result.hookAddress);
+            if (poolKeys.length > 0) {
+              appendToRegistryFile(
+                registryDir,
+                poolType,
+                {
+                  poolKeys,
+                  metadata: {
+                    externalPool: module.getExternalPool(poolConfig),
+                    hookAddress: result.hookAddress,
+                    poolId: computePoolId(poolKeys[0]),
+                    txHash: result.txHash,
+                    blockNumber: result.blockNumber,
+                  },
                 },
-              },
-              log,
-            );
+                log,
+              );
+            }
+          }
+          if (verify.enabled) {
+            verifyContract(result.hookAddress, module.contractIdentifier, constructorArgs, chainId, verify, log);
           }
         }
         log.success(`Successfully created pool ${i + 1}`);

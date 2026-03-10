@@ -24,6 +24,8 @@ export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
   poolType: "fluiddext1",
   protocolId: PROTOCOL_ID,
   factoryAbi: FLUIDDEXT1_FACTORY_ABI,
+  contractIdentifier:
+    "lib/v4-hooks-public/src/aggregator-hooks/implementations/FluidDexT1/FluidDexT1Aggregator.sol:FluidDexT1Aggregator",
 
   getHookParams(config) {
     return {

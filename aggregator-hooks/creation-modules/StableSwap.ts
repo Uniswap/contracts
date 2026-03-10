@@ -29,6 +29,8 @@ export const stableswapModule: CreationModule<StableSwapPoolConfig> = {
   poolType: "stableswap",
   protocolId: PROTOCOL_ID,
   factoryAbi: STABLESWAP_FACTORY_ABI,
+  contractIdentifier:
+    "lib/v4-hooks-public/src/aggregator-hooks/implementations/StableSwap/StableSwapAggregator.sol:StableSwapAggregator",
 
   getHookParams(config) {
     return {

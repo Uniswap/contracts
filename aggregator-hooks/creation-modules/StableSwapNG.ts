@@ -29,6 +29,8 @@ export const stableswapngModule: CreationModule<StableSwapNGPoolConfig> = {
   poolType: "stableswapng",
   protocolId: PROTOCOL_ID,
   factoryAbi: STABLESWAP_FACTORY_ABI,
+  contractIdentifier:
+    "lib/v4-hooks-public/src/aggregator-hooks/implementations/StableSwapNG/StableSwapNGAggregator.sol:StableSwapNGAggregator",
 
   getHookParams(config) {
     return {
