@@ -1,8 +1,9 @@
 /**
  * StableSwap (Curve) aggregator hook deployment module.
+ * Requires Curve MetaRegistry address for meta pool rejection.
  */
 import { ethers } from "ethers";
-import { mustEnvForChain } from "../src/cli.js";
+import { getEnvForChain, mustEnvForChain } from "../src/cli.js";
 import { STABLESWAP_FACTORY_ABI } from "../abis/index.js";
 import {
   DEFAULT_SQRT_PRICE_X96,
@@ -64,29 +65,47 @@ export const stableswapModule: CreationModule<StableSwapPoolConfig> = {
   },
 
   getImmutablesFromEnv(chainId: number): FactoryImmutables {
+    const metaRegistry = mustEnvForChain("STABLESWAP_METAREGISTRY_ADDRESS", chainId) as Address;
     return {
       poolManager: mustEnvForChain("POOL_MANAGER", chainId) as Address,
+      metaRegistry,
     };
   },
 
   async readFactoryImmutables(provider, factoryAddress) {
     const factory = new ethers.Contract(factoryAddress, STABLESWAP_FACTORY_ABI, provider);
-    const poolManager = await factory.POOL_MANAGER();
-    return { poolManager: poolManager as Address };
+    let poolManagerRaw: string;
+    try {
+      poolManagerRaw = await factory.poolManager();
+    } catch {
+      poolManagerRaw = await factory.POOL_MANAGER();
+    }
+    const metaRegistryRaw = await factory.metaRegistry();
+    const poolManager = ethers.getAddress(poolManagerRaw);
+    const metaRegistry = ethers.getAddress(metaRegistryRaw);
+    return { poolManager: poolManager as Address, metaRegistry: metaRegistry as Address };
   },
 
   encodeConstructorArgs(config, immutables) {
+    const metaRegistry = immutables.metaRegistry ?? (immutables as { metaRegistry?: Address }).metaRegistry;
+    if (!metaRegistry) {
+      throw new Error(
+        "StableSwap requires metaRegistry. Set STABLESWAP_METAREGISTRY_ADDRESS or use StableSwapAggregatorFactory.",
+      );
+    }
     const encoded = ethers.AbiCoder.defaultAbiCoder().encode(
-      ["address", "address"],
-      [immutables.poolManager, config.curvePool],
+      ["address", "address", "address"],
+      [immutables.poolManager, config.curvePool, metaRegistry],
     );
     return encoded.startsWith("0x") ? encoded : `0x${encoded}`;
   },
 
   buildSelfDeployEnvVars(config, immutables) {
     const params = this.getHookParams(config);
+    const metaRegistry = immutables.metaRegistry ?? (immutables as { metaRegistry?: Address }).metaRegistry;
     return {
       CURVE_POOL: config.curvePool,
+      METAREGISTRY: metaRegistry ?? "",
       TOKENS: config.tokens.join(","),
       FEE: params.fee.toString(),
       TICK_SPACING: params.tickSpacing.toString(),

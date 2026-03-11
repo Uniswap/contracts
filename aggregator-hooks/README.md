@@ -150,21 +150,21 @@ npx tsx src/createPools.ts detected/1/fluiddext1-pools-curated.json --self-deplo
 
 ### Arguments
 
-| Arg                            | Required | Default         | Description                                                                   |
-| ------------------------------ | -------- | --------------- | ----------------------------------------------------------------------------- |
-| `jsonFile`                     | yes      | —               | Path to JSON file with pool configs (each must have `poolType`)               |
-| `factoryAddress`               | yes\*    | —               | Factory contract address (\*required when not using `--self-deploy`)          |
-| `--self-deploy`                | no       | —               | Deploy hooks from wallet instead of via factory                               |
-| `--chain-id <n>`               | no       | —               | Chain ID; selects `RPC_URL_<n>` from env                                      |
-| `--registry-dir <path>`        | no       | `created-pools` | Append deployed pools to `deployed-<poolType>.json` in this dir               |
-| `--dry-run`                    | no       | —               | Simulate forge scripts without broadcasting                                   |
-| `--verbose`, `-v`              | no       | —               | Run forge scripts with `-vvvv`                                                |
-| `--start-at <n>`               | no       | 1               | Start at 1-based pool index (skip earlier pools). Use to resume.              |
-| `--jobs <n>`, `-j <n>`         | no       | 1               | Parallel salt mining workers (1–16). Speeds up mining.                        |
-| `--priority-gas-price <price>` | no       | RPC default     | Max priority fee per gas for EIP1559 (e.g. `3gwei`). Speeds up tx inclusion.  |
-| `--verify`                     | no       | —               | Submit hook contract for block explorer verification after deployment          |
-| `--verifier <name>`            | no       | `etherscan`     | Verifier backend: `etherscan`, `blockscout`, or `sourcify`                    |
-| `--verifier-url <url>`         | no       | —               | Custom verifier API URL. Auto-selected if `BLOCKSCOUT_API_URL` env is set.    |
+| Arg                            | Required | Default         | Description                                                                  |
+| ------------------------------ | -------- | --------------- | ---------------------------------------------------------------------------- |
+| `jsonFile`                     | yes      | —               | Path to JSON file with pool configs (each must have `poolType`)              |
+| `factoryAddress`               | yes\*    | —               | Factory contract address (\*required when not using `--self-deploy`)         |
+| `--self-deploy`                | no       | —               | Deploy hooks from wallet instead of via factory                              |
+| `--chain-id <n>`               | no       | —               | Chain ID; selects `RPC_URL_<n>` from env                                     |
+| `--registry-dir <path>`        | no       | `created-pools` | Append deployed pools to `deployed-<poolType>.json` in this dir              |
+| `--dry-run`                    | no       | —               | Simulate forge scripts without broadcasting                                  |
+| `--verbose`, `-v`              | no       | —               | Run forge scripts with `-vvvv`                                               |
+| `--start-at <n>`               | no       | 1               | Start at 1-based pool index (skip earlier pools). Use to resume.             |
+| `--jobs <n>`, `-j <n>`         | no       | 1               | Parallel salt mining workers (1–16). Speeds up mining.                       |
+| `--priority-gas-price <price>` | no       | RPC default     | Max priority fee per gas for EIP1559 (e.g. `3gwei`). Speeds up tx inclusion. |
+| `--verify`                     | no       | —               | Submit hook contract for block explorer verification after deployment        |
+| `--verifier <name>`            | no       | `etherscan`     | Verifier backend: `etherscan`, `blockscout`, or `sourcify`                   |
+| `--verifier-url <url>`         | no       | —               | Custom verifier API URL. Auto-selected if `BLOCKSCOUT_API_URL` env is set.   |
 | `--compiler-version <ver>`     | no       | from artifact   | Solc version to pass to the verifier (e.g. `0.8.24`). See note below.        |
 
 **Modes:**
@@ -174,12 +174,17 @@ npx tsx src/createPools.ts detected/1/fluiddext1-pools-curated.json --self-deplo
 
 ### Environment variables
 
-| Env                                          | Description                                                                            |
-| -------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `RPC_URL` or `RPC_URL_<chainId>`             | RPC endpoint (use `RPC_URL_1` etc. when `--chain-id` is set)                          |
-| `PRIVATE_KEY`                                | Signing key for transactions (required even with `--dry-run`)                          |
-| `ETHERSCAN_API_KEY` or `ETHERSCAN_API_KEY_<chainId>` | API key for Etherscan verification (required when using `--verify` with Etherscan) |
-| `BLOCKSCOUT_API_URL` or `BLOCKSCOUT_API_URL_<chainId>` | Blockscout API URL. If set, `--verify` automatically uses Blockscout.        |
+| Env                                                    | Description                                                                        |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `RPC_URL` or `RPC_URL_<chainId>`                       | RPC endpoint (use `RPC_URL_1` etc. when `--chain-id` is set)                       |
+| `PRIVATE_KEY`                                          | Signing key for transactions (required even with `--dry-run`)                      |
+| `POOL_MANAGER` or `POOL_MANAGER_<chainId>`             | Uniswap v4 PoolManager address (required for self-deploy)                         |
+| `ETHERSCAN_API_KEY` or `ETHERSCAN_API_KEY_<chainId>`   | API key for Etherscan verification (required when using `--verify` with Etherscan) |
+| `BLOCKSCOUT_API_URL` or `BLOCKSCOUT_API_URL_<chainId>` | Blockscout API URL. If set, `--verify` automatically uses Blockscout.              |
+
+**StableSwap (stableswap):** `STABLESWAP_METAREGISTRY_ADDRESS_<chainId>` — Curve MetaRegistry for meta pool rejection (required for self-deploy).
+
+**StableSwap-NG (stableswapng):** `STABLESWAPNG_FACTORY_ADDRESS_<chainId>` or `FACTORY_ADDRESS_<chainId>` — Curve StableSwap NG factory for meta pool rejection. Defaults to mainnet `0x6A8cbed756804B16E05E741eDaBd5cB544AE21bf` if unset.
 
 ### Security
 
@@ -230,18 +235,18 @@ npx tsx src/createPools.ts pools.json 0xFactory --chain-id 1 --verify
 
 **Well-known Blockscout API URLs:**
 
-| Chain   | Chain ID | URL                                     |
-| ------- | -------- | --------------------------------------- |
-| Mainnet | 1        | `https://eth.blockscout.com/api`        |
-| Base    | 8453     | `https://base.blockscout.com/api`       |
-| Arbitrum| 42161    | `https://arbitrum.blockscout.com/api`   |
-| Optimism| 10       | `https://optimism.blockscout.com/api`   |
+| Chain    | Chain ID | URL                                   |
+| -------- | -------- | ------------------------------------- |
+| Mainnet  | 1        | `https://eth.blockscout.com/api`      |
+| Base     | 8453     | `https://base.blockscout.com/api`     |
+| Arbitrum | 42161    | `https://arbitrum.blockscout.com/api` |
+| Optimism | 10       | `https://optimism.blockscout.com/api` |
 
 > **Note:** Blockscout's public instances do not require an API key. `ETHERSCAN_API_KEY` can be omitted when using Blockscout.
 
 #### Compiler version and factory mode
 
-In factory mode, the factory embeds the hook's bytecode at *its own* compile time. Verification must use the same solc version the factory was compiled with — not necessarily the version currently installed locally.
+In factory mode, the factory embeds the hook's bytecode at _its own_ compile time. Verification must use the same solc version the factory was compiled with — not necessarily the version currently installed locally.
 
 The script auto-detects the compiler version from the build artifact in `out/` (populated by `forge build`). This is reliable **as long as** the installed forge/solc version matches what built the factory. If it doesn't, pass `--compiler-version` explicitly:
 

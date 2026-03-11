@@ -201,18 +201,20 @@ async function main() {
 
   const uniquePools = uniqAddresses(pools);
 
-  const createPoolsConfigs: CreatePoolsStableSwapConfig[] = uniquePools.map((curvePool) => {
-    const meta = metaByPool.get(curvePool);
-    const tokens = meta?.coins ?? [];
-    return {
-      poolType: "stableswapng" as const,
-      curvePool,
-      tokens,
-      fee: CREATE_POOLS_DEFAULTS.fee,
-      tickSpacing: CREATE_POOLS_DEFAULTS.tickSpacing,
-      sqrtPriceX96: CREATE_POOLS_DEFAULTS.sqrtPriceX96,
-    };
-  });
+  const createPoolsConfigs: CreatePoolsStableSwapConfig[] = uniquePools
+    .filter((curvePool) => metaByPool.get(curvePool)?.kind === "plain")
+    .map((curvePool) => {
+      const meta = metaByPool.get(curvePool)!;
+      const tokens = meta?.coins ?? [];
+      return {
+        poolType: "stableswapng" as const,
+        curvePool,
+        tokens,
+        fee: CREATE_POOLS_DEFAULTS.fee,
+        tickSpacing: CREATE_POOLS_DEFAULTS.tickSpacing,
+        sqrtPriceX96: CREATE_POOLS_DEFAULTS.sqrtPriceX96,
+      };
+    });
 
   const outPath = resolveOutputPath(outputDir, chainId, OUTPUT_FILE);
   fs.mkdirSync(path.dirname(outPath), { recursive: true });

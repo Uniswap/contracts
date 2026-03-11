@@ -285,13 +285,18 @@ async function main() {
 
     const meta = await limit(async () => {
       await rateLimit();
-      const [nCoinsBn, coinsRaw] = await Promise.all([
+      const [nCoinsBn, coinsRaw, basePoolRaw] = await Promise.all([
         contract.get_n_coins(curvePool) as Promise<bigint>,
         contract.get_coins(curvePool) as Promise<string[]>,
+        contract.get_base_pool(curvePool) as Promise<string>,
       ]);
+      const basePool = ethers.getAddress(basePoolRaw);
+      const isPlain = basePool.toLowerCase() === ethers.ZeroAddress.toLowerCase();
       const coins = uniqAddresses(coinsRaw as string[]);
-      return { nCoins: Number(nCoinsBn), coins };
+      return { nCoins: Number(nCoinsBn), coins, isPlain };
     });
+
+    if (!meta.isPlain) continue;
 
     allRecords.push({
       poolType: "stableswapng",

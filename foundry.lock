@@ -26,7 +26,7 @@
   "lib/v4-hooks-public": {
     "branch": {
       "name": "aggregator-hooks",
-      "rev": "bae291c271be69882e084baa5993a033cb09362b"
+      "rev": "f7b6196ad6677e296850ef06b183e2eed6bb833e"
     }
   },
   "src/pkgs/calibur": {
