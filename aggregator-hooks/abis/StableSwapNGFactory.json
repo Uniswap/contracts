@@ -1,0 +1,5 @@
+[
+    "function poolManager() external view returns (address)",
+    "function curveFactory() external view returns (address)",
+    "function createPool(bytes32 salt, address curvePool, address[] calldata tokens, uint24 fee, int24 tickSpacing, uint160 sqrtPriceX96) external returns (address hook)"
+]
