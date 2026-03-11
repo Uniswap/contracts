@@ -178,7 +178,7 @@ npx tsx src/createPools.ts detected/1/fluiddext1-pools-curated.json --self-deplo
 | ------------------------------------------------------ | ---------------------------------------------------------------------------------- |
 | `RPC_URL` or `RPC_URL_<chainId>`                       | RPC endpoint (use `RPC_URL_1` etc. when `--chain-id` is set)                       |
 | `PRIVATE_KEY`                                          | Signing key for transactions (required even with `--dry-run`)                      |
-| `POOL_MANAGER` or `POOL_MANAGER_<chainId>`             | Uniswap v4 PoolManager address (required for self-deploy)                         |
+| `POOL_MANAGER` or `POOL_MANAGER_<chainId>`             | Uniswap v4 PoolManager address (required for self-deploy)                          |
 | `ETHERSCAN_API_KEY` or `ETHERSCAN_API_KEY_<chainId>`   | API key for Etherscan verification (required when using `--verify` with Etherscan) |
 | `BLOCKSCOUT_API_URL` or `BLOCKSCOUT_API_URL_<chainId>` | Blockscout API URL. If set, `--verify` automatically uses Blockscout.              |
 

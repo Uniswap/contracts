@@ -148,8 +148,8 @@ function parseArgs(): ParsedArgs {
   const factoryAddress: Address | null = selfDeploy
     ? null
     : positionalArgs[1]
-      ? (ethers.getAddress(positionalArgs[1]) as Address)
-      : null;
+    ? (ethers.getAddress(positionalArgs[1]) as Address)
+    : null;
 
   if (selfDeploy && positionalArgs.length >= 2 && positionalArgs[1].startsWith("0x")) {
     console.error("Error: --self-deploy and factoryAddress are mutually exclusive");
