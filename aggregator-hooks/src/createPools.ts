@@ -120,7 +120,9 @@ function parseArgs(): ParsedArgs {
     console.error(
       "  Self-deploy:  ts-node createPools.ts pools.json --self-deploy [--chain-id 1] [--registry-dir ./deployed-pools]",
     );
-    console.error("  --dry-run:    Simulate without broadcasting (forge script runs but no txs sent)");
+    console.error(
+      "  --dry-run:    Simulate without broadcasting (self-deploy: forge script without --broadcast; factory: staticCall only)",
+    );
     console.error("  --verbose, -v: Run forge scripts verbosely and log full output on errors");
     console.error(
       "  --start-at <n>: Start at 1-based pool index (skip earlier pools). e.g. --start-at 3 to resume from pool 3.",
@@ -148,8 +150,8 @@ function parseArgs(): ParsedArgs {
   const factoryAddress: Address | null = selfDeploy
     ? null
     : positionalArgs[1]
-    ? (ethers.getAddress(positionalArgs[1]) as Address)
-    : null;
+      ? (ethers.getAddress(positionalArgs[1]) as Address)
+      : null;
 
   if (selfDeploy && positionalArgs.length >= 2 && positionalArgs[1].startsWith("0x")) {
     console.error("Error: --self-deploy and factoryAddress are mutually exclusive");
@@ -686,6 +688,7 @@ async function createPool(
   poolType: string,
   salt: string,
   log: Logger,
+  dryRun: boolean,
 ): Promise<{ hookAddress: Address | ""; blockNumber: number; txHash: string }> {
   const module = CREATION_MODULES[poolType];
   if (!module) throw new Error(`Unknown pool type: ${poolType}`);
@@ -694,9 +697,16 @@ async function createPool(
   const factory = new ethers.Contract(factoryAddress, module.factoryAbi, signer);
 
   log.info(`Calling createPool on factory ${factoryAddress}...`);
+  if (dryRun) log.info("(dry run - no broadcast)");
   log.info(`Args: ${args.map((a, i) => `${i}: ${String(a).substring(0, 66)}...`).join(", ")}`);
 
   try {
+    if (dryRun) {
+      await factory.createPool.staticCall(...args);
+      log.success(`Dry run: createPool would succeed (simulation passed)`);
+      return { hookAddress: "", blockNumber: 0, txHash: "" };
+    }
+
     const tx = await factory.createPool(...args);
     log.success(`Transaction sent: ${tx.hash}`);
 
@@ -903,9 +913,9 @@ async function main() {
       try {
         const constructorArgs = module.encodeConstructorArgs(poolConfig, factoryImmutables);
         const salt = await mineSalt(constructorArgs, module.protocolId, log, factoryAddress!, jobs);
-        const result = await createPool(signer, factoryAddress!, poolConfig, poolType, salt, log);
+        const result = await createPool(signer, factoryAddress!, poolConfig, poolType, salt, log, dryRun);
 
-        if (result.hookAddress) {
+        if (result.hookAddress && !dryRun) {
           if (registryDir) {
             const poolKeys = module.buildPoolKeys(poolConfig, result.hookAddress);
             if (poolKeys.length > 0) {
@@ -930,7 +940,7 @@ async function main() {
             verifyContract(result.hookAddress, module.contractIdentifier, constructorArgs, chainId, verify, log);
           }
         }
-        log.success(`Successfully created pool ${i + 1}`);
+        log.success(`Successfully created pool ${i + 1}${dryRun ? " (dry run)" : ""}`);
       } catch (error) {
         log.error(`Failed to create pool ${i + 1}:`, error);
         const execErr = error as { stdout?: string; stderr?: string };

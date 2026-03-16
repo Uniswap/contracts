@@ -278,10 +278,10 @@ The `createPools` script and `mine_hook.sh` run from the **contracts/** director
 
 > **Note:** When running `createPools` via `npx tsx src/createPools.ts`, run it from **aggregator-hooks/** so it loads `aggregator-hooks/.env`. The forge scripts invoked by createPools run from contracts/ but inherit env vars from the parent process.
 
-1. **v4-hooks-public** (aggregator-hooks branch): Already added as submodule. Ensure it's on the `aggregator-hooks` branch:
+1. **v4-hooks-public** (aggregator-hooks-ported branch): Already added as submodule. Ensure it's on the `aggregator-hooks-ported` branch:
 
    ```bash
-   cd lib/v4-hooks-public && git fetch origin aggregator-hooks && git checkout aggregator-hooks
+   cd lib/v4-hooks-public && git fetch origin aggregator-hooks-ported && git checkout aggregator-hooks-ported
    git submodule update --init --recursive
    ```
 

@@ -64,7 +64,7 @@
 [submodule "lib/v4-hooks-public"]
 	path = lib/v4-hooks-public
 	url = https://github.com/Uniswap/v4-hooks-public
-	branch = aggregator-hooks
+	branch = aggregator-hooks-ported
 [submodule "lib/v4-core"]
 	path = lib/v4-core
 	url = https://github.com/Uniswap/v4-core
