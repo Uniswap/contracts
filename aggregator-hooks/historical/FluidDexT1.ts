@@ -14,9 +14,9 @@
  *   --mode <mode>           logs|enumerate|both (default: logs)
  *
  * Env vars (use VAR_<chainId> or VAR for single chain):
- *   RPC_URL                 (required)
- *   FLUID_DEX_RESOLVER (required)
- *   FLUID_DEX_FACTORY       (optional, default mainnet)
+ *   RPC_URL                     (required)
+ *   FLUID_DEX_T1_RESOLVER       (required) IFluidDexResolver for getPoolTokens; FLUID_DEX_RESOLVER fallback
+ *   FLUID_DEX_FACTORY           (optional, default mainnet)
  *   RPS                     (optional, default 80) max RPC requests per second
  *   CONCURRENCY             (optional, default 8) max concurrent RPC calls
  *
@@ -111,13 +111,13 @@ async function main() {
   }
 
   const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const reservesResolverAddr =
-    getEnvForChain("FLUID_DEX_RESERVES_RESOLVER", chainId) ?? getEnvForChain("FLUID_DEX_RESOLVER", chainId);
+  const resolverAddr =
+    getEnvForChain("FLUID_DEX_T1_RESOLVER", chainId) ?? getEnvForChain("FLUID_DEX_RESOLVER", chainId);
   const factoryAddrRaw =
     getEnvForChain("FLUID_DEX_FACTORY", chainId) ?? getEnvForChain("FACTORY_ADDRESS", chainId) ?? DEFAULT_FACTORY;
 
-  if (!rpcUrl || !reservesResolverAddr) {
-    console.error("Missing env: RPC_URL and FLUID_DEX_RESOLVER");
+  if (!rpcUrl || !resolverAddr) {
+    console.error("Missing env: RPC_URL and (FLUID_DEX_T1_RESOLVER or FLUID_DEX_RESOLVER)");
     process.exit(1);
   }
 
@@ -135,7 +135,7 @@ async function main() {
 
   const provider = new JsonRpcProvider(rpcUrl);
   const factory = new Contract(factoryAddr, FLUIDDEXT1_HISTORICAL_FACTORY_ABI, provider);
-  const resolver = new Contract(getAddress(reservesResolverAddr.toLowerCase()), FLUIDDEXT1_RESOLVER_ABI, provider);
+  const resolver = new Contract(getAddress(resolverAddr.toLowerCase()), FLUIDDEXT1_RESOLVER_ABI, provider);
 
   const latest = BigInt(await provider.getBlockNumber());
   const endBlock = endBlockRaw ? BigInt(String(endBlockRaw)) : latest;

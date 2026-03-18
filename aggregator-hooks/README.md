@@ -59,7 +59,7 @@ All discovery scripts use chain-ID-suffixed env vars. Use `VAR_<chainId>` (e.g. 
 | Script           | Required                        | Optional                                                     |
 | ---------------- | ------------------------------- | ------------------------------------------------------------ |
 | **fluiddexlite** | `RPC_URL`                       | `DEX_LITE_RESOLVER_ADDRESS` (default mainnet resolver)       |
-| **fluiddext1**   | `RPC_URL`, `FLUID_DEX_RESOLVER` | `FLUID_DEX_FACTORY`, `FACTORY_ADDRESS`, `RPS`, `CONCURRENCY` |
+| **fluiddext1**   | `RPC_URL`, `FLUID_DEX_T1_RESOLVER` (or `FLUID_DEX_RESOLVER`) | `FLUID_DEX_FACTORY`, `FACTORY_ADDRESS`, `RPS`, `CONCURRENCY` |
 | **stableswapng** | `RPC_URL`                       | `FACTORY_ADDRESS`, `RPS`, `CONCURRENCY`                      |
 
 **Polling scripts** use the same env vars as their historical counterparts (fluiddexlite, fluiddext1, stableswapng), plus `FINALITY_BLOCKS` and `LOOKBACK_BLOCKS` (see Polling env vars above). FluidDexLite polling also requires `DEX_LITE_ADDRESS`.

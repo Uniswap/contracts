@@ -2,7 +2,7 @@
  * FluidDex T1 aggregator hook deployment module.
  */
 import { ethers } from "ethers";
-import { mustEnvForChain } from "../src/cli.js";
+import { getEnvForChain, mustEnvForChain } from "../src/cli.js";
 import { FLUIDDEXT1_FACTORY_ABI } from "../abis/index.js";
 import { DEFAULT_SQRT_PRICE_X96, type Address, type CreationModule, type FactoryImmutables } from "./types.js";
 
@@ -54,31 +54,49 @@ export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
   },
 
   getImmutablesFromEnv(chainId: number): FactoryImmutables {
+    const reservesResolver =
+      getEnvForChain("FLUID_DEX_T1_RESERVES_RESOLVER", chainId) ??
+      getEnvForChain("FLUID_DEX_RESERVES_RESOLVER", chainId);
+    const resolver = getEnvForChain("FLUID_DEX_T1_RESOLVER", chainId) ?? getEnvForChain("FLUID_DEX_RESOLVER", chainId);
+    if (!reservesResolver)
+      throw new Error(
+        `Missing env: FLUID_DEX_T1_RESERVES_RESOLVER_${chainId} or FLUID_DEX_RESERVES_RESOLVER_${chainId}`,
+      );
+    if (!resolver) throw new Error(`Missing env: FLUID_DEX_T1_RESOLVER_${chainId} or FLUID_DEX_RESOLVER_${chainId}`);
     return {
       poolManager: mustEnvForChain("POOL_MANAGER", chainId) as Address,
-      fluidDexReservesResolver: mustEnvForChain("FLUID_DEX_RESOLVER", chainId) as Address,
+      fluidDexReservesResolver: reservesResolver as Address,
+      fluidDexResolver: resolver as Address,
       fluidLiquidity: mustEnvForChain("FLUID_LIQUIDITY", chainId) as Address,
     };
   },
 
   async readFactoryImmutables(provider, factoryAddress) {
     const factory = new ethers.Contract(factoryAddress, FLUIDDEXT1_FACTORY_ABI, provider);
-    const [poolManager, fluidDexReservesResolver, fluidLiquidity] = await Promise.all([
+    const [poolManager, fluidDexReservesResolver, fluidDexResolver, fluidLiquidity] = await Promise.all([
       factory.POOL_MANAGER(),
       factory.fluidDexReservesResolver(),
+      factory.fluidDexResolver(),
       factory.FLUID_LIQUIDITY(),
     ]);
     return {
       poolManager: poolManager as Address,
       fluidDexReservesResolver: fluidDexReservesResolver as Address,
+      fluidDexResolver: fluidDexResolver as Address,
       fluidLiquidity: fluidLiquidity as Address,
     };
   },
 
   encodeConstructorArgs(config, immutables) {
     const encoded = ethers.AbiCoder.defaultAbiCoder().encode(
-      ["address", "address", "address", "address"],
-      [immutables.poolManager, config.fluidPool, immutables.fluidDexReservesResolver, immutables.fluidLiquidity],
+      ["address", "address", "address", "address", "address"],
+      [
+        immutables.poolManager,
+        config.fluidPool,
+        immutables.fluidDexReservesResolver,
+        immutables.fluidDexResolver,
+        immutables.fluidLiquidity,
+      ],
     );
     return encoded.startsWith("0x") ? encoded : `0x${encoded}`;
   },
@@ -87,7 +105,8 @@ export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
     const params = this.getHookParams(config);
     return {
       FLUID_POOL: config.fluidPool,
-      FLUID_DEX_RESOLVER: immutables.fluidDexReservesResolver!,
+      FLUID_DEX_T1_RESERVES_RESOLVER: immutables.fluidDexReservesResolver!,
+      FLUID_DEX_T1_RESOLVER: immutables.fluidDexResolver!,
       FLUID_LIQUIDITY: immutables.fluidLiquidity!,
       TOKENS: [config.currency0, config.currency1].join(","),
       FEE: params.fee.toString(),

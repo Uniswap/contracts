@@ -420,7 +420,14 @@ async function verifyDeploymentOnForgeFailure(
   poolConfig: PoolConfig,
   poolType: string,
   forgeOutput: string,
-): Promise<{ hookAddress: Address; hookDeployed: boolean; poolsInitialized: number } | null> {
+): Promise<{
+  hookAddress: Address;
+  hookDeployed: boolean;
+  poolsInitialized: number;
+  blockNumber?: number;
+  poolKeysFromEvent?: PoolKeyRecord[];
+  poolIdFromEvent?: string;
+} | null> {
   const module = CREATION_MODULES[poolType];
   if (!module) return null;
 
@@ -434,7 +441,9 @@ async function verifyDeploymentOnForgeFailure(
   if (!hookDeployed) return { hookAddress, hookDeployed: false, poolsInitialized: 0 };
 
   const poolKeys = module.buildPoolKeys(poolConfig, hookAddress);
-  let poolsInitialized = 0;
+  const poolKeysFromEvent: PoolKeyRecord[] = [];
+  let initializeBlockNumber: number | undefined;
+  let poolIdFromEvent: string | undefined;
 
   try {
     const blockNumber = await provider.getBlockNumber();
@@ -448,12 +457,14 @@ async function verifyDeploymentOnForgeFailure(
 
     for (const log of logs) {
       if (log.topics.length < 4) continue;
-      const currency0 = "0x" + log.topics[2].slice(26);
-      const currency1 = "0x" + log.topics[3].slice(26);
+      const currency0 = ethers.getAddress("0x" + log.topics[2].slice(26)) as Address;
+      const currency1 = ethers.getAddress("0x" + log.topics[3].slice(26)) as Address;
       const data = ethers.AbiCoder.defaultAbiCoder().decode(
         ["uint24", "int24", "address", "uint160", "int24"],
         log.data,
       );
+      const fee = Number(data[0]);
+      const tickSpacing = Number(data[1]);
       const hooks = data[2];
       if (hooks?.toLowerCase() !== hookAddress.toLowerCase()) continue;
       if (
@@ -463,14 +474,29 @@ async function verifyDeploymentOnForgeFailure(
             k.currency1.toLowerCase() === currency1.toLowerCase(),
         )
       ) {
-        poolsInitialized++;
+        if (initializeBlockNumber === undefined) initializeBlockNumber = Number(log.blockNumber);
+        if (poolIdFromEvent === undefined) poolIdFromEvent = log.topics[1];
+        poolKeysFromEvent.push({
+          currency0,
+          currency1,
+          fee,
+          tickSpacing,
+          hooks: hookAddress,
+        });
       }
     }
   } catch {
     /* ignore */
   }
 
-  return { hookAddress, hookDeployed, poolsInitialized };
+  return {
+    hookAddress,
+    hookDeployed,
+    poolsInitialized: poolKeysFromEvent.length,
+    blockNumber: initializeBlockNumber,
+    poolKeysFromEvent: poolKeysFromEvent.length > 0 ? poolKeysFromEvent : undefined,
+    poolIdFromEvent,
+  };
 }
 
 function runMineHookWorker(
@@ -648,7 +674,7 @@ function selfDeployPool(
       "forge",
       [
         "script",
-        "script/SelfCreateHook.s.sol:SelfCreateHookScript",
+        "lib/v4-hooks-public/script/SelfCreateHook.s.sol:SelfCreateHookScript",
         "--rpc-url",
         rpcUrl,
         ...(dryRun ? [] : ["--broadcast"]),
@@ -873,6 +899,31 @@ async function main() {
               );
             }
             log.error("  Check block explorer to confirm.");
+
+            if (registryDir && !dryRun) {
+              const poolKeys =
+                verification.poolKeysFromEvent ?? module.buildPoolKeys(poolConfig, verification.hookAddress);
+              const poolId =
+                verification.poolIdFromEvent ?? (poolKeys.length > 0 ? computePoolId(poolKeys[0]) : undefined);
+              const blockNumber = verification.blockNumber ?? Number(await provider.getBlockNumber());
+              if (poolKeys.length > 0 && poolId) {
+                appendToRegistryFile(
+                  registryDir,
+                  poolType,
+                  {
+                    poolKeys,
+                    metadata: {
+                      externalPool: module.getExternalPool(poolConfig),
+                      hookAddress: verification.hookAddress,
+                      poolId,
+                      blockNumber,
+                    },
+                  },
+                  log,
+                );
+                log.info("  Appended to registry despite forge failure (deployment verified on-chain).");
+              }
+            }
           }
         }
         continue;
