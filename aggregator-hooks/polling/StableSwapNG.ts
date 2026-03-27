@@ -10,7 +10,7 @@
  *   npx tsx polling/stableswapng.ts --chain-id 1
  *
  * Options:
- *   --chain-id <n>          (required) Chain ID; loads RPC_URL_<n>, FACTORY_ADDRESS_<n>
+ *   --chain-id <n>          (required) Chain ID; loads RPC_URL_<n>, STABLESWAPNG_FACTORY_<n>
  *   --output-dir <path>     output directory (default: detected)
  *   --checkpoint-dir <path> checkpoint directory (default: checkpoints)
  *   --chunk-blocks <n>      block chunk size for getLogs (default: 10000)
@@ -18,7 +18,7 @@
  *
  * Env vars (use VAR_<chainId> or VAR for single chain):
  *   RPC_URL                 (required)
- *   FACTORY_ADDRESS         (optional, default mainnet Curve StableSwap-NG factory)
+ *   STABLESWAPNG_FACTORY     (optional, default mainnet Curve StableSwap-NG factory)
  *   FINALITY_BLOCKS         (optional, default 10) subtract from latest; checkpoint = last scanned block
  *   LOOKBACK_BLOCKS         (optional, default 200000) used when checkpoint missing and no --start-block
  *   RPS                     (optional, default 80) max RPC requests per second
@@ -154,7 +154,7 @@ async function main() {
   }
 
   const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const factoryRaw = getEnvForChain("FACTORY_ADDRESS", chainId) ?? DEFAULT_FACTORY;
+  const factoryRaw = getEnvForChain("STABLESWAPNG_FACTORY", chainId) ?? DEFAULT_FACTORY;
 
   if (!rpcUrl) {
     throw new Error("Missing required env: RPC_URL (or RPC_URL_<chainId>)");

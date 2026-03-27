@@ -9,13 +9,12 @@
  *   npx tsx historical/fluiddexlite.ts --chain-id 1
  *
  * Options:
- *   --chain-id <n>          (required) Chain ID; loads RPC_URL_<n>, DEX_LITE_RESOLVER_ADDRESS_<n>
+ *   --chain-id <n>          (required) Chain ID; loads RPC_URL_<n>, FLUID_DEX_LITE_RESOLVER_<n>
  *   --output-dir <path>     output directory (default: detected); writes to output-dir/chain-id/fluiddexlite-pools.json
  *
  * Env vars (use VAR_<chainId> or VAR for single chain):
  *   RPC_URL                 (required)
- *   DEX_LITE_RESOLVER_ADDRESS  (optional) FluidDexLiteResolver; default mainnet: 0x26b696D0dfDAB6c894Aa9a6575fCD07BB25BbD2C
- *   DEX_LITE_ADDRESS        (optional, legacy) kept for backward compat; resolver is used for discovery
+ *   FLUID_DEX_LITE_RESOLVER  (optional) FluidDexLiteResolver; default mainnet: 0x26b696D0dfDAB6c894Aa9a6575fCD07BB25BbD2C
  *
  * Output: JSON array in createPools.ts FluidDexLitePoolConfig format.
  * Fees are fetched via getDexState() and converted from Fluid 1e4 to Uniswap v4 1e6 format.
@@ -84,7 +83,7 @@ async function main() {
   }
 
   const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const resolverRaw = getEnvForChain("DEX_LITE_RESOLVER_ADDRESS", chainId) ?? DEFAULT_RESOLVER;
+  const resolverRaw = getEnvForChain("FLUID_DEX_LITE_RESOLVER", chainId) ?? DEFAULT_RESOLVER;
   if (!rpcUrl) {
     console.error("Missing env: RPC_URL (or RPC_URL_<chainId>)");
     process.exit(1);

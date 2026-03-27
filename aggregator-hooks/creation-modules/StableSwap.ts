@@ -65,7 +65,7 @@ export const stableswapModule: CreationModule<StableSwapPoolConfig> = {
   },
 
   getImmutablesFromEnv(chainId: number): FactoryImmutables {
-    const metaRegistry = mustEnvForChain("STABLESWAP_METAREGISTRY_ADDRESS", chainId) as Address;
+    const metaRegistry = mustEnvForChain("STABLESWAP_METAREGISTRY", chainId) as Address;
     return {
       poolManager: mustEnvForChain("POOL_MANAGER", chainId) as Address,
       metaRegistry,
@@ -90,7 +90,7 @@ export const stableswapModule: CreationModule<StableSwapPoolConfig> = {
     const metaRegistry = immutables.metaRegistry ?? (immutables as { metaRegistry?: Address }).metaRegistry;
     if (!metaRegistry) {
       throw new Error(
-        "StableSwap requires metaRegistry. Set STABLESWAP_METAREGISTRY_ADDRESS or use StableSwapAggregatorFactory.",
+        "StableSwap requires metaRegistry. Set STABLESWAP_METAREGISTRY or use StableSwapAggregatorFactory.",
       );
     }
     const encoded = ethers.AbiCoder.defaultAbiCoder().encode(

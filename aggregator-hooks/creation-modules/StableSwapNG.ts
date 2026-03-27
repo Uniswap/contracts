@@ -67,10 +67,7 @@ export const stableswapngModule: CreationModule<StableSwapNGPoolConfig> = {
   },
 
   getImmutablesFromEnv(chainId: number): FactoryImmutables {
-    const curveFactory =
-      getEnvForChain("STABLESWAPNG_FACTORY_ADDRESS", chainId) ??
-      getEnvForChain("FACTORY_ADDRESS", chainId) ??
-      DEFAULT_STABLESWAPNG_FACTORY;
+    const curveFactory = getEnvForChain("STABLESWAPNG_FACTORY", chainId) ?? DEFAULT_STABLESWAPNG_FACTORY;
     return {
       poolManager: mustEnvForChain("POOL_MANAGER", chainId) as Address,
       curveFactory: curveFactory as Address,
@@ -90,7 +87,7 @@ export const stableswapngModule: CreationModule<StableSwapNGPoolConfig> = {
     const curveFactory = immutables.curveFactory ?? (immutables as { curveFactory?: Address }).curveFactory;
     if (!curveFactory) {
       throw new Error(
-        "StableSwapNG requires curveFactory. Set STABLESWAPNG_FACTORY_ADDRESS or use StableSwapNGAggregatorFactory.",
+        "StableSwapNG requires curveFactory. Set STABLESWAPNG_FACTORY or use StableSwapNGAggregatorFactory.",
       );
     }
     const encoded = ethers.AbiCoder.defaultAbiCoder().encode(

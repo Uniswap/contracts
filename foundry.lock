@@ -24,10 +24,7 @@
     }
   },
   "lib/v4-hooks-public": {
-    "branch": {
-      "name": "aggregator-hooks",
-      "rev": "f7b6196ad6677e296850ef06b183e2eed6bb833e"
-    }
+    "rev": "a187a29aaefa716cf2fed38d4bc934c67d36c0f0"
   },
   "src/pkgs/calibur": {
     "rev": "69d5eb61498ffac7740530310b270459f2ae2a20"

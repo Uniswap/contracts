@@ -9,7 +9,7 @@
  *   npx tsx polling/fluiddexlite.ts --chain-id 1
  *
  * Options:
- *   --chain-id <n>          (required) Chain ID; loads RPC_URL_<n>, DEX_LITE_ADDRESS_<n>
+ *   --chain-id <n>          (required) Chain ID; loads RPC_URL_<n>, FLUID_DEX_LITE_<n>
  *   --output-dir <path>      output directory (default: detected); writes to output-dir/chain-id/fluiddexlite-pools.json
  *   --checkpoint-dir <path>  checkpoint directory (default: checkpoints); writes to checkpoint-dir/chain-id/dexlite_checkpoint.json
  *   --chunk-blocks <n>       block chunk size for getLogs (default: 10000)
@@ -17,7 +17,7 @@
  *
  * Env vars (use VAR_<chainId> or VAR for single chain):
  *   RPC_URL                 (required)
- *   DEX_LITE_ADDRESS        (required) FluidDexLite singleton
+ *   FLUID_DEX_LITE  (required) FluidDexLite singleton
  *   FINALITY_BLOCKS         (optional, default 10) subtract from latest; checkpoint = last scanned block
  *   LOOKBACK_BLOCKS         (optional, default 200000) used when checkpoint missing and no --start-block
  */
@@ -130,10 +130,10 @@ async function main() {
   }
 
   const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const dexLiteRaw = getEnvForChain("DEX_LITE_ADDRESS", chainId);
+  const dexLiteRaw = getEnvForChain("FLUID_DEX_LITE", chainId);
   if (!rpcUrl || !dexLiteRaw) {
     throw new Error(
-      "Missing required env: RPC_URL and DEX_LITE_ADDRESS (or RPC_URL_<chainId>, DEX_LITE_ADDRESS_<chainId>)",
+      "Missing required env: RPC_URL and FLUID_DEX_LITE (or RPC_URL_<chainId>, FLUID_DEX_LITE_<chainId>)",
     );
   }
   const dexLite = ethers.getAddress(dexLiteRaw);

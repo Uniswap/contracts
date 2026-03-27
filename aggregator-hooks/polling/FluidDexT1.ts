@@ -9,7 +9,7 @@
  *   npx tsx polling/fluiddext1.ts --chain-id 1
  *
  * Options:
- *   --chain-id <n>          (required) Chain ID; loads RPC_URL_<n>, FLUID_DEX_RESOLVER_<n>, etc.
+ *   --chain-id <n>          (required) Chain ID; loads RPC_URL_<n>, FLUID_DEX_T1_RESOLVER_<n>, etc.
  *   --output-dir <path>     output directory (default: detected); writes to output-dir/chain-id/fluiddext1-pools.json
  *   --checkpoint-dir <path>  checkpoint directory (default: checkpoints)
  *   --chunk-blocks <n>      block chunk size for getLogs (default: 10000)
@@ -17,8 +17,8 @@
  *
  * Env vars (use VAR_<chainId> or VAR for single chain):
  *   RPC_URL                     (required)
- *   FLUID_DEX_T1_RESOLVER       (required) IFluidDexResolver for getPoolTokens; FLUID_DEX_RESOLVER fallback
- *   FLUID_DEX_FACTORY           (optional, default mainnet)
+ *   FLUID_DEX_T1_RESOLVER       (required) IFluidDexResolver for getPoolTokens
+ *   FLUID_DEX_T1_FACTORY        (optional, default mainnet)
  *   FINALITY_BLOCKS         (optional, default 10) subtract from latest; checkpoint = last scanned block
  *   LOOKBACK_BLOCKS         (optional, default 200000) used when checkpoint missing and no --start-block
  */
@@ -125,13 +125,12 @@ async function main() {
   }
 
   const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const resolverAddr =
-    getEnvForChain("FLUID_DEX_T1_RESOLVER", chainId) ?? getEnvForChain("FLUID_DEX_RESOLVER", chainId);
+  const resolverAddr = getEnvForChain("FLUID_DEX_T1_RESOLVER", chainId);
   const factoryRaw =
-    getEnvForChain("FLUID_DEX_FACTORY", chainId) ?? getEnvForChain("FACTORY_ADDRESS", chainId) ?? DEFAULT_FACTORY;
+    getEnvForChain("FLUID_DEX_T1_FACTORY", chainId) ?? DEFAULT_FACTORY;
 
   if (!rpcUrl || !resolverAddr) {
-    throw new Error("Missing required env: RPC_URL and (FLUID_DEX_T1_RESOLVER or FLUID_DEX_RESOLVER)");
+    throw new Error("Missing required env: RPC_URL and FLUID_DEX_T1_RESOLVER");
   }
 
   const factory = ethers.getAddress(factoryRaw);

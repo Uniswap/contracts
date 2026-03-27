@@ -58,11 +58,11 @@ All discovery scripts use chain-ID-suffixed env vars. Use `VAR_<chainId>` (e.g. 
 
 | Script           | Required                        | Optional                                                     |
 | ---------------- | ------------------------------- | ------------------------------------------------------------ |
-| **fluiddexlite** | `RPC_URL`                       | `DEX_LITE_RESOLVER_ADDRESS` (default mainnet resolver)       |
-| **fluiddext1**   | `RPC_URL`, `FLUID_DEX_T1_RESOLVER` (or `FLUID_DEX_RESOLVER`) | `FLUID_DEX_FACTORY`, `FACTORY_ADDRESS`, `RPS`, `CONCURRENCY` |
-| **stableswapng** | `RPC_URL`                       | `FACTORY_ADDRESS`, `RPS`, `CONCURRENCY`                      |
+| **fluiddexlite** | `RPC_URL`                       | `FLUID_DEX_LITE_RESOLVER` (default mainnet resolver)         |
+| **fluiddext1**   | `RPC_URL`, `FLUID_DEX_T1_RESOLVER` | `FLUID_DEX_T1_FACTORY`, `RPS`, `CONCURRENCY`                 |
+| **stableswapng** | `RPC_URL`                       | `STABLESWAPNG_FACTORY`, `RPS`, `CONCURRENCY`                 |
 
-**Polling scripts** use the same env vars as their historical counterparts (fluiddexlite, fluiddext1, stableswapng), plus `FINALITY_BLOCKS` and `LOOKBACK_BLOCKS` (see Polling env vars above). FluidDexLite polling also requires `DEX_LITE_ADDRESS`.
+**Polling scripts** use the same env vars as their historical counterparts (fluiddexlite, fluiddext1, stableswapng), plus `FINALITY_BLOCKS` and `LOOKBACK_BLOCKS` (see Polling env vars above). FluidDexLite polling also requires `FLUID_DEX_LITE`.
 
 ---
 
@@ -182,9 +182,9 @@ npx tsx src/createPools.ts detected/1/fluiddext1-pools-curated.json --self-deplo
 | `ETHERSCAN_API_KEY` or `ETHERSCAN_API_KEY_<chainId>`   | API key for Etherscan verification (required when using `--verify` with Etherscan) |
 | `BLOCKSCOUT_API_URL` or `BLOCKSCOUT_API_URL_<chainId>` | Blockscout API URL. If set, `--verify` automatically uses Blockscout.              |
 
-**StableSwap (stableswap):** `STABLESWAP_METAREGISTRY_ADDRESS_<chainId>` — Curve MetaRegistry for meta pool rejection (required for self-deploy).
+**StableSwap (stableswap):** `STABLESWAP_METAREGISTRY_<chainId>` — Curve MetaRegistry for meta pool rejection (required for self-deploy).
 
-**StableSwap-NG (stableswapng):** `STABLESWAPNG_FACTORY_ADDRESS_<chainId>` or `FACTORY_ADDRESS_<chainId>` — Curve StableSwap NG factory for meta pool rejection. Defaults to mainnet `0x6A8cbed756804B16E05E741eDaBd5cB544AE21bf` if unset.
+**StableSwap-NG (stableswapng):** `STABLESWAPNG_FACTORY_<chainId>` — Curve StableSwap NG factory for meta pool rejection. Defaults to mainnet `0x6A8cbed756804B16E05E741eDaBd5cB544AE21bf` if unset.
 
 ### Security
 
@@ -278,11 +278,12 @@ The `createPools` script and `mine_hook.sh` run from the **contracts/** director
 
 > **Note:** When running `createPools` via `npx tsx src/createPools.ts`, run it from **aggregator-hooks/** so it loads `aggregator-hooks/.env`. The forge scripts invoked by createPools run from contracts/ but inherit env vars from the parent process.
 
-1. **v4-hooks-public** (aggregator-hooks-ported branch): Already added as submodule. Ensure it's on the `aggregator-hooks-ported` branch:
+1. **v4-hooks-public** (`main` branch): Already added as submodule. Track latest `main` (from **contracts/** root):
 
    ```bash
-   cd lib/v4-hooks-public && git fetch origin aggregator-hooks-ported && git checkout aggregator-hooks-ported
+   git submodule update --init --recursive
+   (cd lib/v4-hooks-public && git fetch origin main && git checkout main && git pull origin main)
    git submodule update --init --recursive
    ```
 
-2. **Foundry**: `forge` must be available. The scripts use `script/SelfCreateHook.s.sol` and `lib/v4-hooks-public/script/MineAggregatorHook.s.sol`.
+2. **Foundry**: `forge` must be available. The scripts use `lib/v4-hooks-public/script/SelfCreateHook.s.sol` and `lib/v4-hooks-public/script/MineAggregatorHook.s.sol`.

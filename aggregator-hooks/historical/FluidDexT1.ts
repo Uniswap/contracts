@@ -6,7 +6,7 @@
  *   npx tsx historical/fluiddext1.ts --chain-id 1
  *
  * Options:
- *   --chain-id <n>          (required) Chain ID; loads RPC_URL_<n>, FLUID_DEX_RESOLVER_<n>, etc.
+ *   --chain-id <n>          (required) Chain ID; loads RPC_URL_<n>, FLUID_DEX_T1_RESOLVER_<n>, etc.
  *   --output-dir <path>     output directory (default: output); writes to output-dir/chain-id/fluiddext1-pools.json
  *   --chunk-blocks <n>      block chunk size for getLogs (default: 100000)
  *   --start-block <n>       start block for log scan (default: 0)
@@ -15,8 +15,8 @@
  *
  * Env vars (use VAR_<chainId> or VAR for single chain):
  *   RPC_URL                     (required)
- *   FLUID_DEX_T1_RESOLVER       (required) IFluidDexResolver for getPoolTokens; FLUID_DEX_RESOLVER fallback
- *   FLUID_DEX_FACTORY           (optional, default mainnet)
+ *   FLUID_DEX_T1_RESOLVER       (required) IFluidDexResolver for getPoolTokens
+ *   FLUID_DEX_T1_FACTORY        (optional, default mainnet)
  *   RPS                     (optional, default 80) max RPC requests per second
  *   CONCURRENCY             (optional, default 8) max concurrent RPC calls
  *
@@ -111,13 +111,12 @@ async function main() {
   }
 
   const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const resolverAddr =
-    getEnvForChain("FLUID_DEX_T1_RESOLVER", chainId) ?? getEnvForChain("FLUID_DEX_RESOLVER", chainId);
+  const resolverAddr = getEnvForChain("FLUID_DEX_T1_RESOLVER", chainId);
   const factoryAddrRaw =
-    getEnvForChain("FLUID_DEX_FACTORY", chainId) ?? getEnvForChain("FACTORY_ADDRESS", chainId) ?? DEFAULT_FACTORY;
+    getEnvForChain("FLUID_DEX_T1_FACTORY", chainId) ?? DEFAULT_FACTORY;
 
   if (!rpcUrl || !resolverAddr) {
-    console.error("Missing env: RPC_URL and (FLUID_DEX_T1_RESOLVER or FLUID_DEX_RESOLVER)");
+    console.error("Missing env: RPC_URL and FLUID_DEX_T1_RESOLVER");
     process.exit(1);
   }
 

@@ -81,9 +81,9 @@ cd "$SCRIPT_DIR"
 
 if [ ! -f "lib/v4-hooks-public/script/MineAggregatorHook.s.sol" ]; then
     echo "Error: MineAggregatorHook.s.sol not found at lib/v4-hooks-public/script/MineAggregatorHook.s.sol"
-    echo "Add v4-hooks-public and checkout aggregator-hooks-ported branch:"
-    echo "  git submodule add https://github.com/Uniswap/v4-hooks-public lib/v4-hooks-public"
-    echo "  cd lib/v4-hooks-public && git fetch origin aggregator-hooks-ported && git checkout aggregator-hooks-ported"
+    echo "Add v4-hooks-public and checkout main:"
+    echo "  git submodule add -b main https://github.com/Uniswap/v4-hooks-public lib/v4-hooks-public"
+    echo "  cd lib/v4-hooks-public && git fetch origin main && git checkout main"
     echo "  git submodule update --init --recursive"
     exit 1
 fi

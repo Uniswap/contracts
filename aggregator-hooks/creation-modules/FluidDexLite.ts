@@ -2,7 +2,7 @@
  * FluidDex Lite aggregator hook deployment module.
  */
 import { ethers } from "ethers";
-import { getEnvForChain, mustEnvForChain } from "../src/cli.js";
+import { mustEnvForChain } from "../src/cli.js";
 import { FLUIDDEXLITE_FACTORY_ABI } from "../abis/index.js";
 import { DEFAULT_SQRT_PRICE_X96, type Address, type CreationModule, type FactoryImmutables } from "./types.js";
 
@@ -54,19 +54,10 @@ export const fluiddexliteModule: CreationModule<FluidDexLitePoolConfig> = {
   },
 
   getImmutablesFromEnv(chainId: number): FactoryImmutables {
-    const dexLite = getEnvForChain("FLUID_DEX_LITE", chainId) ?? getEnvForChain("DEX_LITE_ADDRESS", chainId);
-    const dexLiteResolver =
-      getEnvForChain("FLUID_DEX_LITE_RESOLVER", chainId) ?? getEnvForChain("DEX_LITE_RESOLVER_ADDRESS", chainId);
-    if (!dexLite)
-      throw new Error(`FLUID_DEX_LITE_${chainId} or DEX_LITE_ADDRESS_${chainId} required for fluiddexlite self-deploy`);
-    if (!dexLiteResolver)
-      throw new Error(
-        `FLUID_DEX_LITE_RESOLVER_${chainId} or DEX_LITE_RESOLVER_ADDRESS_${chainId} required for fluiddexlite self-deploy`,
-      );
     return {
       poolManager: mustEnvForChain("POOL_MANAGER", chainId) as Address,
-      fluidDexLite: dexLite as Address,
-      fluidDexLiteResolver: dexLiteResolver as Address,
+      fluidDexLite: mustEnvForChain("FLUID_DEX_LITE", chainId) as Address,
+      fluidDexLiteResolver: mustEnvForChain("FLUID_DEX_LITE_RESOLVER", chainId) as Address,
     };
   },
 

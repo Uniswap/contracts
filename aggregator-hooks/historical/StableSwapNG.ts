@@ -6,14 +6,14 @@
  *   npx tsx historical/stableswapng.ts --chain-id 1
  *
  * Options:
- *   --chain-id <n>            (required) Chain ID; loads RPC_URL_<n>, FACTORY_ADDRESS_<n>
+ *   --chain-id <n>            (required) Chain ID; loads RPC_URL_<n>, STABLESWAPNG_FACTORY_<n>
  *   --output-dir <path>       output directory (default: output); writes to output-dir/chain-id/stableswapng-pools.json
  *   --chunk <n>               chunk size for pool_list reads (default: 500)
  *   --start-index <n>         start at pool_list index n (default: 0)
  *
  * Env vars (use VAR_<chainId> or VAR for single chain):
  *   RPC_URL                   (required)
- *   FACTORY_ADDRESS           (optional, default mainnet Curve StableSwap-NG factory)
+ *   STABLESWAPNG_FACTORY      (optional, default mainnet Curve StableSwap-NG factory)
  *   RPS                       (optional, default 80) max RPC requests per second
  *   CONCURRENCY               (optional, default 8) max concurrent RPC calls
  *
@@ -121,7 +121,7 @@ async function main() {
   }
 
   const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const factoryAddrRaw = getEnvForChain("FACTORY_ADDRESS", chainId) ?? DEFAULT_FACTORY;
+  const factoryAddrRaw = getEnvForChain("STABLESWAPNG_FACTORY", chainId) ?? DEFAULT_FACTORY;
 
   if (!rpcUrl) {
     console.error("Missing env: RPC_URL (or RPC_URL_<chainId>)");
