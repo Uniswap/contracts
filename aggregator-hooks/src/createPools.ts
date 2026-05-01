@@ -269,6 +269,63 @@ function appendToRegistryFile(registryDir: string, poolType: string, entry: Pool
 }
 
 /**
+ * Upsert a KEY=VALUE line in a .env file. Creates the file if it does not
+ * exist. Replaces the line if KEY is already present.
+ */
+function appendToEnvFile(filePath: string, key: string, value: string): void {
+  let lines: string[] = [];
+  if (existsSync(filePath)) {
+    lines = readFileSync(filePath, "utf-8").split("\n");
+  }
+  const prefix = `${key}=`;
+  const idx = lines.findIndex((l) => l.startsWith(prefix));
+  const newLine = `${key}=${value}`;
+  if (idx !== -1) {
+    lines[idx] = newLine;
+  } else {
+    lines.push(newLine);
+  }
+  // Ensure file ends with a newline
+  if (lines[lines.length - 1] !== "") lines.push("");
+  writeFileSync(filePath, lines.join("\n"));
+}
+
+const POOL_MANAGER_INIT_ABI = [
+  "function initialize((address currency0, address currency1, uint24 fee, int24 tickSpacing, address hooks) key, uint160 sqrtPriceX96) returns (int24 tick)",
+];
+
+async function initializeSingletonPool(
+  signer: ethers.Signer,
+  poolManagerAddress: Address,
+  poolKey: PoolKeyRecord,
+  sqrtPriceX96: bigint,
+  log: Logger,
+  dryRun: boolean,
+): Promise<{ blockNumber: number; txHash: string } | null> {
+  const poolManager = new ethers.Contract(poolManagerAddress, POOL_MANAGER_INIT_ABI, signer);
+
+  log.info(`Calling poolManager.initialize for pool: ${poolKey.currency0} / ${poolKey.currency1}`);
+  if (dryRun) log.info("(dry run - no broadcast)");
+
+  try {
+    if (dryRun) {
+      await poolManager.initialize.staticCall(poolKey, sqrtPriceX96);
+      log.success(`Dry run: initialize would succeed`);
+      return null;
+    }
+
+    const tx = await poolManager.initialize(poolKey, sqrtPriceX96);
+    log.success(`Transaction sent: ${tx.hash}`);
+    const receipt = await tx.wait();
+    log.success(`Pool initialized in block ${receipt!.blockNumber}`);
+    return { blockNumber: Number(receipt!.blockNumber), txHash: tx.hash };
+  } catch (error) {
+    log.error("Error initializing pool:", error);
+    throw error;
+  }
+}
+
+/**
  * Read the solc version from a forge build artifact.
  * The artifact lives at out/<ContractName>.sol/<ContractName>.json and
  * contains a "metadata" object with compiler.version (e.g. "0.8.24+commit.e11b9ed9").
@@ -819,42 +876,92 @@ async function main() {
 
     const chainId = parsedChainId ?? Number((await provider.getNetwork()).chainId);
 
-    for (let j = 0; j < pools.length; j++) {
-      const i = startAt - 1 + j;
-      const poolConfig = pools[j];
-      const poolType = poolConfig.poolType;
-      const module = CREATION_MODULES[poolType];
-      const immutables = module.getImmutablesFromEnv(chainId);
+    // Determine module from first pool (loadJsonFile enforces a single poolType)
+    const firstPoolType = pools[0].poolType;
+    const firstModule = CREATION_MODULES[firstPoolType];
 
-      log.section(`Processing Pool ${i + 1}/${allPools.length} (${poolType})`);
+    if (firstModule.isSingleton) {
+      // --- Singleton flow: deploy once, then initialize a V4 pool per config ---
 
-      try {
-        const constructorArgs = module.encodeConstructorArgs(poolConfig, immutables);
-        const salt = await mineSalt(constructorArgs, module.protocolId, log, CREATE2_DEPLOYER, jobs);
-        const hookAddress = selfDeployPool(
-          poolConfig,
-          poolType,
-          immutables,
-          salt,
-          rpcUrl,
-          dryRun,
-          log,
-          priorityGasPrice,
-        );
+      if (!firstModule.aggregatorEnvKey || !firstModule.buildInitializeArgs) {
+        log.error(`Module ${firstPoolType} is marked as singleton but is missing aggregatorEnvKey or buildInitializeArgs`);
+        process.exit(1);
+      }
 
-        if (hookAddress && hookAddress !== "deployed") {
-          if (registryDir) {
-            const poolKeys = module.buildPoolKeys(poolConfig, hookAddress);
+      const envKey = `${firstModule.aggregatorEnvKey}_${chainId}`;
+      let hookAddress = (process.env[envKey] ?? "").trim() || null;
+
+      if (hookAddress) {
+        log.info(`Reusing existing ${firstPoolType} singleton at ${hookAddress} (${envKey})`);
+      } else {
+        log.info(`No ${envKey} found — deploying ${firstPoolType} singleton aggregator...`);
+        const immutables = firstModule.getImmutablesFromEnv(chainId);
+        const constructorArgs = firstModule.encodeConstructorArgs(pools[0], immutables);
+        const salt = await mineSalt(constructorArgs, firstModule.protocolId, log, CREATE2_DEPLOYER, jobs);
+        const deployed = selfDeployPool(pools[0], firstPoolType, immutables, salt, rpcUrl, dryRun, log, priorityGasPrice);
+
+        if (!deployed || deployed === "deployed") {
+          log.error("Could not determine deployed aggregator address — aborting");
+          process.exit(1);
+        }
+        hookAddress = deployed;
+
+        if (!dryRun) {
+          const envFilePath = join(projectRoot, "aggregator-hooks", ".env");
+          appendToEnvFile(envFilePath, envKey, hookAddress);
+          log.success(`Wrote ${envKey}=${hookAddress} to aggregator-hooks/.env`);
+
+          // Wait for the deployment tx to be confirmed before initializing pools.
+          // Without this, the first pool's beforeInitialize call hits an unconfirmed contract.
+          log.info(`Waiting for aggregator contract to be confirmed on-chain...`);
+          const deadline = Date.now() + 60_000;
+          while (Date.now() < deadline) {
+            const code = await provider.getCode(hookAddress);
+            if (code && code !== "0x") {
+              log.success(`Aggregator confirmed at ${hookAddress}`);
+              break;
+            }
+            await new Promise((r) => setTimeout(r, 2_000));
+          }
+        }
+
+        if (verify.enabled && !dryRun) {
+          verifyContract(hookAddress as Address, firstModule.contractIdentifier, constructorArgs, chainId, verify, log);
+        }
+      }
+
+      const immutables = firstModule.getImmutablesFromEnv(chainId);
+
+      for (let j = 0; j < pools.length; j++) {
+        const i = startAt - 1 + j;
+        const poolConfig = pools[j];
+
+        log.section(`Initializing Pool ${i + 1}/${allPools.length} (${firstPoolType})`);
+
+        try {
+          const [poolKey, sqrtPriceX96] = firstModule.buildInitializeArgs!(poolConfig, hookAddress as Address);
+          const result = await initializeSingletonPool(
+            signer,
+            immutables.poolManager as Address,
+            poolKey,
+            sqrtPriceX96,
+            log,
+            dryRun,
+          );
+
+          if (registryDir && !dryRun) {
+            const poolKeys = firstModule.buildPoolKeys(poolConfig, hookAddress as Address);
             if (poolKeys.length > 0) {
-              const blockNumber = Number(await provider.getBlockNumber());
+              const blockNumber = result?.blockNumber ?? Number(await provider.getBlockNumber());
               appendToRegistryFile(
                 registryDir,
-                poolType,
+                firstPoolType,
                 {
-                  pools: poolKeys.map((poolKey) => ({ poolKey, poolId: computePoolId(poolKey) })),
+                  pools: poolKeys.map((pk) => ({ poolKey: pk, poolId: computePoolId(pk) })),
                   metadata: {
-                    externalPool: module.getExternalPool(poolConfig),
-                    hookAddress,
+                    externalPool: firstModule.getExternalPool(poolConfig),
+                    hookAddress: hookAddress as Address,
+                    txHash: result?.txHash,
                     blockNumber,
                   },
                 },
@@ -862,62 +969,115 @@ async function main() {
               );
             }
           }
-          if (verify.enabled && !dryRun) {
-            verifyContract(hookAddress, module.contractIdentifier, constructorArgs, chainId, verify, log);
-          }
+          log.success(`Successfully initialized pool ${i + 1}`);
+        } catch (error) {
+          log.error(`Failed to initialize pool ${i + 1}:`, error);
+          continue;
         }
-        log.success(`Successfully created pool ${i + 1}`);
-      } catch (error) {
-        log.error(`Failed to create pool ${i + 1}:`, error);
-        const execErr = error as { stdout?: string; stderr?: string };
-        log.dumpForgeOutput({ stdout: execErr.stdout, stderr: execErr.stderr, label: "Forge" });
-        const forgeOutput = [execErr.stdout, execErr.stderr].filter(Boolean).join("\n");
-        if (forgeOutput) {
-          const verification = await verifyDeploymentOnForgeFailure(
-            provider,
-            immutables.poolManager,
+      }
+    } else {
+      // --- Factory/self-deploy flow: deploy a new hook per pool config ---
+      for (let j = 0; j < pools.length; j++) {
+        const i = startAt - 1 + j;
+        const poolConfig = pools[j];
+        const poolType = poolConfig.poolType;
+        const module = CREATION_MODULES[poolType];
+        const immutables = module.getImmutablesFromEnv(chainId);
+
+        log.section(`Processing Pool ${i + 1}/${allPools.length} (${poolType})`);
+
+        try {
+          const constructorArgs = module.encodeConstructorArgs(poolConfig, immutables);
+          const salt = await mineSalt(constructorArgs, module.protocolId, log, CREATE2_DEPLOYER, jobs);
+          const hookAddress = selfDeployPool(
             poolConfig,
             poolType,
-            forgeOutput,
+            immutables,
+            salt,
+            rpcUrl,
+            dryRun,
+            log,
+            priorityGasPrice,
           );
-          if (verification?.hookDeployed) {
-            log.error("");
-            log.error("Verification (possible false positive):");
-            log.error(`  Hook has code at ${verification.hookAddress} → deployment likely succeeded`);
-            if (verification.poolsInitialized > 0) {
-              log.error(
-                `  Found ${verification.poolsInitialized} Initialize event(s) for this hook → pool(s) initialized on-chain`,
-              );
-            }
-            log.error("  Check block explorer to confirm.");
 
-            if (registryDir && !dryRun) {
-              const pools: PoolEntry[] =
-                verification.poolEntriesFromEvent ??
-                module
-                  .buildPoolKeys(poolConfig, verification.hookAddress)
-                  .map((poolKey) => ({ poolKey, poolId: computePoolId(poolKey) }));
-              const blockNumber = verification.blockNumber ?? Number(await provider.getBlockNumber());
-              if (pools.length > 0) {
+          if (hookAddress && hookAddress !== "deployed") {
+            if (registryDir) {
+              const poolKeys = module.buildPoolKeys(poolConfig, hookAddress);
+              if (poolKeys.length > 0) {
+                const blockNumber = Number(await provider.getBlockNumber());
                 appendToRegistryFile(
                   registryDir,
                   poolType,
                   {
-                    pools,
+                    pools: poolKeys.map((poolKey) => ({ poolKey, poolId: computePoolId(poolKey) })),
                     metadata: {
                       externalPool: module.getExternalPool(poolConfig),
-                      hookAddress: verification.hookAddress,
+                      hookAddress,
                       blockNumber,
                     },
                   },
                   log,
                 );
-                log.info("  Appended to registry despite forge failure (deployment verified on-chain).");
+              }
+            }
+            if (verify.enabled && !dryRun) {
+              verifyContract(hookAddress, module.contractIdentifier, constructorArgs, chainId, verify, log);
+            }
+          }
+          log.success(`Successfully created pool ${i + 1}`);
+        } catch (error) {
+          log.error(`Failed to create pool ${i + 1}:`, error);
+          const execErr = error as { stdout?: string; stderr?: string };
+          log.dumpForgeOutput({ stdout: execErr.stdout, stderr: execErr.stderr, label: "Forge" });
+          const forgeOutput = [execErr.stdout, execErr.stderr].filter(Boolean).join("\n");
+          if (forgeOutput) {
+            const immutables = CREATION_MODULES[poolConfig.poolType].getImmutablesFromEnv(chainId);
+            const verification = await verifyDeploymentOnForgeFailure(
+              provider,
+              immutables.poolManager,
+              poolConfig,
+              poolConfig.poolType,
+              forgeOutput,
+            );
+            if (verification?.hookDeployed) {
+              log.error("");
+              log.error("Verification (possible false positive):");
+              log.error(`  Hook has code at ${verification.hookAddress} → deployment likely succeeded`);
+              if (verification.poolsInitialized > 0) {
+                log.error(
+                  `  Found ${verification.poolsInitialized} Initialize event(s) for this hook → pool(s) initialized on-chain`,
+                );
+              }
+              log.error("  Check block explorer to confirm.");
+
+              if (registryDir && !dryRun) {
+                const recoverPools: PoolEntry[] =
+                  verification.poolEntriesFromEvent ??
+                  module
+                    .buildPoolKeys(poolConfig, verification.hookAddress)
+                    .map((poolKey) => ({ poolKey, poolId: computePoolId(poolKey) }));
+                const blockNumber = verification.blockNumber ?? Number(await provider.getBlockNumber());
+                if (recoverPools.length > 0) {
+                  appendToRegistryFile(
+                    registryDir,
+                    poolConfig.poolType,
+                    {
+                      pools: recoverPools,
+                      metadata: {
+                        externalPool: module.getExternalPool(poolConfig),
+                        hookAddress: verification.hookAddress,
+                        blockNumber,
+                      },
+                    },
+                    log,
+                  );
+                  log.info("  Appended to registry despite forge failure (deployment verified on-chain).");
+                }
               }
             }
           }
+          continue;
         }
-        continue;
       }
     }
   } else {

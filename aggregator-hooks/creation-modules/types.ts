@@ -59,6 +59,11 @@ export interface HookParams {
 /**
  * Creation module interface. Each pool type implements this to provide
  * type-specific deployment logic.
+ *
+ * Singleton types (UniswapV3, UniswapV2, Slipstream, PancakeSwapV3) set
+ * `isSingleton: true`. For these, createPools.ts deploys the aggregator once
+ * per chain (writing the address to .env), then calls poolManager.initialize
+ * for each pool config entry rather than deploying a new hook per pool.
  */
 export interface CreationModule<TConfig = unknown> {
   /** Pool type identifier (e.g. "stableswap", "fluiddext1") */
@@ -73,6 +78,18 @@ export interface CreationModule<TConfig = unknown> {
   /** Solidity contract identifier for forge verify-contract (path:ContractName) */
   contractIdentifier: string;
 
+  /**
+   * If true, one aggregator is deployed per chain and reused for all pools.
+   * Pools are registered by calling poolManager.initialize rather than a factory.
+   */
+  isSingleton?: boolean;
+
+  /**
+   * Env var key (without chain suffix) that persists the deployed singleton
+   * address, e.g. "UNISWAP_V3_AGGREGATOR". Required when isSingleton is true.
+   */
+  aggregatorEnvKey?: string;
+
   /** Resolve hook params with defaults */
   getHookParams(config: TConfig): HookParams;
 
@@ -85,7 +102,7 @@ export interface CreationModule<TConfig = unknown> {
   /** Read immutables from env for self-deploy */
   getImmutablesFromEnv(chainId: number): FactoryImmutables;
 
-  /** Read immutables from factory contract */
+  /** Read immutables from factory contract (or deployed singleton aggregator) */
   readFactoryImmutables(provider: Provider, factoryAddress: Address): Promise<FactoryImmutables>;
 
   /** Encode constructor args for salt mining */
@@ -94,6 +111,12 @@ export interface CreationModule<TConfig = unknown> {
   /** Build env vars for SelfCreateHook.s.sol self-deploy */
   buildSelfDeployEnvVars(config: TConfig, immutables: FactoryImmutables): Record<string, string>;
 
-  /** Build createPool call args for factory contract */
+  /** Build createPool call args for factory contract. Throws for singleton types. */
   buildCreatePoolArgs(config: TConfig, salt: string): unknown[];
+
+  /**
+   * Build args for poolManager.initialize — singleton types only.
+   * Returns [poolKey, sqrtPriceX96] to pass to the PoolManager initialize function.
+   */
+  buildInitializeArgs?(config: TConfig, hookAddress: Address): [PoolKeyRecord, bigint];
 }
