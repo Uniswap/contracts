@@ -17,7 +17,7 @@
  *
  * Env vars (use VAR_<chainId> or VAR for single chain):
  *   RPC_URL                     (required)
- *   FLUID_DEX_T1_RESOLVER       (required) IFluidDexResolver for getPoolTokens
+ *   FLUID_DEX_T1_RESOLVER       (required) IFluidDexResolver for getDexTokens
  *   FLUID_DEX_T1_FACTORY        (optional, default mainnet)
  *   FINALITY_BLOCKS         (optional, default 10) subtract from latest; checkpoint = last scanned block
  *   LOOKBACK_BLOCKS         (optional, default 200000) used when checkpoint missing and no --start-block
@@ -61,7 +61,7 @@ type CreatePoolsFluidDexT1Config = {
 
 const FACTORY_ABI = ["event LogDexDeployed(address indexed dex, uint256 indexed dexId)"];
 
-const RESOLVER_ABI = ["function getPoolTokens(address pool) external view returns (address token0, address token1)"];
+const RESOLVER_ABI = ["function getDexTokens(address dex_) external view returns (address token0_, address token1_)"];
 
 function ensureDirForFile(filePath: string) {
   fs.mkdirSync(path.dirname(path.resolve(filePath)), { recursive: true });
@@ -209,9 +209,9 @@ async function main() {
       let token0: string;
       let token1: string;
       try {
-        [token0, token1] = await resolver.getPoolTokens(dex);
+        [token0, token1] = await resolver.getDexTokens(dex);
       } catch {
-        console.error(`Failed getPoolTokens for ${dex}`);
+        console.error(`Failed getDexTokens for ${dex}`);
         continue;
       }
 

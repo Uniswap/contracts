@@ -15,7 +15,7 @@
  *
  * Env vars (use VAR_<chainId> or VAR for single chain):
  *   RPC_URL                     (required)
- *   FLUID_DEX_T1_RESOLVER       (required) IFluidDexResolver for getPoolTokens
+ *   FLUID_DEX_T1_RESOLVER       (required) IFluidDexResolver for getDexTokens
  *   FLUID_DEX_T1_FACTORY        (optional, default mainnet)
  *   RPS                     (optional, default 80) max RPC requests per second
  *   CONCURRENCY             (optional, default 8) max concurrent RPC calls
@@ -200,7 +200,7 @@ async function main() {
       let token0: Address;
       let token1: Address;
       try {
-        [token0, token1] = (await resolver.getPoolTokens(fluidPool)) as [Address, Address];
+        [token0, token1] = (await resolver.getDexTokens(fluidPool)) as [Address, Address];
       } catch {
         return null;
       }
@@ -222,7 +222,7 @@ async function main() {
   }
 
   if (skipped > 0) {
-    console.error(`Skipped ${skipped} pools (getPoolTokens reverted - may be VaultT1 or deprecated)`);
+    console.error(`Skipped ${skipped} pools (getDexTokens reverted - may be VaultT1 or deprecated)`);
   }
 
   const outPath = resolveOutputPath(outputDir, chainId, OUTPUT_FILE);

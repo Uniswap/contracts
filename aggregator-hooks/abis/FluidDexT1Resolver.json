@@ -1,1 +1,1 @@
-["function getPoolTokens(address pool) external view returns (address token0, address token1)"]
+["function getDexTokens(address dex_) external view returns (address token0_, address token1_)"]

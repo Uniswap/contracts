@@ -16,9 +16,15 @@ export interface PoolKeyRecord {
   hooks: Address;
 }
 
+/** A single pool: its PoolKey paired with the computed PoolId */
+export interface PoolEntry {
+  poolKey: PoolKeyRecord;
+  poolId: string;
+}
+
 /** Entry appended to pool-deployed registry */
 export interface PoolDeployedEntry {
-  poolKeys: PoolKeyRecord[];
+  pools: PoolEntry[];
   metadata: {
     externalPool: string;
     hookAddress: Address;

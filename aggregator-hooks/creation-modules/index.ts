@@ -11,6 +11,7 @@ export type {
   Address,
   CreationModule,
   PoolKeyRecord,
+  PoolEntry,
   PoolDeployedEntry,
   FactoryImmutables,
   HookParams,

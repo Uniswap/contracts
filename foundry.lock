@@ -24,7 +24,7 @@
     }
   },
   "lib/v4-hooks-public": {
-    "rev": "a187a29aaefa716cf2fed38d4bc934c67d36c0f0"
+    "rev": "d68c16abdc16f5e5319865739457ef17081ea789"
   },
   "src/pkgs/calibur": {
     "rev": "69d5eb61498ffac7740530310b270459f2ae2a20"

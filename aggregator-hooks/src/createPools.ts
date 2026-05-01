@@ -15,6 +15,7 @@ import {
   type Address,
   type PoolConfig,
   type PoolDeployedEntry,
+  type PoolEntry,
   type PoolKeyRecord,
   type FactoryImmutables,
 } from "../creation-modules/index.js";
@@ -425,8 +426,7 @@ async function verifyDeploymentOnForgeFailure(
   hookDeployed: boolean;
   poolsInitialized: number;
   blockNumber?: number;
-  poolKeysFromEvent?: PoolKeyRecord[];
-  poolIdFromEvent?: string;
+  poolEntriesFromEvent?: PoolEntry[];
 } | null> {
   const module = CREATION_MODULES[poolType];
   if (!module) return null;
@@ -441,9 +441,8 @@ async function verifyDeploymentOnForgeFailure(
   if (!hookDeployed) return { hookAddress, hookDeployed: false, poolsInitialized: 0 };
 
   const poolKeys = module.buildPoolKeys(poolConfig, hookAddress);
-  const poolKeysFromEvent: PoolKeyRecord[] = [];
+  const poolEntriesFromEvent: PoolEntry[] = [];
   let initializeBlockNumber: number | undefined;
-  let poolIdFromEvent: string | undefined;
 
   try {
     const blockNumber = await provider.getBlockNumber();
@@ -475,14 +474,8 @@ async function verifyDeploymentOnForgeFailure(
         )
       ) {
         if (initializeBlockNumber === undefined) initializeBlockNumber = Number(log.blockNumber);
-        if (poolIdFromEvent === undefined) poolIdFromEvent = log.topics[1];
-        poolKeysFromEvent.push({
-          currency0,
-          currency1,
-          fee,
-          tickSpacing,
-          hooks: hookAddress,
-        });
+        const poolKey: PoolKeyRecord = { currency0, currency1, fee, tickSpacing, hooks: hookAddress };
+        poolEntriesFromEvent.push({ poolKey, poolId: log.topics[1] });
       }
     }
   } catch {
@@ -492,10 +485,9 @@ async function verifyDeploymentOnForgeFailure(
   return {
     hookAddress,
     hookDeployed,
-    poolsInitialized: poolKeysFromEvent.length,
+    poolsInitialized: poolEntriesFromEvent.length,
     blockNumber: initializeBlockNumber,
-    poolKeysFromEvent: poolKeysFromEvent.length > 0 ? poolKeysFromEvent : undefined,
-    poolIdFromEvent,
+    poolEntriesFromEvent: poolEntriesFromEvent.length > 0 ? poolEntriesFromEvent : undefined,
   };
 }
 
@@ -859,11 +851,10 @@ async function main() {
                 registryDir,
                 poolType,
                 {
-                  poolKeys,
+                  pools: poolKeys.map((poolKey) => ({ poolKey, poolId: computePoolId(poolKey) })),
                   metadata: {
                     externalPool: module.getExternalPool(poolConfig),
                     hookAddress,
-                    poolId: computePoolId(poolKeys[0]),
                     blockNumber,
                   },
                 },
@@ -901,21 +892,21 @@ async function main() {
             log.error("  Check block explorer to confirm.");
 
             if (registryDir && !dryRun) {
-              const poolKeys =
-                verification.poolKeysFromEvent ?? module.buildPoolKeys(poolConfig, verification.hookAddress);
-              const poolId =
-                verification.poolIdFromEvent ?? (poolKeys.length > 0 ? computePoolId(poolKeys[0]) : undefined);
+              const pools: PoolEntry[] =
+                verification.poolEntriesFromEvent ??
+                module
+                  .buildPoolKeys(poolConfig, verification.hookAddress)
+                  .map((poolKey) => ({ poolKey, poolId: computePoolId(poolKey) }));
               const blockNumber = verification.blockNumber ?? Number(await provider.getBlockNumber());
-              if (poolKeys.length > 0 && poolId) {
+              if (pools.length > 0) {
                 appendToRegistryFile(
                   registryDir,
                   poolType,
                   {
-                    poolKeys,
+                    pools,
                     metadata: {
                       externalPool: module.getExternalPool(poolConfig),
                       hookAddress: verification.hookAddress,
-                      poolId,
                       blockNumber,
                     },
                   },
@@ -974,11 +965,10 @@ async function main() {
                 registryDir,
                 poolType,
                 {
-                  poolKeys,
+                  pools: poolKeys.map((poolKey) => ({ poolKey, poolId: computePoolId(poolKey) })),
                   metadata: {
                     externalPool: module.getExternalPool(poolConfig),
                     hookAddress: result.hookAddress,
-                    poolId: computePoolId(poolKeys[0]),
                     txHash: result.txHash,
                     blockNumber: result.blockNumber,
                   },
