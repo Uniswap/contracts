@@ -1,0 +1,7 @@
+[
+    "function POOL_MANAGER() external view returns (address)",
+    "function fluidDexReservesResolver() external view returns (address)",
+    "function fluidDexResolver() external view returns (address)",
+    "function FLUID_LIQUIDITY() external view returns (address)",
+    "function createPool(bytes32 salt, address fluidPool, address currency0, address currency1, uint24 fee, int24 tickSpacing, uint160 sqrtPriceX96) external returns (address hook)"
+]

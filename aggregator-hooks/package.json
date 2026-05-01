@@ -1,0 +1,22 @@
+{
+    "name": "agg-hook-scripts",
+    "version": "1.0.0",
+    "description": "Aggregator hook pool discovery and creation scripts",
+    "type": "module",
+    "scripts": {
+        "build": "tsc && cp abis/*.json dist/abis/",
+        "stableswapng": "tsx historical/StableSwapNG.ts",
+        "fluiddext1": "tsx historical/FluidDexT1.ts",
+        "fluiddexlite": "tsx historical/FluidDexLite.ts",
+        "create-pools": "tsx src/createPools.ts"
+    },
+    "devDependencies": {
+        "@types/node": "^22.10.0",
+        "tsx": "^4.19.2",
+        "typescript": "^5.7.0"
+    },
+    "dependencies": {
+        "dotenv": "^17.3.1",
+        "ethers": "^6.13.0"
+    }
+}

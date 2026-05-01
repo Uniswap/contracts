@@ -17,6 +17,21 @@
   "lib/solidity-lib": {
     "rev": "3fcc8ee6d5c7dea3283416cbcee601d89504a243"
   },
+  "lib/v4-core": {
+    "tag": {
+      "name": "v4.0.0",
+      "rev": "e50237c43811bd9b526eff40f26772152a42daba"
+    }
+  },
+  "lib/v4-hooks-public": {
+    "rev": "d68c16abdc16f5e5319865739457ef17081ea789"
+  },
+  "src/pkgs/calibur": {
+    "rev": "69d5eb61498ffac7740530310b270459f2ae2a20"
+  },
+  "src/pkgs/mixed-quoter": {
+    "rev": "d576527bff2e7c9db5434bb2b3806fd184610865"
+  },
   "src/pkgs/permit2": {
     "rev": "cc56ad0f3439c502c246fc5cfcc3db92bb8b7219"
   },
@@ -27,6 +42,9 @@
     "rev": "4c01ff07cb16df7ad7f5c2b8e9253005c1259275"
   },
   "src/pkgs/universal-router": {
+    "rev": "3663f6db6e2fe121753cd2d899699c2dc75dca86"
+  },
+  "src/pkgs/universal-router-2_0": {
     "rev": "3663f6db6e2fe121753cd2d899699c2dc75dca86"
   },
   "src/pkgs/util-contracts": {
