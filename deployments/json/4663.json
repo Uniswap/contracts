@@ -128,6 +128,22 @@
       "address": "0x000000000022d473030f116ddee9f6b43ac78ba3",
       "proxy": false,
       "note": "pre-existing canonical Permit2; not deployed by this run"
+    },
+    "UnsupportedProtocol": {
+      "address": "0x7332D11BD10d18A04B119Cd4671a96f3148002c4",
+      "proxy": false,
+      "deploymentTxn": "0x029d23d957e6d9f39b2bd655a10d01e764999b32344c2ccdcb9667259cd80f24",
+      "initcodeHash": "be71b3dccc59971adbbc194a78fa72cdcc604e5f13e5305e725620f24378ce65",
+      "timestamp": 1779818847000,
+      "commitHash": "dbef74e"
+    },
+    "UniversalRouter": {
+      "address": "0x248a454ac3584c2a48d1fcb28d3910a6b6ea00af",
+      "proxy": false,
+      "deploymentTxn": "0x66347de408f4f8f5de452b1f3b709c4ec4313c77ce75d69fea9924526004c8e3",
+      "initcodeHash": "3e5071cc21630ca46ee2c7f6b2b57447a7044de924c28fbda2d023d621461526",
+      "timestamp": 1779819180000,
+      "commitHash": "dbef74e"
     }
   },
   "history": [
