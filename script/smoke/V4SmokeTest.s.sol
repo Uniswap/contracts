@@ -47,12 +47,15 @@ interface IUniversalRouter {
     function execute(bytes calldata commands, bytes[] calldata inputs, uint256 deadline) external payable;
 }
 
-// Matches IV4Router.ExactInputSingleParams — must encode this whole struct as a single value
+// Matches IV4Router.ExactInputSingleParams — must encode this whole struct as a single value.
+// minHopPriceX36 was added in UR v2.1.1 (slot between amountOutMinimum and hookData).
+// Set to 0 to disable the per-hop price check.
 struct ExactInputSingleParams {
     PoolKey poolKey;
     bool zeroForOne;
     uint128 amountIn;
     uint128 amountOutMinimum;
+    uint256 minHopPriceX36;
     bytes hookData;
 }
 
@@ -240,7 +243,12 @@ contract V4SmokeTest is Script {
         // inline (abi.encode(key, zfo, amountIn, ...)) is NOT compatible with
         // decodeSwapExactInSingleParams in CalldataDecoder.
         ExactInputSingleParams memory swapParams = ExactInputSingleParams({
-            poolKey: key, zeroForOne: zeroForOne, amountIn: 1e18, amountOutMinimum: 0, hookData: bytes('')
+            poolKey: key,
+            zeroForOne: zeroForOne,
+            amountIn: 1e18,
+            amountOutMinimum: 0,
+            minHopPriceX36: 0, // disable per-hop price check
+            hookData: bytes('')
         });
 
         bytes memory actions = abi.encodePacked(SWAP_EXACT_IN_SINGLE, SETTLE_ALL, TAKE_ALL);
