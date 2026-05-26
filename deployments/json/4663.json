@@ -144,6 +144,38 @@
       "initcodeHash": "0dd2931a3fa4f9d62cfa0c23ec94d56019086a08952ae677c3e2e79d056e770f",
       "timestamp": 1779919234534,
       "commitHash": "e5b4eed"
+    },
+    "UnsupportedProtocol": {
+      "address": "0x7332D11BD10d18A04B119Cd4671a96f3148002c4",
+      "proxy": false,
+      "deploymentTxn": "0x029d23d957e6d9f39b2bd655a10d01e764999b32344c2ccdcb9667259cd80f24",
+      "initcodeHash": "be71b3dccc59971adbbc194a78fa72cdcc604e5f13e5305e725620f24378ce65",
+      "timestamp": 1779818847000,
+      "commitHash": "dbef74e"
+    },
+    "UniversalRouter": {
+      "address": "0x8876789976decbfcbbbe364623c63652db8c0904",
+      "proxy": false,
+      "deploymentTxn": "0x422569c99e80a452d45680fbf16cf04cd4ae79cd2b0d7a6a89cf6603009ed1fa",
+      "initcodeHash": "6dba80c0116a490d48657845492bb38374489ed49c296ac50614265f97221510",
+      "timestamp": 1779834142000,
+      "commitHash": "023196a",
+      "input": {
+        "constructor": {
+          "params": {
+            "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+            "weth9": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
+            "v2Factory": "0x8bcEaA40B9AcdfAedF85AdF4FF01F5Ad6517937f",
+            "v3Factory": "0x1f7d7550B1b028f7571E69A784071F0205FD2EfA",
+            "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+            "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+            "v4PoolManager": "0x8366a39CC670B4001A1121B8F6A443A643e40951",
+            "v3NFTPositionManager": "0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3",
+            "v4PositionManager": "0x58daec3116aae6D93017bAAea7749052E8a04fA7",
+            "spokePool": "0x7332D11BD10d18A04B119Cd4671a96f3148002c4"
+          }
+        }
+      }
     }
   },
   "history": [
@@ -309,6 +341,37 @@
       },
       "timestamp": 1779473097006,
       "commitHash": "56928a9"
+    },
+    {
+      "label": "UniversalRouter v2.1.0 (orphaned — replaced by v2.1.1; briefcase pin predated upstream v2.1.1 commit)",
+      "contracts": {
+        "UniversalRouter": {
+          "address": "0x248a454ac3584c2a48d1fcb28d3910a6b6ea00af",
+          "proxy": false,
+          "deploymentTxn": "0x66347de408f4f8f5de452b1f3b709c4ec4313c77ce75d69fea9924526004c8e3",
+          "initcodeHash": "3e5071cc21630ca46ee2c7f6b2b57447a7044de924c28fbda2d023d621461526",
+          "timestamp": 1779819180000,
+          "commitHash": "dbef74e",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
+                "v2Factory": "0x8bcEaA40B9AcdfAedF85AdF4FF01F5Ad6517937f",
+                "v3Factory": "0x1f7d7550B1b028f7571E69A784071F0205FD2EfA",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x8366a39CC670B4001A1121B8F6A443A643e40951",
+                "v3NFTPositionManager": "0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3",
+                "v4PositionManager": "0x58daec3116aae6D93017bAAea7749052E8a04fA7",
+                "spokePool": "0x7332D11BD10d18A04B119Cd4671a96f3148002c4"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1779819180000,
+      "commitHash": "dbef74e"
     }
   ]
 }
