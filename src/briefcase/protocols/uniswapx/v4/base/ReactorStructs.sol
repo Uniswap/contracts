@@ -4,15 +4,15 @@ pragma solidity ^0.8.0;
 import {InputToken, OutputToken} from '../../base/ReactorStructs.sol';
 import {IAuctionResolver} from '../interfaces/IAuctionResolver.sol';
 import {IPostExecutionHook, IPreExecutionHook} from '../interfaces/IHook.sol';
-import {IReactor} from '../interfaces/IReactor.sol';
+import {IReactor_1} from '../interfaces/IReactor.sol';
 
 /// @dev generic order information
 ///  should be included as the first field in any concrete order types
-struct OrderInfo {
+struct OrderInfo_1 {
     // The address of the reactor that this order is targeting
     // Note that this must be included in every order so the swapper
     // signature commits to the specific reactor that they trust to fill their order properly
-    IReactor reactor;
+    IReactor_1 reactor;
     // The address of the user which created the order
     // Note that this must be included so that order hashes are unique by swapper
     address swapper;
@@ -33,8 +33,8 @@ struct OrderInfo {
 }
 
 /// @dev generic concrete order that specifies exact tokens which need to be sent and received
-struct ResolvedOrder {
-    OrderInfo info;
+struct ResolvedOrder_1 {
+    OrderInfo_1 info;
     InputToken input;
     OutputToken[] outputs;
     bytes sig;
