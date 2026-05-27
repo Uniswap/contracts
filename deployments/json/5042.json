@@ -146,9 +146,51 @@
       "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
       "proxy": false,
       "note": "pre-existing canonical Permit2; not deployed by this run"
+    },
+    "CaliburEntry": {
+      "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+      "proxy": false,
+      "deploymentTxn": "0xd4a920ba5642739caaaa0c0aa7f2a13b0d43b1877be35407197d04293ff40dca",
+      "initcodeHash": "458e1bad03d37fd3255098ba25bdd90a8d13283c38fd16bc2414612c818c7569",
+      "timestamp": 1779919102535,
+      "commitHash": "e5b4eed"
+    },
+    "ERC7914Detector": {
+      "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+      "proxy": false,
+      "deploymentTxn": "0x8d33c8e683b9c779978cec88bd487896dd2fee5dbb9bd0808cad243e8da741b5",
+      "initcodeHash": "0dd2931a3fa4f9d62cfa0c23ec94d56019086a08952ae677c3e2e79d056e770f",
+      "timestamp": 1779919102535,
+      "commitHash": "e5b4eed"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "CaliburEntry": {
+          "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+          "proxy": false,
+          "deploymentTxn": "0xd4a920ba5642739caaaa0c0aa7f2a13b0d43b1877be35407197d04293ff40dca",
+          "initcodeHash": "458e1bad03d37fd3255098ba25bdd90a8d13283c38fd16bc2414612c818c7569",
+          "input": {
+            "constructor": {}
+          }
+        },
+        "ERC7914Detector": {
+          "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+          "proxy": false,
+          "deploymentTxn": "0x8d33c8e683b9c779978cec88bd487896dd2fee5dbb9bd0808cad243e8da741b5",
+          "initcodeHash": "0dd2931a3fa4f9d62cfa0c23ec94d56019086a08952ae677c3e2e79d056e770f",
+          "input": {
+            "constructor": {
+              "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+            }
+          }
+        }
+      },
+      "timestamp": 1779919102535,
+      "commitHash": "e5b4eed"
+    },
     {
       "contracts": {
         "UniversalRouter": {
