@@ -137,15 +137,9 @@ contract V4SmokeNativeIsERC20 is Script {
         console.log('Token A:', address(a));
         console.log('Token B:', address(b));
 
-        (address c0, address c1) =
-            address(a) < address(b) ? (address(a), address(b)) : (address(b), address(a));
-        PoolKey memory key = PoolKey({
-            currency0: c0,
-            currency1: c1,
-            fee: FEE,
-            tickSpacing: TICK_SPACING,
-            hooks: address(0)
-        });
+        (address c0, address c1) = address(a) < address(b) ? (address(a), address(b)) : (address(b), address(a));
+        PoolKey memory key =
+            PoolKey({currency0: c0, currency1: c1, fee: FEE, tickSpacing: TICK_SPACING, hooks: address(0)});
 
         _approve(a, b);
         IPositionManager(positionManager).initializePool(key, SQRT_PRICE_1_1);
@@ -175,13 +169,10 @@ contract V4SmokeNativeIsERC20 is Script {
         bytes memory mintActions = abi.encodePacked(MINT_POSITION, SETTLE_PAIR);
         bytes[] memory mintParams = new bytes[](2);
         uint256 liquidity = 5e13;
-        mintParams[0] = abi.encode(
-            key, TICK_LOWER, TICK_UPPER, liquidity, type(uint128).max, type(uint128).max, me, bytes('')
-        );
+        mintParams[0] =
+            abi.encode(key, TICK_LOWER, TICK_UPPER, liquidity, type(uint128).max, type(uint128).max, me, bytes(''));
         mintParams[1] = abi.encode(c0, c1);
-        IPositionManager(positionManager).modifyLiquidities(
-            abi.encode(mintActions, mintParams), block.timestamp + 3600
-        );
+        IPositionManager(positionManager).modifyLiquidities(abi.encode(mintActions, mintParams), block.timestamp + 3600);
         console.log('Minted v4 position tokenId:', tokenId);
     }
 

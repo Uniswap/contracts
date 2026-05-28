@@ -121,8 +121,7 @@ contract V3SmokeNativeIsERC20 is Script {
         console.log('Token A:', address(a));
         console.log('Token B:', address(b));
 
-        (address t0, address t1) =
-            address(a) < address(b) ? (address(a), address(b)) : (address(b), address(a));
+        (address t0, address t1) = address(a) < address(b) ? (address(a), address(b)) : (address(b), address(a));
 
         address pool = IV3Factory(v3Factory).createPool(t0, t1, FEE);
         IUniswapV3Pool(pool).initialize(SQRT_PRICE_1_1);

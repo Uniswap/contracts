@@ -105,9 +105,8 @@ contract V2SmokeNativeIsERC20 is Script {
         a.approve(v2Router, type(uint256).max);
         b.approve(v2Router, type(uint256).max);
 
-        (uint256 amtA, uint256 amtB, uint256 liq) = IV2Router02(v2Router).addLiquidity(
-            address(a), address(b), 1000 ether, 1000 ether, 0, 0, me, block.timestamp + 3600
-        );
+        (uint256 amtA, uint256 amtB, uint256 liq) = IV2Router02(v2Router)
+            .addLiquidity(address(a), address(b), 1000 ether, 1000 ether, 0, 0, me, block.timestamp + 3600);
         console.log('Added v2 liquidity:');
         console.log('  amountA:', amtA);
         console.log('  amountB:', amtB);
@@ -122,9 +121,8 @@ contract V2SmokeNativeIsERC20 is Script {
         address[] memory swapPath = new address[](2);
         swapPath[0] = address(a);
         swapPath[1] = address(b);
-        uint256[] memory amounts = IV2Router02(v2Router).swapExactTokensForTokens(
-            1 ether, 0, swapPath, me, block.timestamp + 3600
-        );
+        uint256[] memory amounts =
+            IV2Router02(v2Router).swapExactTokensForTokens(1 ether, 0, swapPath, me, block.timestamp + 3600);
         uint256 bAfter = b.balanceOf(me);
 
         console.log('Swap: 1 A -> B');
