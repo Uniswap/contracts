@@ -11,7 +11,17 @@ library Actions {
     uint256 internal constant DECREASE_LIQUIDITY = 0x01;
     uint256 internal constant MINT_POSITION = 0x02;
     uint256 internal constant BURN_POSITION = 0x03;
+
+    /// @notice DEPRECATED: Vulnerable to sandwich attacks - do not use.
+    /// @dev The delta-based approach lacks minimum liquidity slippage protection, allowing
+    /// attackers to manipulate the price and reduce the liquidity received.
+    /// Use INCREASE_LIQUIDITY instead.
     uint256 internal constant INCREASE_LIQUIDITY_FROM_DELTAS = 0x04;
+
+    /// @notice DEPRECATED: Vulnerable to sandwich attacks - do not use.
+    /// @dev The delta-based approach lacks minimum liquidity slippage protection, allowing
+    /// attackers to manipulate the price and reduce the liquidity received.
+    /// Use MINT_POSITION instead.
     uint256 internal constant MINT_POSITION_FROM_DELTAS = 0x05;
 
     // swapping
@@ -46,4 +56,11 @@ library Actions {
     // note this is not supported in the position manager or router
     uint256 internal constant MINT_6909 = 0x17;
     uint256 internal constant BURN_6909 = 0x18;
+
+    // permissioned-pools specific actions
+    // routes a currency's positive delta with a fallback cascade: LP → defaultRecipient → 6909 mint to defaultRecipient
+    uint256 internal constant UNWIND_WITH_FALLBACK = 0x19;
+    // subscribing/unsubscribing via position manager
+    uint256 internal constant SUBSCRIBE = 0x1a;
+    uint256 internal constant UNSUBSCRIBE = 0x1b;
 }

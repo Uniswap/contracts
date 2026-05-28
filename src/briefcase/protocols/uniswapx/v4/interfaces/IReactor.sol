@@ -4,7 +4,7 @@ pragma solidity >=0.6.2;
 import {SignedOrder} from '../../base/ReactorStructs.sol';
 
 /// @notice Interface for order execution reactors
-interface IReactor {
+interface IReactor_1 {
     /// @notice thrown when an auction resolver is not set
     error EmptyAuctionResolver();
     /// @notice thrown when the order targets a different reactor

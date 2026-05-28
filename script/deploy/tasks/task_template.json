@@ -221,6 +221,49 @@
                     },
                     "dependencies": ["weth"]
                 },
+                "PermissionsAdapterFactory": {
+                    "deploy": false,
+                    "address": null,
+                    "lookup": {
+                        "latest": "PermissionsAdapterFactory"
+                    },
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        }
+                    }
+                },
+                "PermissionedPositionManager": {
+                    "deploy": false,
+                    "address": null,
+                    "lookup": {
+                        "latest": "PermissionedPositionManager"
+                    },
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "permit2": {
+                            "name": "Permit 2 address",
+                            "pointer": "protocols.permit2.contracts.Permit2"
+                        },
+                        "unsubscribeGasLimit": {
+                            "name": "Unsubscribe gas limit",
+                            "type": "uint256"
+                        },
+                        "positionDescriptor": {
+                            "name": "Position Descriptor address",
+                            "pointer": "protocols.v4.contracts.PositionDescriptor"
+                        },
+                        "permissionsAdapterFactory": {
+                            "name": "Permissions Adapter Factory",
+                            "pointer": "protocols.v4.contracts.PermissionsAdapterFactory"
+                        }
+                    },
+                    "dependencies": ["weth"]
+                },
                 "V4Quoter": {
                     "deploy": false,
                     "address": null,
@@ -291,6 +334,23 @@
                             "type": "bytes32"
                         }
                     }
+                },
+                "PermissionedHooks": {
+                    "deploy": false,
+                    "address": null,
+                    "lookup": {
+                        "latest": "PermissionedHooks"
+                    },
+                    "params": {
+                        "poolManager": {
+                            "name": "Pool Manager",
+                            "pointer": "protocols.v4.contracts.PoolManager"
+                        },
+                        "permissionsAdapterFactory": {
+                            "name": "Permissions Adapter Factory",
+                            "pointer": "protocols.v4.contracts.PermissionsAdapterFactory"
+                        }
+                    }
                 }
             }
         },
@@ -359,7 +419,7 @@
         },
         "universal-router": {
             "name": "Universal Router (Latest)",
-            "tag": "v2.1",
+            "tag": "v2.2",
             "deploy": false,
             "contracts": {
                 "UniversalRouter": {
@@ -408,6 +468,10 @@
                         "acrossSpokePool": {
                             "name": "Across Spoke Pool address",
                             "type": "address"
+                        },
+                        "permissionsAdapterFactory": {
+                            "name": "Permissions Adapter Factory",
+                            "pointer": "protocols.v4.contracts.PermissionsAdapterFactory"
                         }
                     },
                     "dependencies": ["weth"],
