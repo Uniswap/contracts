@@ -181,7 +181,7 @@
       "contracts": {
         "PoolManager": {
           "deploy": false,
-          "address": "0xE03A1074c86CFeDd5C142C4F04F1a1536e203543",
+          "address": "0x000000000004444c5dc75cB358380D2e3dE08A90",
           "lookup": {
             "latest": "PoolManager"
           },
@@ -245,7 +245,7 @@
         },
         "PermissionsAdapterFactory": {
           "deploy": false,
-          "address": "0x42540aDe1E0f3EC7e11dcEC0f722073d2fa385d3",
+          "address": "0x38f9Ab57FBE2704EbB727cB20e33201aF0E5F961",
           "lookup": {
             "latest": "PermissionsAdapterFactory"
           },

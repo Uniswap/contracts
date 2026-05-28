@@ -543,9 +543,9 @@ contract Deploy is Script {
         }
         address acrossSpokePool =
             config.readAddress('.protocols.universal-router.contracts.UniversalRouter.params.acrossSpokePool.value');
-        address permissionsAdapterFactory = config.readAddress(
-            '.protocols.universal-router.contracts.UniversalRouter.params.permissionsAdapterFactory.value'
-        );
+        if (permissionsAdapterFactory == address(0)) {
+            permissionsAdapterFactory = config.readAddress('.protocols.v4.contracts.PermissionsAdapterFactory.address');
+        }
         console.log('deploying Universal Router');
         universalRouter = address(
             UniversalRouterDeployer.deploy(
