@@ -51,6 +51,8 @@ import {
 } from '../../src/briefcase/deployers/v4-periphery/PermissionsAdapterFactoryDeployer.sol';
 import {PositionDescriptorDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionDescriptorDeployer.sol';
 import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionManagerDeployer.sol';
+import {Hooks} from '../../src/briefcase/protocols/v4-core/libraries/Hooks.sol';
+import {HookMiner} from '../../src/briefcase/protocols/v4-hooks-public/utils/HookMiner.sol';
 
 import {CaliburEntryDeployer} from '../../src/briefcase/deployers/calibur/CaliburEntryDeployer.sol';
 import {
@@ -383,11 +385,18 @@ contract Deploy is Script {
             WstETHRoutingHookDeployer.deploy(poolManager, wsteth, salt);
         }
         if (deployPermissionedHooks) {
-            bytes32 salt = config.readBytes32('.protocols.hooks.contracts.PermissionedHooks.params.salt.value');
             if (permissionsAdapterFactory == address(0)) {
                 permissionsAdapterFactory =
                     config.readAddress('.protocols.v4.contracts.PermissionsAdapterFactory.address');
             }
+            uint160 flags =
+                uint160(Hooks.BEFORE_INITIALIZE_FLAG | Hooks.BEFORE_ADD_LIQUIDITY_FLAG | Hooks.BEFORE_SWAP_FLAG);
+            (, bytes32 salt) = HookMiner.find(
+                0x4e59b44847b379578588920cA78FbF26c0B4956C,
+                flags,
+                PermissionedHooksDeployer.initcode(),
+                abi.encode(poolManager, permissionsAdapterFactory)
+            );
             console.log('deploying Permissioned Hooks');
             PermissionedHooksDeployer.deploy(poolManager, permissionsAdapterFactory, salt);
         }

@@ -349,9 +349,6 @@
                         "permissionsAdapterFactory": {
                             "name": "Permissions Adapter Factory",
                             "pointer": "protocols.v4.contracts.PermissionsAdapterFactory"
-                        },
-                        "salt": {
-                            "type": "bytes32"
                         }
                     }
                 }
