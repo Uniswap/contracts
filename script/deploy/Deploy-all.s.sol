@@ -42,8 +42,17 @@ import {
 
 import {PoolManagerDeployer} from '../../src/briefcase/deployers/v4-core/PoolManagerDeployer.sol';
 
+import {PermissionedHooksDeployer} from '../../src/briefcase/deployers/v4-hooks-public/PermissionedHooksDeployer.sol';
+import {
+    PermissionedPositionManagerDeployer
+} from '../../src/briefcase/deployers/v4-periphery/PermissionedPositionManagerDeployer.sol';
+import {
+    PermissionsAdapterFactoryDeployer
+} from '../../src/briefcase/deployers/v4-periphery/PermissionsAdapterFactoryDeployer.sol';
 import {PositionDescriptorDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionDescriptorDeployer.sol';
 import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionManagerDeployer.sol';
+import {Hooks} from '../../src/briefcase/protocols/v4-core/libraries/Hooks.sol';
+import {HookMiner} from '../../src/briefcase/protocols/v4-hooks-public/utils/HookMiner.sol';
 
 import {CaliburEntryDeployer} from '../../src/briefcase/deployers/calibur/CaliburEntryDeployer.sol';
 import {
@@ -70,6 +79,8 @@ contract Deploy is Script {
     address nonfungiblePositionManager;
     address poolManager;
     address positionManager;
+    address permissionsAdapterFactory;
+    address permissionedPositionManager;
     address universalRouter;
     address universalRouter2_0;
     address calibur;
@@ -250,6 +261,10 @@ contract Deploy is Script {
         bool deployPositionManager = config.readBoolOr('.protocols.v4.contracts.PositionManager.deploy', false);
         bool deployV4Quoter = config.readBoolOr('.protocols.v4.contracts.V4Quoter.deploy', false);
         bool deployStateView = config.readBoolOr('.protocols.v4.contracts.StateView.deploy', false);
+        bool deployPermissionsAdapterFactory =
+            config.readBoolOr('.protocols.v4.contracts.PermissionsAdapterFactory.deploy', false);
+        bool deployPermissionedPositionManager =
+            config.readBoolOr('.protocols.v4.contracts.PermissionedPositionManager.deploy', false);
 
         address positionDescriptor;
 
@@ -312,6 +327,36 @@ contract Deploy is Script {
             console.log('deploying State View');
             StateViewDeployer.deploy(poolManager);
         }
+
+        if (deployPermissionsAdapterFactory) {
+            if (!deployPoolManager) {
+                poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+            }
+            console.log('deploying Permissions Adapter Factory');
+            permissionsAdapterFactory = PermissionsAdapterFactoryDeployer.deploy(poolManager);
+        }
+
+        if (deployPermissionedPositionManager) {
+            if (!deployPoolManager) {
+                poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
+            }
+            if (permit2 == address(0)) {
+                permit2 = config.readAddress('.protocols.permit2.contracts.Permit2.address');
+            }
+            uint256 unsubscribeGasLimit =
+                config.readUint('.protocols.v4.contracts.PermissionedPositionManager.params.unsubscribeGasLimit.value');
+            if (!deployPositionDescriptor) {
+                positionDescriptor = config.readAddress('.protocols.v4.contracts.PositionDescriptor.address');
+            }
+            if (!deployPermissionsAdapterFactory) {
+                permissionsAdapterFactory =
+                    config.readAddress('.protocols.v4.contracts.PermissionsAdapterFactory.address');
+            }
+            console.log('deploying Permissioned Position Manager');
+            permissionedPositionManager = PermissionedPositionManagerDeployer.deploy(
+                poolManager, permit2, unsubscribeGasLimit, positionDescriptor, weth(), permissionsAdapterFactory
+            );
+        }
     }
 
     function deployV4Hooks() private {
@@ -319,6 +364,7 @@ contract Deploy is Script {
         bool deployWETHHook = config.readBoolOr('.protocols.hooks.contracts.WETHHook.deploy', false);
         bool deployWstETHHook = config.readBoolOr('.protocols.hooks.contracts.WstETHHook.deploy', false);
         bool deployWstETHRoutingHook = config.readBoolOr('.protocols.hooks.contracts.WstETHRoutingHook.deploy', false);
+        bool deployPermissionedHooks = config.readBoolOr('.protocols.hooks.contracts.PermissionedHooks.deploy', false);
 
         if (poolManager == address(0)) {
             poolManager = config.readAddress('.protocols.v4.contracts.PoolManager.address');
@@ -337,6 +383,22 @@ contract Deploy is Script {
             bytes32 salt = config.readBytes32('.protocols.hooks.contracts.WstETHRoutingHook.params.salt.value');
             address wsteth = config.readAddress('.protocols.hooks.contracts.WstETHRoutingHook.params.wstETH.value');
             WstETHRoutingHookDeployer.deploy(poolManager, wsteth, salt);
+        }
+        if (deployPermissionedHooks) {
+            if (permissionsAdapterFactory == address(0)) {
+                permissionsAdapterFactory =
+                    config.readAddress('.protocols.v4.contracts.PermissionsAdapterFactory.address');
+            }
+            uint160 flags =
+                uint160(Hooks.BEFORE_INITIALIZE_FLAG | Hooks.BEFORE_ADD_LIQUIDITY_FLAG | Hooks.BEFORE_SWAP_FLAG);
+            (, bytes32 salt) = HookMiner.find(
+                0x4e59b44847b379578588920cA78FbF26c0B4956C,
+                flags,
+                PermissionedHooksDeployer.initcode(),
+                abi.encode(poolManager, permissionsAdapterFactory)
+            );
+            console.log('deploying Permissioned Hooks');
+            PermissionedHooksDeployer.deploy(poolManager, permissionsAdapterFactory, salt);
         }
     }
 
@@ -481,6 +543,9 @@ contract Deploy is Script {
         }
         address acrossSpokePool =
             config.readAddress('.protocols.universal-router.contracts.UniversalRouter.params.acrossSpokePool.value');
+        address permissionsAdapterFactory = config.readAddress(
+            '.protocols.universal-router.contracts.UniversalRouter.params.permissionsAdapterFactory.value'
+        );
         console.log('deploying Universal Router');
         universalRouter = address(
             UniversalRouterDeployer.deploy(
@@ -493,7 +558,8 @@ contract Deploy is Script {
                 poolManager,
                 nonfungiblePositionManager,
                 positionManager,
-                acrossSpokePool
+                acrossSpokePool,
+                permissionsAdapterFactory
             )
         );
     }
