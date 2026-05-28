@@ -2,14 +2,14 @@
 pragma solidity >=0.6.2;
 
 import {SignedOrder} from '../../base/ReactorStructs.sol';
-import {ResolvedOrder} from '../base/ReactorStructs.sol';
+import {ResolvedOrder_1} from '../base/ReactorStructs.sol';
 
 /// @notice Interface for auction mechanism resolvers (for UnifiedReactor)
 interface IAuctionResolver {
     /// @notice Resolves a signed order into a resolved order based on auction rules
     /// @param signedOrder The signed order with auction-specific order data (resolver address already stripped)
     /// @return resolvedOrder The resolved order with final amounts
-    function resolve(SignedOrder calldata signedOrder) external view returns (ResolvedOrder memory resolvedOrder);
+    function resolve(SignedOrder calldata signedOrder) external view returns (ResolvedOrder_1 memory resolvedOrder);
 
     /// @notice Get the Permit2 order type string for EIP-712 signature verification
     /// @return orderType The EIP-712 order type string for this resolver's orders
