@@ -2,10 +2,10 @@
   "protocols": {
     "unsupported-protocol": {
       "name": "Unsupported Protocol",
-      "deploy": false,
+      "deploy": true,
       "contracts": {
         "UnsupportedProtocol": {
-          "deploy": false,
+          "deploy": true,
           "address": null
         }
       }
@@ -181,7 +181,7 @@
       "contracts": {
         "PoolManager": {
           "deploy": false,
-          "address": "0xE03A1074c86CFeDd5C142C4F04F1a1536e203543",
+          "address": null,
           "lookup": {
             "latest": "PoolManager"
           },
@@ -243,51 +243,6 @@
             "weth"
           ]
         },
-        "PermissionsAdapterFactory": {
-          "deploy": false,
-          "address": "0x42540aDe1E0f3EC7e11dcEC0f722073d2fa385d3",
-          "lookup": {
-            "latest": "PermissionsAdapterFactory"
-          },
-          "params": {
-            "poolManager": {
-              "name": "Pool Manager",
-              "pointer": "protocols.v4.contracts.PoolManager"
-            }
-          }
-        },
-        "PermissionedPositionManager": {
-          "deploy": false,
-          "address": null,
-          "lookup": {
-            "latest": "PermissionedPositionManager"
-          },
-          "params": {
-            "poolManager": {
-              "name": "Pool Manager",
-              "pointer": "protocols.v4.contracts.PoolManager"
-            },
-            "permit2": {
-              "name": "Permit 2 address",
-              "pointer": "protocols.permit2.contracts.Permit2"
-            },
-            "unsubscribeGasLimit": {
-              "name": "Unsubscribe gas limit",
-              "type": "uint256"
-            },
-            "positionDescriptor": {
-              "name": "Position Descriptor address",
-              "pointer": "protocols.v4.contracts.PositionDescriptor"
-            },
-            "permissionsAdapterFactory": {
-              "name": "Permissions Adapter Factory",
-              "pointer": "protocols.v4.contracts.PermissionsAdapterFactory"
-            }
-          },
-          "dependencies": [
-            "weth"
-          ]
-        },
         "V4Quoter": {
           "deploy": false,
           "address": null,
@@ -312,7 +267,7 @@
     },
     "hooks": {
       "name": "v4 Hooks",
-      "deploy": true,
+      "deploy": false,
       "contracts": {
         "WETHHook": {
           "deploy": false,
@@ -358,23 +313,6 @@
             },
             "salt": {
               "type": "bytes32"
-            }
-          }
-        },
-        "PermissionedHooks": {
-          "deploy": true,
-          "address": null,
-          "lookup": {
-            "latest": "PermissionedHooks"
-          },
-          "params": {
-            "poolManager": {
-              "name": "Pool Manager",
-              "pointer": "protocols.v4.contracts.PoolManager"
-            },
-            "permissionsAdapterFactory": {
-              "name": "Permissions Adapter Factory",
-              "pointer": "protocols.v4.contracts.PermissionsAdapterFactory"
             }
           }
         }
@@ -447,7 +385,7 @@
     },
     "universal-router": {
       "name": "Universal Router (Latest)",
-      "tag": "v2.2",
+      "tag": "v2.1",
       "deploy": false,
       "contracts": {
         "UniversalRouter": {
@@ -500,10 +438,6 @@
             "acrossSpokePool": {
               "name": "Across Spoke Pool address",
               "type": "address"
-            },
-            "permissionsAdapterFactory": {
-              "name": "Permissions Adapter Factory",
-              "pointer": "protocols.v4.contracts.PermissionsAdapterFactory"
             }
           },
           "dependencies": [
@@ -657,7 +591,8 @@
           "QuoterV2.input.constructor._WETH9",
           "UniswapV2Router02.input.constructor._WETH"
         ]
-      }
+      },
+      "value": "0x9701fb0aDe1E269c8f64Ec0C7b3cfADB31A13A52"
     }
   },
   "rename": true
