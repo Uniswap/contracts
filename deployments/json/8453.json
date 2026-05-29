@@ -195,6 +195,12 @@
       "proxy": false,
       "deploymentTxn": "0xbd1d9b1a36c659e0bb69e51cc6f7941c34fa9cce4fbfde0f7881e4d3b1cbf105",
       "timestamp": 1722874175000
+    },
+    "SwapProxy": {
+      "address": "0x02e5be68d46dac0b524905bff209cf47ee6db2a9",
+      "proxy": false,
+      "deploymentTxn": "0xbaafb8f628d0c1e7d88956b3c6d6f58e4fb1caa3b6182dc2f839f97788990ab2",
+      "timestamp": 1772727539000
     }
   },
   "history": [
@@ -745,6 +751,17 @@
         }
       },
       "timestamp": 1689532707000
+    },
+    {
+      "contracts": {
+        "SwapProxy": {
+          "address": "0x02e5be68d46dac0b524905bff209cf47ee6db2a9",
+          "proxy": false,
+          "deploymentTxn": "0xbaafb8f628d0c1e7d88956b3c6d6f58e4fb1caa3b6182dc2f839f97788990ab2",
+          "input": {}
+        }
+      },
+      "timestamp": 1772727539000
     }
   ]
 }

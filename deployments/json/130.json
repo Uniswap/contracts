@@ -145,6 +145,12 @@
       "proxy": false,
       "deploymentTxn": "GENESIS_1f98400000000000000000000000000000000004",
       "timestamp": 1730748360000
+    },
+    "SwapProxy": {
+      "address": "0x02e5be68d46dac0b524905bff209cf47ee6db2a9",
+      "proxy": false,
+      "deploymentTxn": "0x036af911fa8b21aa453d1da493d6e6c26aecb09efd13b4046bcf9e2e0253da77",
+      "timestamp": 1772728270000
     }
   },
   "history": [
@@ -449,6 +455,17 @@
         }
       },
       "timestamp": 1730748360000
+    },
+    {
+      "contracts": {
+        "SwapProxy": {
+          "address": "0x02e5be68d46dac0b524905bff209cf47ee6db2a9",
+          "proxy": false,
+          "deploymentTxn": "0x036af911fa8b21aa453d1da493d6e6c26aecb09efd13b4046bcf9e2e0253da77",
+          "input": {}
+        }
+      },
+      "timestamp": 1772728270000
     }
   ]
 }

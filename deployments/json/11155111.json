@@ -135,6 +135,12 @@
       "initcodeHash": "e3a961ecd088faffe75dfa50cfa48ff2ed98085ec5e3be185c337f2a65d6af54",
       "timestamp": 1779989940749,
       "commitHash": "f684acb"
+    },
+    "SwapProxy": {
+      "address": "0x02e5be68d46dac0b524905bff209cf47ee6db2a9",
+      "proxy": false,
+      "deploymentTxn": "0x21a6b778ca818e84d3ef0ad482bf77f25bd997ee8978f372cedd0d3d9282f84c",
+      "timestamp": 1772730600000
     }
   },
   "history": [
@@ -522,6 +528,17 @@
         }
       },
       "timestamp": 1669385988000
+    },
+    {
+      "contracts": {
+        "SwapProxy": {
+          "address": "0x02e5be68d46dac0b524905bff209cf47ee6db2a9",
+          "proxy": false,
+          "deploymentTxn": "0x21a6b778ca818e84d3ef0ad482bf77f25bd997ee8978f372cedd0d3d9282f84c",
+          "input": {}
+        }
+      },
+      "timestamp": 1772730600000
     }
   ]
 }
