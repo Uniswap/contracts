@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.2;
 
+import {PoolId} from '../../v4-core/types/PoolId.sol';
 import {PoolKey} from '../../v4-core/types/PoolKey.sol';
 import {PositionInfo} from '../libraries/PositionInfoLibrary.sol';
 import {IEIP712_v4} from './IEIP712_v4.sol';
@@ -24,6 +25,12 @@ interface IPositionManager is
     IUnorderedNonce,
     IPermit2Forwarder
 {
+    /// @notice Emitted by the position manager for each modifyLiquidity call, mirroring PoolManager
+    ///         ModifyLiquidity except `sender` is the unlock locker (end user), not the position manager.
+    event ModifyPosition(
+        PoolId indexed id, address indexed sender, int24 tickLower, int24 tickUpper, int256 liquidityDelta, bytes32 salt
+    );
+
     /// @notice Thrown when the caller is not approved to modify a position
     error NotApproved(address caller);
     /// @notice Thrown when the block.timestamp exceeds the user-provided deadline

@@ -1,4 +1,4 @@
-# contracts Deployments
+#  Deployments
 
 This repository contains deployment information for the following networks:
 
@@ -15,13 +15,17 @@ This repository contains deployment information for the following networks:
 | 480 | World Chain | [View Deployment](./480.md) |
 | 1301 | Unichain Sepolia Testnet | [View Deployment](./1301.md) |
 | 1868 | Soneium | [View Deployment](./1868.md) |
+| 4217 | Chain 4217 | [View Deployment](./4217.md) |
 | 4326 | Chain 4326 | [View Deployment](./4326.md) |
+| 4663 | Robinhood Mainnet | [View Deployment](./4663.md) |
+| 5042 | Arc Mainnet | [View Deployment](./5042.md) |
 | 8453 | Base | [View Deployment](./8453.md) |
 | 10143 | Monad Testnet | [View Deployment](./10143.md) |
 | 42161 | Arbitrum One | [View Deployment](./42161.md) |
 | 42220 | Celo Mainnet | [View Deployment](./42220.md) |
 | 43114 | Avalanche C-Chain | [View Deployment](./43114.md) |
 | 57073 | Ink | [View Deployment](./57073.md) |
+| 59144 | Linea | [View Deployment](./59144.md) |
 | 81457 | Blast | [View Deployment](./81457.md) |
 | 7777777 | Zora | [View Deployment](./7777777.md) |
 | 11155111 | Sepolia | [View Deployment](./11155111.md) |

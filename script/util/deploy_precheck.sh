@@ -93,7 +93,44 @@ else
   echo "❌ UNSUPPORTED"
 fi
 
-# 3. Check Deterministic Deployment Proxy
+# 3. Test Pectra (EIP-7702 / EIP-2537 / Solc 0.8.29+ with evm_version=prague)
+# Init code: STATICCALL the BLS12-381 G1ADD precompile (EIP-2537, bundled
+# in Pectra alongside EIP-7702) with 256 bytes of zeros (G1 point at infinity
+# + G1 point at infinity = point at infinity, returns 128 bytes). Return one
+# byte: 0x01 if returndatasize > 0 (precompile active), else 0x00.
+#   PUSH2 0x80    out_size = 128
+#   PUSH1 0x00    out_offset
+#   PUSH2 0x100   in_size = 256
+#   PUSH1 0x00    in_offset
+#   PUSH1 0x0b    addr = BLS12_G1ADD precompile
+#   PUSH2 0xffff  gas
+#   STATICCALL    consumes 6 stack items, pushes success flag
+#   POP           discard success flag
+#   RETURNDATASIZE
+#   ISZERO ISZERO normalize returndatasize > 0 to 0x01, else 0x00
+#   PUSH1 0x00 MSTORE8
+#   PUSH1 0x01 PUSH1 0x00 RETURN
+# This is technically a Prague-activation test: EIP-2537 (BLS precompiles)
+# and EIP-7702 (set-EOA-code) ship in the same hardfork, so a positive signal
+# here implies 7702 is also enabled. A direct 7702 test would require sending
+# a signed type-4 transaction, which precheck can't do without a private key.
+echo -n "Testing Pectra (EIP-7702).. "
+PRAGUE_RES=$(cast call --rpc-url "$RPC_URL" --create 0x61008060006101006000600b61fffffa503d151560005360016000f3 2>&1)
+
+check_rpc_error "$PRAGUE_RES"
+PRAGUE_ERR=$?
+
+if [[ $PRAGUE_ERR -ne 0 ]]; then
+  print_rpc_error $PRAGUE_ERR "$PRAGUE_RES"
+elif [[ $PRAGUE_RES == "0x01" ]]; then
+  echo "✅ SUPPORTED"
+elif [[ $PRAGUE_RES == "0x00" ]]; then
+  echo "❌ UNSUPPORTED"
+else
+  echo "❌ UNEXPECTED: $PRAGUE_RES"
+fi
+
+# 4. Check Deterministic Deployment Proxy
 echo -n "Deterministic Deployer...   "
 DEPLOYER_CODE=$(cast code --rpc-url "$RPC_URL" 0x4e59b44847b379578588920ca78fbf26c0b4956c 2>&1)
 EXPECTED_CODE="0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe03601600081602082378035828234f58015156039578182fd5b8082525050506014600cf3"
@@ -111,7 +148,7 @@ else
   echo "❌ BYTECODE MISMATCH"
 fi
 
-# 4. Check Permit2
+# 5. Check Permit2
 echo -n "Permit2...                  "
 PERMIT2_CODE=$(cast code --rpc-url "$RPC_URL" 0x000000000022D473030F116dDEE9F6B43aC78BA3 2>&1)
 
@@ -126,7 +163,7 @@ else
   echo "❌ NOT DEPLOYED"
 fi
 
-# 5. Get Chain ID and Native Currency Info
+# 6. Get Chain ID and Native Currency Info
 echo -n "Fetching Chain ID...        "
 CHAIN_ID=$(cast chain-id --rpc-url "$RPC_URL" 2>&1)
 
@@ -163,7 +200,7 @@ elif [[ $CHAIN_ID =~ ^[0-9]+$ ]]; then
     echo "❌ Failed to fetch chainlist.org"
   fi
 
-  # 6. Check Etherscan Support
+  # 7. Check Etherscan Support
   echo -n "Etherscan Support...        "
   ETHERSCAN_JSON=$(curl -s "https://api.etherscan.io/v2/chainlist")
 

@@ -22,6 +22,10 @@ aggregator-hooks/detected/
 aggregator-hooks/node_modules/
 deployed-pools/
 
+# Smoke test broadcast logs are transient validation artifacts, not deployment records
+broadcast/V2SmokeTest.s.sol/**
+broadcast/V3SmokeTest.s.sol/**
+broadcast/V4SmokeTest.s.sol/**
 
 debug/
 Cargo.lock
