@@ -23,20 +23,23 @@
  * Output: JSON array in createPools.ts FluidDexT1PoolConfig format.
  */
 
-import "dotenv/config";
-import fs from "node:fs";
-import path from "node:path";
-import { JsonRpcProvider, Contract, Interface, getAddress } from "ethers";
-import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from "@src/cli";
-import { FLUIDDEXT1_HISTORICAL_FACTORY_ABI, FLUIDDEXT1_RESOLVER_ABI } from "../abis/index.js";
-import type { Address } from "../creation-modules/types.js";
+import 'dotenv/config';
+import fs from 'node:fs';
+import path from 'node:path';
+import { JsonRpcProvider, Contract, Interface, getAddress } from 'ethers';
+import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from '@src/cli';
+import {
+  FLUIDDEXT1_HISTORICAL_FACTORY_ABI,
+  FLUIDDEXT1_RESOLVER_ABI,
+} from '../abis/index.js';
+import type { Address } from '../creation-modules/types.js';
 
-const OUTPUT_FILE = "fluiddext1-pools.json";
-const DEFAULT_FACTORY: Address = "0x91716c4eDA1fB55e84Bf8b4c7085f84285c19085";
+const OUTPUT_FILE = 'fluiddext1-pools.json';
+const DEFAULT_FACTORY: Address = '0x91716c4eDA1fB55e84Bf8b4c7085f84285c19085';
 
 /** Same shape as createPools.ts FluidDexT1PoolConfig */
 type CreatePoolsFluidDexT1Config = {
-  poolType: "fluiddext1";
+  poolType: 'fluiddext1';
   fluidPool: Address;
   currency0: Address;
   currency1: Address;
@@ -46,11 +49,13 @@ type CreatePoolsFluidDexT1Config = {
 };
 
 /** Fluid native token; map to address(0) for Uniswap v4 pool init */
-const FLUID_NATIVE: Address = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
-const ZERO_ADDRESS: Address = "0x0000000000000000000000000000000000000000";
+const FLUID_NATIVE: Address = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+const ZERO_ADDRESS: Address = '0x0000000000000000000000000000000000000000';
 
 function toUniswapV4Currency(addr: string): Address {
-  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase() ? ZERO_ADDRESS : (getAddress(addr) as Address);
+  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase()
+    ? ZERO_ADDRESS
+    : (getAddress(addr) as Address);
 }
 
 function pRateLimit(rps: number): () => Promise<void> {
@@ -90,66 +95,84 @@ function pLimit(concurrency: number) {
 }
 
 function orderCurrencies(token0: Address, token1: Address): [Address, Address] {
-  const mapped = [toUniswapV4Currency(token0), toUniswapV4Currency(token1)].sort((a, b) =>
-    a.toLowerCase().localeCompare(b.toLowerCase()),
-  );
+  const mapped = [
+    toUniswapV4Currency(token0),
+    toUniswapV4Currency(token1),
+  ].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
   return [mapped[0]!, mapped[1]!];
 }
 
 async function main() {
   const args = parseArgs(process.argv.slice(2));
 
-  const chainIdRaw = args["chain-id"];
+  const chainIdRaw = args['chain-id'];
   if (chainIdRaw == null) {
-    console.error("Missing required --chain-id <n>");
+    console.error('Missing required --chain-id <n>');
     process.exit(1);
   }
   const chainId = toInt(chainIdRaw, 0);
   if (chainId <= 0) {
-    console.error("--chain-id must be a positive integer");
+    console.error('--chain-id must be a positive integer');
     process.exit(1);
   }
 
-  const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const resolverAddr = getEnvForChain("FLUID_DEX_T1_RESOLVER", chainId);
+  const rpcUrl = getEnvForChain('RPC_URL', chainId);
+  const resolverAddr = getEnvForChain('FLUID_DEX_T1_RESOLVER', chainId);
   const factoryAddrRaw =
-    getEnvForChain("FLUID_DEX_T1_FACTORY", chainId) ?? DEFAULT_FACTORY;
+    getEnvForChain('FLUID_DEX_T1_FACTORY', chainId) ?? DEFAULT_FACTORY;
 
   if (!rpcUrl || !resolverAddr) {
-    console.error("Missing env: RPC_URL and FLUID_DEX_T1_RESOLVER");
+    console.error('Missing env: RPC_URL and FLUID_DEX_T1_RESOLVER');
     process.exit(1);
   }
 
   const factoryAddr = getAddress(factoryAddrRaw.toLowerCase()) as Address;
-  const outputDir = (args["output-dir"] as string) ?? "detected";
-  const chunkSize = BigInt(Math.max(1, toInt(args["chunk-blocks"], 100_000)));
-  const startBlock = BigInt(Math.max(0, toInt(args["start-block"], 0)));
-  const endBlockRaw = args["end-block"];
-  const mode = ((args["mode"] as string | undefined) ?? "enumerate").toLowerCase();
-  const rps = toInt(args["rps"] ?? getEnvForChain("RPS", chainId), 80);
-  const concurrency = Math.max(1, toInt(getEnvForChain("CONCURRENCY", chainId), 8));
+  const outputDir = (args['output-dir'] as string) ?? 'detected';
+  const chunkSize = BigInt(Math.max(1, toInt(args['chunk-blocks'], 100_000)));
+  const startBlock = BigInt(Math.max(0, toInt(args['start-block'], 0)));
+  const endBlockRaw = args['end-block'];
+  const mode = (
+    (args['mode'] as string | undefined) ?? 'enumerate'
+  ).toLowerCase();
+  const rps = toInt(args['rps'] ?? getEnvForChain('RPS', chainId), 80);
+  const concurrency = Math.max(
+    1,
+    toInt(getEnvForChain('CONCURRENCY', chainId), 8),
+  );
 
   const rateLimitAcquire = pRateLimit(rps);
   const limit = pLimit(concurrency);
 
   const provider = new JsonRpcProvider(rpcUrl);
-  const factory = new Contract(factoryAddr, FLUIDDEXT1_HISTORICAL_FACTORY_ABI, provider);
-  const resolver = new Contract(getAddress(resolverAddr.toLowerCase()), FLUIDDEXT1_RESOLVER_ABI, provider);
+  const factory = new Contract(
+    factoryAddr,
+    FLUIDDEXT1_HISTORICAL_FACTORY_ABI,
+    provider,
+  );
+  const resolver = new Contract(
+    getAddress(resolverAddr.toLowerCase()),
+    FLUIDDEXT1_RESOLVER_ABI,
+    provider,
+  );
 
   const latest = BigInt(await provider.getBlockNumber());
   const endBlock = endBlockRaw ? BigInt(String(endBlockRaw)) : latest;
 
-  if (startBlock < 0n) throw new Error("start-block must be >= 0");
-  if (endBlock < startBlock) throw new Error("end-block must be >= start-block");
+  if (startBlock < 0n) throw new Error('start-block must be >= 0');
+  if (endBlock < startBlock)
+    throw new Error('end-block must be >= start-block');
 
   const byDexAddr = new Map<Address, string>();
 
-  if (mode === "logs" || mode === "both") {
-    const iface = new Interface(FLUIDDEXT1_HISTORICAL_FACTORY_ABI as unknown as string[]);
-    const topic0 = iface.getEvent("LogDexDeployed")!.topicHash;
+  if (mode === 'logs' || mode === 'both') {
+    const iface = new Interface(
+      FLUIDDEXT1_HISTORICAL_FACTORY_ABI as unknown as string[],
+    );
+    const topic0 = iface.getEvent('LogDexDeployed')!.topicHash;
 
     for (let from = startBlock; from <= endBlock; from += chunkSize) {
-      const to = from + chunkSize - 1n > endBlock ? endBlock : from + chunkSize - 1n;
+      const to =
+        from + chunkSize - 1n > endBlock ? endBlock : from + chunkSize - 1n;
 
       const logs = await provider.getLogs({
         address: factoryAddr,
@@ -171,7 +194,7 @@ async function main() {
     }
   }
 
-  if (mode === "enumerate" || mode === "both") {
+  if (mode === 'enumerate' || mode === 'both') {
     const total = await factory.totalDexes();
     console.error(`[enumerate] totalDexes() = ${total}`);
 
@@ -189,7 +212,9 @@ async function main() {
   }
 
   const uniqueDexes = Array.from(byDexAddr.keys());
-  console.log(`Found ${uniqueDexes.length} unique Fluid Dex T1 pools. Fetching tokens via resolver...`);
+  console.log(
+    `Found ${uniqueDexes.length} unique Fluid Dex T1 pools. Fetching tokens via resolver...`,
+  );
 
   const configs: CreatePoolsFluidDexT1Config[] = [];
   let skipped = 0;
@@ -200,14 +225,17 @@ async function main() {
       let token0: Address;
       let token1: Address;
       try {
-        [token0, token1] = (await resolver.getDexTokens(fluidPool)) as [Address, Address];
+        [token0, token1] = (await resolver.getDexTokens(fluidPool)) as [
+          Address,
+          Address,
+        ];
       } catch {
         return null;
       }
       const [currency0, currency1] = orderCurrencies(token0, token1);
 
       return {
-        poolType: "fluiddext1" as const,
+        poolType: 'fluiddext1' as const,
         fluidPool,
         currency0,
         currency1,
@@ -222,13 +250,17 @@ async function main() {
   }
 
   if (skipped > 0) {
-    console.error(`Skipped ${skipped} pools (getDexTokens reverted - may be VaultT1 or deprecated)`);
+    console.error(
+      `Skipped ${skipped} pools (getDexTokens reverted - may be VaultT1 or deprecated)`,
+    );
   }
 
   const outPath = resolveOutputPath(outputDir, chainId, OUTPUT_FILE);
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, JSON.stringify(configs, null, 2));
-  console.log(`Wrote ${outPath} (${configs.length} pools in createPools.ts format)`);
+  console.log(
+    `Wrote ${outPath} (${configs.length} pools in createPools.ts format)`,
+  );
 }
 
 main().catch((e) => {

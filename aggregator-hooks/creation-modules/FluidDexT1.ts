@@ -1,13 +1,18 @@
 /**
  * FluidDex T1 aggregator hook deployment module.
  */
-import { ethers } from "ethers";
-import { mustEnvForChain } from "../src/cli.js";
-import { FLUIDDEXT1_FACTORY_ABI } from "../abis/index.js";
-import { DEFAULT_SQRT_PRICE_X96, type Address, type CreationModule, type FactoryImmutables } from "./types.js";
+import { ethers } from 'ethers';
+import { mustEnvForChain } from '../src/cli.js';
+import { FLUIDDEXT1_FACTORY_ABI } from '../abis/index.js';
+import {
+  DEFAULT_SQRT_PRICE_X96,
+  type Address,
+  type CreationModule,
+  type FactoryImmutables,
+} from './types.js';
 
 export interface FluidDexT1PoolConfig {
-  poolType: "fluiddext1";
+  poolType: 'fluiddext1';
   fluidPool: Address;
   currency0: Address;
   currency1: Address;
@@ -18,14 +23,15 @@ export interface FluidDexT1PoolConfig {
 
 const PROTOCOL_ID = 0xf1;
 
-const orderPair = (a: Address, b: Address): [Address, Address] => (a.toLowerCase() < b.toLowerCase() ? [a, b] : [b, a]);
+const orderPair = (a: Address, b: Address): [Address, Address] =>
+  a.toLowerCase() < b.toLowerCase() ? [a, b] : [b, a];
 
 export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
-  poolType: "fluiddext1",
+  poolType: 'fluiddext1',
   protocolId: PROTOCOL_ID,
   factoryAbi: FLUIDDEXT1_FACTORY_ABI,
   contractIdentifier:
-    "lib/v4-hooks-public/src/aggregator-hooks/implementations/FluidDexT1/FluidDexT1Aggregator.sol:FluidDexT1Aggregator",
+    'lib/v4-hooks-public/src/aggregator-hooks/implementations/FluidDexT1/FluidDexT1Aggregator.sol:FluidDexT1Aggregator',
 
   getHookParams(config) {
     return {
@@ -55,16 +61,31 @@ export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
 
   getImmutablesFromEnv(chainId: number): FactoryImmutables {
     return {
-      poolManager: mustEnvForChain("POOL_MANAGER", chainId) as Address,
-      fluidDexReservesResolver: mustEnvForChain("FLUID_DEX_T1_RESERVES_RESOLVER", chainId) as Address,
-      fluidDexResolver: mustEnvForChain("FLUID_DEX_T1_RESOLVER", chainId) as Address,
-      fluidLiquidity: mustEnvForChain("FLUID_LIQUIDITY", chainId) as Address,
+      poolManager: mustEnvForChain('POOL_MANAGER', chainId) as Address,
+      fluidDexReservesResolver: mustEnvForChain(
+        'FLUID_DEX_T1_RESERVES_RESOLVER',
+        chainId,
+      ) as Address,
+      fluidDexResolver: mustEnvForChain(
+        'FLUID_DEX_T1_RESOLVER',
+        chainId,
+      ) as Address,
+      fluidLiquidity: mustEnvForChain('FLUID_LIQUIDITY', chainId) as Address,
     };
   },
 
   async readFactoryImmutables(provider, factoryAddress) {
-    const factory = new ethers.Contract(factoryAddress, FLUIDDEXT1_FACTORY_ABI, provider);
-    const [poolManager, fluidDexReservesResolver, fluidDexResolver, fluidLiquidity] = await Promise.all([
+    const factory = new ethers.Contract(
+      factoryAddress,
+      FLUIDDEXT1_FACTORY_ABI,
+      provider,
+    );
+    const [
+      poolManager,
+      fluidDexReservesResolver,
+      fluidDexResolver,
+      fluidLiquidity,
+    ] = await Promise.all([
       factory.POOL_MANAGER(),
       factory.fluidDexReservesResolver(),
       factory.fluidDexResolver(),
@@ -80,7 +101,7 @@ export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
 
   encodeConstructorArgs(config, immutables) {
     const encoded = ethers.AbiCoder.defaultAbiCoder().encode(
-      ["address", "address", "address", "address", "address"],
+      ['address', 'address', 'address', 'address', 'address'],
       [
         immutables.poolManager,
         config.fluidPool,
@@ -89,7 +110,7 @@ export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
         immutables.fluidLiquidity,
       ],
     );
-    return encoded.startsWith("0x") ? encoded : `0x${encoded}`;
+    return encoded.startsWith('0x') ? encoded : `0x${encoded}`;
   },
 
   buildSelfDeployEnvVars(config, immutables) {
@@ -99,7 +120,7 @@ export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
       FLUID_DEX_T1_RESERVES_RESOLVER: immutables.fluidDexReservesResolver!,
       FLUID_DEX_T1_RESOLVER: immutables.fluidDexResolver!,
       FLUID_LIQUIDITY: immutables.fluidLiquidity!,
-      TOKENS: [config.currency0, config.currency1].join(","),
+      TOKENS: [config.currency0, config.currency1].join(','),
       FEE: params.fee.toString(),
       TICK_SPACING: params.tickSpacing.toString(),
       SQRT_PRICE_X96: params.sqrtPriceX96.toString(),

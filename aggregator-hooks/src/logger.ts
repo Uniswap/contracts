@@ -29,7 +29,11 @@ export interface Logger {
   verbose: (msg: string) => void;
   section: (title: string) => void;
   banner: (config: BannerConfig) => void;
-  dumpForgeOutput: (opts: { stdout?: string; stderr?: string; label?: string }) => void;
+  dumpForgeOutput: (opts: {
+    stdout?: string;
+    stderr?: string;
+    label?: string;
+  }) => void;
 }
 
 export function createLogger(opts: { verbose: boolean }): Logger {
@@ -43,8 +47,8 @@ export function createLogger(opts: { verbose: boolean }): Logger {
       console.error(msg);
       if (err instanceof Error) console.error(err.message);
       const e = err as { data?: unknown; reason?: string };
-      if (e?.data) console.error("Error data:", e.data);
-      if (e?.reason) console.error("Revert reason:", e.reason);
+      if (e?.data) console.error('Error data:', e.data);
+      if (e?.reason) console.error('Revert reason:', e.reason);
     },
     verbose: (msg: string) => {
       if (verbose) console.log(msg);
@@ -55,25 +59,41 @@ export function createLogger(opts: { verbose: boolean }): Logger {
         `=== ${config.title} ===`,
         `JSON File: ${config.jsonFile}`,
         `Mode: ${config.mode}`,
-        ...(config.factoryAddress ? [`Factory Address: ${config.factoryAddress}`] : []),
+        ...(config.factoryAddress
+          ? [`Factory Address: ${config.factoryAddress}`]
+          : []),
         `RPC URL: ${config.rpcUrl}`,
         ...(config.registryDir ? [`Registry dir: ${config.registryDir}`] : []),
-        ...(config.dryRun ? ["DRY RUN: forge scripts will simulate without broadcasting"] : []),
-        ...(config.verbose ? ["VERBOSE: forge scripts will run with -vvvv"] : []),
-        ...(config.startAt && config.startAt > 1
-          ? [`Starting at pool index: ${config.startAt} (skipping first ${config.startAt - 1} pool(s))`]
+        ...(config.dryRun
+          ? ['DRY RUN: forge scripts will simulate without broadcasting']
           : []),
-        ...(config.jobs && config.jobs > 1 ? [`Salt mining: ${config.jobs} parallel workers`] : []),
-        ...(config.priorityGasPrice ? [`Priority gas price: ${config.priorityGasPrice}`] : []),
-        ...(config.verify ? ["Contract verification: enabled (--verify)"] : []),
-        ...(config.signerAddress ? [`Using signer: ${config.signerAddress}`] : []),
+        ...(config.verbose
+          ? ['VERBOSE: forge scripts will run with -vvvv']
+          : []),
+        ...(config.startAt && config.startAt > 1
+          ? [
+              `Starting at pool index: ${config.startAt} (skipping first ${config.startAt - 1} pool(s))`,
+            ]
+          : []),
+        ...(config.jobs && config.jobs > 1
+          ? [`Salt mining: ${config.jobs} parallel workers`]
+          : []),
+        ...(config.priorityGasPrice
+          ? [`Priority gas price: ${config.priorityGasPrice}`]
+          : []),
+        ...(config.verify ? ['Contract verification: enabled (--verify)'] : []),
+        ...(config.signerAddress
+          ? [`Using signer: ${config.signerAddress}`]
+          : []),
       ];
       lines.forEach((line) => console.log(line));
-      if (lines.length > 0) console.log("");
+      if (lines.length > 0) console.log('');
     },
-    dumpForgeOutput: ({ stdout, stderr, label = "Forge" }) => {
-      if (stdout != null && stdout !== "") console.error(`\n--- ${label} stdout ---\n`, stdout);
-      if (stderr != null && stderr !== "") console.error(`\n--- ${label} stderr ---\n`, stderr);
+    dumpForgeOutput: ({ stdout, stderr, label = 'Forge' }) => {
+      if (stdout != null && stdout !== '')
+        console.error(`\n--- ${label} stdout ---\n`, stdout);
+      if (stderr != null && stderr !== '')
+        console.error(`\n--- ${label} stderr ---\n`, stderr);
     },
   };
 }

@@ -20,28 +20,30 @@
  * Fees are fetched via getDexState() and converted from Fluid 1e4 to Uniswap v4 1e6 format.
  */
 
-import "dotenv/config";
-import fs from "node:fs";
-import path from "node:path";
-import { ethers } from "ethers";
-import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from "@src/cli";
-import { FLUIDDEXLITE_RESOLVER_ABI } from "../abis/index.js";
-import type { Address } from "../creation-modules/types.js";
+import 'dotenv/config';
+import fs from 'node:fs';
+import path from 'node:path';
+import { ethers } from 'ethers';
+import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from '@src/cli';
+import { FLUIDDEXLITE_RESOLVER_ABI } from '../abis/index.js';
+import type { Address } from '../creation-modules/types.js';
 
-const OUTPUT_FILE = "fluiddexlite-pools.json";
-const DEFAULT_RESOLVER: Address = "0x26b696D0dfDAB6c894Aa9a6575fCD07BB25BbD2C";
+const OUTPUT_FILE = 'fluiddexlite-pools.json';
+const DEFAULT_RESOLVER: Address = '0x26b696D0dfDAB6c894Aa9a6575fCD07BB25BbD2C';
 
 /** Fluid native token; map to address(0) for Uniswap v4 pool init */
-const FLUID_NATIVE: Address = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
-const ZERO_ADDRESS: Address = "0x0000000000000000000000000000000000000000";
+const FLUID_NATIVE: Address = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+const ZERO_ADDRESS: Address = '0x0000000000000000000000000000000000000000';
 
 function toUniswapV4Currency(addr: string): Address {
-  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase() ? ZERO_ADDRESS : (ethers.getAddress(addr) as Address);
+  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase()
+    ? ZERO_ADDRESS
+    : (ethers.getAddress(addr) as Address);
 }
 
 /** Same shape as createPools.ts FluidDexLitePoolConfig */
 type CreatePoolsFluidLiteConfig = {
-  poolType: "fluiddexlite";
+  poolType: 'fluiddexlite';
   dexSalt: string;
   currency0: Address;
   currency1: Address;
@@ -71,29 +73,34 @@ function ensureDirForFile(filePath: string): void {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
 
-  const chainIdRaw = args["chain-id"];
+  const chainIdRaw = args['chain-id'];
   if (chainIdRaw == null) {
-    console.error("Missing required --chain-id <n>");
+    console.error('Missing required --chain-id <n>');
     process.exit(1);
   }
   const chainId = toInt(chainIdRaw, 0);
   if (chainId <= 0) {
-    console.error("--chain-id must be a positive integer");
+    console.error('--chain-id must be a positive integer');
     process.exit(1);
   }
 
-  const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const resolverRaw = getEnvForChain("FLUID_DEX_LITE_RESOLVER", chainId) ?? DEFAULT_RESOLVER;
+  const rpcUrl = getEnvForChain('RPC_URL', chainId);
+  const resolverRaw =
+    getEnvForChain('FLUID_DEX_LITE_RESOLVER', chainId) ?? DEFAULT_RESOLVER;
   if (!rpcUrl) {
-    console.error("Missing env: RPC_URL (or RPC_URL_<chainId>)");
+    console.error('Missing env: RPC_URL (or RPC_URL_<chainId>)');
     process.exit(1);
   }
 
   const resolver = ethers.getAddress(resolverRaw) as Address;
-  const outputDir = (args["output-dir"] as string) ?? "detected";
+  const outputDir = (args['output-dir'] as string) ?? 'detected';
 
   const provider = new ethers.JsonRpcProvider(rpcUrl);
-  const resolverContract = new ethers.Contract(resolver, FLUIDDEXLITE_RESOLVER_ABI as unknown as string[], provider);
+  const resolverContract = new ethers.Contract(
+    resolver,
+    FLUIDDEXLITE_RESOLVER_ABI as unknown as string[],
+    provider,
+  );
 
   console.error(`[enum] FluidDexLiteResolver at ${resolver}`);
   const dexKeys = (await resolverContract.getAllDexes()) as Array<{
@@ -104,9 +111,10 @@ async function main() {
 
   const configs: CreatePoolsFluidLiteConfig[] = [];
   for (const dk of dexKeys) {
-    const mapped = [toUniswapV4Currency(dk.token0), toUniswapV4Currency(dk.token1)].sort((a, b) =>
-      a.toLowerCase().localeCompare(b.toLowerCase()),
-    );
+    const mapped = [
+      toUniswapV4Currency(dk.token0),
+      toUniswapV4Currency(dk.token1),
+    ].sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
     const [currency0, currency1] = [mapped[0], mapped[1]];
 
     let fee: number | null = null;
@@ -121,11 +129,13 @@ async function main() {
       }
     } catch {
       // getDexState reverted; keep fee null
-      console.error(`getDexState reverted for dexKey: ${JSON.stringify(dexKey)}`);
+      console.error(
+        `getDexState reverted for dexKey: ${JSON.stringify(dexKey)}`,
+      );
     }
 
     configs.push({
-      poolType: "fluiddexlite",
+      poolType: 'fluiddexlite',
       dexSalt: dk.salt as string,
       currency0,
       currency1,
@@ -137,7 +147,7 @@ async function main() {
 
   const outPath = resolveOutputPath(outputDir, chainId, OUTPUT_FILE);
   ensureDirForFile(outPath);
-  fs.writeFileSync(outPath, JSON.stringify(configs, null, 2) + "\n");
+  fs.writeFileSync(outPath, JSON.stringify(configs, null, 2) + '\n');
 
   console.log(
     JSON.stringify(

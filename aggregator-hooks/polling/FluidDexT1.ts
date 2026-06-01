@@ -23,22 +23,30 @@
  *   LOOKBACK_BLOCKS         (optional, default 200000) used when checkpoint missing and no --start-block
  */
 
-import "dotenv/config";
-import fs from "node:fs";
-import path from "node:path";
-import { ethers } from "ethers";
-import { parseArgs, getEnvForChain, toInt, resolveOutputPath, resolveCheckpointPath } from "@src/cli";
+import 'dotenv/config';
+import fs from 'node:fs';
+import path from 'node:path';
+import { ethers } from 'ethers';
+import {
+  parseArgs,
+  getEnvForChain,
+  toInt,
+  resolveOutputPath,
+  resolveCheckpointPath,
+} from '@src/cli';
 
-const OUTPUT_FILE = "fluiddext1-pools.json";
-const CHECKPOINT_FILE = "fluiddext1_checkpoint.json";
-const DEFAULT_FACTORY = "0x91716c4eDA1fB55e84Bf8b4c7085f84285c19085";
+const OUTPUT_FILE = 'fluiddext1-pools.json';
+const CHECKPOINT_FILE = 'fluiddext1_checkpoint.json';
+const DEFAULT_FACTORY = '0x91716c4eDA1fB55e84Bf8b4c7085f84285c19085';
 
 /** Fluid native token; map to address(0) for Uniswap v4 pool init */
-const FLUID_NATIVE = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
-const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+const FLUID_NATIVE = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 function toUniswapV4Currency(addr: string): string {
-  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase() ? ZERO_ADDRESS : ethers.getAddress(addr);
+  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase()
+    ? ZERO_ADDRESS
+    : ethers.getAddress(addr);
 }
 
 type Checkpoint = {
@@ -50,7 +58,7 @@ type Checkpoint = {
 
 /** Same shape as createPools.ts FluidDexT1PoolConfig */
 type CreatePoolsFluidDexT1Config = {
-  poolType: "fluiddext1";
+  poolType: 'fluiddext1';
   fluidPool: string;
   currency0: string;
   currency1: string;
@@ -59,9 +67,13 @@ type CreatePoolsFluidDexT1Config = {
   sqrtPriceX96: string | null;
 };
 
-const FACTORY_ABI = ["event LogDexDeployed(address indexed dex, uint256 indexed dexId)"];
+const FACTORY_ABI = [
+  'event LogDexDeployed(address indexed dex, uint256 indexed dexId)',
+];
 
-const RESOLVER_ABI = ["function getDexTokens(address dex_) external view returns (address token0_, address token1_)"];
+const RESOLVER_ABI = [
+  'function getDexTokens(address dex_) external view returns (address token0_, address token1_)',
+];
 
 function ensureDirForFile(filePath: string) {
   fs.mkdirSync(path.dirname(path.resolve(filePath)), { recursive: true });
@@ -69,7 +81,7 @@ function ensureDirForFile(filePath: string) {
 
 function safeReadJson<T>(filePath: string): T | null {
   try {
-    return JSON.parse(fs.readFileSync(filePath, "utf8")) as T;
+    return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T;
   } catch {
     return null;
   }
@@ -78,8 +90,8 @@ function safeReadJson<T>(filePath: string): T | null {
 function atomicWriteFile(filePath: string, contents: string) {
   ensureDirForFile(filePath);
   const abs = path.resolve(filePath);
-  fs.writeFileSync(abs + ".tmp", contents);
-  fs.renameSync(abs + ".tmp", abs);
+  fs.writeFileSync(abs + '.tmp', contents);
+  fs.renameSync(abs + '.tmp', abs);
 }
 
 function loadExistingKeys(outFile: string): Set<string> {
@@ -88,7 +100,8 @@ function loadExistingKeys(outFile: string): Set<string> {
   try {
     const arr = safeReadJson<CreatePoolsFluidDexT1Config[]>(outFile);
     if (!Array.isArray(arr)) return keys;
-    for (const x of arr) keys.add(`${x.fluidPool}:${x.currency0}:${x.currency1}`);
+    for (const x of arr)
+      keys.add(`${x.fluidPool}:${x.currency0}:${x.currency1}`);
   } catch {
     // ignore
   }
@@ -113,41 +126,45 @@ function getEnvInt(name: string, chainId: number, def: number): number {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
 
-  const chainIdRaw = args["chain-id"];
+  const chainIdRaw = args['chain-id'];
   if (chainIdRaw == null) {
-    console.error("Missing required --chain-id <n>");
+    console.error('Missing required --chain-id <n>');
     process.exit(1);
   }
   const chainId = toInt(chainIdRaw, 0);
   if (chainId <= 0) {
-    console.error("--chain-id must be a positive integer");
+    console.error('--chain-id must be a positive integer');
     process.exit(1);
   }
 
-  const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const resolverAddr = getEnvForChain("FLUID_DEX_T1_RESOLVER", chainId);
+  const rpcUrl = getEnvForChain('RPC_URL', chainId);
+  const resolverAddr = getEnvForChain('FLUID_DEX_T1_RESOLVER', chainId);
   const factoryRaw =
-    getEnvForChain("FLUID_DEX_T1_FACTORY", chainId) ?? DEFAULT_FACTORY;
+    getEnvForChain('FLUID_DEX_T1_FACTORY', chainId) ?? DEFAULT_FACTORY;
 
   if (!rpcUrl || !resolverAddr) {
-    throw new Error("Missing required env: RPC_URL and FLUID_DEX_T1_RESOLVER");
+    throw new Error('Missing required env: RPC_URL and FLUID_DEX_T1_RESOLVER');
   }
 
   const factory = ethers.getAddress(factoryRaw);
 
-  const outputDir = (args["output-dir"] as string) ?? "detected";
-  const checkpointDir = (args["checkpoint-dir"] as string) ?? "checkpoints";
-  const chunkBlocks = Math.max(1, toInt(args["chunk-blocks"], 10000));
+  const outputDir = (args['output-dir'] as string) ?? 'detected';
+  const checkpointDir = (args['checkpoint-dir'] as string) ?? 'checkpoints';
+  const chunkBlocks = Math.max(1, toInt(args['chunk-blocks'], 10000));
 
-  const finality = getEnvInt("FINALITY_BLOCKS", chainId, 10);
-  const lookbackBlocks = getEnvInt("LOOKBACK_BLOCKS", chainId, 200000);
-  const startBlockArg = args["start-block"];
+  const finality = getEnvInt('FINALITY_BLOCKS', chainId, 10);
+  const lookbackBlocks = getEnvInt('LOOKBACK_BLOCKS', chainId, 200000);
+  const startBlockArg = args['start-block'];
 
   const provider = new ethers.JsonRpcProvider(rpcUrl);
-  const resolver = new ethers.Contract(ethers.getAddress(resolverAddr), RESOLVER_ABI, provider);
+  const resolver = new ethers.Contract(
+    ethers.getAddress(resolverAddr),
+    RESOLVER_ABI,
+    provider,
+  );
 
   const iface = new ethers.Interface(FACTORY_ABI as unknown as string[]);
-  const topic0 = iface.getEvent("LogDexDeployed")!.topicHash;
+  const topic0 = iface.getEvent('LogDexDeployed')!.topicHash;
 
   const latestBlock = await provider.getBlockNumber();
   const toBlock = Math.max(0, latestBlock - finality);
@@ -158,7 +175,10 @@ async function main() {
   let fromBlock: number;
   if (startBlockArg != null) {
     fromBlock = Math.max(0, toInt(startBlockArg, 0));
-  } else if (cp?.chainId === chainId && cp?.factory?.toLowerCase() === factory.toLowerCase()) {
+  } else if (
+    cp?.chainId === chainId &&
+    cp?.factory?.toLowerCase() === factory.toLowerCase()
+  ) {
     fromBlock = cp.lastProcessedBlock + 1;
   } else {
     fromBlock = Math.max(0, toBlock - lookbackBlocks);
@@ -171,8 +191,14 @@ async function main() {
       lastProcessedBlock: toBlock,
       updatedAt: new Date().toISOString(),
     };
-    atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + "\n");
-    console.log(JSON.stringify({ ok: true, note: "No new blocks to scan", fromBlock, toBlock }, null, 2));
+    atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + '\n');
+    console.log(
+      JSON.stringify(
+        { ok: true, note: 'No new blocks to scan', fromBlock, toBlock },
+        null,
+        2,
+      ),
+    );
     return;
   }
 
@@ -222,7 +248,7 @@ async function main() {
 
       newPools++;
       newRecords.push({
-        poolType: "fluiddext1",
+        poolType: 'fluiddext1',
         fluidPool: dex,
         currency0,
         currency1,
@@ -234,7 +260,7 @@ async function main() {
 
     if (newRecords.length > 0) {
       allRecords = allRecords.concat(newRecords);
-      atomicWriteFile(outPath, JSON.stringify(allRecords, null, 2) + "\n");
+      atomicWriteFile(outPath, JSON.stringify(allRecords, null, 2) + '\n');
     }
 
     const interimCp: Checkpoint = {
@@ -243,8 +269,10 @@ async function main() {
       lastProcessedBlock: end,
       updatedAt: new Date().toISOString(),
     };
-    atomicWriteFile(cpPath, JSON.stringify(interimCp, null, 2) + "\n");
-    console.error(`[scan] ${start}..${end} logs=${logs.length} new=${newRecords.length}`);
+    atomicWriteFile(cpPath, JSON.stringify(interimCp, null, 2) + '\n');
+    console.error(
+      `[scan] ${start}..${end} logs=${logs.length} new=${newRecords.length}`,
+    );
   }
 
   console.log(

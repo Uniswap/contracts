@@ -20,20 +20,20 @@
  * Output: JSON array in createPools.ts StableSwapPoolConfig format.
  */
 
-import "dotenv/config";
-import fs from "node:fs";
-import path from "node:path";
-import { JsonRpcProvider, Contract, getAddress, ZeroAddress } from "ethers";
-import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from "@src/cli";
-import { STABLESWAPNG_HISTORICAL_FACTORY_ABI } from "../abis/index.js";
-import type { Address } from "../creation-modules/types.js";
+import 'dotenv/config';
+import fs from 'node:fs';
+import path from 'node:path';
+import { JsonRpcProvider, Contract, getAddress, ZeroAddress } from 'ethers';
+import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from '@src/cli';
+import { STABLESWAPNG_HISTORICAL_FACTORY_ABI } from '../abis/index.js';
+import type { Address } from '../creation-modules/types.js';
 
-const OUTPUT_FILE = "stableswapng-pools.json";
-const DEFAULT_FACTORY: Address = "0x6A8cbed756804B16E05E741eDaBd5cB544AE21bf";
+const OUTPUT_FILE = 'stableswapng-pools.json';
+const DEFAULT_FACTORY: Address = '0x6A8cbed756804B16E05E741eDaBd5cB544AE21bf';
 
 type PoolMeta = {
   pool: Address;
-  kind: "plain" | "meta";
+  kind: 'plain' | 'meta';
   nCoins?: number;
   coins?: Address[];
   basePool?: Address;
@@ -41,7 +41,7 @@ type PoolMeta = {
 
 /** Same shape as createPools.ts StableSwapPoolConfig for stableswapng pool type */
 type CreatePoolsStableSwapConfig = {
-  poolType: "stableswapng";
+  poolType: 'stableswapng';
   curvePool: Address;
   tokens: Address[];
   fee: number | null;
@@ -109,35 +109,43 @@ function uniqAddresses(addrs: string[]): Address[] {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
 
-  const chainIdRaw = args["chain-id"];
+  const chainIdRaw = args['chain-id'];
   if (chainIdRaw == null) {
-    console.error("Missing required --chain-id <n>");
+    console.error('Missing required --chain-id <n>');
     process.exit(1);
   }
   const chainId = toInt(chainIdRaw, 0);
   if (chainId <= 0) {
-    console.error("--chain-id must be a positive integer");
+    console.error('--chain-id must be a positive integer');
     process.exit(1);
   }
 
-  const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const factoryAddrRaw = getEnvForChain("STABLESWAPNG_FACTORY", chainId) ?? DEFAULT_FACTORY;
+  const rpcUrl = getEnvForChain('RPC_URL', chainId);
+  const factoryAddrRaw =
+    getEnvForChain('STABLESWAPNG_FACTORY', chainId) ?? DEFAULT_FACTORY;
 
   if (!rpcUrl) {
-    console.error("Missing env: RPC_URL (or RPC_URL_<chainId>)");
+    console.error('Missing env: RPC_URL (or RPC_URL_<chainId>)');
     process.exit(1);
   }
 
   const factoryAddress = getAddress(factoryAddrRaw) as Address;
-  const outputDir = (args["output-dir"] as string) ?? "detected";
-  const chunkSize = toInt(args["chunk"], 500);
-  const concurrency = Math.max(1, toInt(getEnvForChain("CONCURRENCY", chainId), 8));
-  const rps = toInt(getEnvForChain("RPS", chainId), 80);
+  const outputDir = (args['output-dir'] as string) ?? 'detected';
+  const chunkSize = toInt(args['chunk'], 500);
+  const concurrency = Math.max(
+    1,
+    toInt(getEnvForChain('CONCURRENCY', chainId), 8),
+  );
+  const rps = toInt(getEnvForChain('RPS', chainId), 80);
   const rateLimitAcquire = rps > 0 ? pRateLimit(rps) : async () => {};
-  const startIndex = toInt(args["start-index"], 0);
+  const startIndex = toInt(args['start-index'], 0);
 
   const provider = new JsonRpcProvider(rpcUrl);
-  const factory = new Contract(factoryAddress, STABLESWAPNG_HISTORICAL_FACTORY_ABI, provider);
+  const factory = new Contract(
+    factoryAddress,
+    STABLESWAPNG_HISTORICAL_FACTORY_ABI,
+    provider,
+  );
   const limit = pLimit(concurrency);
 
   const poolCountBn: bigint = await factory.pool_count();
@@ -149,7 +157,9 @@ async function main() {
   console.log(`Factory: ${factoryAddress}`);
   console.log(`pool_count: ${poolCount}`);
   console.log(`Starting at index: ${startIndex}`);
-  console.log(`chunkSize=${chunkSize} concurrency=${concurrency} rps=${rps > 0 ? rps : "unlimited"}`);
+  console.log(
+    `chunkSize=${chunkSize} concurrency=${concurrency} rps=${rps > 0 ? rps : 'unlimited'}`,
+  );
 
   const pools: Address[] = [];
   const metas: PoolMeta[] = [];
@@ -185,29 +195,36 @@ async function main() {
 
           return {
             pool,
-            kind: basePool.toLowerCase() === ZeroAddress.toLowerCase() ? "plain" : "meta",
+            kind:
+              basePool.toLowerCase() === ZeroAddress.toLowerCase()
+                ? 'plain'
+                : 'meta',
             nCoins: Number(nCoinsBn),
             coins,
-            basePool: basePool.toLowerCase() === ZeroAddress.toLowerCase() ? undefined : basePool,
+            basePool:
+              basePool.toLowerCase() === ZeroAddress.toLowerCase()
+                ? undefined
+                : basePool,
           } satisfies PoolMeta;
         }),
       ),
     );
 
     metas.push(...chunkMetas);
-    for (let j = 0; j < addrs.length; j++) metaByPool.set(addrs[j], chunkMetas[j]);
+    for (let j = 0; j < addrs.length; j++)
+      metaByPool.set(addrs[j], chunkMetas[j]);
     console.log(`Fetched [${i}, ${end}) / ${poolCount}`);
   }
 
   const uniquePools = uniqAddresses(pools);
 
   const createPoolsConfigs: CreatePoolsStableSwapConfig[] = uniquePools
-    .filter((curvePool) => metaByPool.get(curvePool)?.kind === "plain")
+    .filter((curvePool) => metaByPool.get(curvePool)?.kind === 'plain')
     .map((curvePool) => {
       const meta = metaByPool.get(curvePool)!;
       const tokens = meta?.coins ?? [];
       return {
-        poolType: "stableswapng" as const,
+        poolType: 'stableswapng' as const,
         curvePool,
         tokens,
         fee: CREATE_POOLS_DEFAULTS.fee,
@@ -219,7 +236,9 @@ async function main() {
   const outPath = resolveOutputPath(outputDir, chainId, OUTPUT_FILE);
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   saveJson(outPath, createPoolsConfigs);
-  console.log(`Wrote ${outPath} (${createPoolsConfigs.length} pools in createPools.ts format)`);
+  console.log(
+    `Wrote ${outPath} (${createPoolsConfigs.length} pools in createPools.ts format)`,
+  );
 }
 
 main().catch((e) => {

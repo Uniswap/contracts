@@ -22,21 +22,29 @@
  *   LOOKBACK_BLOCKS         (optional, default 200000) used when checkpoint missing and no --start-block
  */
 
-import "dotenv/config";
-import fs from "node:fs";
-import path from "node:path";
-import { ethers } from "ethers";
-import { parseArgs, getEnvForChain, toInt, resolveOutputPath, resolveCheckpointPath } from "@src/cli";
+import 'dotenv/config';
+import fs from 'node:fs';
+import path from 'node:path';
+import { ethers } from 'ethers';
+import {
+  parseArgs,
+  getEnvForChain,
+  toInt,
+  resolveOutputPath,
+  resolveCheckpointPath,
+} from '@src/cli';
 
-const OUTPUT_FILE = "fluiddexlite-pools.json";
-const CHECKPOINT_FILE = "dexlite_checkpoint.json";
+const OUTPUT_FILE = 'fluiddexlite-pools.json';
+const CHECKPOINT_FILE = 'dexlite_checkpoint.json';
 
 /** Fluid native token; map to address(0) for Uniswap v4 pool init */
-const FLUID_NATIVE = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
-const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
+const FLUID_NATIVE = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE';
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 function toUniswapV4Currency(addr: string): string {
-  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase() ? ZERO_ADDRESS : ethers.getAddress(addr);
+  return addr.toLowerCase() === FLUID_NATIVE.toLowerCase()
+    ? ZERO_ADDRESS
+    : ethers.getAddress(addr);
 }
 
 type Checkpoint = {
@@ -48,7 +56,7 @@ type Checkpoint = {
 
 /** Same shape as createPools.ts FluidDexLitePoolConfig */
 type CreatePoolsFluidLiteConfig = {
-  poolType: "fluiddexlite";
+  poolType: 'fluiddexlite';
   dexSalt: string;
   currency0: string;
   currency1: string;
@@ -58,7 +66,7 @@ type CreatePoolsFluidLiteConfig = {
 };
 
 const LOG_INITIALIZE_ABI = [
-  "event LogInitialize(uint256 dexId, tuple(address token0,address token1,bytes32 salt) dexKey, tuple(tuple(address token0,address token1,bytes32 salt) dexKey,uint256 fee,uint256 revenueCut,bool rebalancingStatus,uint256 centerPrice,uint256 centerPriceContract,uint256 upperPercent,uint256 lowerPercent,uint256 upperShiftThreshold,uint256 lowerShiftThreshold,uint256 shiftTime,uint256 minCenterPrice,uint256 maxCenterPrice,uint256 token0Amount,uint256 token1Amount) params, uint256 time)",
+  'event LogInitialize(uint256 dexId, tuple(address token0,address token1,bytes32 salt) dexKey, tuple(tuple(address token0,address token1,bytes32 salt) dexKey,uint256 fee,uint256 revenueCut,bool rebalancingStatus,uint256 centerPrice,uint256 centerPriceContract,uint256 upperPercent,uint256 lowerPercent,uint256 upperShiftThreshold,uint256 lowerShiftThreshold,uint256 shiftTime,uint256 minCenterPrice,uint256 maxCenterPrice,uint256 token0Amount,uint256 token1Amount) params, uint256 time)',
 ] as const;
 
 function ensureDirForFile(filePath: string) {
@@ -68,7 +76,7 @@ function ensureDirForFile(filePath: string) {
 
 function safeReadJson<T>(filePath: string): T | null {
   try {
-    const raw = fs.readFileSync(filePath, "utf8");
+    const raw = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(raw) as T;
   } catch {
     return null;
@@ -78,7 +86,7 @@ function safeReadJson<T>(filePath: string): T | null {
 function atomicWriteFile(filePath: string, contents: string) {
   ensureDirForFile(filePath);
   const abs = path.resolve(filePath);
-  const tmp = abs + ".tmp";
+  const tmp = abs + '.tmp';
   fs.writeFileSync(tmp, contents);
   fs.renameSync(tmp, abs);
 }
@@ -86,7 +94,7 @@ function atomicWriteFile(filePath: string, contents: string) {
 function loadExistingKeys(outFile: string): Set<string> {
   const keys = new Set<string>();
   if (!fs.existsSync(outFile)) return keys;
-  const raw = fs.readFileSync(outFile, "utf8").trim();
+  const raw = fs.readFileSync(outFile, 'utf8').trim();
   if (!raw) return keys;
   try {
     const arr = JSON.parse(raw) as CreatePoolsFluidLiteConfig[];
@@ -118,37 +126,37 @@ function getEnvInt(name: string, chainId: number, def: number): number {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
 
-  const chainIdRaw = args["chain-id"];
+  const chainIdRaw = args['chain-id'];
   if (chainIdRaw == null) {
-    console.error("Missing required --chain-id <n>");
+    console.error('Missing required --chain-id <n>');
     process.exit(1);
   }
   const chainId = toInt(chainIdRaw, 0);
   if (chainId <= 0) {
-    console.error("--chain-id must be a positive integer");
+    console.error('--chain-id must be a positive integer');
     process.exit(1);
   }
 
-  const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const dexLiteRaw = getEnvForChain("FLUID_DEX_LITE", chainId);
+  const rpcUrl = getEnvForChain('RPC_URL', chainId);
+  const dexLiteRaw = getEnvForChain('FLUID_DEX_LITE', chainId);
   if (!rpcUrl || !dexLiteRaw) {
     throw new Error(
-      "Missing required env: RPC_URL and FLUID_DEX_LITE (or RPC_URL_<chainId>, FLUID_DEX_LITE_<chainId>)",
+      'Missing required env: RPC_URL and FLUID_DEX_LITE (or RPC_URL_<chainId>, FLUID_DEX_LITE_<chainId>)',
     );
   }
   const dexLite = ethers.getAddress(dexLiteRaw);
 
-  const outputDir = (args["output-dir"] as string) ?? "detected";
-  const checkpointDir = (args["checkpoint-dir"] as string) ?? "checkpoints";
-  const chunkBlocks = Math.max(1, toInt(args["chunk-blocks"], 10000));
+  const outputDir = (args['output-dir'] as string) ?? 'detected';
+  const checkpointDir = (args['checkpoint-dir'] as string) ?? 'checkpoints';
+  const chunkBlocks = Math.max(1, toInt(args['chunk-blocks'], 10000));
 
-  const finality = getEnvInt("FINALITY_BLOCKS", chainId, 10);
-  const lookbackBlocks = getEnvInt("LOOKBACK_BLOCKS", chainId, 200000);
-  const startBlockArg = args["start-block"];
+  const finality = getEnvInt('FINALITY_BLOCKS', chainId, 10);
+  const lookbackBlocks = getEnvInt('LOOKBACK_BLOCKS', chainId, 200000);
+  const startBlockArg = args['start-block'];
 
   const provider = new ethers.JsonRpcProvider(rpcUrl);
   const iface = new ethers.Interface(LOG_INITIALIZE_ABI as unknown as string[]);
-  const topic0 = iface.getEvent("LogInitialize")!.topicHash;
+  const topic0 = iface.getEvent('LogInitialize')!.topicHash;
 
   const latestBlock = await provider.getBlockNumber();
   const toBlock = Math.max(0, latestBlock - finality);
@@ -159,7 +167,11 @@ async function main() {
   let fromBlock: number;
   if (startBlockArg != null) {
     fromBlock = Math.max(0, toInt(startBlockArg, 0));
-  } else if (cp && cp.chainId === chainId && cp.dexLite.toLowerCase() === dexLite.toLowerCase()) {
+  } else if (
+    cp &&
+    cp.chainId === chainId &&
+    cp.dexLite.toLowerCase() === dexLite.toLowerCase()
+  ) {
     fromBlock = cp.lastProcessedBlock + 1;
   } else {
     fromBlock = Math.max(0, toBlock - lookbackBlocks);
@@ -172,12 +184,12 @@ async function main() {
       lastProcessedBlock: toBlock,
       updatedAt: new Date().toISOString(),
     };
-    atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + "\n");
+    atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + '\n');
     console.log(
       JSON.stringify(
         {
           ok: true,
-          note: "No new blocks to scan",
+          note: 'No new blocks to scan',
           chainId,
           dexLite,
           fromBlock,
@@ -238,7 +250,7 @@ async function main() {
 
       newPools++;
       newRecords.push({
-        poolType: "fluiddexlite",
+        poolType: 'fluiddexlite',
         dexSalt: salt,
         currency0,
         currency1,
@@ -249,9 +261,10 @@ async function main() {
     }
 
     if (newRecords.length > 0) {
-      const existing = safeReadJson<CreatePoolsFluidLiteConfig[]>(outPath) ?? [];
+      const existing =
+        safeReadJson<CreatePoolsFluidLiteConfig[]>(outPath) ?? [];
       const merged = existing.concat(newRecords);
-      atomicWriteFile(outPath, JSON.stringify(merged, null, 2) + "\n");
+      atomicWriteFile(outPath, JSON.stringify(merged, null, 2) + '\n');
     }
 
     const interimCp: Checkpoint = {
@@ -260,9 +273,11 @@ async function main() {
       lastProcessedBlock: end,
       updatedAt: new Date().toISOString(),
     };
-    atomicWriteFile(cpPath, JSON.stringify(interimCp, null, 2) + "\n");
+    atomicWriteFile(cpPath, JSON.stringify(interimCp, null, 2) + '\n');
 
-    console.error(`[scan] ${start}..${end} logs=${logs.length} new=${newRecords.length}`);
+    console.error(
+      `[scan] ${start}..${end} logs=${logs.length} new=${newRecords.length}`,
+    );
   }
 
   console.log(

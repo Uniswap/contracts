@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
-import "dotenv/config";
-import { ethers } from "ethers";
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
-import { execFileSync, spawn } from "child_process";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import 'dotenv/config';
+import { ethers } from 'ethers';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { execFileSync, spawn } from 'child_process';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-import { getEnvForChain, toInt } from "./cli.js";
-import { createLogger, type Logger } from "./logger.js";
+import { getEnvForChain, toInt } from './cli.js';
+import { createLogger, type Logger } from './logger.js';
 import {
   CREATION_MODULES,
   POOL_TYPES,
@@ -18,22 +18,28 @@ import {
   type PoolEntry,
   type PoolKeyRecord,
   type FactoryImmutables,
-} from "../creation-modules/index.js";
+} from '../creation-modules/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const projectRoot = join(__dirname, "..", "..");
+const projectRoot = join(__dirname, '..', '..');
 
 /** Compute PoolId = keccak256(abi.encode(poolKey)) matching Uniswap v4 PoolIdLibrary.toId() */
 function computePoolId(poolKey: PoolKeyRecord): string {
   const encoded = ethers.AbiCoder.defaultAbiCoder().encode(
-    ["address", "address", "uint24", "int24", "address"],
-    [poolKey.currency0, poolKey.currency1, poolKey.fee, poolKey.tickSpacing, poolKey.hooks],
+    ['address', 'address', 'uint24', 'int24', 'address'],
+    [
+      poolKey.currency0,
+      poolKey.currency1,
+      poolKey.fee,
+      poolKey.tickSpacing,
+      poolKey.hooks,
+    ],
   );
   return ethers.keccak256(encoded);
 }
 
 // Foundry's default CREATE2 deployer
-const CREATE2_DEPLOYER = "0x4e59b44847b379578588920cA78FbF26c0B4956C";
+const CREATE2_DEPLOYER = '0x4e59b44847b379578588920cA78FbF26c0B4956C';
 
 interface VerifyOptions {
   enabled: boolean;
@@ -59,44 +65,44 @@ interface ParsedArgs {
 }
 
 function isPoolType(s: unknown): s is string {
-  return typeof s === "string" && POOL_TYPES.includes(s);
+  return typeof s === 'string' && POOL_TYPES.includes(s);
 }
 
 function parseArgs(): ParsedArgs {
   const args = process.argv.slice(2);
-  const selfDeployIndex = args.indexOf("--self-deploy");
+  const selfDeployIndex = args.indexOf('--self-deploy');
   const selfDeploy = selfDeployIndex !== -1;
 
   const flagNames = [
-    "--self-deploy",
-    "--chain-id",
-    "--registry-dir",
-    "--dry-run",
-    "--verbose",
-    "-v",
-    "--start-at",
-    "--jobs",
-    "-j",
-    "--priority-gas-price",
-    "--verify",
-    "--verifier-url",
-    "--verifier",
-    "--compiler-version",
+    '--self-deploy',
+    '--chain-id',
+    '--registry-dir',
+    '--dry-run',
+    '--verbose',
+    '-v',
+    '--start-at',
+    '--jobs',
+    '-j',
+    '--priority-gas-price',
+    '--verify',
+    '--verifier-url',
+    '--verifier',
+    '--compiler-version',
   ];
   const positionalArgs: string[] = [];
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (flagNames.includes(a)) {
       if (
-        a === "--chain-id" ||
-        a === "--registry-dir" ||
-        a === "--start-at" ||
-        a === "--jobs" ||
-        a === "-j" ||
-        a === "--priority-gas-price" ||
-        a === "--verifier-url" ||
-        a === "--verifier" ||
-        a === "--compiler-version"
+        a === '--chain-id' ||
+        a === '--registry-dir' ||
+        a === '--start-at' ||
+        a === '--jobs' ||
+        a === '-j' ||
+        a === '--priority-gas-price' ||
+        a === '--verifier-url' ||
+        a === '--verifier' ||
+        a === '--compiler-version'
       )
         i++;
       continue;
@@ -106,44 +112,70 @@ function parseArgs(): ParsedArgs {
 
   const minArgs = 1;
   if (positionalArgs.length < minArgs) {
-    console.error("Usage: ts-node createPools.ts <jsonFile> [factoryAddress] [--self-deploy] [--chain-id <n>]");
+    console.error(
+      'Usage: ts-node createPools.ts <jsonFile> [factoryAddress] [--self-deploy] [--chain-id <n>]',
+    );
     console.error(
       "  jsonFile: Path to JSON file containing pool configurations (each config must have a 'poolType' field)",
     );
-    console.error("  factoryAddress: Factory contract address (required unless --self-deploy)");
-    console.error("  --self-deploy: Deploy hooks directly from wallet instead of via factory");
-    console.error("  --chain-id <n>: Chain ID; selects RPC_URL_<n> from env (e.g. RPC_URL_1 for mainnet)");
-    console.error("");
-    console.error("Modes:");
     console.error(
-      "  Factory mode: ts-node createPools.ts pools.json 0xFactoryAddr [--chain-id 1] [--registry-dir ./deployed-pools]",
+      '  factoryAddress: Factory contract address (required unless --self-deploy)',
     );
     console.error(
-      "  Self-deploy:  ts-node createPools.ts pools.json --self-deploy [--chain-id 1] [--registry-dir ./deployed-pools]",
+      '  --self-deploy: Deploy hooks directly from wallet instead of via factory',
     );
     console.error(
-      "  --dry-run:    Simulate without broadcasting (self-deploy: forge script without --broadcast; factory: staticCall only)",
+      '  --chain-id <n>: Chain ID; selects RPC_URL_<n> from env (e.g. RPC_URL_1 for mainnet)',
     );
-    console.error("  --verbose, -v: Run forge scripts verbosely and log full output on errors");
+    console.error('');
+    console.error('Modes:');
     console.error(
-      "  --start-at <n>: Start at 1-based pool index (skip earlier pools). e.g. --start-at 3 to resume from pool 3.",
+      '  Factory mode: ts-node createPools.ts pools.json 0xFactoryAddr [--chain-id 1] [--registry-dir ./deployed-pools]',
     );
-    console.error("  --jobs <n>, -j <n>: Run N parallel salt mining workers (default 1). Speeds up mining.");
     console.error(
-      "  --priority-gas-price <price>: Max priority fee per gas for EIP1559 (e.g. 3gwei). Speeds up tx inclusion.",
+      '  Self-deploy:  ts-node createPools.ts pools.json --self-deploy [--chain-id 1] [--registry-dir ./deployed-pools]',
     );
-    console.error("  --verify: Submit hook contract for block explorer verification after deployment");
-    console.error("  --verifier <name>: Verifier backend (etherscan|blockscout|sourcify). Default: etherscan");
-    console.error("  --verifier-url <url>: Custom verifier API URL (e.g. for blockscout)");
     console.error(
-      "  --compiler-version <ver>: Solc version used to compile the hook (e.g. 0.8.24). Required when the factory",
+      '  --dry-run:    Simulate without broadcasting (self-deploy: forge script without --broadcast; factory: staticCall only)',
     );
-    console.error("                            was deployed with a different solc than the current local environment.");
-    console.error("");
-    console.error("Environment variables:");
-    console.error("  RPC_URL_<chainId>: RPC endpoint (required when --chain-id set)");
-    console.error("  PRIVATE_KEY: Private key for signing transactions (required)");
-    console.error("  ETHERSCAN_API_KEY or ETHERSCAN_API_KEY_<chainId>: API key for block explorer verification");
+    console.error(
+      '  --verbose, -v: Run forge scripts verbosely and log full output on errors',
+    );
+    console.error(
+      '  --start-at <n>: Start at 1-based pool index (skip earlier pools). e.g. --start-at 3 to resume from pool 3.',
+    );
+    console.error(
+      '  --jobs <n>, -j <n>: Run N parallel salt mining workers (default 1). Speeds up mining.',
+    );
+    console.error(
+      '  --priority-gas-price <price>: Max priority fee per gas for EIP1559 (e.g. 3gwei). Speeds up tx inclusion.',
+    );
+    console.error(
+      '  --verify: Submit hook contract for block explorer verification after deployment',
+    );
+    console.error(
+      '  --verifier <name>: Verifier backend (etherscan|blockscout|sourcify). Default: etherscan',
+    );
+    console.error(
+      '  --verifier-url <url>: Custom verifier API URL (e.g. for blockscout)',
+    );
+    console.error(
+      '  --compiler-version <ver>: Solc version used to compile the hook (e.g. 0.8.24). Required when the factory',
+    );
+    console.error(
+      '                            was deployed with a different solc than the current local environment.',
+    );
+    console.error('');
+    console.error('Environment variables:');
+    console.error(
+      '  RPC_URL_<chainId>: RPC endpoint (required when --chain-id set)',
+    );
+    console.error(
+      '  PRIVATE_KEY: Private key for signing transactions (required)',
+    );
+    console.error(
+      '  ETHERSCAN_API_KEY or ETHERSCAN_API_KEY_<chainId>: API key for block explorer verification',
+    );
     process.exit(1);
   }
 
@@ -154,76 +186,103 @@ function parseArgs(): ParsedArgs {
       ? (ethers.getAddress(positionalArgs[1]) as Address)
       : null;
 
-  if (selfDeploy && positionalArgs.length >= 2 && positionalArgs[1].startsWith("0x")) {
-    console.error("Error: --self-deploy and factoryAddress are mutually exclusive");
+  if (
+    selfDeploy &&
+    positionalArgs.length >= 2 &&
+    positionalArgs[1].startsWith('0x')
+  ) {
+    console.error(
+      'Error: --self-deploy and factoryAddress are mutually exclusive',
+    );
     process.exit(1);
   }
 
   if (!selfDeploy && (!factoryAddress || positionalArgs.length < 2)) {
-    console.error("Error: In factory mode, factoryAddress is required (e.g. createPools.ts pools.json 0xFactoryAddr)");
+    console.error(
+      'Error: In factory mode, factoryAddress is required (e.g. createPools.ts pools.json 0xFactoryAddr)',
+    );
     process.exit(1);
   }
 
-  const chainIdIndex = args.indexOf("--chain-id");
-  const chainIdRaw = chainIdIndex !== -1 && args[chainIdIndex + 1] ? args[chainIdIndex + 1] : null;
+  const chainIdIndex = args.indexOf('--chain-id');
+  const chainIdRaw =
+    chainIdIndex !== -1 && args[chainIdIndex + 1]
+      ? args[chainIdIndex + 1]
+      : null;
   const chainId = chainIdRaw != null ? toInt(String(chainIdRaw), 0) : null;
 
   const rpcUrl =
     chainId != null && chainId > 0
-      ? getEnvForChain("RPC_URL", chainId)
-      : (process.env.RPC_URL ?? "").trim() || undefined;
+      ? getEnvForChain('RPC_URL', chainId)
+      : (process.env.RPC_URL ?? '').trim() || undefined;
   if (!rpcUrl) {
     console.error(
       chainId != null && chainId > 0
         ? `Error: RPC_URL_${chainId} environment variable is required when using --chain-id ${chainId}`
-        : "Error: RPC_URL environment variable is required",
+        : 'Error: RPC_URL environment variable is required',
     );
     process.exit(1);
   }
 
   if (!process.env.PRIVATE_KEY) {
-    console.error("Error: PRIVATE_KEY environment variable is required");
+    console.error('Error: PRIVATE_KEY environment variable is required');
     process.exit(1);
   }
 
-  const registryDirIndex = args.indexOf("--registry-dir");
+  const registryDirIndex = args.indexOf('--registry-dir');
   const registryDir =
-    registryDirIndex !== -1 && args[registryDirIndex + 1] ? args[registryDirIndex + 1] : "created-pools";
+    registryDirIndex !== -1 && args[registryDirIndex + 1]
+      ? args[registryDirIndex + 1]
+      : 'created-pools';
 
-  const dryRun = args.includes("--dry-run");
-  const verbose = args.includes("--verbose") || args.includes("-v");
+  const dryRun = args.includes('--dry-run');
+  const verbose = args.includes('--verbose') || args.includes('-v');
 
-  const startAtIndex = args.indexOf("--start-at");
-  const startAtRaw = startAtIndex !== -1 && args[startAtIndex + 1] ? args[startAtIndex + 1] : null;
+  const startAtIndex = args.indexOf('--start-at');
+  const startAtRaw =
+    startAtIndex !== -1 && args[startAtIndex + 1]
+      ? args[startAtIndex + 1]
+      : null;
   const startAt = startAtRaw != null ? toInt(String(startAtRaw), 1) : 1;
   if (startAt < 1) {
-    console.error("Error: --start-at must be >= 1");
+    console.error('Error: --start-at must be >= 1');
     process.exit(1);
   }
 
-  const jobsIndex = args.indexOf("--jobs");
-  const jobsIndexShort = args.indexOf("-j");
+  const jobsIndex = args.indexOf('--jobs');
+  const jobsIndexShort = args.indexOf('-j');
   const jobsIdx = jobsIndex !== -1 ? jobsIndex : jobsIndexShort;
-  const jobsRaw = jobsIdx !== -1 && args[jobsIdx + 1] ? args[jobsIdx + 1] : null;
+  const jobsRaw =
+    jobsIdx !== -1 && args[jobsIdx + 1] ? args[jobsIdx + 1] : null;
   const jobs = jobsRaw != null ? toInt(String(jobsRaw), 1) : 1;
   if (jobs < 1 || jobs > 16) {
-    console.error("Error: --jobs must be between 1 and 16");
+    console.error('Error: --jobs must be between 1 and 16');
     process.exit(1);
   }
 
-  const priorityGasPriceIndex = args.indexOf("--priority-gas-price");
+  const priorityGasPriceIndex = args.indexOf('--priority-gas-price');
   const priorityGasPriceRaw =
-    priorityGasPriceIndex !== -1 && args[priorityGasPriceIndex + 1] ? args[priorityGasPriceIndex + 1] : null;
+    priorityGasPriceIndex !== -1 && args[priorityGasPriceIndex + 1]
+      ? args[priorityGasPriceIndex + 1]
+      : null;
   const priorityGasPrice = priorityGasPriceRaw?.trim() || null;
 
-  const verifyEnabled = args.includes("--verify");
-  const verifierIndex = args.indexOf("--verifier");
-  const verifier = verifierIndex !== -1 && args[verifierIndex + 1] ? args[verifierIndex + 1] : null;
-  const verifierUrlIndex = args.indexOf("--verifier-url");
-  const verifierUrl = verifierUrlIndex !== -1 && args[verifierUrlIndex + 1] ? args[verifierUrlIndex + 1] : null;
-  const compilerVersionIndex = args.indexOf("--compiler-version");
+  const verifyEnabled = args.includes('--verify');
+  const verifierIndex = args.indexOf('--verifier');
+  const verifier =
+    verifierIndex !== -1 && args[verifierIndex + 1]
+      ? args[verifierIndex + 1]
+      : null;
+  const verifierUrlIndex = args.indexOf('--verifier-url');
+  const verifierUrl =
+    verifierUrlIndex !== -1 && args[verifierUrlIndex + 1]
+      ? args[verifierUrlIndex + 1]
+      : null;
+  const compilerVersionIndex = args.indexOf('--compiler-version');
   const compilerVersion =
-    compilerVersionIndex !== -1 && args[compilerVersionIndex + 1] ? args[compilerVersionIndex + 1] : null;
+    compilerVersionIndex !== -1 && args[compilerVersionIndex + 1]
+      ? args[compilerVersionIndex + 1]
+      : null;
 
   return {
     jsonFile,
@@ -247,13 +306,18 @@ function parseArgs(): ParsedArgs {
   };
 }
 
-function appendToRegistryFile(registryDir: string, poolType: string, entry: PoolDeployedEntry, log: Logger): void {
+function appendToRegistryFile(
+  registryDir: string,
+  poolType: string,
+  entry: PoolDeployedEntry,
+  log: Logger,
+): void {
   const fileName = `deployed-${poolType}.json`;
   const filePath = join(registryDir, fileName);
 
   let poolsDeployed: PoolDeployedEntry[];
   if (existsSync(filePath)) {
-    const content = readFileSync(filePath, "utf-8");
+    const content = readFileSync(filePath, 'utf-8');
     poolsDeployed = JSON.parse(content) as PoolDeployedEntry[];
   } else {
     poolsDeployed = [];
@@ -275,7 +339,7 @@ function appendToRegistryFile(registryDir: string, poolType: string, entry: Pool
 function appendToEnvFile(filePath: string, key: string, value: string): void {
   let lines: string[] = [];
   if (existsSync(filePath)) {
-    lines = readFileSync(filePath, "utf-8").split("\n");
+    lines = readFileSync(filePath, 'utf-8').split('\n');
   }
   const prefix = `${key}=`;
   const idx = lines.findIndex((l) => l.startsWith(prefix));
@@ -286,12 +350,12 @@ function appendToEnvFile(filePath: string, key: string, value: string): void {
     lines.push(newLine);
   }
   // Ensure file ends with a newline
-  if (lines[lines.length - 1] !== "") lines.push("");
-  writeFileSync(filePath, lines.join("\n"));
+  if (lines[lines.length - 1] !== '') lines.push('');
+  writeFileSync(filePath, lines.join('\n'));
 }
 
 const POOL_MANAGER_INIT_ABI = [
-  "function initialize((address currency0, address currency1, uint24 fee, int24 tickSpacing, address hooks) key, uint160 sqrtPriceX96) returns (int24 tick)",
+  'function initialize((address currency0, address currency1, uint24 fee, int24 tickSpacing, address hooks) key, uint160 sqrtPriceX96) returns (int24 tick)',
 ];
 
 async function initializeSingletonPool(
@@ -302,10 +366,16 @@ async function initializeSingletonPool(
   log: Logger,
   dryRun: boolean,
 ): Promise<{ blockNumber: number; txHash: string } | null> {
-  const poolManager = new ethers.Contract(poolManagerAddress, POOL_MANAGER_INIT_ABI, signer);
+  const poolManager = new ethers.Contract(
+    poolManagerAddress,
+    POOL_MANAGER_INIT_ABI,
+    signer,
+  );
 
-  log.info(`Calling poolManager.initialize for pool: ${poolKey.currency0} / ${poolKey.currency1}`);
-  if (dryRun) log.info("(dry run - no broadcast)");
+  log.info(
+    `Calling poolManager.initialize for pool: ${poolKey.currency0} / ${poolKey.currency1}`,
+  );
+  if (dryRun) log.info('(dry run - no broadcast)');
 
   try {
     if (dryRun) {
@@ -320,7 +390,7 @@ async function initializeSingletonPool(
     log.success(`Pool initialized in block ${receipt!.blockNumber}`);
     return { blockNumber: Number(receipt!.blockNumber), txHash: tx.hash };
   } catch (error) {
-    log.error("Error initializing pool:", error);
+    log.error('Error initializing pool:', error);
     throw error;
   }
 }
@@ -331,14 +401,21 @@ async function initializeSingletonPool(
  * contains a "metadata" object with compiler.version (e.g. "0.8.24+commit.e11b9ed9").
  * Returns null if the artifact is missing or unparseable.
  */
-function readCompilerVersionFromArtifact(contractIdentifier: string): string | null {
+function readCompilerVersionFromArtifact(
+  contractIdentifier: string,
+): string | null {
   try {
     // contractIdentifier: "path/to/Foo.sol:Foo"
-    const contractName = contractIdentifier.split(":")[1];
-    const solFile = contractIdentifier.split(":")[0].split("/").pop()!; // "Foo.sol"
-    const artifactPath = join(projectRoot, "out", solFile, `${contractName}.json`);
+    const contractName = contractIdentifier.split(':')[1];
+    const solFile = contractIdentifier.split(':')[0].split('/').pop()!; // "Foo.sol"
+    const artifactPath = join(
+      projectRoot,
+      'out',
+      solFile,
+      `${contractName}.json`,
+    );
     if (!existsSync(artifactPath)) return null;
-    const artifact = JSON.parse(readFileSync(artifactPath, "utf-8")) as {
+    const artifact = JSON.parse(readFileSync(artifactPath, 'utf-8')) as {
       metadata?: { compiler?: { version?: string } };
     };
     return artifact?.metadata?.compiler?.version ?? null;
@@ -356,20 +433,30 @@ function verifyContract(
   log: Logger,
 ): void {
   // Resolve verifier URL: explicit flag > BLOCKSCOUT_API_URL env > none
-  const resolvedVerifierUrl = verifyOptions.verifierUrl ?? getEnvForChain("BLOCKSCOUT_API_URL", chainId) ?? null;
+  const resolvedVerifierUrl =
+    verifyOptions.verifierUrl ??
+    getEnvForChain('BLOCKSCOUT_API_URL', chainId) ??
+    null;
 
   // If a Blockscout URL is in play but no verifier was explicitly named, use blockscout
   const isBlockscout =
-    verifyOptions.verifier === "blockscout" || (!verifyOptions.verifier && resolvedVerifierUrl != null);
-  const verifier = verifyOptions.verifier ?? (isBlockscout ? "blockscout" : "etherscan");
+    verifyOptions.verifier === 'blockscout' ||
+    (!verifyOptions.verifier && resolvedVerifierUrl != null);
+  const verifier =
+    verifyOptions.verifier ?? (isBlockscout ? 'blockscout' : 'etherscan');
 
   // API key: explicit flag > ETHERSCAN_API_KEY env (blockscout public instances don't require one)
-  const apiKey = verifyOptions.etherscanApiKey ?? getEnvForChain("ETHERSCAN_API_KEY", chainId) ?? null;
+  const apiKey =
+    verifyOptions.etherscanApiKey ??
+    getEnvForChain('ETHERSCAN_API_KEY', chainId) ??
+    null;
 
   // Compiler version: explicit flag > build artifact > let forge auto-detect
   // In factory mode this matters: the factory embeds the hook bytecode at its own compile time,
   // so the solc version used then must match what forge verify-contract uses now.
-  const compilerVersion = verifyOptions.compilerVersion ?? readCompilerVersionFromArtifact(contractIdentifier);
+  const compilerVersion =
+    verifyOptions.compilerVersion ??
+    readCompilerVersionFromArtifact(contractIdentifier);
   if (!compilerVersion) {
     log.info(
       `  Warning: compiler version not found in build artifacts. If the factory was compiled with a different` +
@@ -379,69 +466,83 @@ function verifyContract(
     log.info(`  Compiler version: ${compilerVersion}`);
   }
 
-  log.info(`Submitting ${contractIdentifier} at ${hookAddress} for verification (verifier: ${verifier})...`);
+  log.info(
+    `Submitting ${contractIdentifier} at ${hookAddress} for verification (verifier: ${verifier})...`,
+  );
 
   const forgeArgs = [
-    "verify-contract",
+    'verify-contract',
     hookAddress,
     contractIdentifier,
-    "--constructor-args",
+    '--constructor-args',
     constructorArgs,
-    "--chain-id",
+    '--chain-id',
     chainId.toString(),
-    "--verifier",
+    '--verifier',
     verifier,
-    "--watch",
+    '--watch',
   ];
 
-  if (apiKey) forgeArgs.push("--etherscan-api-key", apiKey);
-  if (resolvedVerifierUrl) forgeArgs.push("--verifier-url", resolvedVerifierUrl);
-  if (compilerVersion) forgeArgs.push("--compiler-version", compilerVersion);
+  if (apiKey) forgeArgs.push('--etherscan-api-key', apiKey);
+  if (resolvedVerifierUrl)
+    forgeArgs.push('--verifier-url', resolvedVerifierUrl);
+  if (compilerVersion) forgeArgs.push('--compiler-version', compilerVersion);
 
   try {
-    const output = execFileSync("forge", forgeArgs, {
-      encoding: "utf-8",
+    const output = execFileSync('forge', forgeArgs, {
+      encoding: 'utf-8',
       cwd: projectRoot,
     });
     log.success(`Verification submitted successfully for ${hookAddress}`);
-    if (output.trim()) log.verbose(`\n--- forge verify-contract output ---\n${output}`);
+    if (output.trim())
+      log.verbose(`\n--- forge verify-contract output ---\n${output}`);
   } catch (error) {
-    const execErr = error as { stdout?: string; stderr?: string; message?: string };
+    const execErr = error as {
+      stdout?: string;
+      stderr?: string;
+      message?: string;
+    };
     log.error(
-      `Verification failed for ${hookAddress} (non-fatal): ${execErr.message ?? "unknown error"}`,
+      `Verification failed for ${hookAddress} (non-fatal): ${execErr.message ?? 'unknown error'}`,
       error instanceof Error ? error : new Error(String(error)),
     );
     if (execErr.stdout || execErr.stderr) {
-      log.dumpForgeOutput({ stdout: execErr.stdout, stderr: execErr.stderr, label: "forge verify-contract" });
+      log.dumpForgeOutput({
+        stdout: execErr.stdout,
+        stderr: execErr.stderr,
+        label: 'forge verify-contract',
+      });
     }
   }
 }
 
 function parseSqrtPriceX96(v: unknown): bigint | null {
   if (v == null) return null;
-  if (typeof v === "bigint") return v;
-  if (typeof v === "string") return BigInt(v);
-  if (typeof v === "number") return BigInt(Math.floor(v));
+  if (typeof v === 'bigint') return v;
+  if (typeof v === 'string') return BigInt(v);
+  if (typeof v === 'number') return BigInt(Math.floor(v));
   return null;
 }
 
 function loadJsonFile(filePath: string, log: Logger): PoolConfig[] {
   try {
-    const content = readFileSync(filePath, "utf-8");
+    const content = readFileSync(filePath, 'utf-8');
     const pools = JSON.parse(content);
 
     if (!Array.isArray(pools)) {
-      throw new Error("JSON file must contain an array of pool configurations");
+      throw new Error('JSON file must contain an array of pool configurations');
     }
 
     if (pools.length === 0) {
-      throw new Error("JSON file must contain at least one pool configuration");
+      throw new Error('JSON file must contain at least one pool configuration');
     }
 
     for (let i = 0; i < pools.length; i++) {
       const p = pools[i];
       if (!isPoolType(p?.poolType)) {
-        throw new Error(`Pool ${i + 1} missing or invalid 'poolType'. Must be one of: ${POOL_TYPES.join(", ")}`);
+        throw new Error(
+          `Pool ${i + 1} missing or invalid 'poolType'. Must be one of: ${POOL_TYPES.join(', ')}`,
+        );
       }
     }
 
@@ -462,15 +563,18 @@ function loadJsonFile(filePath: string, log: Logger): PoolConfig[] {
     })) as PoolConfig[];
   } catch (error) {
     log.error(
-      "Error loading JSON file:",
-      error instanceof Error ? error : new Error("Unknown error loading JSON file"),
+      'Error loading JSON file:',
+      error instanceof Error
+        ? error
+        : new Error('Unknown error loading JSON file'),
     );
     process.exit(1);
   }
 }
 
 /** PoolManager Initialize event for verification */
-const INITIALIZE_TOPIC = "0xdd466e674ea557f56295e2d0218a125ea4b4f0f6f3307b95f85e6110838d6438";
+const INITIALIZE_TOPIC =
+  '0xdd466e674ea557f56295e2d0218a125ea4b4f0f6f3307b95f85e6110838d6438';
 
 async function verifyDeploymentOnForgeFailure(
   provider: ethers.Provider,
@@ -493,9 +597,10 @@ async function verifyDeploymentOnForgeFailure(
 
   const hookAddress = ethers.getAddress(hookMatch[1]) as Address;
   const code = await provider.getCode(hookAddress);
-  const hookDeployed = !!code && code !== "0x" && code.length > 2;
+  const hookDeployed = !!code && code !== '0x' && code.length > 2;
 
-  if (!hookDeployed) return { hookAddress, hookDeployed: false, poolsInitialized: 0 };
+  if (!hookDeployed)
+    return { hookAddress, hookDeployed: false, poolsInitialized: 0 };
 
   const poolKeys = module.buildPoolKeys(poolConfig, hookAddress);
   const poolEntriesFromEvent: PoolEntry[] = [];
@@ -513,10 +618,14 @@ async function verifyDeploymentOnForgeFailure(
 
     for (const log of logs) {
       if (log.topics.length < 4) continue;
-      const currency0 = ethers.getAddress("0x" + log.topics[2].slice(26)) as Address;
-      const currency1 = ethers.getAddress("0x" + log.topics[3].slice(26)) as Address;
+      const currency0 = ethers.getAddress(
+        '0x' + log.topics[2].slice(26),
+      ) as Address;
+      const currency1 = ethers.getAddress(
+        '0x' + log.topics[3].slice(26),
+      ) as Address;
       const data = ethers.AbiCoder.defaultAbiCoder().decode(
-        ["uint24", "int24", "address", "uint160", "int24"],
+        ['uint24', 'int24', 'address', 'uint160', 'int24'],
         log.data,
       );
       const fee = Number(data[0]);
@@ -530,8 +639,15 @@ async function verifyDeploymentOnForgeFailure(
             k.currency1.toLowerCase() === currency1.toLowerCase(),
         )
       ) {
-        if (initializeBlockNumber === undefined) initializeBlockNumber = Number(log.blockNumber);
-        const poolKey: PoolKeyRecord = { currency0, currency1, fee, tickSpacing, hooks: hookAddress };
+        if (initializeBlockNumber === undefined)
+          initializeBlockNumber = Number(log.blockNumber);
+        const poolKey: PoolKeyRecord = {
+          currency0,
+          currency1,
+          fee,
+          tickSpacing,
+          hooks: hookAddress,
+        };
         poolEntriesFromEvent.push({ poolKey, poolId: log.topics[1] });
       }
     }
@@ -544,7 +660,8 @@ async function verifyDeploymentOnForgeFailure(
     hookDeployed,
     poolsInitialized: poolEntriesFromEvent.length,
     blockNumber: initializeBlockNumber,
-    poolEntriesFromEvent: poolEntriesFromEvent.length > 0 ? poolEntriesFromEvent : undefined,
+    poolEntriesFromEvent:
+      poolEntriesFromEvent.length > 0 ? poolEntriesFromEvent : undefined,
   };
 }
 
@@ -556,31 +673,37 @@ function runMineHookWorker(
   streamOutput: boolean,
 ): Promise<{ salt: string; output: string }> {
   return new Promise((resolve, reject) => {
-    const child = spawn("bash", args, {
+    const child = spawn('bash', args, {
       cwd: projectRoot,
       env: execEnv,
-      stdio: ["inherit", "pipe", streamOutput ? "inherit" : "pipe"],
+      stdio: ['inherit', 'pipe', streamOutput ? 'inherit' : 'pipe'],
     });
 
-    let output = "";
-    child.stdout!.on("data", (chunk) => {
+    let output = '';
+    child.stdout!.on('data', (chunk) => {
       const str = chunk.toString();
       output += str;
       if (streamOutput) process.stdout.write(chunk);
     });
 
-    child.on("close", (code) => {
+    child.on('close', (code) => {
       if (code === 0) {
-        const saltMatch = output.match(/Salt \(bytes32\):\s*(0x[a-fA-F0-9]{64})/);
+        const saltMatch = output.match(
+          /Salt \(bytes32\):\s*(0x[a-fA-F0-9]{64})/,
+        );
         if (saltMatch) resolve({ salt: saltMatch[1], output });
-        else reject(new Error("Could not parse salt from mine_hook.sh output"));
+        else reject(new Error('Could not parse salt from mine_hook.sh output'));
       } else {
-        const err = new Error(`mine_hook.sh exited with code ${code}`) as Error & { stdout?: string };
+        const err = new Error(
+          `mine_hook.sh exited with code ${code}`,
+        ) as Error & {
+          stdout?: string;
+        };
         err.stdout = output;
         reject(err);
       }
     });
-    child.on("error", reject);
+    child.on('error', reject);
   });
 }
 
@@ -591,7 +714,7 @@ async function mineSalt(
   deployerAddress?: Address,
   jobs = 1,
 ): Promise<string> {
-  const scriptPath = join(projectRoot, "mine_hook.sh");
+  const scriptPath = join(projectRoot, 'mine_hook.sh');
   const protocolIdHex = `0x${protocolId.toString(16).toUpperCase()}`;
 
   log.info(`Mining salt for protocol ${protocolIdHex}...`);
@@ -600,47 +723,64 @@ async function mineSalt(
   if (jobs > 1) log.info(`Running ${jobs} parallel mining workers...`);
 
   const baseArgs = [scriptPath, constructorArgs, protocolIdHex];
-  if (deployerAddress) baseArgs.push("500", deployerAddress);
+  if (deployerAddress) baseArgs.push('500', deployerAddress);
 
-  const execEnv = { ...process.env, ...(log.verboseEnabled && { FORGE_VERBOSE: "1" }) };
+  const execEnv = {
+    ...process.env,
+    ...(log.verboseEnabled && { FORGE_VERBOSE: '1' }),
+  };
 
   try {
     if (jobs === 1) {
-      const result = await runMineHookWorker(scriptPath, baseArgs, execEnv, projectRoot, true);
+      const result = await runMineHookWorker(
+        scriptPath,
+        baseArgs,
+        execEnv,
+        projectRoot,
+        true,
+      );
       log.success(`Found salt: ${result.salt}`);
       return result.salt;
     }
 
     const children: ReturnType<typeof spawn>[] = [];
-    const workerPromises: Promise<{ salt: string } | { failed: true; output: string }>[] = [];
+    const workerPromises: Promise<
+      { salt: string } | { failed: true; output: string }
+    >[] = [];
 
     for (let i = 0; i < jobs; i++) {
-      const child = spawn("bash", baseArgs, {
+      const child = spawn('bash', baseArgs, {
         cwd: projectRoot,
         env: execEnv,
-        stdio: ["inherit", "pipe", "pipe"],
+        stdio: ['inherit', 'pipe', 'pipe'],
       });
       children.push(child);
 
-      let output = "";
-      child.stdout!.on("data", (chunk) => {
+      let output = '';
+      child.stdout!.on('data', (chunk) => {
         output += chunk.toString();
       });
-      child.stderr!.on("data", (chunk) => {
+      child.stderr!.on('data', (chunk) => {
         output += chunk.toString();
       });
 
-      const promise = new Promise<{ salt: string } | { failed: true; output: string }>((resolve) => {
-        child.on("close", (code) => {
+      const promise = new Promise<
+        { salt: string } | { failed: true; output: string }
+      >((resolve) => {
+        child.on('close', (code) => {
           if (code === 0) {
-            const saltMatch = output.match(/Salt \(bytes32\):\s*(0x[a-fA-F0-9]{64})/);
+            const saltMatch = output.match(
+              /Salt \(bytes32\):\s*(0x[a-fA-F0-9]{64})/,
+            );
             if (saltMatch) resolve({ salt: saltMatch[1] });
             else resolve({ failed: true, output });
           } else {
             resolve({ failed: true, output });
           }
         });
-        child.on("error", (err) => resolve({ failed: true, output: err.message }));
+        child.on('error', (err) =>
+          resolve({ failed: true, output: err.message }),
+        );
       });
       workerPromises.push(promise);
     }
@@ -648,7 +788,7 @@ async function mineSalt(
     const killAll = () => {
       children.forEach((c) => {
         try {
-          c.kill("SIGTERM");
+          c.kill('SIGTERM');
         } catch {
           /* ignore */
         }
@@ -657,17 +797,19 @@ async function mineSalt(
 
     const salt = await new Promise<string>((resolve, reject) => {
       let failedCount = 0;
-      let lastFailedOutput = "";
+      let lastFailedOutput = '';
       workerPromises.forEach((p) => {
         p.then((result) => {
-          if ("salt" in result) {
+          if ('salt' in result) {
             killAll();
             resolve(result.salt);
           } else {
             failedCount++;
             lastFailedOutput = result.output;
             if (failedCount === jobs) {
-              const err = new Error("All mining workers failed") as Error & { stdout?: string };
+              const err = new Error('All mining workers failed') as Error & {
+                stdout?: string;
+              };
               err.stdout = lastFailedOutput;
               reject(err);
             }
@@ -679,12 +821,12 @@ async function mineSalt(
     log.success(`Found salt: ${salt}`);
     return salt;
   } catch (error) {
-    log.error("Error mining salt:", error);
+    log.error('Error mining salt:', error);
     const execErr = error as { stdout?: string; stderr?: string };
     log.dumpForgeOutput({
       stdout: execErr.stdout,
       stderr: execErr.stderr,
-      label: "Forge/mine_hook (from failed worker)",
+      label: 'Forge/mine_hook (from failed worker)',
     });
     throw error;
   }
@@ -699,12 +841,12 @@ function selfDeployPool(
   dryRun: boolean,
   log: Logger,
   priorityGasPrice: string | null = null,
-): Address | "deployed" {
+): Address | 'deployed' {
   const module = CREATION_MODULES[poolType];
   if (!module) throw new Error(`Unknown pool type: ${poolType}`);
 
-  const rawKey = (process.env.PRIVATE_KEY ?? "").trim();
-  const privateKey = rawKey.startsWith("0x") ? rawKey : `0x${rawKey}`;
+  const rawKey = (process.env.PRIVATE_KEY ?? '').trim();
+  const privateKey = rawKey.startsWith('0x') ? rawKey : `0x${rawKey}`;
 
   const envVars: Record<string, string> = {
     PROTOCOL_ID: module.protocolId.toString(),
@@ -715,29 +857,30 @@ function selfDeployPool(
   };
 
   log.info(`Self-deploying hook via SelfCreateHook.s.sol...`);
-  if (dryRun) log.info("(dry run - no broadcast)");
+  if (dryRun) log.info('(dry run - no broadcast)');
   log.info(`Protocol: ${poolType}, Salt: ${salt.substring(0, 18)}...`);
 
   try {
     const output = execFileSync(
-      "forge",
+      'forge',
       [
-        "script",
-        "lib/v4-hooks-public/script/SelfCreateHook.s.sol:SelfCreateHookScript",
-        "--rpc-url",
+        'script',
+        'lib/v4-hooks-public/script/SelfCreateHook.s.sol:SelfCreateHookScript',
+        '--rpc-url',
         rpcUrl,
-        ...(dryRun ? [] : ["--broadcast"]),
-        ...(priorityGasPrice ? ["--priority-gas-price", priorityGasPrice] : []),
-        ...(log.verboseEnabled ? ["-vvvv"] : []),
+        ...(dryRun ? [] : ['--broadcast']),
+        ...(priorityGasPrice ? ['--priority-gas-price', priorityGasPrice] : []),
+        ...(log.verboseEnabled ? ['-vvvv'] : []),
       ],
       {
-        encoding: "utf-8",
+        encoding: 'utf-8',
         cwd: projectRoot,
         env: { ...process.env, ...envVars },
       },
     );
 
-    if (log.verboseEnabled) log.verbose(`\n--- Forge script output ---\n${output}`);
+    if (log.verboseEnabled)
+      log.verbose(`\n--- Forge script output ---\n${output}`);
 
     const hookMatch = output.match(/Hook Address:\s*(0x[a-fA-F0-9]{40})/);
     if (hookMatch) {
@@ -747,11 +890,15 @@ function selfDeployPool(
     }
 
     log.success(`Self-deploy completed`);
-    return "deployed";
+    return 'deployed';
   } catch (error) {
-    log.error("Error in self-deploy:", error);
+    log.error('Error in self-deploy:', error);
     const execErr = error as { stdout?: string; stderr?: string };
-    log.dumpForgeOutput({ stdout: execErr.stdout, stderr: execErr.stderr, label: "Forge" });
+    log.dumpForgeOutput({
+      stdout: execErr.stdout,
+      stderr: execErr.stderr,
+      label: 'Forge',
+    });
     throw error;
   }
 }
@@ -764,22 +911,28 @@ async function createPool(
   salt: string,
   log: Logger,
   dryRun: boolean,
-): Promise<{ hookAddress: Address | ""; blockNumber: number; txHash: string }> {
+): Promise<{ hookAddress: Address | ''; blockNumber: number; txHash: string }> {
   const module = CREATION_MODULES[poolType];
   if (!module) throw new Error(`Unknown pool type: ${poolType}`);
 
   const args = module.buildCreatePoolArgs(poolConfig, salt);
-  const factory = new ethers.Contract(factoryAddress, module.factoryAbi, signer);
+  const factory = new ethers.Contract(
+    factoryAddress,
+    module.factoryAbi,
+    signer,
+  );
 
   log.info(`Calling createPool on factory ${factoryAddress}...`);
-  if (dryRun) log.info("(dry run - no broadcast)");
-  log.info(`Args: ${args.map((a, i) => `${i}: ${String(a).substring(0, 66)}...`).join(", ")}`);
+  if (dryRun) log.info('(dry run - no broadcast)');
+  log.info(
+    `Args: ${args.map((a, i) => `${i}: ${String(a).substring(0, 66)}...`).join(', ')}`,
+  );
 
   try {
     if (dryRun) {
       await factory.createPool.staticCall(...args);
       log.success(`Dry run: createPool would succeed (simulation passed)`);
-      return { hookAddress: "", blockNumber: 0, txHash: "" };
+      return { hookAddress: '', blockNumber: 0, txHash: '' };
     }
 
     const tx = await factory.createPool(...args);
@@ -790,8 +943,11 @@ async function createPool(
 
     const hookDeployedEvent = receipt!.logs.find((l: ethers.Log) => {
       try {
-        const parsed = factory.interface.parseLog({ topics: l.topics as string[], data: l.data });
-        return parsed?.name === "HookDeployed";
+        const parsed = factory.interface.parseLog({
+          topics: l.topics as string[],
+          data: l.data,
+        });
+        return parsed?.name === 'HookDeployed';
       } catch {
         return false;
       }
@@ -802,7 +958,9 @@ async function createPool(
         topics: hookDeployedEvent.topics as string[],
         data: hookDeployedEvent.data,
       });
-      const hookAddress = ethers.getAddress((parsed?.args.hook || parsed?.args[0]) as string) as Address;
+      const hookAddress = ethers.getAddress(
+        (parsed?.args.hook || parsed?.args[0]) as string,
+      ) as Address;
       log.success(`Hook deployed at: ${hookAddress}`);
       return {
         hookAddress,
@@ -812,12 +970,12 @@ async function createPool(
     }
 
     return {
-      hookAddress: "",
+      hookAddress: '',
       blockNumber: Number(receipt!.blockNumber),
       txHash: tx.hash,
     };
   } catch (error) {
-    log.error("Error creating pool:", error);
+    log.error('Error creating pool:', error);
     throw error;
   }
 }
@@ -845,9 +1003,9 @@ async function main() {
   const signer = new ethers.Wallet(privateKey, provider);
 
   log.banner({
-    title: "Pool Creation Script",
+    title: 'Pool Creation Script',
     jsonFile,
-    mode: selfDeploy ? "Self-Deploy" : "Factory",
+    mode: selfDeploy ? 'Self-Deploy' : 'Factory',
     factoryAddress: factoryAddress ?? undefined,
     rpcUrl,
     registryDir,
@@ -864,17 +1022,22 @@ async function main() {
     const allPools = loadJsonFile(jsonFile, log);
     const pools = startAt > 1 ? allPools.slice(startAt - 1) : allPools;
     if (startAt > 1 && pools.length === 0) {
-      log.error(`Error: --start-at ${startAt} exceeds pool count (${allPools.length})`);
+      log.error(
+        `Error: --start-at ${startAt} exceeds pool count (${allPools.length})`,
+      );
       process.exit(1);
     }
     log.info(
       `Loaded ${allPools.length} pool configuration(s)${
-        startAt > 1 ? `, processing from index ${startAt} (${pools.length} remaining)` : ""
+        startAt > 1
+          ? `, processing from index ${startAt} (${pools.length} remaining)`
+          : ''
       }`,
     );
-    log.info("");
+    log.info('');
 
-    const chainId = parsedChainId ?? Number((await provider.getNetwork()).chainId);
+    const chainId =
+      parsedChainId ?? Number((await provider.getNetwork()).chainId);
 
     // Determine module from first pool (loadJsonFile enforces a single poolType)
     const firstPoolType = pools[0].poolType;
@@ -884,40 +1047,70 @@ async function main() {
       // --- Singleton flow: deploy once, then initialize a V4 pool per config ---
 
       if (!firstModule.aggregatorEnvKey || !firstModule.buildInitializeArgs) {
-        log.error(`Module ${firstPoolType} is marked as singleton but is missing aggregatorEnvKey or buildInitializeArgs`);
+        log.error(
+          `Module ${firstPoolType} is marked as singleton but is missing aggregatorEnvKey or buildInitializeArgs`,
+        );
         process.exit(1);
       }
 
       const envKey = `${firstModule.aggregatorEnvKey}_${chainId}`;
-      let hookAddress = (process.env[envKey] ?? "").trim() || null;
+      let hookAddress = (process.env[envKey] ?? '').trim() || null;
 
       if (hookAddress) {
-        log.info(`Reusing existing ${firstPoolType} singleton at ${hookAddress} (${envKey})`);
+        log.info(
+          `Reusing existing ${firstPoolType} singleton at ${hookAddress} (${envKey})`,
+        );
       } else {
-        log.info(`No ${envKey} found — deploying ${firstPoolType} singleton aggregator...`);
+        log.info(
+          `No ${envKey} found — deploying ${firstPoolType} singleton aggregator...`,
+        );
         const immutables = firstModule.getImmutablesFromEnv(chainId);
-        const constructorArgs = firstModule.encodeConstructorArgs(pools[0], immutables);
-        const salt = await mineSalt(constructorArgs, firstModule.protocolId, log, CREATE2_DEPLOYER, jobs);
-        const deployed = selfDeployPool(pools[0], firstPoolType, immutables, salt, rpcUrl, dryRun, log, priorityGasPrice);
+        const constructorArgs = firstModule.encodeConstructorArgs(
+          pools[0],
+          immutables,
+        );
+        const salt = await mineSalt(
+          constructorArgs,
+          firstModule.protocolId,
+          log,
+          CREATE2_DEPLOYER,
+          jobs,
+        );
+        const deployed = selfDeployPool(
+          pools[0],
+          firstPoolType,
+          immutables,
+          salt,
+          rpcUrl,
+          dryRun,
+          log,
+          priorityGasPrice,
+        );
 
-        if (!deployed || deployed === "deployed") {
-          log.error("Could not determine deployed aggregator address — aborting");
+        if (!deployed || deployed === 'deployed') {
+          log.error(
+            'Could not determine deployed aggregator address — aborting',
+          );
           process.exit(1);
         }
         hookAddress = deployed;
 
         if (!dryRun) {
-          const envFilePath = join(projectRoot, "aggregator-hooks", ".env");
+          const envFilePath = join(projectRoot, 'aggregator-hooks', '.env');
           appendToEnvFile(envFilePath, envKey, hookAddress);
-          log.success(`Wrote ${envKey}=${hookAddress} to aggregator-hooks/.env`);
+          log.success(
+            `Wrote ${envKey}=${hookAddress} to aggregator-hooks/.env`,
+          );
 
           // Wait for the deployment tx to be confirmed before initializing pools.
           // Without this, the first pool's beforeInitialize call hits an unconfirmed contract.
-          log.info(`Waiting for aggregator contract to be confirmed on-chain...`);
+          log.info(
+            `Waiting for aggregator contract to be confirmed on-chain...`,
+          );
           const deadline = Date.now() + 60_000;
           while (Date.now() < deadline) {
             const code = await provider.getCode(hookAddress);
-            if (code && code !== "0x") {
+            if (code && code !== '0x') {
               log.success(`Aggregator confirmed at ${hookAddress}`);
               break;
             }
@@ -926,7 +1119,14 @@ async function main() {
         }
 
         if (verify.enabled && !dryRun) {
-          verifyContract(hookAddress as Address, firstModule.contractIdentifier, constructorArgs, chainId, verify, log);
+          verifyContract(
+            hookAddress as Address,
+            firstModule.contractIdentifier,
+            constructorArgs,
+            chainId,
+            verify,
+            log,
+          );
         }
       }
 
@@ -936,10 +1136,15 @@ async function main() {
         const i = startAt - 1 + j;
         const poolConfig = pools[j];
 
-        log.section(`Initializing Pool ${i + 1}/${allPools.length} (${firstPoolType})`);
+        log.section(
+          `Initializing Pool ${i + 1}/${allPools.length} (${firstPoolType})`,
+        );
 
         try {
-          const [poolKey, sqrtPriceX96] = firstModule.buildInitializeArgs!(poolConfig, hookAddress as Address);
+          const [poolKey, sqrtPriceX96] = firstModule.buildInitializeArgs!(
+            poolConfig,
+            hookAddress as Address,
+          );
           const result = await initializeSingletonPool(
             signer,
             immutables.poolManager as Address,
@@ -950,14 +1155,21 @@ async function main() {
           );
 
           if (registryDir && !dryRun) {
-            const poolKeys = firstModule.buildPoolKeys(poolConfig, hookAddress as Address);
+            const poolKeys = firstModule.buildPoolKeys(
+              poolConfig,
+              hookAddress as Address,
+            );
             if (poolKeys.length > 0) {
-              const blockNumber = result?.blockNumber ?? Number(await provider.getBlockNumber());
+              const blockNumber =
+                result?.blockNumber ?? Number(await provider.getBlockNumber());
               appendToRegistryFile(
                 registryDir,
                 firstPoolType,
                 {
-                  pools: poolKeys.map((pk) => ({ poolKey: pk, poolId: computePoolId(pk) })),
+                  pools: poolKeys.map((pk) => ({
+                    poolKey: pk,
+                    poolId: computePoolId(pk),
+                  })),
                   metadata: {
                     externalPool: firstModule.getExternalPool(poolConfig),
                     hookAddress: hookAddress as Address,
@@ -984,11 +1196,22 @@ async function main() {
         const module = CREATION_MODULES[poolType];
         const immutables = module.getImmutablesFromEnv(chainId);
 
-        log.section(`Processing Pool ${i + 1}/${allPools.length} (${poolType})`);
+        log.section(
+          `Processing Pool ${i + 1}/${allPools.length} (${poolType})`,
+        );
 
         try {
-          const constructorArgs = module.encodeConstructorArgs(poolConfig, immutables);
-          const salt = await mineSalt(constructorArgs, module.protocolId, log, CREATE2_DEPLOYER, jobs);
+          const constructorArgs = module.encodeConstructorArgs(
+            poolConfig,
+            immutables,
+          );
+          const salt = await mineSalt(
+            constructorArgs,
+            module.protocolId,
+            log,
+            CREATE2_DEPLOYER,
+            jobs,
+          );
           const hookAddress = selfDeployPool(
             poolConfig,
             poolType,
@@ -1000,7 +1223,7 @@ async function main() {
             priorityGasPrice,
           );
 
-          if (hookAddress && hookAddress !== "deployed") {
+          if (hookAddress && hookAddress !== 'deployed') {
             if (registryDir) {
               const poolKeys = module.buildPoolKeys(poolConfig, hookAddress);
               if (poolKeys.length > 0) {
@@ -1009,7 +1232,10 @@ async function main() {
                   registryDir,
                   poolType,
                   {
-                    pools: poolKeys.map((poolKey) => ({ poolKey, poolId: computePoolId(poolKey) })),
+                    pools: poolKeys.map((poolKey) => ({
+                      poolKey,
+                      poolId: computePoolId(poolKey),
+                    })),
                     metadata: {
                       externalPool: module.getExternalPool(poolConfig),
                       hookAddress,
@@ -1021,17 +1247,33 @@ async function main() {
               }
             }
             if (verify.enabled && !dryRun) {
-              verifyContract(hookAddress, module.contractIdentifier, constructorArgs, chainId, verify, log);
+              verifyContract(
+                hookAddress,
+                module.contractIdentifier,
+                constructorArgs,
+                chainId,
+                verify,
+                log,
+              );
             }
           }
           log.success(`Successfully created pool ${i + 1}`);
         } catch (error) {
           log.error(`Failed to create pool ${i + 1}:`, error);
           const execErr = error as { stdout?: string; stderr?: string };
-          log.dumpForgeOutput({ stdout: execErr.stdout, stderr: execErr.stderr, label: "Forge" });
-          const forgeOutput = [execErr.stdout, execErr.stderr].filter(Boolean).join("\n");
+          log.dumpForgeOutput({
+            stdout: execErr.stdout,
+            stderr: execErr.stderr,
+            label: 'Forge',
+          });
+          const forgeOutput = [execErr.stdout, execErr.stderr]
+            .filter(Boolean)
+            .join('\n');
           if (forgeOutput) {
-            const immutables = CREATION_MODULES[poolConfig.poolType].getImmutablesFromEnv(chainId);
+            const immutables =
+              CREATION_MODULES[poolConfig.poolType].getImmutablesFromEnv(
+                chainId,
+              );
             const verification = await verifyDeploymentOnForgeFailure(
               provider,
               immutables.poolManager,
@@ -1040,23 +1282,30 @@ async function main() {
               forgeOutput,
             );
             if (verification?.hookDeployed) {
-              log.error("");
-              log.error("Verification (possible false positive):");
-              log.error(`  Hook has code at ${verification.hookAddress} → deployment likely succeeded`);
+              log.error('');
+              log.error('Verification (possible false positive):');
+              log.error(
+                `  Hook has code at ${verification.hookAddress} → deployment likely succeeded`,
+              );
               if (verification.poolsInitialized > 0) {
                 log.error(
                   `  Found ${verification.poolsInitialized} Initialize event(s) for this hook → pool(s) initialized on-chain`,
                 );
               }
-              log.error("  Check block explorer to confirm.");
+              log.error('  Check block explorer to confirm.');
 
               if (registryDir && !dryRun) {
                 const recoverPools: PoolEntry[] =
                   verification.poolEntriesFromEvent ??
                   module
                     .buildPoolKeys(poolConfig, verification.hookAddress)
-                    .map((poolKey) => ({ poolKey, poolId: computePoolId(poolKey) }));
-                const blockNumber = verification.blockNumber ?? Number(await provider.getBlockNumber());
+                    .map((poolKey) => ({
+                      poolKey,
+                      poolId: computePoolId(poolKey),
+                    }));
+                const blockNumber =
+                  verification.blockNumber ??
+                  Number(await provider.getBlockNumber());
                 if (recoverPools.length > 0) {
                   appendToRegistryFile(
                     registryDir,
@@ -1071,7 +1320,9 @@ async function main() {
                     },
                     log,
                   );
-                  log.info("  Appended to registry despite forge failure (deployment verified on-chain).");
+                  log.info(
+                    '  Appended to registry despite forge failure (deployment verified on-chain).',
+                  );
                 }
               }
             }
@@ -1084,7 +1335,9 @@ async function main() {
     const allPools = loadJsonFile(jsonFile, log);
     const pools = startAt > 1 ? allPools.slice(startAt - 1) : allPools;
     if (startAt > 1 && pools.length === 0) {
-      log.error(`Error: --start-at ${startAt} exceeds pool count (${allPools.length})`);
+      log.error(
+        `Error: --start-at ${startAt} exceeds pool count (${allPools.length})`,
+      );
       process.exit(1);
     }
     const poolType = pools[0].poolType as string;
@@ -1092,19 +1345,25 @@ async function main() {
 
     log.info(
       `Loaded ${allPools.length} pool configuration(s) (poolType: ${poolType})${
-        startAt > 1 ? `, processing from index ${startAt} (${pools.length} remaining)` : ""
+        startAt > 1
+          ? `, processing from index ${startAt} (${pools.length} remaining)`
+          : ''
       }`,
     );
-    log.info("");
+    log.info('');
 
-    log.info("Reading factory immutables...");
-    const factoryImmutables = await module.readFactoryImmutables(provider, factoryAddress!);
-    const chainId = parsedChainId ?? Number((await provider.getNetwork()).chainId);
+    log.info('Reading factory immutables...');
+    const factoryImmutables = await module.readFactoryImmutables(
+      provider,
+      factoryAddress!,
+    );
+    const chainId =
+      parsedChainId ?? Number((await provider.getNetwork()).chainId);
     log.info(`POOL_MANAGER: ${factoryImmutables.poolManager}`);
     for (const [key, val] of Object.entries(factoryImmutables)) {
-      if (key !== "poolManager" && val) log.info(`${key}: ${val}`);
+      if (key !== 'poolManager' && val) log.info(`${key}: ${val}`);
     }
-    log.info("");
+    log.info('');
 
     for (let j = 0; j < pools.length; j++) {
       const i = startAt - 1 + j;
@@ -1113,19 +1372,42 @@ async function main() {
       log.section(`Processing Pool ${i + 1}/${allPools.length}`);
 
       try {
-        const constructorArgs = module.encodeConstructorArgs(poolConfig, factoryImmutables);
-        const salt = await mineSalt(constructorArgs, module.protocolId, log, factoryAddress!, jobs);
-        const result = await createPool(signer, factoryAddress!, poolConfig, poolType, salt, log, dryRun);
+        const constructorArgs = module.encodeConstructorArgs(
+          poolConfig,
+          factoryImmutables,
+        );
+        const salt = await mineSalt(
+          constructorArgs,
+          module.protocolId,
+          log,
+          factoryAddress!,
+          jobs,
+        );
+        const result = await createPool(
+          signer,
+          factoryAddress!,
+          poolConfig,
+          poolType,
+          salt,
+          log,
+          dryRun,
+        );
 
         if (result.hookAddress && !dryRun) {
           if (registryDir) {
-            const poolKeys = module.buildPoolKeys(poolConfig, result.hookAddress);
+            const poolKeys = module.buildPoolKeys(
+              poolConfig,
+              result.hookAddress,
+            );
             if (poolKeys.length > 0) {
               appendToRegistryFile(
                 registryDir,
                 poolType,
                 {
-                  pools: poolKeys.map((poolKey) => ({ poolKey, poolId: computePoolId(poolKey) })),
+                  pools: poolKeys.map((poolKey) => ({
+                    poolKey,
+                    poolId: computePoolId(poolKey),
+                  })),
                   metadata: {
                     externalPool: module.getExternalPool(poolConfig),
                     hookAddress: result.hookAddress,
@@ -1138,23 +1420,36 @@ async function main() {
             }
           }
           if (verify.enabled) {
-            verifyContract(result.hookAddress, module.contractIdentifier, constructorArgs, chainId, verify, log);
+            verifyContract(
+              result.hookAddress,
+              module.contractIdentifier,
+              constructorArgs,
+              chainId,
+              verify,
+              log,
+            );
           }
         }
-        log.success(`Successfully created pool ${i + 1}${dryRun ? " (dry run)" : ""}`);
+        log.success(
+          `Successfully created pool ${i + 1}${dryRun ? ' (dry run)' : ''}`,
+        );
       } catch (error) {
         log.error(`Failed to create pool ${i + 1}:`, error);
         const execErr = error as { stdout?: string; stderr?: string };
-        log.dumpForgeOutput({ stdout: execErr.stdout, stderr: execErr.stderr, label: "Forge" });
+        log.dumpForgeOutput({
+          stdout: execErr.stdout,
+          stderr: execErr.stderr,
+          label: 'Forge',
+        });
         continue;
       }
     }
   }
 
-  log.info("\n=== Done ===");
+  log.info('\n=== Done ===');
 }
 
 main().catch((error) => {
-  console.error("Fatal error:", error);
+  console.error('Fatal error:', error);
   process.exit(1);
 });

@@ -2,7 +2,7 @@
  * Shared types and CreationModule interface for pool deployment.
  * Each protocol (stableswap, stableswapng, fluiddext1, fluiddexlite) implements this interface.
  */
-import type { Provider } from "ethers";
+import type { Provider } from 'ethers';
 
 /** Ethereum address: 0x-prefixed hex string */
 export type Address = `0x${string}`;
@@ -103,13 +103,19 @@ export interface CreationModule<TConfig = unknown> {
   getImmutablesFromEnv(chainId: number): FactoryImmutables;
 
   /** Read immutables from factory contract (or deployed singleton aggregator) */
-  readFactoryImmutables(provider: Provider, factoryAddress: Address): Promise<FactoryImmutables>;
+  readFactoryImmutables(
+    provider: Provider,
+    factoryAddress: Address,
+  ): Promise<FactoryImmutables>;
 
   /** Encode constructor args for salt mining */
   encodeConstructorArgs(config: TConfig, immutables: FactoryImmutables): string;
 
   /** Build env vars for SelfCreateHook.s.sol self-deploy */
-  buildSelfDeployEnvVars(config: TConfig, immutables: FactoryImmutables): Record<string, string>;
+  buildSelfDeployEnvVars(
+    config: TConfig,
+    immutables: FactoryImmutables,
+  ): Record<string, string>;
 
   /** Build createPool call args for factory contract. Throws for singleton types. */
   buildCreatePoolArgs(config: TConfig, salt: string): unknown[];
@@ -118,5 +124,8 @@ export interface CreationModule<TConfig = unknown> {
    * Build args for poolManager.initialize — singleton types only.
    * Returns [poolKey, sqrtPriceX96] to pass to the PoolManager initialize function.
    */
-  buildInitializeArgs?(config: TConfig, hookAddress: Address): [PoolKeyRecord, bigint];
+  buildInitializeArgs?(
+    config: TConfig,
+    hookAddress: Address,
+  ): [PoolKeyRecord, bigint];
 }

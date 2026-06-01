@@ -1,13 +1,18 @@
 /**
  * FluidDex Lite aggregator hook deployment module.
  */
-import { ethers } from "ethers";
-import { mustEnvForChain } from "../src/cli.js";
-import { FLUIDDEXLITE_FACTORY_ABI } from "../abis/index.js";
-import { DEFAULT_SQRT_PRICE_X96, type Address, type CreationModule, type FactoryImmutables } from "./types.js";
+import { ethers } from 'ethers';
+import { mustEnvForChain } from '../src/cli.js';
+import { FLUIDDEXLITE_FACTORY_ABI } from '../abis/index.js';
+import {
+  DEFAULT_SQRT_PRICE_X96,
+  type Address,
+  type CreationModule,
+  type FactoryImmutables,
+} from './types.js';
 
 export interface FluidDexLitePoolConfig {
-  poolType: "fluiddexlite";
+  poolType: 'fluiddexlite';
   dexSalt: string;
   currency0: Address;
   currency1: Address;
@@ -18,14 +23,15 @@ export interface FluidDexLitePoolConfig {
 
 const PROTOCOL_ID = 0xf3;
 
-const orderPair = (a: Address, b: Address): [Address, Address] => (a.toLowerCase() < b.toLowerCase() ? [a, b] : [b, a]);
+const orderPair = (a: Address, b: Address): [Address, Address] =>
+  a.toLowerCase() < b.toLowerCase() ? [a, b] : [b, a];
 
 export const fluiddexliteModule: CreationModule<FluidDexLitePoolConfig> = {
-  poolType: "fluiddexlite",
+  poolType: 'fluiddexlite',
   protocolId: PROTOCOL_ID,
   factoryAbi: FLUIDDEXLITE_FACTORY_ABI,
   contractIdentifier:
-    "lib/v4-hooks-public/src/aggregator-hooks/implementations/FluidDexLite/FluidDexLiteAggregator.sol:FluidDexLiteAggregator",
+    'lib/v4-hooks-public/src/aggregator-hooks/implementations/FluidDexLite/FluidDexLiteAggregator.sol:FluidDexLiteAggregator',
 
   getHookParams(config) {
     return {
@@ -55,19 +61,28 @@ export const fluiddexliteModule: CreationModule<FluidDexLitePoolConfig> = {
 
   getImmutablesFromEnv(chainId: number): FactoryImmutables {
     return {
-      poolManager: mustEnvForChain("POOL_MANAGER", chainId) as Address,
-      fluidDexLite: mustEnvForChain("FLUID_DEX_LITE", chainId) as Address,
-      fluidDexLiteResolver: mustEnvForChain("FLUID_DEX_LITE_RESOLVER", chainId) as Address,
+      poolManager: mustEnvForChain('POOL_MANAGER', chainId) as Address,
+      fluidDexLite: mustEnvForChain('FLUID_DEX_LITE', chainId) as Address,
+      fluidDexLiteResolver: mustEnvForChain(
+        'FLUID_DEX_LITE_RESOLVER',
+        chainId,
+      ) as Address,
     };
   },
 
   async readFactoryImmutables(provider, factoryAddress) {
-    const factory = new ethers.Contract(factoryAddress, FLUIDDEXLITE_FACTORY_ABI, provider);
-    const [poolManager, fluidDexLite, fluidDexLiteResolver] = await Promise.all([
-      factory.POOL_MANAGER(),
-      factory.FLUID_DEX_LITE(),
-      factory.FLUID_DEX_LITE_RESOLVER(),
-    ]);
+    const factory = new ethers.Contract(
+      factoryAddress,
+      FLUIDDEXLITE_FACTORY_ABI,
+      provider,
+    );
+    const [poolManager, fluidDexLite, fluidDexLiteResolver] = await Promise.all(
+      [
+        factory.POOL_MANAGER(),
+        factory.FLUID_DEX_LITE(),
+        factory.FLUID_DEX_LITE_RESOLVER(),
+      ],
+    );
     return {
       poolManager: poolManager as Address,
       fluidDexLite: fluidDexLite as Address,
@@ -77,10 +92,15 @@ export const fluiddexliteModule: CreationModule<FluidDexLitePoolConfig> = {
 
   encodeConstructorArgs(config, immutables) {
     const encoded = ethers.AbiCoder.defaultAbiCoder().encode(
-      ["address", "address", "address", "bytes32"],
-      [immutables.poolManager, immutables.fluidDexLite, immutables.fluidDexLiteResolver, config.dexSalt],
+      ['address', 'address', 'address', 'bytes32'],
+      [
+        immutables.poolManager,
+        immutables.fluidDexLite,
+        immutables.fluidDexLiteResolver,
+        config.dexSalt,
+      ],
     );
-    return encoded.startsWith("0x") ? encoded : `0x${encoded}`;
+    return encoded.startsWith('0x') ? encoded : `0x${encoded}`;
   },
 
   buildSelfDeployEnvVars(config, immutables) {
@@ -89,7 +109,7 @@ export const fluiddexliteModule: CreationModule<FluidDexLitePoolConfig> = {
       FLUID_DEX_LITE: immutables.fluidDexLite!,
       FLUID_DEX_LITE_RESOLVER: immutables.fluidDexLiteResolver!,
       DEX_SALT: config.dexSalt,
-      TOKENS: [config.currency0, config.currency1].join(","),
+      TOKENS: [config.currency0, config.currency1].join(','),
       FEE: params.fee.toString(),
       TICK_SPACING: params.tickSpacing.toString(),
       SQRT_PRICE_X96: params.sqrtPriceX96.toString(),

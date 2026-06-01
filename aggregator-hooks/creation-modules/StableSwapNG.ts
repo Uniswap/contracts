@@ -2,19 +2,19 @@
  * StableSwap-NG (Curve) aggregator hook deployment module.
  * Requires Curve StableSwap NG factory address for meta pool rejection.
  */
-import { ethers } from "ethers";
-import { getEnvForChain, mustEnvForChain } from "../src/cli.js";
-import { STABLESWAPNG_FACTORY_ABI } from "../abis/index.js";
+import { ethers } from 'ethers';
+import { getEnvForChain, mustEnvForChain } from '../src/cli.js';
+import { STABLESWAPNG_FACTORY_ABI } from '../abis/index.js';
 import {
   DEFAULT_SQRT_PRICE_X96,
   type Address,
   type CreationModule,
   type FactoryImmutables,
   type PoolKeyRecord,
-} from "./types.js";
+} from './types.js';
 
 export interface StableSwapNGPoolConfig {
-  poolType: "stableswapng";
+  poolType: 'stableswapng';
   curvePool: Address;
   tokens: Address[];
   fee: number | null;
@@ -24,16 +24,18 @@ export interface StableSwapNGPoolConfig {
 
 const PROTOCOL_ID = 0xc2;
 
-const orderPair = (a: Address, b: Address): [Address, Address] => (a.toLowerCase() < b.toLowerCase() ? [a, b] : [b, a]);
+const orderPair = (a: Address, b: Address): [Address, Address] =>
+  a.toLowerCase() < b.toLowerCase() ? [a, b] : [b, a];
 
-const DEFAULT_STABLESWAPNG_FACTORY = "0x6A8cbed756804B16E05E741eDaBd5cB544AE21bf";
+const DEFAULT_STABLESWAPNG_FACTORY =
+  '0x6A8cbed756804B16E05E741eDaBd5cB544AE21bf';
 
 export const stableswapngModule: CreationModule<StableSwapNGPoolConfig> = {
-  poolType: "stableswapng",
+  poolType: 'stableswapng',
   protocolId: PROTOCOL_ID,
   factoryAbi: STABLESWAPNG_FACTORY_ABI,
   contractIdentifier:
-    "lib/v4-hooks-public/src/aggregator-hooks/implementations/StableSwapNG/StableSwapNGAggregator.sol:StableSwapNGAggregator",
+    'lib/v4-hooks-public/src/aggregator-hooks/implementations/StableSwapNG/StableSwapNGAggregator.sol:StableSwapNGAggregator',
 
   getHookParams(config) {
     return {
@@ -67,43 +69,56 @@ export const stableswapngModule: CreationModule<StableSwapNGPoolConfig> = {
   },
 
   getImmutablesFromEnv(chainId: number): FactoryImmutables {
-    const curveFactory = getEnvForChain("STABLESWAPNG_FACTORY", chainId) ?? DEFAULT_STABLESWAPNG_FACTORY;
+    const curveFactory =
+      getEnvForChain('STABLESWAPNG_FACTORY', chainId) ??
+      DEFAULT_STABLESWAPNG_FACTORY;
     return {
-      poolManager: mustEnvForChain("POOL_MANAGER", chainId) as Address,
+      poolManager: mustEnvForChain('POOL_MANAGER', chainId) as Address,
       curveFactory: curveFactory as Address,
     };
   },
 
   async readFactoryImmutables(provider, factoryAddress) {
-    const factory = new ethers.Contract(factoryAddress, STABLESWAPNG_FACTORY_ABI, provider);
+    const factory = new ethers.Contract(
+      factoryAddress,
+      STABLESWAPNG_FACTORY_ABI,
+      provider,
+    );
     const [poolManager, curveFactory] = await Promise.all([
       factory.poolManager().then((a: string) => ethers.getAddress(a)),
       factory.curveFactory().then((a: string) => ethers.getAddress(a)),
     ]);
-    return { poolManager: poolManager as Address, curveFactory: curveFactory as Address };
+    return {
+      poolManager: poolManager as Address,
+      curveFactory: curveFactory as Address,
+    };
   },
 
   encodeConstructorArgs(config, immutables) {
-    const curveFactory = immutables.curveFactory ?? (immutables as { curveFactory?: Address }).curveFactory;
+    const curveFactory =
+      immutables.curveFactory ??
+      (immutables as { curveFactory?: Address }).curveFactory;
     if (!curveFactory) {
       throw new Error(
-        "StableSwapNG requires curveFactory. Set STABLESWAPNG_FACTORY or use StableSwapNGAggregatorFactory.",
+        'StableSwapNG requires curveFactory. Set STABLESWAPNG_FACTORY or use StableSwapNGAggregatorFactory.',
       );
     }
     const encoded = ethers.AbiCoder.defaultAbiCoder().encode(
-      ["address", "address", "address"],
+      ['address', 'address', 'address'],
       [immutables.poolManager, config.curvePool, curveFactory],
     );
-    return encoded.startsWith("0x") ? encoded : `0x${encoded}`;
+    return encoded.startsWith('0x') ? encoded : `0x${encoded}`;
   },
 
   buildSelfDeployEnvVars(config, immutables) {
     const params = this.getHookParams(config);
-    const curveFactory = immutables.curveFactory ?? (immutables as { curveFactory?: Address }).curveFactory;
+    const curveFactory =
+      immutables.curveFactory ??
+      (immutables as { curveFactory?: Address }).curveFactory;
     return {
       CURVE_POOL: config.curvePool,
-      CURVE_FACTORY: curveFactory ?? "",
-      TOKENS: config.tokens.join(","),
+      CURVE_FACTORY: curveFactory ?? '',
+      TOKENS: config.tokens.join(','),
       FEE: params.fee.toString(),
       TICK_SPACING: params.tickSpacing.toString(),
       SQRT_PRICE_X96: params.sqrtPriceX96.toString(),
@@ -112,6 +127,13 @@ export const stableswapngModule: CreationModule<StableSwapNGPoolConfig> = {
 
   buildCreatePoolArgs(config, salt) {
     const params = this.getHookParams(config);
-    return [salt, config.curvePool, config.tokens, params.fee, params.tickSpacing, params.sqrtPriceX96];
+    return [
+      salt,
+      config.curvePool,
+      config.tokens,
+      params.fee,
+      params.tickSpacing,
+      params.sqrtPriceX96,
+    ];
   },
 };

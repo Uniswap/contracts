@@ -2,19 +2,19 @@
  * StableSwap (Curve) aggregator hook deployment module.
  * Requires Curve MetaRegistry address for meta pool rejection.
  */
-import { ethers } from "ethers";
-import { getEnvForChain, mustEnvForChain } from "../src/cli.js";
-import { STABLESWAP_FACTORY_ABI } from "../abis/index.js";
+import { ethers } from 'ethers';
+import { getEnvForChain, mustEnvForChain } from '../src/cli.js';
+import { STABLESWAP_FACTORY_ABI } from '../abis/index.js';
 import {
   DEFAULT_SQRT_PRICE_X96,
   type Address,
   type CreationModule,
   type FactoryImmutables,
   type PoolKeyRecord,
-} from "./types.js";
+} from './types.js';
 
 export interface StableSwapPoolConfig {
-  poolType: "stableswap";
+  poolType: 'stableswap';
   curvePool: Address;
   tokens: Address[];
   fee: number | null;
@@ -24,14 +24,15 @@ export interface StableSwapPoolConfig {
 
 const PROTOCOL_ID = 0xc1;
 
-const orderPair = (a: Address, b: Address): [Address, Address] => (a.toLowerCase() < b.toLowerCase() ? [a, b] : [b, a]);
+const orderPair = (a: Address, b: Address): [Address, Address] =>
+  a.toLowerCase() < b.toLowerCase() ? [a, b] : [b, a];
 
 export const stableswapModule: CreationModule<StableSwapPoolConfig> = {
-  poolType: "stableswap",
+  poolType: 'stableswap',
   protocolId: PROTOCOL_ID,
   factoryAbi: STABLESWAP_FACTORY_ABI,
   contractIdentifier:
-    "lib/v4-hooks-public/src/aggregator-hooks/implementations/StableSwap/StableSwapAggregator.sol:StableSwapAggregator",
+    'lib/v4-hooks-public/src/aggregator-hooks/implementations/StableSwap/StableSwapAggregator.sol:StableSwapAggregator',
 
   getHookParams(config) {
     return {
@@ -65,15 +66,22 @@ export const stableswapModule: CreationModule<StableSwapPoolConfig> = {
   },
 
   getImmutablesFromEnv(chainId: number): FactoryImmutables {
-    const metaRegistry = mustEnvForChain("STABLESWAP_METAREGISTRY", chainId) as Address;
+    const metaRegistry = mustEnvForChain(
+      'STABLESWAP_METAREGISTRY',
+      chainId,
+    ) as Address;
     return {
-      poolManager: mustEnvForChain("POOL_MANAGER", chainId) as Address,
+      poolManager: mustEnvForChain('POOL_MANAGER', chainId) as Address,
       metaRegistry,
     };
   },
 
   async readFactoryImmutables(provider, factoryAddress) {
-    const factory = new ethers.Contract(factoryAddress, STABLESWAP_FACTORY_ABI, provider);
+    const factory = new ethers.Contract(
+      factoryAddress,
+      STABLESWAP_FACTORY_ABI,
+      provider,
+    );
     let poolManagerRaw: string;
     try {
       poolManagerRaw = await factory.poolManager();
@@ -83,30 +91,37 @@ export const stableswapModule: CreationModule<StableSwapPoolConfig> = {
     const metaRegistryRaw = await factory.metaRegistry();
     const poolManager = ethers.getAddress(poolManagerRaw);
     const metaRegistry = ethers.getAddress(metaRegistryRaw);
-    return { poolManager: poolManager as Address, metaRegistry: metaRegistry as Address };
+    return {
+      poolManager: poolManager as Address,
+      metaRegistry: metaRegistry as Address,
+    };
   },
 
   encodeConstructorArgs(config, immutables) {
-    const metaRegistry = immutables.metaRegistry ?? (immutables as { metaRegistry?: Address }).metaRegistry;
+    const metaRegistry =
+      immutables.metaRegistry ??
+      (immutables as { metaRegistry?: Address }).metaRegistry;
     if (!metaRegistry) {
       throw new Error(
-        "StableSwap requires metaRegistry. Set STABLESWAP_METAREGISTRY or use StableSwapAggregatorFactory.",
+        'StableSwap requires metaRegistry. Set STABLESWAP_METAREGISTRY or use StableSwapAggregatorFactory.',
       );
     }
     const encoded = ethers.AbiCoder.defaultAbiCoder().encode(
-      ["address", "address", "address"],
+      ['address', 'address', 'address'],
       [immutables.poolManager, config.curvePool, metaRegistry],
     );
-    return encoded.startsWith("0x") ? encoded : `0x${encoded}`;
+    return encoded.startsWith('0x') ? encoded : `0x${encoded}`;
   },
 
   buildSelfDeployEnvVars(config, immutables) {
     const params = this.getHookParams(config);
-    const metaRegistry = immutables.metaRegistry ?? (immutables as { metaRegistry?: Address }).metaRegistry;
+    const metaRegistry =
+      immutables.metaRegistry ??
+      (immutables as { metaRegistry?: Address }).metaRegistry;
     return {
       CURVE_POOL: config.curvePool,
-      METAREGISTRY: metaRegistry ?? "",
-      TOKENS: config.tokens.join(","),
+      METAREGISTRY: metaRegistry ?? '',
+      TOKENS: config.tokens.join(','),
       FEE: params.fee.toString(),
       TICK_SPACING: params.tickSpacing.toString(),
       SQRT_PRICE_X96: params.sqrtPriceX96.toString(),
@@ -115,6 +130,13 @@ export const stableswapModule: CreationModule<StableSwapPoolConfig> = {
 
   buildCreatePoolArgs(config, salt) {
     const params = this.getHookParams(config);
-    return [salt, config.curvePool, config.tokens, params.fee, params.tickSpacing, BigInt(params.sqrtPriceX96)];
+    return [
+      salt,
+      config.curvePool,
+      config.tokens,
+      params.fee,
+      params.tickSpacing,
+      BigInt(params.sqrtPriceX96),
+    ];
   },
 };

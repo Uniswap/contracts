@@ -25,15 +25,21 @@
  *   CONCURRENCY             (optional, default 8) max concurrent RPC calls
  */
 
-import "dotenv/config";
-import fs from "node:fs";
-import path from "node:path";
-import { ethers } from "ethers";
-import { parseArgs, getEnvForChain, toInt, resolveOutputPath, resolveCheckpointPath } from "@src/cli";
+import 'dotenv/config';
+import fs from 'node:fs';
+import path from 'node:path';
+import { ethers } from 'ethers';
+import {
+  parseArgs,
+  getEnvForChain,
+  toInt,
+  resolveOutputPath,
+  resolveCheckpointPath,
+} from '@src/cli';
 
-const OUTPUT_FILE = "stableswapng-pools.json";
-const CHECKPOINT_FILE = "stableswapng_checkpoint.json";
-const DEFAULT_FACTORY = "0x6A8cbed756804B16E05E741eDaBd5cB544AE21bf";
+const OUTPUT_FILE = 'stableswapng-pools.json';
+const CHECKPOINT_FILE = 'stableswapng_checkpoint.json';
+const DEFAULT_FACTORY = '0x6A8cbed756804B16E05E741eDaBd5cB544AE21bf';
 
 type Checkpoint = {
   chainId: number;
@@ -45,7 +51,7 @@ type Checkpoint = {
 
 /** Same shape as createPools.ts StableSwapPoolConfig for stableswapng */
 type CreatePoolsStableSwapConfig = {
-  poolType: "stableswapng";
+  poolType: 'stableswapng';
   curvePool: string;
   tokens: string[];
   fee: number | null;
@@ -54,13 +60,13 @@ type CreatePoolsStableSwapConfig = {
 };
 
 const FACTORY_ABI = [
-  "function pool_count() view returns (uint256)",
-  "function pool_list(uint256) view returns (address)",
-  "function get_n_coins(address) view returns (uint256)",
-  "function get_coins(address) view returns (address[])",
-  "function get_base_pool(address) view returns (address)",
-  "event PlainPoolDeployed(address[] coins, uint256 A, uint256 fee, address deployer)",
-  "event MetaPoolDeployed(address coin, address base_pool, uint256 A, uint256 fee, address deployer)",
+  'function pool_count() view returns (uint256)',
+  'function pool_list(uint256) view returns (address)',
+  'function get_n_coins(address) view returns (uint256)',
+  'function get_coins(address) view returns (address[])',
+  'function get_base_pool(address) view returns (address)',
+  'event PlainPoolDeployed(address[] coins, uint256 A, uint256 fee, address deployer)',
+  'event MetaPoolDeployed(address coin, address base_pool, uint256 A, uint256 fee, address deployer)',
 ];
 
 function ensureDirForFile(filePath: string) {
@@ -69,7 +75,7 @@ function ensureDirForFile(filePath: string) {
 
 function safeReadJson<T>(filePath: string): T | null {
   try {
-    return JSON.parse(fs.readFileSync(filePath, "utf8")) as T;
+    return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T;
   } catch {
     return null;
   }
@@ -78,8 +84,8 @@ function safeReadJson<T>(filePath: string): T | null {
 function atomicWriteFile(filePath: string, contents: string) {
   ensureDirForFile(filePath);
   const abs = path.resolve(filePath);
-  fs.writeFileSync(abs + ".tmp", contents);
-  fs.renameSync(abs + ".tmp", abs);
+  fs.writeFileSync(abs + '.tmp', contents);
+  fs.renameSync(abs + '.tmp', abs);
 }
 
 function loadExistingPoolAddrs(outFile: string): Set<string> {
@@ -101,7 +107,8 @@ function pRateLimit(rps: number): () => Promise<void> {
   let nextAllowed = 0;
   return async function acquire() {
     const now = Date.now();
-    if (now < nextAllowed) await new Promise((r) => setTimeout(r, nextAllowed - now));
+    if (now < nextAllowed)
+      await new Promise((r) => setTimeout(r, nextAllowed - now));
     nextAllowed = Math.max(now, nextAllowed) + minGapMs;
   };
 }
@@ -142,36 +149,40 @@ function getEnvInt(name: string, chainId: number, def: number): number {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
 
-  const chainIdRaw = args["chain-id"];
+  const chainIdRaw = args['chain-id'];
   if (chainIdRaw == null) {
-    console.error("Missing required --chain-id <n>");
+    console.error('Missing required --chain-id <n>');
     process.exit(1);
   }
   const chainId = toInt(chainIdRaw, 0);
   if (chainId <= 0) {
-    console.error("--chain-id must be a positive integer");
+    console.error('--chain-id must be a positive integer');
     process.exit(1);
   }
 
-  const rpcUrl = getEnvForChain("RPC_URL", chainId);
-  const factoryRaw = getEnvForChain("STABLESWAPNG_FACTORY", chainId) ?? DEFAULT_FACTORY;
+  const rpcUrl = getEnvForChain('RPC_URL', chainId);
+  const factoryRaw =
+    getEnvForChain('STABLESWAPNG_FACTORY', chainId) ?? DEFAULT_FACTORY;
 
   if (!rpcUrl) {
-    throw new Error("Missing required env: RPC_URL (or RPC_URL_<chainId>)");
+    throw new Error('Missing required env: RPC_URL (or RPC_URL_<chainId>)');
   }
 
   const factory = ethers.getAddress(factoryRaw);
 
-  const outputDir = (args["output-dir"] as string) ?? "detected";
-  const checkpointDir = (args["checkpoint-dir"] as string) ?? "checkpoints";
-  const chunkBlocks = Math.max(1, toInt(args["chunk-blocks"], 10000));
+  const outputDir = (args['output-dir'] as string) ?? 'detected';
+  const checkpointDir = (args['checkpoint-dir'] as string) ?? 'checkpoints';
+  const chunkBlocks = Math.max(1, toInt(args['chunk-blocks'], 10000));
 
-  const finality = getEnvInt("FINALITY_BLOCKS", chainId, 10);
-  const lookbackBlocks = getEnvInt("LOOKBACK_BLOCKS", chainId, 200000);
-  const startBlockArg = args["start-block"];
+  const finality = getEnvInt('FINALITY_BLOCKS', chainId, 10);
+  const lookbackBlocks = getEnvInt('LOOKBACK_BLOCKS', chainId, 200000);
+  const startBlockArg = args['start-block'];
 
-  const concurrency = Math.max(1, toInt(getEnvForChain("CONCURRENCY", chainId), 8));
-  const rps = toInt(getEnvForChain("RPS", chainId), 80);
+  const concurrency = Math.max(
+    1,
+    toInt(getEnvForChain('CONCURRENCY', chainId), 8),
+  );
+  const rps = toInt(getEnvForChain('RPS', chainId), 80);
   const rateLimit = pRateLimit(rps);
   const limit = pLimit(concurrency);
 
@@ -179,8 +190,8 @@ async function main() {
   const contract = new ethers.Contract(factory, FACTORY_ABI, provider);
 
   const iface = new ethers.Interface(FACTORY_ABI as unknown as string[]);
-  const plainTopic = iface.getEvent("PlainPoolDeployed")!.topicHash;
-  const metaTopic = iface.getEvent("MetaPoolDeployed")!.topicHash;
+  const plainTopic = iface.getEvent('PlainPoolDeployed')!.topicHash;
+  const metaTopic = iface.getEvent('MetaPoolDeployed')!.topicHash;
 
   const latestBlock = await provider.getBlockNumber();
   const toBlock = Math.max(0, latestBlock - finality);
@@ -191,7 +202,10 @@ async function main() {
   let fromBlock: number;
   if (startBlockArg != null) {
     fromBlock = Math.max(0, toInt(startBlockArg, 0));
-  } else if (cp?.chainId === chainId && cp?.factory?.toLowerCase() === factory.toLowerCase()) {
+  } else if (
+    cp?.chainId === chainId &&
+    cp?.factory?.toLowerCase() === factory.toLowerCase()
+  ) {
     fromBlock = cp.lastProcessedBlock + 1;
   } else {
     fromBlock = Math.max(0, toBlock - lookbackBlocks);
@@ -204,7 +218,10 @@ async function main() {
   }
 
   const lastKnownPoolCount =
-    cp?.chainId === chainId && cp?.factory?.toLowerCase() === factory.toLowerCase() ? cp.lastKnownPoolCount ?? 0 : 0;
+    cp?.chainId === chainId &&
+    cp?.factory?.toLowerCase() === factory.toLowerCase()
+      ? (cp.lastKnownPoolCount ?? 0)
+      : 0;
 
   if (fromBlock > toBlock && poolCount <= lastKnownPoolCount) {
     const newCp: Checkpoint = {
@@ -214,9 +231,19 @@ async function main() {
       lastKnownPoolCount: poolCount,
       updatedAt: new Date().toISOString(),
     };
-    atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + "\n");
+    atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + '\n');
     console.log(
-      JSON.stringify({ ok: true, note: "No new blocks or pools to process", fromBlock, toBlock, poolCount }, null, 2),
+      JSON.stringify(
+        {
+          ok: true,
+          note: 'No new blocks or pools to process',
+          fromBlock,
+          toBlock,
+          poolCount,
+        },
+        null,
+        2,
+      ),
     );
     return;
   }
@@ -234,7 +261,9 @@ async function main() {
       });
 
       eventCount += logs.length;
-      console.error(`[scan] ${start}..${end} events=${logs.length} total=${eventCount}`);
+      console.error(
+        `[scan] ${start}..${end} events=${logs.length} total=${eventCount}`,
+      );
     }
   }
 
@@ -249,7 +278,7 @@ async function main() {
       lastKnownPoolCount: poolCount,
       updatedAt: new Date().toISOString(),
     };
-    atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + "\n");
+    atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + '\n');
     console.log(
       JSON.stringify(
         {
@@ -291,7 +320,8 @@ async function main() {
         contract.get_base_pool(curvePool) as Promise<string>,
       ]);
       const basePool = ethers.getAddress(basePoolRaw);
-      const isPlain = basePool.toLowerCase() === ethers.ZeroAddress.toLowerCase();
+      const isPlain =
+        basePool.toLowerCase() === ethers.ZeroAddress.toLowerCase();
       const coins = uniqAddresses(coinsRaw as string[]);
       return { nCoins: Number(nCoinsBn), coins, isPlain };
     });
@@ -299,7 +329,7 @@ async function main() {
     if (!meta.isPlain) continue;
 
     allRecords.push({
-      poolType: "stableswapng",
+      poolType: 'stableswapng',
       curvePool,
       tokens: meta.coins,
       fee: null,
@@ -310,7 +340,7 @@ async function main() {
   }
 
   if (newCount > 0) {
-    atomicWriteFile(outPath, JSON.stringify(allRecords, null, 2) + "\n");
+    atomicWriteFile(outPath, JSON.stringify(allRecords, null, 2) + '\n');
   }
 
   const newCp: Checkpoint = {
@@ -320,7 +350,7 @@ async function main() {
     lastKnownPoolCount: poolCount,
     updatedAt: new Date().toISOString(),
   };
-  atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + "\n");
+  atomicWriteFile(cpPath, JSON.stringify(newCp, null, 2) + '\n');
 
   console.log(
     JSON.stringify(
