@@ -1,0 +1,803 @@
+# 
+
+
+### Table of Contents
+- [Summary](#summary)
+- [Contracts](#contracts)
+	- [Uniswap Interface Multicall](#uniswap-interface-multicall)
+	- [Quoter V2](#quoter-v2)
+	- [Tick Lens](#tick-lens)
+	- [N F T Descriptor](#n-f-t-descriptor)
+	- [Nonfungible Position Manager](#nonfungible-position-manager)
+	- [Pool Manager](#pool-manager)
+	- [Position Descriptor](#position-descriptor)
+	- [Position Manager](#position-manager)
+	- [V4 Quoter](#v4-quoter)
+	- [State View](#state-view)
+	- [Swap Router02](#swap-router02)
+	- [Uniswap V2 Factory](#uniswap-v2-factory)
+	- [Uniswap V2 Router02](#uniswap-v2-router02)
+	- [Uniswap V3 Factory](#uniswap-v3-factory)
+	- [Nonfungible Token Position Descriptor](#nonfungible-token-position-descriptor)
+	- [Permit2](#permit2)
+	- [Calibur Entry](#calibur-entry)
+	- [E R C7914 Detector](#e-r-c7914-detector)
+	- [Unsupported Protocol](#unsupported-protocol)
+	- [Universal Router](#universal-router)
+- [Deployment History](#deployment-history)
+	- [Wed May 27 2026](#wed-may-27-2026)
+	- [Fri May 22 2026](#fri-may-22-2026)
+	- [Tue May 26 2026](#tue-may-26-2026)
+
+## Summary
+<table>
+<tr>
+    <th>Contract</th>
+    <th>Address</th>
+    <th>Version</th>
+</tr><tr>
+    <td>UniswapInterfaceMulticall</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x282a3c4d320cc7f0d5eaf56b8029e4b88338f0a3" target="_blank">0x282a3c4d320cc7f0d5eaf56b8029e4b88338f0a3</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>QuoterV2</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x33e885ed0ec9bf04ecfb19341582aadcb4c8a9e7" target="_blank">0x33e885ed0ec9bf04ecfb19341582aadcb4c8a9e7</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>TickLens</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x7dfd4f31be6814d2906bde155c3e1b146eac1468" target="_blank">0x7dfd4f31be6814d2906bde155c3e1b146eac1468</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>NFTDescriptor</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x2e9d45bb7b30549f5216813ada9a6b7982c5b3ed" target="_blank">0x2e9d45bb7b30549f5216813ada9a6b7982c5b3ed</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>NonfungiblePositionManager</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x73991a25c818bf1f1128deaab1492d45638de0d3" target="_blank">0x73991a25c818bf1f1128deaab1492d45638de0d3</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>PoolManager</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8366a39cc670b4001a1121b8f6a443a643e40951" target="_blank">0x8366a39cc670b4001a1121b8f6a443a643e40951</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>PositionDescriptor</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x9639443158e8c5efa35bd45287bf2effd3d8dc06" target="_blank">0x9639443158e8c5efa35bd45287bf2effd3d8dc06</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>PositionManager</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x58daec3116aae6d93017baaea7749052e8a04fa7" target="_blank">0x58daec3116aae6d93017baaea7749052e8a04fa7</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>V4Quoter</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8dc178efb8111bb0973dd9d722ebeff267c98f94" target="_blank">0x8dc178efb8111bb0973dd9d722ebeff267c98f94</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>StateView</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0xf3334192d15450cdd385c8b70e03f9a6bd9e673b" target="_blank">0xf3334192d15450cdd385c8b70e03f9a6bd9e673b</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>SwapRouter02</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0xcaf681a66d020601342297493863e78c959e5cb2" target="_blank">0xcaf681a66d020601342297493863e78c959e5cb2</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>UniswapV2Factory</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8bceaa40b9acdfaedf85adf4ff01f5ad6517937f" target="_blank">0x8bceaa40b9acdfaedf85adf4ff01f5ad6517937f</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>UniswapV2Router02</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x89e5db8b5aa49aa85ac63f691524311aeb649eba" target="_blank">0x89e5db8b5aa49aa85ac63f691524311aeb649eba</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>UniswapV3Factory</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x1f7d7550b1b028f7571e69a784071f0205fd2efa" target="_blank">0x1f7d7550b1b028f7571e69a784071f0205fd2efa</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>NonfungibleTokenPositionDescriptor</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x6f84dae9c064ff453e5c8af51efb819f8f610225" target="_blank">0x6f84dae9c064ff453e5c8af51efb819f8f610225</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>Permit2</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x000000000022d473030f116ddee9f6b43ac78ba3" target="_blank">0x000000000022d473030f116ddee9f6b43ac78ba3</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>CaliburEntry</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x000000009b1d0af20d8c6d0a44e162d11f9b8f00" target="_blank">0x000000009b1d0af20d8c6d0a44e162d11f9b8f00</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>ERC7914Detector</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0xc470458fc6a7e43471b31e6a2eb2612215a7102e" target="_blank">0xc470458fc6a7e43471b31e6a2eb2612215a7102e</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>UnsupportedProtocol</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x7332D11BD10d18A04B119Cd4671a96f3148002c4" target="_blank">0x7332D11BD10d18A04B119Cd4671a96f3148002c4</a></td>
+    <td>N/A</td>
+    </tr>
+<tr>
+    <td>UniversalRouter</td>
+    <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8876789976decbfcbbbe364623c63652db8c0904" target="_blank">0x8876789976decbfcbbbe364623c63652db8c0904</a></td>
+    <td>N/A</td>
+    </tr></table>
+
+## Contracts
+
+### Uniswap Interface Multicall
+
+Address: [0x282a3c4d320cc7f0d5eaf56b8029e4b88338f0a3](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x282a3c4d320cc7f0d5eaf56b8029e4b88338f0a3)
+
+Deployment Transaction: [0x6fc488375115e6de29f6ffc19ca5a7ed4971643b4b12e3e27933e3c73770ed5c](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x6fc488375115e6de29f6ffc19ca5a7ed4971643b4b12e3e27933e3c73770ed5c)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+---
+
+### Quoter V2
+
+Address: [0x33e885ed0ec9bf04ecfb19341582aadcb4c8a9e7](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x33e885ed0ec9bf04ecfb19341582aadcb4c8a9e7)
+
+Deployment Transaction: [0x62f593041cda98f3418898cfaae97617421de867c0d6fd4480f8a652ffe721b5](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x62f593041cda98f3418898cfaae97617421de867c0d6fd4480f8a652ffe721b5)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+---
+
+### Tick Lens
+
+Address: [0x7dfd4f31be6814d2906bde155c3e1b146eac1468](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x7dfd4f31be6814d2906bde155c3e1b146eac1468)
+
+Deployment Transaction: [0xac803b65ac1d16bc3489342e08f3888d176a7491ff19551e394b4258931408f5](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0xac803b65ac1d16bc3489342e08f3888d176a7491ff19551e394b4258931408f5)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+---
+
+### N F T Descriptor
+
+Address: [0x2e9d45bb7b30549f5216813ada9a6b7982c5b3ed](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x2e9d45bb7b30549f5216813ada9a6b7982c5b3ed)
+
+Deployment Transaction: [0x76beabf4d46eb1bfdbe77a17918b85748b2bd246b4e0c901fec23ebc81b34fa6](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x76beabf4d46eb1bfdbe77a17918b85748b2bd246b4e0c901fec23ebc81b34fa6)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+---
+
+### Nonfungible Position Manager
+
+Address: [0x73991a25c818bf1f1128deaab1492d45638de0d3](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x73991a25c818bf1f1128deaab1492d45638de0d3)
+
+Deployment Transaction: [0x9a8d07e70166be68c325939e2cece936f3ce5b16c580f49291f844d7cd718d4e](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x9a8d07e70166be68c325939e2cece936f3ce5b16c580f49291f844d7cd718d4e)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+---
+
+### Pool Manager
+
+Address: [0x8366a39cc670b4001a1121b8f6a443a643e40951](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8366a39cc670b4001a1121b8f6a443a643e40951)
+
+Deployment Transaction: [0x4fb28d4935866f462582c6c931c6f2705e55f5be5eb178c7d8d9329a95c44c41](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x4fb28d4935866f462582c6c931c6f2705e55f5be5eb178c7d8d9329a95c44c41)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+---
+
+### Position Descriptor
+
+Address: [0x9639443158e8c5efa35bd45287bf2effd3d8dc06](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x9639443158e8c5efa35bd45287bf2effd3d8dc06)
+
+Deployment Transaction: [0x0092b86795c4e00150cde5bd987291a75c61ff2251e9eb99cbcc277e2c4903a2](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x0092b86795c4e00150cde5bd987291a75c61ff2251e9eb99cbcc277e2c4903a2)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+_Proxy Information_
+
+
+
+Proxy Type: TransparentUpgradeableProxy
+
+
+
+Implementation: [0xc1514adf9caed7ab2cf2dd7b3225761df61f03a8](https://8crv4vmq6tiu1yqr.blockscout.com/address/0xc1514adf9caed7ab2cf2dd7b3225761df61f03a8)
+
+
+
+Proxy Admin: [0x525b4bd46d3a33f16ac815b4a303b3110fb9d10b](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x525b4bd46d3a33f16ac815b4a303b3110fb9d10b)
+
+
+
+  <details>
+  <summary>Implementation History</summary>
+  <table>
+      <tr>
+          <th>Version</th>
+          <th>Address</th>
+          <th>Commit Hash</th>
+      </tr>
+      <tr>
+          <td>N/A</td>
+          <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0xc1514adf9caed7ab2cf2dd7b3225761df61f03a8" target="_blank">0xc1514adf9caed7ab2cf2dd7b3225761df61f03a8</a></td>
+          <td><a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+      </tr>
+  </table>
+  </details>
+    
+
+---
+
+### Position Manager
+
+Address: [0x58daec3116aae6d93017baaea7749052e8a04fa7](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x58daec3116aae6d93017baaea7749052e8a04fa7)
+
+Deployment Transaction: [0x228c18ada6cb46b4fbcc18f4ec1519953415393e256fa8349aafbd5a2db037c8](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x228c18ada6cb46b4fbcc18f4ec1519953415393e256fa8349aafbd5a2db037c8)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+---
+
+### V4 Quoter
+
+Address: [0x8dc178efb8111bb0973dd9d722ebeff267c98f94](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8dc178efb8111bb0973dd9d722ebeff267c98f94)
+
+Deployment Transaction: [0x6bf436d72a17f87284ddcab43094689bd320dfb39b535213b9a0b669fabc4ab4](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x6bf436d72a17f87284ddcab43094689bd320dfb39b535213b9a0b669fabc4ab4)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+---
+
+### State View
+
+Address: [0xf3334192d15450cdd385c8b70e03f9a6bd9e673b](https://8crv4vmq6tiu1yqr.blockscout.com/address/0xf3334192d15450cdd385c8b70e03f9a6bd9e673b)
+
+Deployment Transaction: [0x3d61e2c9eeb482385b1aa436b9e8f812167ea579cc390e4f93bc5abde00582f4](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x3d61e2c9eeb482385b1aa436b9e8f812167ea579cc390e4f93bc5abde00582f4)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+---
+
+### Swap Router02
+
+Address: [0xcaf681a66d020601342297493863e78c959e5cb2](https://8crv4vmq6tiu1yqr.blockscout.com/address/0xcaf681a66d020601342297493863e78c959e5cb2)
+
+Deployment Transaction: [0xeaa1bf6bd8e86ab33150936414780779800a2aa04a98667f4059ef5dfc0cdf92](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0xeaa1bf6bd8e86ab33150936414780779800a2aa04a98667f4059ef5dfc0cdf92)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+---
+
+### Uniswap V2 Factory
+
+Address: [0x8bceaa40b9acdfaedf85adf4ff01f5ad6517937f](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8bceaa40b9acdfaedf85adf4ff01f5ad6517937f)
+
+Deployment Transaction: [0x2fc08b6c72d5f2120cec9f3be8ed0b45c210d51adbc87f33b2135886681edaf7](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x2fc08b6c72d5f2120cec9f3be8ed0b45c210d51adbc87f33b2135886681edaf7)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 17:58:27 UTC
+
+
+
+---
+
+### Uniswap V2 Router02
+
+Address: [0x89e5db8b5aa49aa85ac63f691524311aeb649eba](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x89e5db8b5aa49aa85ac63f691524311aeb649eba)
+
+Deployment Transaction: [0xd475f23df85f1a821abd8df540f6b2bdecde93593ff36310ddb393f314ce866c](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0xd475f23df85f1a821abd8df540f6b2bdecde93593ff36310ddb393f314ce866c)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 17:58:27 UTC
+
+
+
+---
+
+### Uniswap V3 Factory
+
+Address: [0x1f7d7550b1b028f7571e69a784071f0205fd2efa](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x1f7d7550b1b028f7571e69a784071f0205fd2efa)
+
+Deployment Transaction: [0x8add72fbcad4bf7732336de35dcd06b582c1501d0832c4710a30850a7cff8977](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x8add72fbcad4bf7732336de35dcd06b582c1501d0832c4710a30850a7cff8977)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 17:58:27 UTC
+
+
+
+---
+
+### Nonfungible Token Position Descriptor
+
+Address: [0x6f84dae9c064ff453e5c8af51efb819f8f610225](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x6f84dae9c064ff453e5c8af51efb819f8f610225)
+
+Deployment Transaction: [0x47a78523d03f1c5215db006380c96c70a669c6e8cdee39365686dcab90f3fd02](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x47a78523d03f1c5215db006380c96c70a669c6e8cdee39365686dcab90f3fd02)
+
+
+
+Commit Hash: [56928a9](git@github.com:Uniswap/contracts/commit/56928a9)
+
+Fri, 22 May 2026 18:04:57 UTC
+
+
+
+_Proxy Information_
+
+
+
+Proxy Type: TransparentUpgradeableProxy
+
+
+
+Implementation: [0x2bb4e3af3f07353a3e3c91126bd30654abf03369](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x2bb4e3af3f07353a3e3c91126bd30654abf03369)
+
+
+
+Proxy Admin: [0x89473d1ff90a8cf9a81388e1c6e5ad393ff0e894](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x89473d1ff90a8cf9a81388e1c6e5ad393ff0e894)
+
+
+
+---
+
+### Permit2
+
+Address: [0x000000000022d473030f116ddee9f6b43ac78ba3](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x000000000022d473030f116ddee9f6b43ac78ba3)
+
+
+
+
+
+
+
+Invalid Date
+
+
+
+---
+
+### Calibur Entry
+
+Address: [0x000000009b1d0af20d8c6d0a44e162d11f9b8f00](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x000000009b1d0af20d8c6d0a44e162d11f9b8f00)
+
+Deployment Transaction: [0xfc5d58bca306b47501d741bbbb88d8278f8f19d2bd44051076525b25d4b85a60](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0xfc5d58bca306b47501d741bbbb88d8278f8f19d2bd44051076525b25d4b85a60)
+
+
+
+Commit Hash: [e5b4eed](git@github.com:Uniswap/contracts/commit/e5b4eed)
+
+Wed, 27 May 2026 22:00:34 UTC
+
+
+
+---
+
+### E R C7914 Detector
+
+Address: [0xc470458fc6a7e43471b31e6a2eb2612215a7102e](https://8crv4vmq6tiu1yqr.blockscout.com/address/0xc470458fc6a7e43471b31e6a2eb2612215a7102e)
+
+Deployment Transaction: [0xd25a20ee2c22a20620ab0b73846ca31282be387a0ca618f180697f44fe778d0e](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0xd25a20ee2c22a20620ab0b73846ca31282be387a0ca618f180697f44fe778d0e)
+
+
+
+Commit Hash: [e5b4eed](git@github.com:Uniswap/contracts/commit/e5b4eed)
+
+Wed, 27 May 2026 22:00:34 UTC
+
+
+
+---
+
+### Unsupported Protocol
+
+Address: [0x7332D11BD10d18A04B119Cd4671a96f3148002c4](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x7332D11BD10d18A04B119Cd4671a96f3148002c4)
+
+Deployment Transaction: [0x029d23d957e6d9f39b2bd655a10d01e764999b32344c2ccdcb9667259cd80f24](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x029d23d957e6d9f39b2bd655a10d01e764999b32344c2ccdcb9667259cd80f24)
+
+
+
+Commit Hash: [dbef74e](git@github.com:Uniswap/contracts/commit/dbef74e)
+
+Tue, 26 May 2026 18:07:27 UTC
+
+
+
+---
+
+### Universal Router
+
+Address: [0x8876789976decbfcbbbe364623c63652db8c0904](https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8876789976decbfcbbbe364623c63652db8c0904)
+
+Deployment Transaction: [0x422569c99e80a452d45680fbf16cf04cd4ae79cd2b0d7a6a89cf6603009ed1fa](https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x422569c99e80a452d45680fbf16cf04cd4ae79cd2b0d7a6a89cf6603009ed1fa)
+
+
+
+Commit Hash: [023196a](git@github.com:Uniswap/contracts/commit/023196a)
+
+Tue, 26 May 2026 22:22:22 UTC
+
+
+
+## Deployment History
+
+
+### Wed May 27 2026
+
+  
+
+Deployed contracts:
+
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x000000009b1d0af20d8c6d0a44e162d11f9b8f00">Calibur Entry</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/e5b4eed" target="_blank">e5b4eed</a></td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0xc470458fc6a7e43471b31e6a2eb2612215a7102e">E R C7914 Detector</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/e5b4eed" target="_blank">e5b4eed</a></td>
+    </tr>
+<tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>_caliburAddress</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00" target="_blank">0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00</a></td>
+    </tr>
+  </table>
+</details>
+  
+
+
+### Fri May 22 2026
+
+  
+
+Deployed contracts:
+
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x282a3c4d320cc7f0d5eaf56b8029e4b88338f0a3">Uniswap Interface Multicall</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x33e885ed0ec9bf04ecfb19341582aadcb4c8a9e7">Quoter V2</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+    </tr>
+<tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>_factory</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x1f7d7550B1b028f7571E69A784071F0205FD2EfA" target="_blank">0x1f7d7550B1b028f7571E69A784071F0205FD2EfA</a></td>
+    </tr>
+    <tr>
+      <td>_WETH9</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73" target="_blank">0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73</a></td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x7dfd4f31be6814d2906bde155c3e1b146eac1468">Tick Lens</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x2e9d45bb7b30549f5216813ada9a6b7982c5b3ed">N F T Descriptor</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x73991a25c818bf1f1128deaab1492d45638de0d3">Nonfungible Position Manager</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+    </tr>
+<tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>_factory</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x1f7d7550B1b028f7571E69A784071F0205FD2EfA" target="_blank">0x1f7d7550B1b028f7571E69A784071F0205FD2EfA</a></td>
+    </tr>
+    <tr>
+      <td>_WETH9</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73" target="_blank">0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73</a></td>
+    </tr>
+    <tr>
+      <td>_tokenDescriptor_</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x6F84dAE9c064ff453E5C8af51EfB819f8f610225" target="_blank">0x6F84dAE9c064ff453E5C8af51EfB819f8f610225</a></td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8366a39cc670b4001a1121b8f6a443a643e40951">Pool Manager</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+    </tr>
+<tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>initialOwner</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x9701fb0aDe1E269c8f64Ec0C7b3cfADB31A13A52" target="_blank">0x9701fb0aDe1E269c8f64Ec0C7b3cfADB31A13A52</a></td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x9639443158e8c5efa35bd45287bf2effd3d8dc06">Position Descriptor</a> (<a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0xc1514adf9caed7ab2cf2dd7b3225761df61f03a8">Implementation</a>)
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+    </tr>
+<tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>_poolManager</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8366a39CC670B4001A1121B8F6A443A643e40951" target="_blank">0x8366a39CC670B4001A1121B8F6A443A643e40951</a></td>
+    </tr>
+    <tr>
+      <td>_wrappedNative</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73" target="_blank">0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73</a></td>
+    </tr>
+    <tr>
+      <td>_nativeCurrencyLabelBytes</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/tx/0x4554480000000000000000000000000000000000000000000000000000000000" target="_blank">0x4554480000000000000000000000000000000000000000000000000000000000</a></td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x58daec3116aae6d93017baaea7749052e8a04fa7">Position Manager</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+    </tr>
+<tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>_poolManager</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8366a39CC670B4001A1121B8F6A443A643e40951" target="_blank">0x8366a39CC670B4001A1121B8F6A443A643e40951</a></td>
+    </tr>
+    <tr>
+      <td>_permit2</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x000000000022D473030F116dDEE9F6B43aC78BA3" target="_blank">0x000000000022D473030F116dDEE9F6B43aC78BA3</a></td>
+    </tr>
+    <tr>
+      <td>_unsubscribeGasLimit</td>
+      <td>300000</td>
+    </tr>
+    <tr>
+      <td>_tokenDescriptor</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x9639443158E8C5efa35Bd45287bf2EFfd3D8dC06" target="_blank">0x9639443158E8C5efa35Bd45287bf2EFfd3D8dC06</a></td>
+    </tr>
+    <tr>
+      <td>_weth9</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73" target="_blank">0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73</a></td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8dc178efb8111bb0973dd9d722ebeff267c98f94">V4 Quoter</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+    </tr>
+<tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>_poolManager</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8366a39CC670B4001A1121B8F6A443A643e40951" target="_blank">0x8366a39CC670B4001A1121B8F6A443A643e40951</a></td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0xf3334192d15450cdd385c8b70e03f9a6bd9e673b">State View</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+    </tr>
+<tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>_poolManager</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8366a39CC670B4001A1121B8F6A443A643e40951" target="_blank">0x8366a39CC670B4001A1121B8F6A443A643e40951</a></td>
+    </tr>
+  </table>
+</details>
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0xcaf681a66d020601342297493863e78c959e5cb2">Swap Router02</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/56928a9" target="_blank">56928a9</a></td>
+    </tr>
+<tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>_factoryV2</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x8bcEaA40B9AcdfAedF85AdF4FF01F5Ad6517937f" target="_blank">0x8bcEaA40B9AcdfAedF85AdF4FF01F5Ad6517937f</a></td>
+    </tr>
+    <tr>
+      <td>factoryV3</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x1f7d7550B1b028f7571E69A784071F0205FD2EfA" target="_blank">0x1f7d7550B1b028f7571E69A784071F0205FD2EfA</a></td>
+    </tr>
+    <tr>
+      <td>_positionManager</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3" target="_blank">0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3</a></td>
+    </tr>
+    <tr>
+      <td>_WETH9</td>
+      <td><a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73" target="_blank">0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73</a></td>
+    </tr>
+  </table>
+</details>
+  
+
+
+### Tue May 26 2026
+
+  
+
+Deployed contracts:
+
+<details>
+  <summary>
+    <a href="https://8crv4vmq6tiu1yqr.blockscout.com/address/0x248a454ac3584c2a48d1fcb28d3910a6b6ea00af">Universal Router</a>
+  </summary>
+  <table>
+    <tr>
+      <td>Commit hash: <a href="git@github.com:Uniswap/contracts/commit/dbef74e" target="_blank">dbef74e</a></td>
+    </tr>
+<tr>
+      <th>Parameter</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>params</td>
+      <td>{"permit2":"0x000000000022D473030F116dDEE9F6B43aC78BA3","weth9":"0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73","v2Factory":"0x8bcEaA40B9AcdfAedF85AdF4FF01F5Ad6517937f","v3Factory":"0x1f7d7550B1b028f7571E69A784071F0205FD2EfA","pairInitCodeHash":"0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f","poolInitCodeHash":"0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54","v4PoolManager":"0x8366a39CC670B4001A1121B8F6A443A643e40951","v3NFTPositionManager":"0x73991a25C818Bf1f1128dEAaB1492D45638DE0D3","v4PositionManager":"0x58daec3116aae6D93017bAAea7749052E8a04fA7","spokePool":"0x7332D11BD10d18A04B119Cd4671a96f3148002c4"}</td>
+    </tr>
+  </table>
+</details>
+  
