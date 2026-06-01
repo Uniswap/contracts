@@ -5,7 +5,8 @@
     "moduleResolution": "NodeNext",
     "baseUrl": ".",
     "paths": {
-      "@src/cli": ["src/cli.ts"]
+      "@src/cli": ["src/cli.ts"],
+      "@src/utils": ["src/utils.ts"]
     },
     "lib": ["ES2022"],
     "outDir": "dist",

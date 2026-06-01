@@ -22,7 +22,6 @@
 
 import 'dotenv/config';
 import fs from 'node:fs';
-import path from 'node:path';
 import { ethers } from 'ethers';
 import {
   parseArgs,
@@ -31,6 +30,7 @@ import {
   resolveOutputPath,
   resolveCheckpointPath,
 } from '@src/cli';
+import { safeReadJson, atomicWriteFile } from '@src/utils';
 
 const OUTPUT_FILE = 'uniswapv3-pools.json';
 const CHECKPOINT_FILE = 'uniswapv3_checkpoint.json';
@@ -60,25 +60,6 @@ type UniswapV3PoolConfig = {
 
 function isNative(addr: string): boolean {
   return addr.toLowerCase() === ZERO_ADDRESS;
-}
-
-function ensureDirForFile(filePath: string) {
-  fs.mkdirSync(path.dirname(path.resolve(filePath)), { recursive: true });
-}
-
-function safeReadJson<T>(filePath: string): T | null {
-  try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T;
-  } catch {
-    return null;
-  }
-}
-
-function atomicWriteFile(filePath: string, contents: string) {
-  ensureDirForFile(filePath);
-  const abs = path.resolve(filePath);
-  fs.writeFileSync(abs + '.tmp', contents);
-  fs.renameSync(abs + '.tmp', abs);
 }
 
 function loadExistingKeys(outFile: string): Set<string> {

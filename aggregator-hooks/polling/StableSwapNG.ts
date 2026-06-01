@@ -27,7 +27,6 @@
 
 import 'dotenv/config';
 import fs from 'node:fs';
-import path from 'node:path';
 import { ethers } from 'ethers';
 import {
   parseArgs,
@@ -35,7 +34,9 @@ import {
   toInt,
   resolveOutputPath,
   resolveCheckpointPath,
+  withRetry,
 } from '@src/cli';
+import { pRateLimit, pLimit, safeReadJson, atomicWriteFile } from '@src/utils';
 
 const OUTPUT_FILE = 'stableswapng-pools.json';
 const CHECKPOINT_FILE = 'stableswapng_checkpoint.json';
@@ -69,25 +70,6 @@ const FACTORY_ABI = [
   'event MetaPoolDeployed(address coin, address base_pool, uint256 A, uint256 fee, address deployer)',
 ];
 
-function ensureDirForFile(filePath: string) {
-  fs.mkdirSync(path.dirname(path.resolve(filePath)), { recursive: true });
-}
-
-function safeReadJson<T>(filePath: string): T | null {
-  try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T;
-  } catch {
-    return null;
-  }
-}
-
-function atomicWriteFile(filePath: string, contents: string) {
-  ensureDirForFile(filePath);
-  const abs = path.resolve(filePath);
-  fs.writeFileSync(abs + '.tmp', contents);
-  fs.renameSync(abs + '.tmp', abs);
-}
-
 function loadExistingPoolAddrs(outFile: string): Set<string> {
   const keys = new Set<string>();
   if (!fs.existsSync(outFile)) return keys;
@@ -99,33 +81,6 @@ function loadExistingPoolAddrs(outFile: string): Set<string> {
     // ignore
   }
   return keys;
-}
-
-function pRateLimit(rps: number): () => Promise<void> {
-  if (rps <= 0) return async () => {};
-  const minGapMs = 1000 / rps;
-  let nextAllowed = 0;
-  return async function acquire() {
-    const now = Date.now();
-    if (now < nextAllowed)
-      await new Promise((r) => setTimeout(r, nextAllowed - now));
-    nextAllowed = Math.max(now, nextAllowed) + minGapMs;
-  };
-}
-
-function pLimit(concurrency: number) {
-  let active = 0;
-  const queue: (() => void)[] = [];
-  return async function limit<T>(fn: () => Promise<T>): Promise<T> {
-    if (active >= concurrency) await new Promise<void>((r) => queue.push(r));
-    active++;
-    try {
-      return await fn();
-    } finally {
-      active--;
-      queue.shift()?.();
-    }
-  };
 }
 
 function uniqAddresses(addrs: string[]): string[] {
@@ -193,7 +148,7 @@ async function main() {
   const plainTopic = iface.getEvent('PlainPoolDeployed')!.topicHash;
   const metaTopic = iface.getEvent('MetaPoolDeployed')!.topicHash;
 
-  const latestBlock = await provider.getBlockNumber();
+  const latestBlock = await withRetry(() => provider.getBlockNumber());
   const toBlock = Math.max(0, latestBlock - finality);
 
   const cpPath = resolveCheckpointPath(checkpointDir, chainId, CHECKPOINT_FILE);
@@ -253,12 +208,14 @@ async function main() {
     for (let start = fromBlock; start <= toBlock; start += chunkBlocks) {
       const end = Math.min(toBlock, start + chunkBlocks - 1);
 
-      const logs = await provider.getLogs({
-        address: factory,
-        fromBlock: start,
-        toBlock: end,
-        topics: [[plainTopic, metaTopic]],
-      });
+      const logs = await withRetry(() =>
+        provider.getLogs({
+          address: factory,
+          fromBlock: start,
+          toBlock: end,
+          topics: [[plainTopic, metaTopic]],
+        }),
+      );
 
       eventCount += logs.length;
       console.error(
@@ -300,44 +257,47 @@ async function main() {
   const outPath = resolveOutputPath(outputDir, chainId, OUTPUT_FILE);
   const seenAddrs = loadExistingPoolAddrs(outPath);
   let allRecords = safeReadJson<CreatePoolsStableSwapConfig[]>(outPath) ?? [];
-  let newCount = 0;
 
-  for (let i = startIndex; i < poolCount; i++) {
-    const curvePool = await limit(async () => {
-      await rateLimit();
-      const addr = await contract.pool_list(i);
-      return ethers.getAddress(addr);
-    });
+  const newIndices = Array.from(
+    { length: fetchCount },
+    (_, k) => startIndex + k,
+  );
+  const fetched = await Promise.all(
+    newIndices.map((i) =>
+      limit(async () => {
+        await rateLimit();
+        const addr = await withRetry(
+          () => contract.pool_list(i) as Promise<string>,
+        );
+        const curvePool = ethers.getAddress(addr);
+        if (seenAddrs.has(curvePool.toLowerCase())) return null;
 
-    if (seenAddrs.has(curvePool.toLowerCase())) continue;
-    seenAddrs.add(curvePool.toLowerCase());
+        await rateLimit();
+        const [nCoinsBn, coinsRaw, basePoolRaw] = await Promise.all([
+          withRetry(() => contract.get_n_coins(curvePool) as Promise<bigint>),
+          withRetry(() => contract.get_coins(curvePool) as Promise<string[]>),
+          withRetry(() => contract.get_base_pool(curvePool) as Promise<string>),
+        ]);
+        const basePool = ethers.getAddress(basePoolRaw);
+        const isPlain =
+          basePool.toLowerCase() === ethers.ZeroAddress.toLowerCase();
+        if (!isPlain) return null;
+        const coins = uniqAddresses(coinsRaw as string[]);
+        return {
+          poolType: 'stableswapng' as const,
+          curvePool,
+          tokens: coins,
+          fee: null,
+          tickSpacing: null,
+          sqrtPriceX96: null,
+        };
+      }),
+    ),
+  );
 
-    const meta = await limit(async () => {
-      await rateLimit();
-      const [nCoinsBn, coinsRaw, basePoolRaw] = await Promise.all([
-        contract.get_n_coins(curvePool) as Promise<bigint>,
-        contract.get_coins(curvePool) as Promise<string[]>,
-        contract.get_base_pool(curvePool) as Promise<string>,
-      ]);
-      const basePool = ethers.getAddress(basePoolRaw);
-      const isPlain =
-        basePool.toLowerCase() === ethers.ZeroAddress.toLowerCase();
-      const coins = uniqAddresses(coinsRaw as string[]);
-      return { nCoins: Number(nCoinsBn), coins, isPlain };
-    });
-
-    if (!meta.isPlain) continue;
-
-    allRecords.push({
-      poolType: 'stableswapng',
-      curvePool,
-      tokens: meta.coins,
-      fee: null,
-      tickSpacing: null,
-      sqrtPriceX96: null,
-    });
-    newCount++;
-  }
+  const newRecords = fetched.filter(Boolean) as CreatePoolsStableSwapConfig[];
+  allRecords = allRecords.concat(newRecords);
+  const newCount = newRecords.length;
 
   if (newCount > 0) {
     atomicWriteFile(outPath, JSON.stringify(allRecords, null, 2) + '\n');

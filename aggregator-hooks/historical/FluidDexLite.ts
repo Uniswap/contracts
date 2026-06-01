@@ -22,9 +22,9 @@
 
 import 'dotenv/config';
 import fs from 'node:fs';
-import path from 'node:path';
 import { ethers } from 'ethers';
 import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from '@src/cli';
+import { ensureDirForFile } from '@src/utils';
 import { FLUIDDEXLITE_RESOLVER_ABI } from '../abis/index.js';
 import type { Address } from '../creation-modules/types.js';
 
@@ -63,11 +63,6 @@ function fluidFeeToUniswapV4(fluidFee: bigint | number): number {
   const MAX_U24 = 16_777_215;
   const converted = Number(fluidFee) * 100; // fluidFee * 1e6 / 1e4
   return Math.min(Math.max(0, Math.floor(converted)), MAX_U24);
-}
-
-function ensureDirForFile(filePath: string): void {
-  const dir = path.dirname(path.resolve(filePath));
-  fs.mkdirSync(dir, { recursive: true });
 }
 
 async function main() {

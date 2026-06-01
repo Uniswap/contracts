@@ -2,7 +2,13 @@
 
 import 'dotenv/config';
 import { ethers } from 'ethers';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import {
+  readFileSync,
+  writeFileSync,
+  renameSync,
+  existsSync,
+  mkdirSync,
+} from 'fs';
 import { execFileSync, spawn } from 'child_process';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -328,7 +334,9 @@ function appendToRegistryFile(
   if (!existsSync(registryDir)) {
     mkdirSync(registryDir, { recursive: true });
   }
-  writeFileSync(filePath, JSON.stringify(poolsDeployed, null, 2));
+  const tmp = filePath + '.tmp';
+  writeFileSync(tmp, JSON.stringify(poolsDeployed, null, 2));
+  renameSync(tmp, filePath);
   log.info(`Appended to registry: ${filePath}`);
 }
 
@@ -725,8 +733,10 @@ async function mineSalt(
   const baseArgs = [scriptPath, constructorArgs, protocolIdHex];
   if (deployerAddress) baseArgs.push('500', deployerAddress);
 
+  // Strip sensitive credentials — salt mining workers only need PATH and build tooling
+  const { PRIVATE_KEY: _pk, ...safeEnv } = process.env;
   const execEnv = {
-    ...process.env,
+    ...safeEnv,
     ...(log.verboseEnabled && { FORGE_VERBOSE: '1' }),
   };
 
@@ -875,7 +885,11 @@ function selfDeployPool(
       {
         encoding: 'utf-8',
         cwd: projectRoot,
-        env: { ...process.env, ...envVars },
+        // envVars already contains PRIVATE_KEY; strip it from process.env to avoid duplication
+        env: (() => {
+          const { PRIVATE_KEY: _pk, ...rest } = process.env;
+          return { ...rest, ...envVars };
+        })(),
       },
     );
 
@@ -1088,6 +1102,12 @@ async function main() {
         );
 
         if (!deployed || deployed === 'deployed') {
+          if (dryRun) {
+            log.success(
+              'Dry run: singleton self-deploy script completed — skipping pool initialization (no real address without broadcast)',
+            );
+            return;
+          }
           log.error(
             'Could not determine deployed aggregator address — aborting',
           );

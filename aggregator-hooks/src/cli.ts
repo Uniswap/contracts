@@ -88,3 +88,23 @@ export interface HistoricalArgs extends CommonArgs {
   startBlock: number;
   endBlock: number | null;
 }
+
+/**
+ * Retry wrapper with exponential backoff for transient RPC errors.
+ * Retries on any thrown error; callers should not use this for on-chain reverts.
+ */
+export async function withRetry<T>(
+  fn: () => Promise<T>,
+  retries = 5,
+  baseMs = 500,
+): Promise<T> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await fn();
+    } catch (e) {
+      if (attempt >= retries) throw e;
+      const delay = baseMs * 2 ** attempt + Math.random() * 100;
+      await new Promise((r) => setTimeout(r, delay));
+    }
+  }
+}

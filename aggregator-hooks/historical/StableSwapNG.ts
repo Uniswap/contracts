@@ -22,9 +22,9 @@
 
 import 'dotenv/config';
 import fs from 'node:fs';
-import path from 'node:path';
 import { JsonRpcProvider, Contract, getAddress, ZeroAddress } from 'ethers';
 import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from '@src/cli';
+import { pRateLimit, pLimit, ensureDirForFile } from '@src/utils';
 import { STABLESWAPNG_HISTORICAL_FACTORY_ABI } from '../abis/index.js';
 import type { Address } from '../creation-modules/types.js';
 
@@ -57,42 +57,6 @@ const CREATE_POOLS_DEFAULTS = {
 
 function saveJson(filePath: string, data: unknown): void {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-}
-
-function pRateLimit(rps: number): () => Promise<void> {
-  if (rps <= 0) return async () => {};
-  const minGapMs = 1000 / rps;
-  let nextAllowed = 0;
-  return async function acquire(): Promise<void> {
-    const now = Date.now();
-    if (now < nextAllowed) {
-      await new Promise<void>((r) => setTimeout(r, nextAllowed - now));
-    }
-    nextAllowed = Math.max(now, nextAllowed) + minGapMs;
-  };
-}
-
-function pLimit(concurrency: number) {
-  let active = 0;
-  const queue: Array<() => void> = [];
-
-  const next = (): void => {
-    active--;
-    const fn = queue.shift();
-    if (fn) fn();
-  };
-
-  return async function limit<T>(fn: () => Promise<T>): Promise<T> {
-    if (active >= concurrency) {
-      await new Promise<void>((resolve) => queue.push(resolve));
-    }
-    active++;
-    try {
-      return await fn();
-    } finally {
-      next();
-    }
-  };
 }
 
 function uniqAddresses(addrs: string[]): Address[] {
@@ -234,7 +198,7 @@ async function main() {
     });
 
   const outPath = resolveOutputPath(outputDir, chainId, OUTPUT_FILE);
-  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  ensureDirForFile(outPath);
   saveJson(outPath, createPoolsConfigs);
   console.log(
     `Wrote ${outPath} (${createPoolsConfigs.length} pools in createPools.ts format)`,

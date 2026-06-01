@@ -24,7 +24,6 @@
 
 import 'dotenv/config';
 import fs from 'node:fs';
-import path from 'node:path';
 import { ethers } from 'ethers';
 import {
   parseArgs,
@@ -33,6 +32,7 @@ import {
   resolveOutputPath,
   resolveCheckpointPath,
 } from '@src/cli';
+import { safeReadJson, atomicWriteFile, ensureDirForFile } from '@src/utils';
 
 const OUTPUT_FILE = 'fluiddexlite-pools.json';
 const CHECKPOINT_FILE = 'dexlite_checkpoint.json';
@@ -68,28 +68,6 @@ type CreatePoolsFluidLiteConfig = {
 const LOG_INITIALIZE_ABI = [
   'event LogInitialize(uint256 dexId, tuple(address token0,address token1,bytes32 salt) dexKey, tuple(tuple(address token0,address token1,bytes32 salt) dexKey,uint256 fee,uint256 revenueCut,bool rebalancingStatus,uint256 centerPrice,uint256 centerPriceContract,uint256 upperPercent,uint256 lowerPercent,uint256 upperShiftThreshold,uint256 lowerShiftThreshold,uint256 shiftTime,uint256 minCenterPrice,uint256 maxCenterPrice,uint256 token0Amount,uint256 token1Amount) params, uint256 time)',
 ] as const;
-
-function ensureDirForFile(filePath: string) {
-  const dir = path.dirname(path.resolve(filePath));
-  fs.mkdirSync(dir, { recursive: true });
-}
-
-function safeReadJson<T>(filePath: string): T | null {
-  try {
-    const raw = fs.readFileSync(filePath, 'utf8');
-    return JSON.parse(raw) as T;
-  } catch {
-    return null;
-  }
-}
-
-function atomicWriteFile(filePath: string, contents: string) {
-  ensureDirForFile(filePath);
-  const abs = path.resolve(filePath);
-  const tmp = abs + '.tmp';
-  fs.writeFileSync(tmp, contents);
-  fs.renameSync(tmp, abs);
-}
 
 function loadExistingKeys(outFile: string): Set<string> {
   const keys = new Set<string>();

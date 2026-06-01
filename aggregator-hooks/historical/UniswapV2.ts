@@ -25,9 +25,9 @@
 
 import 'dotenv/config';
 import fs from 'node:fs';
-import path from 'node:path';
 import { ethers } from 'ethers';
 import { parseArgs, getEnvForChain, toInt, resolveOutputPath } from '@src/cli';
+import { pRateLimit, ensureDirForFile } from '@src/utils';
 import type { Address } from '../creation-modules/types.js';
 
 const OUTPUT_FILE = 'uniswapv2-pools.json';
@@ -46,18 +46,6 @@ type UniswapV2PoolConfig = {
   tickSpacing: number;
   sqrtPriceX96: null;
 };
-
-function pRateLimit(rps: number): () => Promise<void> {
-  if (rps <= 0) return async () => {};
-  const minGapMs = 1000 / rps;
-  let nextAllowed = 0;
-  return async function acquire(): Promise<void> {
-    const now = Date.now();
-    if (now < nextAllowed)
-      await new Promise<void>((r) => setTimeout(r, nextAllowed - now));
-    nextAllowed = Math.max(now, nextAllowed) + minGapMs;
-  };
-}
 
 function isRangeLimitError(err: unknown): boolean {
   const msg = String(
@@ -196,7 +184,7 @@ async function main() {
   }
 
   const outPath = resolveOutputPath(outputDir, chainId, OUTPUT_FILE);
-  fs.mkdirSync(path.dirname(outPath), { recursive: true });
+  ensureDirForFile(outPath);
   fs.writeFileSync(outPath, JSON.stringify(configs, null, 2) + '\n');
   console.log(
     JSON.stringify(

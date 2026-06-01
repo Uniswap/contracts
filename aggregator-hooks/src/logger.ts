@@ -1,3 +1,21 @@
+/** Redact the API key segment from RPC URLs (e.g. Infura/Alchemy path keys). */
+function redactRpcUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    const parts = u.pathname.split('/').filter(Boolean);
+    if (parts.length > 0) {
+      const last = parts[parts.length - 1];
+      if (last.length >= 16) {
+        parts[parts.length - 1] = last.slice(0, 4) + '***';
+        u.pathname = '/' + parts.join('/');
+      }
+    }
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
 /**
  * Config passed to banner() for startup output.
  */
@@ -62,7 +80,7 @@ export function createLogger(opts: { verbose: boolean }): Logger {
         ...(config.factoryAddress
           ? [`Factory Address: ${config.factoryAddress}`]
           : []),
-        `RPC URL: ${config.rpcUrl}`,
+        `RPC URL: ${redactRpcUrl(config.rpcUrl)}`,
         ...(config.registryDir ? [`Registry dir: ${config.registryDir}`] : []),
         ...(config.dryRun
           ? ['DRY RUN: forge scripts will simulate without broadcasting']

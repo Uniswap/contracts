@@ -25,7 +25,6 @@
 
 import 'dotenv/config';
 import fs from 'node:fs';
-import path from 'node:path';
 import { ethers } from 'ethers';
 import {
   parseArgs,
@@ -33,7 +32,9 @@ import {
   toInt,
   resolveOutputPath,
   resolveCheckpointPath,
+  withRetry,
 } from '@src/cli';
+import { pRateLimit, pLimit, safeReadJson, atomicWriteFile } from '@src/utils';
 
 const OUTPUT_FILE = 'fluiddext1-pools.json';
 const CHECKPOINT_FILE = 'fluiddext1_checkpoint.json';
@@ -74,25 +75,6 @@ const FACTORY_ABI = [
 const RESOLVER_ABI = [
   'function getDexTokens(address dex_) external view returns (address token0_, address token1_)',
 ];
-
-function ensureDirForFile(filePath: string) {
-  fs.mkdirSync(path.dirname(path.resolve(filePath)), { recursive: true });
-}
-
-function safeReadJson<T>(filePath: string): T | null {
-  try {
-    return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T;
-  } catch {
-    return null;
-  }
-}
-
-function atomicWriteFile(filePath: string, contents: string) {
-  ensureDirForFile(filePath);
-  const abs = path.resolve(filePath);
-  fs.writeFileSync(abs + '.tmp', contents);
-  fs.renameSync(abs + '.tmp', abs);
-}
 
 function loadExistingKeys(outFile: string): Set<string> {
   const keys = new Set<string>();
@@ -156,6 +138,14 @@ async function main() {
   const lookbackBlocks = getEnvInt('LOOKBACK_BLOCKS', chainId, 200000);
   const startBlockArg = args['start-block'];
 
+  const concurrency = Math.max(
+    1,
+    toInt(getEnvForChain('CONCURRENCY', chainId), 8),
+  );
+  const rps = toInt(getEnvForChain('RPS', chainId), 80);
+  const rateLimit = pRateLimit(rps);
+  const limit = pLimit(concurrency);
+
   const provider = new ethers.JsonRpcProvider(rpcUrl);
   const resolver = new ethers.Contract(
     ethers.getAddress(resolverAddr),
@@ -166,7 +156,7 @@ async function main() {
   const iface = new ethers.Interface(FACTORY_ABI as unknown as string[]);
   const topic0 = iface.getEvent('LogDexDeployed')!.topicHash;
 
-  const latestBlock = await provider.getBlockNumber();
+  const latestBlock = await withRetry(() => provider.getBlockNumber());
   const toBlock = Math.max(0, latestBlock - finality);
 
   const cpPath = resolveCheckpointPath(checkpointDir, chainId, CHECKPOINT_FILE);
@@ -211,52 +201,62 @@ async function main() {
   for (let start = fromBlock; start <= toBlock; start += chunkBlocks) {
     const end = Math.min(toBlock, start + chunkBlocks - 1);
 
-    const logs = await provider.getLogs({
-      address: factory,
-      topics: [topic0],
-      fromBlock: start,
-      toBlock: end,
-    });
+    const logs = await withRetry(() =>
+      provider.getLogs({
+        address: factory,
+        topics: [topic0],
+        fromBlock: start,
+        toBlock: end,
+      }),
+    );
 
     totalLogs += logs.length;
-    const newRecords: CreatePoolsFluidDexT1Config[] = [];
 
-    for (const log of logs) {
-      let parsed: ethers.LogDescription | null;
-      try {
-        parsed = iface.parseLog(log);
-      } catch {
-        continue;
-      }
-      if (!parsed) continue;
+    const newRecords = (
+      await Promise.all(
+        logs.map((log) =>
+          limit(async () => {
+            let parsed: ethers.LogDescription | null;
+            try {
+              parsed = iface.parseLog(log);
+            } catch {
+              return null;
+            }
+            if (!parsed) return null;
 
-      const dex = ethers.getAddress(parsed.args.dex as string);
+            const dex = ethers.getAddress(parsed.args.dex as string);
+            let token0: string;
+            let token1: string;
+            try {
+              await rateLimit();
+              [token0, token1] = await withRetry(() =>
+                resolver.getDexTokens(dex),
+              );
+            } catch {
+              console.error(`Failed getDexTokens for ${dex}`);
+              return null;
+            }
 
-      let token0: string;
-      let token1: string;
-      try {
-        [token0, token1] = await resolver.getDexTokens(dex);
-      } catch {
-        console.error(`Failed getDexTokens for ${dex}`);
-        continue;
-      }
+            const [currency0, currency1] = orderCurrencies(token0, token1);
+            const key = `${dex}:${currency0}:${currency1}`;
+            if (seenKeys.has(key)) return null;
+            seenKeys.add(key);
 
-      const [currency0, currency1] = orderCurrencies(token0, token1);
-      const key = `${dex}:${currency0}:${currency1}`;
-      if (seenKeys.has(key)) continue;
-      seenKeys.add(key);
+            return {
+              poolType: 'fluiddext1' as const,
+              fluidPool: dex,
+              currency0,
+              currency1,
+              fee: null,
+              tickSpacing: null,
+              sqrtPriceX96: null,
+            };
+          }),
+        ),
+      )
+    ).filter(Boolean) as CreatePoolsFluidDexT1Config[];
 
-      newPools++;
-      newRecords.push({
-        poolType: 'fluiddext1',
-        fluidPool: dex,
-        currency0,
-        currency1,
-        fee: null,
-        tickSpacing: null,
-        sqrtPriceX96: null,
-      });
-    }
+    newPools += newRecords.length;
 
     if (newRecords.length > 0) {
       allRecords = allRecords.concat(newRecords);
