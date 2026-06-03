@@ -75,6 +75,13 @@
       "proxy": false,
       "deploymentTxn": "0x08308660d6b69fbde0e86fb740ae1feedd5a38c109dcc5824ec1bc98c0fff7ab",
       "timestamp": 1722542371000
+    },
+    "SwapProxy": {
+      "address": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
+      "proxy": false,
+      "deploymentTxn": "0x4f516e2d7a4b76ee9b390a62ba4bb80b8acf319bb954e240cd879889bb8a4324",
+      "timestamp": 1780520057000,
+      "commitHash": "2899307"
     }
   },
   "history": [

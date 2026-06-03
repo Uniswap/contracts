@@ -143,6 +143,13 @@
       "deploymentTxn": "0xb08db69ef8fb6d9a4fb0641d0e9bc3b3b343ac640268a9e71976f2b1675378a8",
       "timestamp": 1748029118000,
       "commitHash": "0a52cd5"
+    },
+    "SwapProxy": {
+      "address": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
+      "proxy": false,
+      "deploymentTxn": "0x534b33f5da2a892662f639426d3f2ce3a6f4e93c08cf8ad5f1949c4e81fdb5be",
+      "timestamp": 1780519994000,
+      "commitHash": "2899307"
     }
   },
   "history": [
