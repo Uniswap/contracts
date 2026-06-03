@@ -1,54 +1,122 @@
 {
-  "contract": "SwapProxy",
-  "description": "Deterministic CREATE2 deployment of the canonical SwapProxy. Address depends only on {create2Factory, salt, initcodeHash}; any funded key can deploy it.",
-  "create2Factory": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
-  "salt": "0xd00319ff7795e528cc1ccd28bd6e08e46a42130d69ab4992d656773ba5fb323c",
-  "saltNote": "Vanity-mined for a 4-leading-zero-byte address (Uniswap singleton convention, cf. Permit2/CaliburEntry).",
-  "initcodeHash": "0x342d83f4d7400dd603e2a6829db9cb032e7f62a2dda94746f2acd4e7e881bb2f",
-  "initcodeFile": ".swapproxy-deploy/canonical-initcode.hex",
-  "initcodeBytes": 1031,
-  "runtimeBytes": 1005,
-  "predictedAddress": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
-  "source": {
-    "repo": "https://github.com/Uniswap/universal-router",
-    "vendoredAt": "src/pkgs/universal-router/contracts/SwapProxy.sol",
-    "note": "The universal-router repo is the origin of the source, but it is NOT a live dependency. The frozen initcode below is the source of truth. The contract only references the IUniversalRouter interface, so UR router upgrades never change this address.",
-    "compileClosure": [
-      "contracts/SwapProxy.sol",
-      "contracts/interfaces/ISwapProxy.sol",
-      "contracts/interfaces/IUniversalRouter.sol",
-      "lib/solmate/src/tokens/ERC20.sol",
-      "lib/solmate/src/utils/SafeTransferLib.sol"
-    ]
-  },
-  "build": {
-    "solc": "0.8.26+commit.8a97fa7a",
-    "evmVersion": "cancun",
-    "optimizer": true,
-    "optimizerRuns": 4444,
-    "viaIR": true,
-    "bytecodeHash": "ipfs",
-    "note": "Matches the mainnet-verified 1005-byte SwapProxy runtime. This differs from the repo's universal-router foundry profile (optimizer_runs=1, bytecode_hash=none, 964-byte build), which is why we deploy the frozen initcode instead of recompiling."
-  },
-  "legacy": {
-    "address": "0x02e5be68d46dac0b524905bff209cf47ee6db2a9",
-    "mechanism": "plain CREATE at nonce 0 of deployer 0xb259f71F8Fa2B0165c4d71061C4bf6c77444aC87",
-    "note": "Pre-CREATE2 deployments. Immutable and ownerless, so they remain on-chain; consumers migrate to the CREATE2 address above."
-  },
-  "deploymentsNote": "All 13 chains deployed at predictedAddress with byte-identical 1005-byte runtime (keccak 0x24a203c24b85e0994ae6aecccc2bc0c1df4e22f1b3d63f33d18bec0245867aaf) and verified on each chain's block explorer.",
-  "deployments": {
-    "1":        { "chain": "ethereum",         "txHash": "0xc5a5d5d0d8d88c2bf201e910adf85481693d97a2a4e9b36eba8a18aa3a359f7e", "explorer": "etherscan.io",            "verified": true },
-    "10":       { "chain": "optimism",         "txHash": "0x8700849e19ff6f7cfa640428de6127e0c6ce5e072ed56f0ba5243064c3fdfe2b", "explorer": "optimistic.etherscan.io", "verified": true },
-    "130":      { "chain": "unichain",         "txHash": "0x1964ed422c15332c63ea00933b9ebb2471664bf7a32eb973e4be6c6ad4cd1631", "explorer": "uniscan.xyz",             "verified": true },
-    "1301":     { "chain": "unichain-sepolia", "txHash": "0x38d91a2a6fb78b9d48c19cf2f07e7455b30815a46a8561496a0c2bd757b11260", "explorer": "sepolia.uniscan.xyz",     "verified": true },
-    "1868":     { "chain": "soneium",          "txHash": "0x57cad6b16c08166ea230cffb5e71f92da5252ded6629a83fb5c010b9d1944398", "explorer": "soneium.blockscout.com",  "verified": true },
-    "4326":     { "chain": "megaeth",          "txHash": "0x7602a721745f189bbcccb5e15dda8ee089a4409446d7ab906260bd574fca677d", "explorer": "megaeth.blockscout.com",  "verified": true, "note": "needed --gas-limit ~13M; chain estimates ~10.8M gas for the create" },
-    "4663":     { "chain": "robinhood",        "txHash": "0x8368c4fdc9bdf5669a005f7d4432f7b4ef973f12a8253648d08fbec21b131673", "explorer": "8crv4vmq6tiu1yqr.blockscout.com", "verified": true, "note": "deployed via cast mktx -> sequencer (legacy, gas-price 0.2 gwei)" },
-    "5042":     { "chain": "arc",              "txHash": "0x3f11adba44661435d1e8d2b8664d18c8a156e349a73b3d964e08ac8a9d4aff63", "explorer": "explorer.arc.io",         "verified": true, "note": "needed --legacy --gas-estimate-multiplier 130" },
-    "7777777":  { "chain": "zora",             "txHash": "0xcc97b54913f501ba14bdfef6dc6b98f91e4062583787910e427339ec3982a8fe", "explorer": "explorer.zora.energy",    "verified": true },
-    "8453":     { "chain": "base",             "txHash": "0xbb4502710f732b0ec1de99ff381b5e3a315ae22c5ef9190827064c6fbbd0c2f7", "explorer": "basescan.org",            "verified": true },
-    "11155111": { "chain": "sepolia",          "txHash": "0x4e523ef440e28ef0d0dd1f3f1dc825bd65bdf2903aab8fdb1e25fa57dd760477", "explorer": "sepolia.etherscan.io",    "verified": true },
-    "42161":    { "chain": "arbitrum",         "txHash": "0x9a66e8f05fc5936775984321f66e78c39b0807d8cfbf3a483c02935fdc825390", "explorer": "arbiscan.io",             "verified": true },
-    "42220":    { "chain": "celo",             "txHash": "0x8352219a027b54390877bcf1e9b6a8acec51972afc60de8bac957b17769ca1ad", "explorer": "celoscan.io",             "verified": true }
-  }
+    "contract": "SwapProxy",
+    "description": "Deterministic CREATE2 deployment of the canonical SwapProxy. Address depends only on {create2Factory, salt, initcodeHash}; any funded key can deploy it.",
+    "create2Factory": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+    "salt": "0xd00319ff7795e528cc1ccd28bd6e08e46a42130d69ab4992d656773ba5fb323c",
+    "saltNote": "Vanity-mined for a 4-leading-zero-byte address (Uniswap singleton convention, cf. Permit2/CaliburEntry).",
+    "initcodeHash": "0x342d83f4d7400dd603e2a6829db9cb032e7f62a2dda94746f2acd4e7e881bb2f",
+    "initcodeFile": ".swapproxy-deploy/canonical-initcode.hex",
+    "initcodeBytes": 1031,
+    "runtimeBytes": 1005,
+    "predictedAddress": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
+    "source": {
+        "repo": "https://github.com/Uniswap/universal-router",
+        "vendoredAt": "src/pkgs/universal-router/contracts/SwapProxy.sol",
+        "note": "The universal-router repo is the origin of the source, but it is NOT a live dependency. The frozen initcode below is the source of truth. The contract only references the IUniversalRouter interface, so UR router upgrades never change this address.",
+        "compileClosure": [
+            "contracts/SwapProxy.sol",
+            "contracts/interfaces/ISwapProxy.sol",
+            "contracts/interfaces/IUniversalRouter.sol",
+            "lib/solmate/src/tokens/ERC20.sol",
+            "lib/solmate/src/utils/SafeTransferLib.sol"
+        ]
+    },
+    "build": {
+        "solc": "0.8.26+commit.8a97fa7a",
+        "evmVersion": "cancun",
+        "optimizer": true,
+        "optimizerRuns": 4444,
+        "viaIR": true,
+        "bytecodeHash": "ipfs",
+        "note": "Matches the mainnet-verified 1005-byte SwapProxy runtime. This differs from the repo's universal-router foundry profile (optimizer_runs=1, bytecode_hash=none, 964-byte build), which is why we deploy the frozen initcode instead of recompiling."
+    },
+    "legacy": {
+        "address": "0x02e5be68d46dac0b524905bff209cf47ee6db2a9",
+        "mechanism": "plain CREATE at nonce 0 of deployer 0xb259f71F8Fa2B0165c4d71061C4bf6c77444aC87",
+        "note": "Pre-CREATE2 deployments. Immutable and ownerless, so they remain on-chain; consumers migrate to the CREATE2 address above."
+    },
+    "deploymentsNote": "All 13 chains deployed at predictedAddress with byte-identical 1005-byte runtime (keccak 0x24a203c24b85e0994ae6aecccc2bc0c1df4e22f1b3d63f33d18bec0245867aaf) and verified on each chain's block explorer.",
+    "deployments": {
+        "1": {
+            "chain": "ethereum",
+            "txHash": "0xc5a5d5d0d8d88c2bf201e910adf85481693d97a2a4e9b36eba8a18aa3a359f7e",
+            "explorer": "etherscan.io",
+            "verified": true
+        },
+        "10": {
+            "chain": "optimism",
+            "txHash": "0x8700849e19ff6f7cfa640428de6127e0c6ce5e072ed56f0ba5243064c3fdfe2b",
+            "explorer": "optimistic.etherscan.io",
+            "verified": true
+        },
+        "130": {
+            "chain": "unichain",
+            "txHash": "0x1964ed422c15332c63ea00933b9ebb2471664bf7a32eb973e4be6c6ad4cd1631",
+            "explorer": "uniscan.xyz",
+            "verified": true
+        },
+        "1301": {
+            "chain": "unichain-sepolia",
+            "txHash": "0x38d91a2a6fb78b9d48c19cf2f07e7455b30815a46a8561496a0c2bd757b11260",
+            "explorer": "sepolia.uniscan.xyz",
+            "verified": true
+        },
+        "1868": {
+            "chain": "soneium",
+            "txHash": "0x57cad6b16c08166ea230cffb5e71f92da5252ded6629a83fb5c010b9d1944398",
+            "explorer": "soneium.blockscout.com",
+            "verified": true
+        },
+        "4326": {
+            "chain": "megaeth",
+            "txHash": "0x7602a721745f189bbcccb5e15dda8ee089a4409446d7ab906260bd574fca677d",
+            "explorer": "megaeth.blockscout.com",
+            "verified": true,
+            "note": "needed --gas-limit ~13M; chain estimates ~10.8M gas for the create"
+        },
+        "4663": {
+            "chain": "robinhood",
+            "txHash": "0x8368c4fdc9bdf5669a005f7d4432f7b4ef973f12a8253648d08fbec21b131673",
+            "explorer": "8crv4vmq6tiu1yqr.blockscout.com",
+            "verified": true,
+            "note": "deployed via cast mktx -> sequencer (legacy, gas-price 0.2 gwei)"
+        },
+        "5042": {
+            "chain": "arc",
+            "txHash": "0x3f11adba44661435d1e8d2b8664d18c8a156e349a73b3d964e08ac8a9d4aff63",
+            "explorer": "explorer.arc.io",
+            "verified": true,
+            "note": "needed --legacy --gas-estimate-multiplier 130"
+        },
+        "7777777": {
+            "chain": "zora",
+            "txHash": "0xcc97b54913f501ba14bdfef6dc6b98f91e4062583787910e427339ec3982a8fe",
+            "explorer": "explorer.zora.energy",
+            "verified": true
+        },
+        "8453": {
+            "chain": "base",
+            "txHash": "0xbb4502710f732b0ec1de99ff381b5e3a315ae22c5ef9190827064c6fbbd0c2f7",
+            "explorer": "basescan.org",
+            "verified": true
+        },
+        "11155111": {
+            "chain": "sepolia",
+            "txHash": "0x4e523ef440e28ef0d0dd1f3f1dc825bd65bdf2903aab8fdb1e25fa57dd760477",
+            "explorer": "sepolia.etherscan.io",
+            "verified": true
+        },
+        "42161": {
+            "chain": "arbitrum",
+            "txHash": "0x9a66e8f05fc5936775984321f66e78c39b0807d8cfbf3a483c02935fdc825390",
+            "explorer": "arbiscan.io",
+            "verified": true
+        },
+        "42220": {
+            "chain": "celo",
+            "txHash": "0x8352219a027b54390877bcf1e9b6a8acec51972afc60de8bac957b17769ca1ad",
+            "explorer": "celoscan.io",
+            "verified": true
+        }
+    }
 }

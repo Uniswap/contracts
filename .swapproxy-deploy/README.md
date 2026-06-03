@@ -6,12 +6,12 @@ deploy it.
 
 ## Canonical values
 
-| Field | Value |
-|---|---|
-| CREATE2 factory | `0x4e59b44847b379578588920cA78FbF26c0B4956C` (Arachnid, same address on all supported chains) |
-| Salt | `0xd00319ff7795e528cc1ccd28bd6e08e46a42130d69ab4992d656773ba5fb323c` (vanity-mined) |
-| Initcode hash | `0x342d83f4d7400dd603e2a6829db9cb032e7f62a2dda94746f2acd4e7e881bb2f` |
-| **Deterministic address** | **`0x0000000085E102724e78eCd2F45DC9cA239Affad`** |
+| Field                     | Value                                                                                         |
+| ------------------------- | --------------------------------------------------------------------------------------------- |
+| CREATE2 factory           | `0x4e59b44847b379578588920cA78FbF26c0B4956C` (Arachnid, same address on all supported chains) |
+| Salt                      | `0xd00319ff7795e528cc1ccd28bd6e08e46a42130d69ab4992d656773ba5fb323c` (vanity-mined)           |
+| Initcode hash             | `0x342d83f4d7400dd603e2a6829db9cb032e7f62a2dda94746f2acd4e7e881bb2f`                          |
+| **Deterministic address** | **`0x0000000085E102724e78eCd2F45DC9cA239Affad`**                                              |
 
 The salt is vanity-mined for a 4-leading-zero-byte address, matching the Uniswap singleton
 convention (Permit2 `0x000000000022…`, CaliburEntry `0x000000009b1d…`). Since the Arachnid
