@@ -35,7 +35,7 @@
         "mechanism": "plain CREATE at nonce 0 of deployer 0xb259f71F8Fa2B0165c4d71061C4bf6c77444aC87",
         "note": "Pre-CREATE2 deployments. Immutable and ownerless, so they remain on-chain; consumers migrate to the CREATE2 address above."
     },
-    "deploymentsNote": "All 13 chains deployed at predictedAddress with byte-identical 1005-byte runtime (keccak 0x24a203c24b85e0994ae6aecccc2bc0c1df4e22f1b3d63f33d18bec0245867aaf) and verified on each chain's block explorer.",
+    "deploymentsNote": "All 22 chains deployed at predictedAddress with byte-identical 1005-byte runtime (keccak 0x24a203c24b85e0994ae6aecccc2bc0c1df4e22f1b3d63f33d18bec0245867aaf). Verified on each block explorer except X Layer (196), whose only explorer is OKLink (verification pending an OKLink API key).",
     "deployments": {
         "1": {
             "chain": "ethereum",
@@ -116,6 +116,61 @@
             "chain": "celo",
             "txHash": "0x8352219a027b54390877bcf1e9b6a8acec51972afc60de8bac957b17769ca1ad",
             "explorer": "celoscan.io",
+            "verified": true
+        },
+        "56": {
+            "chain": "bnb",
+            "txHash": "0x534b33f5da2a892662f639426d3f2ce3a6f4e93c08cf8ad5f1949c4e81fdb5be",
+            "explorer": "bscscan.org",
+            "verified": true
+        },
+        "137": {
+            "chain": "polygon",
+            "txHash": "0x1416754b1c37296bdcff1ba4f7ba42114c6270211ff951938c8f3e2a422a4444",
+            "explorer": "polygonscan.com",
+            "verified": true
+        },
+        "143": {
+            "chain": "monad",
+            "txHash": "0x67236b1ce4125229595d30424e08b9c63885894be4f9a5a9516c69cf1b61df63",
+            "explorer": "monadscan.com",
+            "verified": true
+        },
+        "196": {
+            "chain": "xlayer",
+            "txHash": "0x1a3805b1bc91f52922e15eefc480b3eed18789dee1ce2724aae28ee9239f574f",
+            "explorer": "oklink.com/x-layer",
+            "verified": false,
+            "note": "explorer is OKLink; verification needs an OKX/OKLink API key (pending)"
+        },
+        "480": {
+            "chain": "worldchain",
+            "txHash": "0x4f516e2d7a4b76ee9b390a62ba4bb80b8acf319bb954e240cd879889bb8a4324",
+            "explorer": "worldscan.org",
+            "verified": true
+        },
+        "10143": {
+            "chain": "monad-testnet",
+            "txHash": "0xa4483028c6d4cdf0b2d4cc0d96a63290bc4724d21f5d72b1a7b349d89a43efb4",
+            "explorer": "testnet.monadscan.com",
+            "verified": true
+        },
+        "43114": {
+            "chain": "avalanche",
+            "txHash": "0x0b003e8d3ebc8a0f747a4f6a2447c9ef61838eeb3dcadc5faed8b2544b9e0e0e",
+            "explorer": "snowscan.xyz",
+            "verified": true
+        },
+        "59144": {
+            "chain": "linea",
+            "txHash": "0xf6f92613b47e423eb42013836be96a2e6146490944de28dbc5c38f248064617c",
+            "explorer": "lineascan.build",
+            "verified": true
+        },
+        "81457": {
+            "chain": "blast",
+            "txHash": "0x074da378b5f893ffe87ff0a4cb1e9a0be523cb67a8978629df5b5b455ef63459",
+            "explorer": "blastscan.io",
             "verified": true
         }
     }
