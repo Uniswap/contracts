@@ -1,0 +1,38 @@
+{
+  "contract": "SwapProxy",
+  "description": "Deterministic CREATE2 deployment of the canonical SwapProxy. Address depends only on {create2Factory, salt, initcodeHash}; any funded key can deploy it.",
+  "create2Factory": "0x4e59b44847b379578588920cA78FbF26c0B4956C",
+  "salt": "0x0000000000000000000000000000000000000000000000000000000000000000",
+  "initcodeHash": "0x342d83f4d7400dd603e2a6829db9cb032e7f62a2dda94746f2acd4e7e881bb2f",
+  "initcodeFile": ".swapproxy-deploy/canonical-initcode.hex",
+  "initcodeBytes": 1031,
+  "runtimeBytes": 1005,
+  "predictedAddress": "0x18F2e4BE6c4E266a8150605867D81a484E77708a",
+  "source": {
+    "repo": "https://github.com/Uniswap/universal-router",
+    "vendoredAt": "src/pkgs/universal-router/contracts/SwapProxy.sol",
+    "note": "The universal-router repo is the origin of the source, but it is NOT a live dependency. The frozen initcode below is the source of truth. The contract only references the IUniversalRouter interface, so UR router upgrades never change this address.",
+    "compileClosure": [
+      "contracts/SwapProxy.sol",
+      "contracts/interfaces/ISwapProxy.sol",
+      "contracts/interfaces/IUniversalRouter.sol",
+      "lib/solmate/src/tokens/ERC20.sol",
+      "lib/solmate/src/utils/SafeTransferLib.sol"
+    ]
+  },
+  "build": {
+    "solc": "0.8.26+commit.8a97fa7a",
+    "evmVersion": "cancun",
+    "optimizer": true,
+    "optimizerRuns": 4444,
+    "viaIR": true,
+    "bytecodeHash": "ipfs",
+    "note": "Matches the mainnet-verified 1005-byte SwapProxy runtime. This differs from the repo's universal-router foundry profile (optimizer_runs=1, bytecode_hash=none, 964-byte build), which is why we deploy the frozen initcode instead of recompiling."
+  },
+  "legacy": {
+    "address": "0x02e5be68d46dac0b524905bff209cf47ee6db2a9",
+    "mechanism": "plain CREATE at nonce 0 of deployer 0xb259f71F8Fa2B0165c4d71061C4bf6c77444aC87",
+    "note": "Pre-CREATE2 deployments. Immutable and ownerless, so they remain on-chain; consumers migrate to the CREATE2 address above."
+  },
+  "deployments": {}
+}
