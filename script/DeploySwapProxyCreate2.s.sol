@@ -18,14 +18,15 @@ contract DeploySwapProxyCreate2 is Script {
     // NOTE: CREATE2_FACTORY (0x4e59...4956C, the Arachnid deterministic deployment proxy) is
     // inherited from forge-std's CommonBase and is the same address on every supported chain.
 
-    /// @notice Salt for the canonical SwapProxy deployment.
-    bytes32 internal constant SALT = bytes32(0);
+    /// @notice Salt for the canonical SwapProxy deployment. Vanity-mined for a leading-zero address
+    ///         (Uniswap singleton convention, cf. Permit2 / CaliburEntry).
+    bytes32 internal constant SALT = 0xd00319ff7795e528cc1ccd28bd6e08e46a42130d69ab4992d656773ba5fb323c;
 
     /// @notice keccak256 of the frozen initcode. Guards against artifact corruption.
     bytes32 internal constant INITCODE_HASH = 0x342d83f4d7400dd603e2a6829db9cb032e7f62a2dda94746f2acd4e7e881bb2f;
 
     /// @notice Deterministic SwapProxy address for {CREATE2_FACTORY, SALT, INITCODE_HASH}.
-    address internal constant EXPECTED_ADDRESS = 0x18F2e4BE6c4E266a8150605867D81a484E77708a;
+    address internal constant EXPECTED_ADDRESS = 0x0000000085E102724e78eCd2F45DC9cA239Affad;
 
     /// @notice Path to the frozen canonical initcode (hex, 0x-prefixed, no trailing whitespace).
     string internal constant INITCODE_PATH = '.swapproxy-deploy/canonical-initcode.hex';
