@@ -162,6 +162,13 @@
       "initcodeHash": "11d1503669e1cd407acefce7a995826cbbf60bea1019a80d611a875371026b79",
       "timestamp": 1769806741503,
       "commitHash": "1868754"
+    },
+    "SwapProxy": {
+      "address": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
+      "proxy": false,
+      "deploymentTxn": "0x7602a721745f189bbcccb5e15dda8ee089a4409446d7ab906260bd574fca677d",
+      "timestamp": 1780513063000,
+      "commitHash": "484b405"
     }
   },
   "history": [
