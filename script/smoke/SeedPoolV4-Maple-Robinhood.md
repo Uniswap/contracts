@@ -32,7 +32,7 @@ ETH for gas. There is no separate gas-token ERC-20.
 | Token     | Address                                      | Decimals | Notes                          |
 |-----------|----------------------------------------------|----------|--------------------------------|
 | USDG      | `0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168` | 6        | Global Dollar (Paxos), ~ $1.00 |
-| syrupUSDG | `0x40858070814a57FdF33a613ae84fE0a8b4a874f7` | 6        | Maple yield-bearing, **> $1**  |
+| syrupUSDG | `0x40858070814a57FdF33a613ae84fE0a8b4a874f7` | 6        | Maple yield-bearing (starts at par, accrues over time) |
 
 ## Uniswap v4 addresses (chain 4663)
 
@@ -53,26 +53,26 @@ Resolved automatically by the script; listed for reference.
 You do not enter a price. **The starting price is the ratio of the two amounts you deposit.** The script
 sets `price(USDG per syrupUSDG) = AMOUNT_USDG / AMOUNT_syrupUSDG` and mints there.
 
-syrupUSDG is yield-bearing, so 1 syrupUSDG is worth **more** than 1 USDG, and that ratio rises over time
-as yield accrues. You must deposit the two sides in the ratio of their current values, or the pool is
-mispriced the moment it is live and gets arbitraged.
+**Start the pool at 1:1: deposit equal amounts of syrupUSDG and USDG.** syrupUSDG launches at par with
+USDG and accrues yield over time, so 1:1 is the right starting price at launch.
 
-- Get the **current syrupUSDG redemption rate** (USDG per syrupUSDG) at run time.
-- Deposit `AMOUNT_USDG = AMOUNT_syrupUSDG × rate`.
-- Example: if 1 syrupUSDG = 1.05 USDG, deposit 1000 syrupUSDG with 1050 USDG. That both sets the right
-  price and balances the USD value of the two sides.
+- Deposit equal raw amounts: `AMOUNT_syrupUSDG == AMOUNT_USDG`.
+- Example: 1000 syrupUSDG with 1000 USDG.
 
 Amounts are in each token's **raw smallest units**. Both tokens have 6 decimals, so multiply whole
 tokens by 1,000,000:
 
 - 1000 syrupUSDG = `1000000000`
-- 1050 USDG = `1050000000`
+- 1000 USDG = `1000000000`
+
+(If syrupUSDG has already accrued above par by the time you seed, a 1:1 start will be slightly low and a
+small arbitrage will nudge the price up; keeping Run 1 tiny limits that.)
 
 ### Seed small first
 
 The price is set once, at initialization, and cannot be reset. So:
 
-1. Initialize and seed a **tiny** amount first (a few tokens), using the live rate.
+1. Initialize and seed a **tiny** amount first (a few tokens), at 1:1.
 2. Confirm it works with the read-only quote below.
 3. Re-run with the full size. The pool is already initialized, so the second run adds liquidity at the
    pool's current live price without re-pricing.
@@ -117,7 +117,7 @@ cast call $SYRUP_USDG "balanceOf(address)(uint256)" <YOUR_EOA> --rpc-url $RH_RPC
 | `TOKEN_A`  | one token address (order does not matter)             | syrupUSDG     |
 | `TOKEN_B`  | the other token address                               | USDG          |
 | `AMOUNT_A` | raw amount of TOKEN_A to deposit (smallest units)     | `1000000000`  |
-| `AMOUNT_B` | raw amount of TOKEN_B to deposit (smallest units)     | `1050000000`  |
+| `AMOUNT_B` | raw amount of TOKEN_B to deposit (smallest units)     | `1000000000`  |
 | `RANGE_TICKS` | (optional) ticks on each side of the current price | `100` (default)|
 
 The ratio `AMOUNT_B / AMOUNT_A` (after the script sorts the tokens) is the pool price.
@@ -135,15 +135,15 @@ price rarely leaves the band. `100` (+/- 1%) is the recommended default: tight e
 wide enough to cover normal stablecoin movement, and it gives syrupUSDG's upward yield drift roughly two
 months of runway at ~5% APY before the price walks out the top.
 
-Tradeoffs, with the actual bounds and liquidity for this pair (current price tick 487 = 1.05, depositing
-2 syrupUSDG / 2.1 USDG, from a live dry run):
+Tradeoffs, with the actual bounds and liquidity for this pair (starting price 1:1 = tick 0, depositing
+2 syrupUSDG / 2 USDG, from a live dry run):
 
 | `RANGE_TICKS` | approx band | tickLower / tickUpper | liquidity (denser = more fees) |
 |---------------|-------------|-----------------------|--------------------------------|
-| `10`          | +/- 0.1%    | 470 / 500             | 2,287,634,758                  |
-| `50`          | +/- 0.5%    | 430 / 540             | 708,649,170                    |
-| `100` (default) | +/- 1%    | 380 / 590             | 380,821,389                    |
-| `200`         | +/- 2%      | 280 / 690             | 198,163,169                    |
+| `10`          | +/- 0.1%    | -10 / 10              | 4,001,200,079                  |
+| `50`          | +/- 0.5%    | -50 / 50              | 801,040,415                    |
+| `100` (default) | +/- 1%    | -100 / 100           | 401,020,832                    |
+| `200`         | +/- 2%      | -200 / 200           | 201,011,666                    |
 
 Tighter earns more fees but exits the range sooner (during any depeg, or as syrupUSDG yield pushes the
 price up); wider is safer but less dense. If the price leaves the range, the position sits entirely in
@@ -166,13 +166,13 @@ export TENDERLY_ACCESS_KEY=dummy
 
 ## Run 1: tiny test seed (this sets the starting price)
 
-Replace 1.05 with the live syrupUSDG rate. Here we seed a tiny 2 syrupUSDG / 2.1 USDG.
+Seed a tiny 2 syrupUSDG / 2 USDG (1:1) to start.
 
 ```bash
 export TOKEN_A=$SYRUP_USDG
 export TOKEN_B=$USDG
 export AMOUNT_A=2000000     # 2 syrupUSDG
-export AMOUNT_B=2100000     # 2.1 USDG  -> implied price 1.05 (use the live rate)
+export AMOUNT_B=2000000     # 2 USDG  -> 1:1 starting price
 
 # Dry run first (no broadcast). Read the logged amounts/price and confirm they look right.
 forge script script/smoke/SeedPoolV4.s.sol \
@@ -220,7 +220,7 @@ full amount of the binding side and up to the requested amount of the other side
 
 ```bash
 export AMOUNT_A=1000000000     # 1000 syrupUSDG
-export AMOUNT_B=1050000000     # 1050 USDG
+export AMOUNT_B=1000000000     # 1000 USDG  (1:1)
 forge script script/smoke/SeedPoolV4.s.sol \
   --rpc-url $RH_RPC --account <keystore-name> --sender <YOUR_EOA> \
   --broadcast --slow --legacy --with-gas-price 200000000 --gas-estimate-multiplier 400 \
@@ -249,10 +249,10 @@ The script was run end-to-end against a fork of a live Robinhood (4663) node usi
 USDG contracts:
 
 - Both tokens are freely transferable into the PositionManager (no whitelist or transfer restriction).
-- Depositing syrupUSDG and USDG in a 1.05 ratio initialized the pool at the correct price (tick 487).
+- Depositing syrupUSDG and USDG 1:1 initialized the pool at par (tick 0).
 - Dry runs of the final script against live Robinhood state created the concentrated position at
-  `RANGE_TICKS` of 10, 50, 100 (default) and 200, with correctly aligned bounds (e.g. 380 / 590 for the
-  default +/- 1%) and liquidity scaling as expected (tighter range = denser liquidity). All succeeded.
+  `RANGE_TICKS` of 10, 50, 100 (default) and 200, with correctly aligned symmetric bounds (e.g. -100 / 100
+  for the default +/- 1%) and liquidity scaling as expected (tighter range = denser liquidity). All succeeded.
 - The pool does not exist yet on Robinhood, so the first broadcast will create it; this is why the
   starting ratio on Run 1 matters and why Run 1 should be tiny.
 
