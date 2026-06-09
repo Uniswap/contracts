@@ -161,8 +161,14 @@ contract SeedPoolV4 is Script {
 
         _logSetup(e, key, c0, c1, amount0, amount1, liquidity, sqrtPriceX96, alreadyInitialized, me);
 
-        require(IERC20Min(c0).balanceOf(me) >= amount0, 'insufficient currency0 balance');
-        require(IERC20Min(c1).balanceOf(me) >= amount1, 'insufficient currency1 balance');
+        require(
+            IERC20Min(c0).balanceOf(me) >= amount0,
+            string.concat('insufficient ', IERC20Min(c0).symbol(), ' (currency0) balance')
+        );
+        require(
+            IERC20Min(c1).balanceOf(me) >= amount1,
+            string.concat('insufficient ', IERC20Min(c1).symbol(), ' (currency1) balance')
+        );
 
         if (!alreadyInitialized) {
             IPositionManager(e.positionManager).initializePool(key, sqrtPriceX96);
