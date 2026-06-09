@@ -172,6 +172,12 @@
             "txHash": "0x074da378b5f893ffe87ff0a4cb1e9a0be523cb67a8978629df5b5b455ef63459",
             "explorer": "blastscan.io",
             "verified": true
+        },
+        "57073": {
+            "chain": "ink",
+            "txHash": "0x7bcc6b9d9fc51cbb318b0e0398e1ac407dc811c137020fc06775ee2cc2f9d345",
+            "explorer": "explorer.inkonchain.com",
+            "verified": true
         }
     }
 }
