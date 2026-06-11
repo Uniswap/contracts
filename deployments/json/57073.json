@@ -44,6 +44,140 @@
       "deploymentTxn": "0xf3718bafe63fb7416398113b88feb83615fded7bf1f14f0ec0cba272ce917d26",
       "timestamp": 1738078997000,
       "commitHash": "f9a2783"
+    },
+    "PermissionsAdapterFactory": {
+      "address": "0xd8eeBA7c373d612F24660e45Fa96f5d95B0C9d16",
+      "proxy": false,
+      "deploymentTxn": "0x85a87d8886f08683247c710b097241624c848df7bc67be73ecd9d3c54ab876a2",
+      "timestamp": 1781041163000,
+      "commitHash": "cac8ac3"
+    },
+    "Quoter": {
+      "address": "0x89e5db8b5aa49aa85ac63f691524311aeb649eba",
+      "proxy": false,
+      "deploymentTxn": "0xcee82791dae57bca70e968d97867dc194e9063189f78ea3f8b8877c080df6556",
+      "timestamp": 1781041163000,
+      "commitHash": "cac8ac3"
+    },
+    "MixedRouteQuoterV2": {
+      "address": "0x1f7d7550b1b028f7571e69a784071f0205fd2efa",
+      "proxy": false,
+      "deploymentTxn": "0x684cff4eb0a5d841133bcb4945f897b943cbae220e2d5f553d39cf61c38ef1ee",
+      "timestamp": 1781041163000,
+      "commitHash": "cac8ac3"
+    },
+    "UniversalRouter#v2.2": {
+      "address": "0x28bd21bb4ea4fda370d8d7544992038375d8d456",
+      "proxy": false,
+      "deploymentTxn": "0xd6a03e7275d4c27df650b11f62fe0075a09d81e9add645fe93bb43a98a5ffef5",
+      "timestamp": 1781041163000,
+      "commitHash": "cac8ac3"
+    },
+    "CaliburEntry": {
+      "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+      "proxy": false,
+      "deploymentTxn": "0x82b12febd531cd2433dfc7a6c8f3dac95e07f3e41ba2c4fe3b5f1ad3d20f1928",
+      "timestamp": 1781041163000,
+      "commitHash": "cac8ac3"
+    },
+    "FeeOnTransferDetector": {
+      "address": "0x282a3c4d320cc7f0d5eaf56b8029e4b88338f0a3",
+      "proxy": false,
+      "deploymentTxn": "0x3df86453c2db60d366a8a393c471434fafdbef54d21f5a718779e3ea8a27b0a7",
+      "timestamp": 1781041163000,
+      "commitHash": "cac8ac3"
+    },
+    "FeeCollector": {
+      "address": "0x33e885ed0ec9bf04ecfb19341582aadcb4c8a9e7",
+      "proxy": false,
+      "deploymentTxn": "0xf2502207bfa2a305c3e410a8e4f6eefcef42fb2cfab3e02a19c4197591907111",
+      "timestamp": 1781041163000,
+      "commitHash": "cac8ac3"
+    },
+    "ERC7914Detector": {
+      "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+      "proxy": false,
+      "deploymentTxn": "0x99801785c90501cc3d16818fa04f0098ea1b2a69f559bd9b9416424323ec2a9f",
+      "timestamp": 1781041163000,
+      "commitHash": "cac8ac3"
+    },
+    "SwapProxy": {
+      "address": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
+      "proxy": false,
+      "deploymentTxn": "0x7bcc6b9d9fc51cbb318b0e0398e1ac407dc811c137020fc06775ee2cc2f9d345",
+      "timestamp": 1781041544000,
+      "commitHash": "cac8ac3"
+    },
+    "UniswapV2Factory": {
+      "address": "0xfe57A6BA1951F69aE2Ed4abe23e0f095DF500C04",
+      "proxy": false,
+      "deploymentTxn": "0x310e76f448b493aaedad1506857c2297fd2177095b0a358d2745ca2dfaf96f2c",
+      "timestamp": 1734022922000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
+    "UniswapV3Factory": {
+      "address": "0x640887A9ba3A9C53Ed27D0F7e8246A4F933f3424",
+      "proxy": false,
+      "deploymentTxn": "0x88590c9d79d097baa1e8b7a9041d513dd99ee1068954d5106fca6d0e5544d24c",
+      "timestamp": 1733782528000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
+    "UniswapInterfaceMulticall": {
+      "address": "0xA0fCec583AeE6176527C07B198e5561722332014",
+      "proxy": false,
+      "deploymentTxn": "0x42edd1723a48fedd1c617584dd5f30e3582f99344178b1d01dafe47145f9489f",
+      "timestamp": 1733782541000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
+    "QuoterV2": {
+      "address": "0x96b572D2d880cf2Fa2563651BD23ADE6f5516652",
+      "proxy": false,
+      "deploymentTxn": "0xfe04ff2d190ce8057bfc7300ada6c52a63bffa114f2261d2adccf3af989669f4",
+      "timestamp": 1733782597000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
+    "TickLens": {
+      "address": "0x3e6Dba802d62aba2361Dd632fbC9f547AA6789aE",
+      "proxy": false,
+      "deploymentTxn": "0x6ad2506a96ea0b3d6e820d84e327e2956cb418c9454db3e5204fbb7be45b29e6",
+      "timestamp": 1733782554000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
+    "NFTDescriptor": {
+      "address": "0x987ca6B9cC569dE1a0340d2465DA8E4Aa4B14aa5",
+      "proxy": false,
+      "deploymentTxn": "0x976c5794bb273b4f7bb87c6d17155a32def2c15ca2eb1903e5f8a2e1d52becac",
+      "timestamp": 1733782560000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
+    "NonfungiblePositionManager": {
+      "address": "0xC0836E5B058BBE22ae2266e1AC488A1A0fD8DCE8",
+      "proxy": false,
+      "deploymentTxn": "0x461f59a55c9aa5d7a0b6e8d1fa912b9cb780cbdcb835ec3e1a08036e7bcefb9c",
+      "timestamp": 1733782579000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
+    "SwapRouter02": {
+      "address": "0x177778F19E89dD1012BdBe603F144088A95C4B53",
+      "proxy": false,
+      "deploymentTxn": "0xd12637ba2798952d50ba256403c7a15d4dbb69d92afaa71f6a0a4cfa2fc22849",
+      "timestamp": 1733782603000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
+    "NonfungibleTokenPositionDescriptor": {
+      "implementation": "0x2079bc044AEe33146bB63674DC2502c69E821Af9",
+      "address": "0xa1168fd2Cb5acEC1F0B100593A1858f47b399A7B",
+      "proxy": true,
+      "proxyType": "TransparentUpgradeableProxy",
+      "deploymentTxn": "0x82cbb8b7c21cb402d751fc8910fe44f8bdaf7fed7d63abf5d55858f9ce1400ec",
+      "proxyAdmin": "0x9B65c0df5aFffB95E75Aa5cAD81F3Fe2368446f1",
+      "timestamp": 1733782572000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
+    "Permit2": {
+      "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+      "proxy": false,
+      "note": "pre-existing canonical Permit2; not deployed by this run"
     }
   },
   "history": [
