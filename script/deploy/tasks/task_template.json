@@ -478,10 +478,22 @@
                     "lookup": {
                         "latest": "UniversalRouter"
                     }
-                },
+                }
+            }
+        },
+        "swap-proxy": {
+            "name": "Swap Proxy",
+            "deploy": false,
+            "contracts": {
                 "SwapProxy": {
                     "deploy": false,
                     "address": null,
+                    "params": {
+                        "salt": {
+                            "type": "bytes32",
+                            "value": "0xd00319ff7795e528cc1ccd28bd6e08e46a42130d69ab4992d656773ba5fb323c"
+                        }
+                    },
                     "lookup": {
                         "latest": "SwapProxy"
                     }

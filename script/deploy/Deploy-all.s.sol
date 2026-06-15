@@ -136,14 +136,21 @@ contract Deploy is Script {
         UnsupportedProtocolDeployer.deploy();
     }
 
-    /// @dev SwapProxy deploys to a fixed canonical CREATE2 address via the Arachnid factory, using the
-    ///      frozen initcode in SwapProxyDeployer (independent of the UR router build). Gated on the
-    ///      contract-level flag so it can be deployed without the rest of the universal-router protocol.
+    /// @dev SwapProxy is its own single-contract protocol (like Permit2): it deploys to a fixed
+    ///      canonical CREATE2 address via the deterministic factory using a frozen initcode, gated and
+    ///      deployed independently of the universal-router protocol (which deploys UR unconditionally).
+    ///      See SwapProxyDeployer for why the initcode is frozen rather than regenerated.
     function deploySwapProxy() private {
-        if (!config.readBoolOr('.protocols.universal-router.contracts.SwapProxy.deploy', false)) return;
-        console.log('deploying SwapProxy (canonical CREATE2)');
-        address swapProxy = SwapProxyDeployer.deploy();
-        console.log('SwapProxy at', swapProxy);
+        if (!config.readBoolOr('.protocols.swap-proxy.deploy', false)) return;
+
+        address deterministicProxy = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
+        bytes32 salt = config.readBytes32('.protocols.swap-proxy.contracts.SwapProxy.params.salt.value');
+        console.log('deploying SwapProxy');
+        (bool result,) = deterministicProxy.call(abi.encodePacked(salt, SwapProxyDeployer.initcode()));
+        require(result, 'Failed to deploy SwapProxy');
+        address computedAddress =
+            computeAddress(deterministicProxy, salt, keccak256(abi.encodePacked(SwapProxyDeployer.initcode())));
+        console.log('Computed SwapProxy address:', computedAddress);
     }
 
     function deployV2Contracts() private {
