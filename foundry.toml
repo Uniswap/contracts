@@ -12,8 +12,7 @@ fs_permissions = [
   { access = "read", path = "script/" },
   { access = "read-write", path = "script/deploy/tasks" },
   { access = "read", path = "out/" },
-  { access = "read", path = "deployments/" },
-  { access = "read", path = ".swapproxy-deploy/" }
+  { access = "read", path = "deployments/" }
 ]
 
 skip = [
