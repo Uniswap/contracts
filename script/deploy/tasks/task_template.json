@@ -478,6 +478,13 @@
                     "lookup": {
                         "latest": "UniversalRouter"
                     }
+                },
+                "SwapProxy": {
+                    "deploy": false,
+                    "address": null,
+                    "lookup": {
+                        "latest": "SwapProxy"
+                    }
                 }
             }
         },

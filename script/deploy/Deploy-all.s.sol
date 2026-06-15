@@ -8,6 +8,7 @@ import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-co
 import {
     UniversalRouter2_0Deployer
 } from '../../src/briefcase/deployers/universal-router-2_0/UniversalRouter2_0Deployer.sol';
+import {SwapProxyDeployer} from '../../src/briefcase/deployers/universal-router/SwapProxyDeployer.sol';
 import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-router/UniversalRouterDeployer.sol';
 
 import {MixedRouteQuoterV2Deployer} from '../../src/briefcase/deployers/mixed-quoter/MixedRouteQuoterV2Deployer.sol';
@@ -112,6 +113,8 @@ contract Deploy is Script {
 
         deployUniversalRouter2_0();
 
+        deploySwapProxy();
+
         deployCalibur();
 
         deployUtilsContracts();
@@ -131,6 +134,16 @@ contract Deploy is Script {
         if (!config.readBoolOr('.protocols.unsupported-protocol.deploy', false)) return;
         console.log('deploying Unsupported Protocol');
         UnsupportedProtocolDeployer.deploy();
+    }
+
+    /// @dev SwapProxy deploys to a fixed canonical CREATE2 address via the Arachnid factory, using the
+    ///      frozen initcode in SwapProxyDeployer (independent of the UR router build). Gated on the
+    ///      contract-level flag so it can be deployed without the rest of the universal-router protocol.
+    function deploySwapProxy() private {
+        if (!config.readBoolOr('.protocols.universal-router.contracts.SwapProxy.deploy', false)) return;
+        console.log('deploying SwapProxy (canonical CREATE2)');
+        address swapProxy = SwapProxyDeployer.deploy();
+        console.log('SwapProxy at', swapProxy);
     }
 
     function deployV2Contracts() private {
