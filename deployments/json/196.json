@@ -183,6 +183,23 @@
   "history": [
     {
       "contracts": {
+        "SwapProxy": {
+          "address": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
+          "proxy": false,
+          "deploymentTxn": "0x1a3805b1bc91f52922e15eefc480b3eed18789dee1ce2724aae28ee9239f574f",
+          "initcodeHash": "342d83f4d7400dd603e2a6829db9cb032e7f62a2dda94746f2acd4e7e881bb2f",
+          "input": {
+            "constructor": {
+              "params": {}
+            }
+          }
+        }
+      },
+      "timestamp": 1780520043000,
+      "commitHash": "2899307"
+    },
+    {
+      "contracts": {
         "UniversalRouter#v2.0": {
           "address": "0x5507749f2c558bb3e162c6e90c314c092e7372ff",
           "proxy": false,
