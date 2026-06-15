@@ -110,6 +110,23 @@
   "history": [
     {
       "contracts": {
+        "SwapProxy": {
+          "address": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
+          "proxy": false,
+          "deploymentTxn": "0xa4483028c6d4cdf0b2d4cc0d96a63290bc4724d21f5d72b1a7b349d89a43efb4",
+          "initcodeHash": "342d83f4d7400dd603e2a6829db9cb032e7f62a2dda94746f2acd4e7e881bb2f",
+          "input": {
+            "constructor": {
+              "params": {}
+            }
+          }
+        }
+      },
+      "timestamp": 1780520073000,
+      "commitHash": "2899307"
+    },
+    {
+      "contracts": {
         "Permit2": {
           "address": "0x000000000022d473030f116ddee9f6b43ac78ba3",
           "proxy": false,
