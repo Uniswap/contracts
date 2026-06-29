@@ -129,18 +129,36 @@
       "commitHash": "f684acb"
     },
     "PermissionedHooks": {
-      "address": "0xeade493b075cee00e6a832af758b7c76793fe880",
+      "address": "0x8b0e8d467af81d9f5b49165e104a2fe1b98328c0",
       "proxy": false,
-      "deploymentTxn": "0x33a986981e2a874ef5ce16fd6ee8ba59a3e3b62c03398ad13799d4f1cb09b41a",
-      "initcodeHash": "e3a961ecd088faffe75dfa50cfa48ff2ed98085ec5e3be185c337f2a65d6af54",
-      "timestamp": 1779989940749,
-      "commitHash": "f684acb"
+      "deploymentTxn": "0x4a490b66e54efac55904fede42a87c8080e6dbbcad02cd17506a5f6e26e5970e",
+      "initcodeHash": "07cdcd9206fee571a931d56da34e3e4b484b2c65b4fdc2cc4ecbf3975c229bf4",
+      "timestamp": 1782771621751,
+      "commitHash": "b3dc0b5"
     }
   },
   "history": [
     {
       "contracts": {
-        "PermissionedHooks": {
+        "PermissionedHooks#07cdcd92": {
+          "address": "0x8b0e8d467af81d9f5b49165e104a2fe1b98328c0",
+          "proxy": false,
+          "deploymentTxn": "0x4a490b66e54efac55904fede42a87c8080e6dbbcad02cd17506a5f6e26e5970e",
+          "initcodeHash": "07cdcd9206fee571a931d56da34e3e4b484b2c65b4fdc2cc4ecbf3975c229bf4",
+          "input": {
+            "constructor": {
+              "manager": "0xE03A1074c86CFeDd5C142C4F04F1a1536e203543",
+              "permissionsAdapterFactory": "0xEe258C31574fb59660C23534E76AF6497c2e5683"
+            }
+          }
+        }
+      },
+      "timestamp": 1782771621751,
+      "commitHash": "b3dc0b5"
+    },
+    {
+      "contracts": {
+        "PermissionedHooks#e3a961ec": {
           "address": "0xeade493b075cee00e6a832af758b7c76793fe880",
           "proxy": false,
           "deploymentTxn": "0x33a986981e2a874ef5ce16fd6ee8ba59a3e3b62c03398ad13799d4f1cb09b41a",

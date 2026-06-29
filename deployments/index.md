@@ -17,8 +17,8 @@ This repository contains deployment information for the following networks:
 | 1868 | Soneium | [View Deployment](./1868.md) |
 | 4217 | Chain 4217 | [View Deployment](./4217.md) |
 | 4326 | Chain 4326 | [View Deployment](./4326.md) |
-| 4663 | Robinhood Mainnet | [View Deployment](./4663.md) |
-| 5042 | Arc Mainnet | [View Deployment](./5042.md) |
+| 4663 | Chain 4663 | [View Deployment](./4663.md) |
+| 5042 | Chain 5042 | [View Deployment](./5042.md) |
 | 8453 | Base | [View Deployment](./8453.md) |
 | 10143 | Monad Testnet | [View Deployment](./10143.md) |
 | 42161 | Arbitrum One | [View Deployment](./42161.md) |
