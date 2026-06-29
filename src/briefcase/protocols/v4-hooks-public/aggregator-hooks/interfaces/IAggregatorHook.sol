@@ -20,10 +20,7 @@ interface IAggregatorHook {
     /// @return amountUnspecified amount of unspecified side (always positive to adhere to practices by other quote functions)
     /// @dev This function is meant to be called as a view function even though it is not one. This is because the swap
     /// might be simulated but not finalized. Applies protocol fee on top of the raw quote from the underlying liquidity source
-    function quote(bool zeroToOne, int256 amountSpecified, PoolId poolId)
-        external
-        payable
-        returns (uint256 amountUnspecified);
+    function quote(bool zeroToOne, int256 amountSpecified, PoolId poolId) external returns (uint256 amountUnspecified);
 
     /// @notice Returns the pseudo TVL: the amount of the UniswapV4 pool's tokens locked in the aggregated pool
     /// @param poolId The pool ID of the UniswapV4 pool
