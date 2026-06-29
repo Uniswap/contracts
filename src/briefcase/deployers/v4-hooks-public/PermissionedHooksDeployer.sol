@@ -5,8 +5,8 @@ import {DeployerHelper} from '../DeployerHelper.sol';
 
 library PermissionedHooksDeployer {
     /// @dev `salt` must be pre-mined off-chain so the resulting hook address encodes the
-    ///      permission-flag mask (BEFORE_INITIALIZE | BEFORE_ADD_LIQUIDITY | BEFORE_SWAP).
-    ///      Callers should assert `uint160(hook) & Hooks.ALL_HOOK_MASK == 0x2880` post-deploy.
+    ///      permission-flag mask (BEFORE_INITIALIZE | BEFORE_ADD_LIQUIDITY | BEFORE_SWAP | AFTER_SWAP).
+    ///      Callers should assert `uint160(hook) & Hooks.ALL_HOOK_MASK == 0x28c0` post-deploy.
     function deploy(address poolManager, address permissionsAdapterFactory, bytes32 salt)
         internal
         returns (address hook)

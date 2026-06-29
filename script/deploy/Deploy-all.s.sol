@@ -389,8 +389,10 @@ contract Deploy is Script {
                 permissionsAdapterFactory =
                     config.readAddress('.protocols.v4.contracts.PermissionsAdapterFactory.address');
             }
-            uint160 flags =
-                uint160(Hooks.BEFORE_INITIALIZE_FLAG | Hooks.BEFORE_ADD_LIQUIDITY_FLAG | Hooks.BEFORE_SWAP_FLAG);
+            uint160 flags = uint160(
+                Hooks.BEFORE_INITIALIZE_FLAG | Hooks.BEFORE_ADD_LIQUIDITY_FLAG | Hooks.BEFORE_SWAP_FLAG
+                    | Hooks.AFTER_SWAP_FLAG
+            );
             (, bytes32 salt) = HookMiner.find(
                 0x4e59b44847b379578588920cA78FbF26c0B4956C,
                 flags,
