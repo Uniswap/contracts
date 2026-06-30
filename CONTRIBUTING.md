@@ -5,6 +5,7 @@
 - [Requirements for merge](#requirements-for-merge)
 - [Adding a new repository](#adding-a-new-repository)
 - [Adding a deployer](#adding-a-deployer)
+- [Deploying to a new chain](#deploying-to-a-new-chain)
 - [Deploying](#deploying)
 
 ## Install
@@ -230,6 +231,65 @@ Create a new protocol section in the config file, create a new function in the d
 Within the protocol section the to be deployed contract is defined in, read the arguments for that contract from the config file and pass them to the deployer library for that contract.
 
 Should the contract have dependencies that need to be resolved at runtime (e.g., the factory when deploying a router), ensure that the dependency contracts are deployed before the current contract.
+
+## Deploying to a new chain
+
+Before deploying Uniswap contracts to a new chain, verify the following prerequisites and gather the required information.
+
+### Pre-deployment checklist
+
+- **EVM version and equivalence**: Check the last supported EVM version / hard fork on the target chain. Important versions:
+
+  - **Cancun**: Required for Uniswap v4 support
+  - **Prague**: Required for EIP-7702 / Calibur support
+
+  Non-EVM-equivalent chains can be supported, but differences need to be explored and evaluated for potential impact on the protocols.
+
+- **WETH9**: Confirm a wrapped native token exists following the [WETH9 interface](https://etherscan.io/address/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2#code)
+- **Bridge availability**: Check if [Wormhole](https://wormhole.com/) or [LayerZero](https://layerzero.network/) is available on the chain (required for governance on non-OP-Stack chains)
+- **Permit2**: Check if Permit2 has already been deployed on the chain at the deterministic address. If not, the deployment script will also deploy the deterministic deployment proxy required for other deployments
+
+### Governance setup
+
+The admin address is used for governance functions across deployed contracts.
+
+**For OP-Stack chains:**
+Use the aliased address of the [Uniswap Timelock](https://etherscan.io/address/0x1a9c8182c09f50c8318d769245bea52c32be35bc#code): `0x2BAD8182C09F50c8318d769245beA52C32Be46CD`
+
+The aliased address is calculated by adding `0x1111000000000000000000000000000000001111` to the timelock address (standard OP-Stack L1→L2 address aliasing offset).
+
+**For non-OP-Stack chains:**
+Use the Uniswap Wormhole Message Receiver or a LayerZero receiver. See the [Uniswap-Wormhole-Bridge repository](https://github.com/uniswapfoundation/Uniswap-Wormhole-Bridge) for implementation details.
+
+### UnsupportedProtocol
+
+If any constructor arguments reference contracts or protocols that do not exist on the target chain, deploy the `UnsupportedProtocol` contract and use its address as a placeholder. This applies to:
+
+- External protocols not available on the chain (e.g., Across Spokepool)
+- Uniswap protocols not being deployed (e.g., Uniswap v3 is not deployed on this chain)
+
+Deploy `UnsupportedProtocol` first, then use its address for any missing dependencies.
+
+### Deployment parameters
+
+When creating a deployment config, use the following guidance for common parameters:
+
+| Parameter                        | Value                                                                                                        |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `feeToSetter` (UniswapV2Factory) | Admin address                                                                                                |
+| `WETH`                           | Chain's wrapped native token address                                                                         |
+| `unsubscribeGasLimit`            | 300000 (typical)                                                                                             |
+| `Across`                         | Across Spokepool contract address for the chain, or `UnsupportedProtocol` address if Across is not available |
+
+### What to deploy
+
+- Deploy all contracts **except v4 hooks** for initial chain deployments
+- `FeeCollector` is no longer needed and should not be deployed
+- To add new contracts to the deployment system, see [Adding a deployer](#adding-a-deployer)
+
+### Verification
+
+Obtain an API key for the chain's block explorer to enable automatic contract verification during deployment.
 
 ## Deploying
 
