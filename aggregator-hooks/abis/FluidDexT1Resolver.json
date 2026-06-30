@@ -1,0 +1,3 @@
+[
+  "function getDexTokens(address dex_) external view returns (address token0_, address token1_)"
+]
