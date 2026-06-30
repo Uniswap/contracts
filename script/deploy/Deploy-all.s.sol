@@ -8,6 +8,7 @@ import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-co
 import {
     UniversalRouter2_0Deployer
 } from '../../src/briefcase/deployers/universal-router-2_0/UniversalRouter2_0Deployer.sol';
+import {SwapProxyDeployer} from '../../src/briefcase/deployers/universal-router/SwapProxyDeployer.sol';
 import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-router/UniversalRouterDeployer.sol';
 
 import {MixedRouteQuoterV2Deployer} from '../../src/briefcase/deployers/mixed-quoter/MixedRouteQuoterV2Deployer.sol';
@@ -112,6 +113,8 @@ contract Deploy is Script {
 
         deployUniversalRouter2_0();
 
+        deploySwapProxy();
+
         deployCalibur();
 
         deployUtilsContracts();
@@ -131,6 +134,23 @@ contract Deploy is Script {
         if (!config.readBoolOr('.protocols.unsupported-protocol.deploy', false)) return;
         console.log('deploying Unsupported Protocol');
         UnsupportedProtocolDeployer.deploy();
+    }
+
+    /// @dev SwapProxy is its own single-contract protocol (like Permit2): it deploys to a fixed
+    ///      canonical CREATE2 address via the deterministic factory using a frozen initcode, gated and
+    ///      deployed independently of the universal-router protocol (which deploys UR unconditionally).
+    ///      See SwapProxyDeployer for why the initcode is frozen rather than regenerated.
+    function deploySwapProxy() private {
+        if (!config.readBoolOr('.protocols.swap-proxy.deploy', false)) return;
+
+        address deterministicProxy = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
+        bytes32 salt = config.readBytes32('.protocols.swap-proxy.contracts.SwapProxy.params.salt.value');
+        console.log('deploying SwapProxy');
+        (bool result,) = deterministicProxy.call(abi.encodePacked(salt, SwapProxyDeployer.initcode()));
+        require(result, 'Failed to deploy SwapProxy');
+        address computedAddress =
+            computeAddress(deterministicProxy, salt, keccak256(abi.encodePacked(SwapProxyDeployer.initcode())));
+        console.log('Computed SwapProxy address:', computedAddress);
     }
 
     function deployV2Contracts() private {
