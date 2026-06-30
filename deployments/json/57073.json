@@ -115,6 +115,13 @@
       "timestamp": 1734022922000,
       "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
     },
+    "UniswapV2Router02": {
+      "address": "0xb3fb126acdd5adca2f50ac644a7a2303745f18b4",
+      "proxy": false,
+      "deploymentTxn": "0xe56fc5d5808e1488364346ff250255edc21711e98ee1eb9aaeefd3432d638e42",
+      "timestamp": 1734022948000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
     "UniswapV3Factory": {
       "address": "0x640887A9ba3A9C53Ed27D0F7e8246A4F933f3424",
       "proxy": false,
@@ -162,6 +169,20 @@
       "proxy": false,
       "deploymentTxn": "0xd12637ba2798952d50ba256403c7a15d4dbb69d92afaa71f6a0a4cfa2fc22849",
       "timestamp": 1733782603000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
+    "V3Migrator": {
+      "address": "0xdce28d2d5392e19091fe59d9750b3202ebe80641",
+      "proxy": false,
+      "deploymentTxn": "0x342077a8450084d79ae3345d8bce0f83e246af5b4babbf86b1e178b75090c021",
+      "timestamp": 1733782585000,
+      "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
+    },
+    "UniswapV3Staker": {
+      "address": "0x245c0c29bb7dd9d1fa6a0713abfeb81439ffa870",
+      "proxy": false,
+      "deploymentTxn": "0x9da25176b5dcb78fe7d8ac9ad3933802f3399be030c96b49711d9443817d9a94",
+      "timestamp": 1733782591000,
       "note": "Protofire deploy (Dec 2024, v3-on-Ink governance RFC); adopted, not deployed by this repo"
     },
     "NonfungibleTokenPositionDescriptor": {
