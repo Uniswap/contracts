@@ -131,6 +131,13 @@
       "deploymentTxn": "0x57cad6b16c08166ea230cffb5e71f92da5252ded6629a83fb5c010b9d1944398",
       "timestamp": 1780512185000,
       "commitHash": "484b405"
+    },
+    "ReservesLens": {
+      "address": "0x0000001b173C3bbF3984D417d8614E3eed34865B",
+      "proxy": false,
+      "deploymentTxn": "0x884ff09cbefa36a604dd917dd3d458dbc8ac1ed662814690f1b9781a4cd09ffe",
+      "timestamp": 1783981935000,
+      "commitHash": "3245c3c"
     }
   },
   "history": [
