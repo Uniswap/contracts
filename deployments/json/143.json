@@ -496,6 +496,23 @@
       },
       "timestamp": 1760583540166,
       "commitHash": "9874be3"
+    },
+    {
+      "contracts": {
+        "ReservesLens": {
+          "address": "0x0000001b173C3bbF3984D417d8614E3eed34865B",
+          "proxy": false,
+          "deploymentTxn": "0x93702c8c6bc3fd6e97363527a5062b6fb6b94f3c0a07f12894aeee0277339ff9",
+          "initcodeHash": "6c7ca10687a2f929c8c16fa6323306255526ef96fb820be2822bb7631af873f8",
+          "input": {
+            "constructor": {
+              "params": {}
+            }
+          }
+        }
+      },
+      "timestamp": 1783981966000,
+      "commitHash": "3245c3c"
     }
   ]
 }

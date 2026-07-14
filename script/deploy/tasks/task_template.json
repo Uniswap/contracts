@@ -283,6 +283,19 @@
                             "pointer": "protocols.v4.contracts.PoolManager"
                         }
                     }
+                },
+                "ReservesLens": {
+                    "deploy": false,
+                    "address": null,
+                    "params": {
+                        "salt": {
+                            "type": "bytes32",
+                            "value": "0xbe3a44816031cf9fa9b3de006cfe808c702e82029e5fa5325d99a4b177f1414f"
+                        }
+                    },
+                    "lookup": {
+                        "latest": "ReservesLens"
+                    }
                 }
             }
         },

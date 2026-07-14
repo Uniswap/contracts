@@ -776,6 +776,23 @@
         }
       },
       "timestamp": 1689532707000
+    },
+    {
+      "contracts": {
+        "ReservesLens": {
+          "address": "0x0000001b173C3bbF3984D417d8614E3eed34865B",
+          "proxy": false,
+          "deploymentTxn": "0xd0500dce13afabdfe6aefce84217c498ce5c123442605c7efd67553b45214cfc",
+          "initcodeHash": "6c7ca10687a2f929c8c16fa6323306255526ef96fb820be2822bb7631af873f8",
+          "input": {
+            "constructor": {
+              "params": {}
+            }
+          }
+        }
+      },
+      "timestamp": 1783981985000,
+      "commitHash": "3245c3c"
     }
   ]
 }
