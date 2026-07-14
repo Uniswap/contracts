@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {Script, console} from 'forge-std/Script.sol';
 import {ReservesLensDeployer} from '../../src/briefcase/deployers/v4-periphery/ReservesLensDeployer.sol';
+import {Script, console} from 'forge-std/Script.sol';
 
 /// @notice Deploys ReservesLens deterministically via the canonical CREATE2 factory.
 /// @dev ReservesLens is constructor-free, so the mined salt yields the same address on every chain.
