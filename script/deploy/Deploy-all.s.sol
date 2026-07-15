@@ -58,11 +58,11 @@ import {CaliburEntryDeployer} from '../../src/briefcase/deployers/calibur/Calibu
 import {
     UnsupportedProtocolDeployer
 } from '../../src/briefcase/deployers/universal-router/UnsupportedProtocolDeployer.sol';
+import {WETHHookDeployer} from '../../src/briefcase/deployers/v4-hooks-public/WETHHookDeployer.sol';
+import {WstETHHookDeployer} from '../../src/briefcase/deployers/v4-hooks-public/WstETHHookDeployer.sol';
+import {WstETHRoutingHookDeployer} from '../../src/briefcase/deployers/v4-hooks-public/WstETHRoutingHookDeployer.sol';
 import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
-import {WETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WETHHookDeployer.sol';
-import {WstETHHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WstETHHookDeployer.sol';
-import {WstETHRoutingHookDeployer} from '../../src/briefcase/deployers/v4-periphery/WstETHRoutingHookDeployer.sol';
 
 import {Script, console2 as console, stdJson} from 'forge-std/Script.sol';
 import {VmSafe} from 'forge-std/Vm.sol';

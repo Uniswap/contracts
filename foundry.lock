@@ -3,7 +3,7 @@
     "rev": "dcbf852ba545b3d15de0ac0ef88dce934c090c8e"
   },
   "lib/forge-chronicles": {
-    "rev": "000cd249d0bad6caaa907c12f2d4a8a7608ac5f0"
+    "rev": "ee77263652129d7492a79a7c4db3fb5d36a3f079"
   },
   "lib/forge-gas-snapshot": {
     "rev": "9161f7c0b6c6788a89081e2b3b9c67592b71e689"
@@ -17,6 +17,12 @@
   "lib/solidity-lib": {
     "rev": "3fcc8ee6d5c7dea3283416cbcee601d89504a243"
   },
+  "src/pkgs/calibur": {
+    "rev": "249cac5e880831d7b2de4111a5920dbf0d242846"
+  },
+  "src/pkgs/mixed-quoter": {
+    "rev": "d576527bff2e7c9db5434bb2b3806fd184610865"
+  },
   "src/pkgs/permit2": {
     "rev": "cc56ad0f3439c502c246fc5cfcc3db92bb8b7219"
   },
@@ -24,31 +30,37 @@
     "rev": "70bc2e40dfca294c1cea9bf67a4036732ee54303"
   },
   "src/pkgs/uniswapx": {
-    "rev": "4c01ff07cb16df7ad7f5c2b8e9253005c1259275"
+    "rev": "93c49ff6330f2c588e0825f20a6a084a020afe55"
   },
   "src/pkgs/universal-router": {
+    "rev": "cb222d358a2ea780feedee6990ff8a3c185301bf"
+  },
+  "src/pkgs/universal-router-2_0": {
     "rev": "3663f6db6e2fe121753cd2d899699c2dc75dca86"
   },
   "src/pkgs/util-contracts": {
     "rev": "0e84aa540ecafacb22f9e61a5e684c5c32a21f56"
   },
   "src/pkgs/v2-core": {
-    "rev": "ee547b17853e71ed4e0101ccfd52e70d5acded58"
+    "rev": "6a9e7c97860676e0992f22a49665760444c1cdf5"
   },
   "src/pkgs/v2-periphery": {
-    "rev": "0335e8f7e1bd1e8d8329fd300aea2ef2f36dd19f"
+    "rev": "ed24991304291297c3b4a52818d02f46a17aa9a2"
   },
   "src/pkgs/v3-core": {
-    "rev": "d8b1c635c275d2a9450bd6a78f3fa2484fef73eb"
+    "rev": "d0831dc6b8a318df3872b6d68f6de135c9f3ec29"
   },
   "src/pkgs/v3-periphery": {
     "rev": "0682387198a24c7cd63566a2c58398533860a5d1"
   },
   "src/pkgs/v4-core": {
-    "rev": "59d3ecf53afa9264a16bba0e38f4c5d2231f80bc"
+    "rev": "46c6834698c48bc4a463a86d8420f4eb1d7f3b75"
+  },
+  "src/pkgs/v4-hooks-public": {
+    "rev": "e8955a7000171d5957a12f32f877a5e5c4f8344d"
   },
   "src/pkgs/v4-periphery": {
-    "rev": "60cd93803ac2b7fa65fd6cd351fd5fd4cc8c9db5"
+    "rev": "3245c3cb99c48fa1dc2459c3b60abc37d4294aba"
   },
   "src/pkgs/view-quoter-v3": {
     "rev": "d718d2f40a1ac6d8f152560c2da3853aa92e7898"
