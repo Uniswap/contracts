@@ -190,7 +190,7 @@
       "proxy": false,
       "deploymentTxn": "0x1c50a8395b386d7d1a81346e6dcf8f0d1a1b4c4bae7f54796f701367d241df0f",
       "timestamp": 1783983371000,
-      "commitHash": "3245c3c"
+      "commitHash": "b08eb66"
     }
   },
   "history": [
@@ -480,7 +480,7 @@
         }
       },
       "timestamp": 1783983371000,
-      "commitHash": "3245c3c"
+      "commitHash": "b08eb66"
     }
   ]
 }
