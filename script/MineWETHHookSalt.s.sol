@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {WETHHookDeployer} from '../src/briefcase/deployers/v4-periphery/WETHHookDeployer.sol';
+import {WETHHookDeployer} from '../src/briefcase/deployers/v4-hooks-public/WETHHookDeployer.sol';
 import {Hooks} from '../src/briefcase/protocols/v4-core/libraries/Hooks.sol';
 import {HookMiner} from '../src/briefcase/protocols/v4-hooks-public/utils/HookMiner.sol';
 import {Script} from 'forge-std/Script.sol';

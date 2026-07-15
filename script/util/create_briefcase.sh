@@ -1,4 +1,5 @@
 #!/bin/bash -e
+set -e
 
 target_dir=${1:-src/briefcase/protocols}
 rm -rf $target_dir
@@ -60,7 +61,11 @@ do
 done
 
 echo "Flattening $(tr -cd '\0' < "$work_list" | wc -c | awk '{print $1/3}') files with $jobs parallel jobs"
-run_flatten_jobs
+run_flatten_jobs || {
+  echo "error: one or more forge flatten jobs failed, briefcase is incomplete" >&2
+  rm -rf "$tmp_dir"
+  exit 1
+}
 
 echo "Processing source files and writing to briefcase"
 python3 script/util/process_briefcase_files.py "$tmp_dir" "$(pwd)" "$target_dir"
