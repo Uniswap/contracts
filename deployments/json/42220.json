@@ -134,9 +134,33 @@
       "deploymentTxn": "0x00b870a8790b751759c2c968ef624ab7ed0f2599c7defe4e2bae35c21db53f67",
       "timestamp": 1762992985411,
       "commitHash": "a87a9d9"
+    },
+    "SwapProxy": {
+      "address": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
+      "proxy": false,
+      "deploymentTxn": "0x8352219a027b54390877bcf1e9b6a8acec51972afc60de8bac957b17769ca1ad",
+      "timestamp": 1780512224000,
+      "commitHash": "484b405"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "SwapProxy": {
+          "address": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
+          "proxy": false,
+          "deploymentTxn": "0x8352219a027b54390877bcf1e9b6a8acec51972afc60de8bac957b17769ca1ad",
+          "initcodeHash": "342d83f4d7400dd603e2a6829db9cb032e7f62a2dda94746f2acd4e7e881bb2f",
+          "input": {
+            "constructor": {
+              "params": {}
+            }
+          }
+        }
+      },
+      "timestamp": 1780512224000,
+      "commitHash": "484b405"
+    },
     {
       "contracts": {
         "UniversalRouter": {

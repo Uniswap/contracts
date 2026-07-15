@@ -200,9 +200,33 @@
       "initcodeHash": "0dd2931a3fa4f9d62cfa0c23ec94d56019086a08952ae677c3e2e79d056e770f",
       "timestamp": 1771464102868,
       "commitHash": "4afdfb9"
+    },
+    "SwapProxy": {
+      "address": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
+      "proxy": false,
+      "deploymentTxn": "0xf6f92613b47e423eb42013836be96a2e6146490944de28dbc5c38f248064617c",
+      "timestamp": 1780520123000,
+      "commitHash": "2899307"
     }
   },
   "history": [
+    {
+      "contracts": {
+        "SwapProxy": {
+          "address": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
+          "proxy": false,
+          "deploymentTxn": "0xf6f92613b47e423eb42013836be96a2e6146490944de28dbc5c38f248064617c",
+          "initcodeHash": "342d83f4d7400dd603e2a6829db9cb032e7f62a2dda94746f2acd4e7e881bb2f",
+          "input": {
+            "constructor": {
+              "params": {}
+            }
+          }
+        }
+      },
+      "timestamp": 1780520123000,
+      "commitHash": "2899307"
+    },
     {
       "contracts": {
         "WETHHook": {
