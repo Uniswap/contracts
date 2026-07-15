@@ -199,6 +199,13 @@
       "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
       "proxy": false,
       "note": "pre-existing canonical Permit2; not deployed by this run"
+    },
+    "ReservesLens": {
+      "address": "0x0000001b173C3bbF3984D417d8614E3eed34865B",
+      "proxy": false,
+      "deploymentTxn": "0xfaf359bc16235cd1f1e7f59e2818fd54c1897a2c4a22a4d8e4bc6601cc664b84",
+      "timestamp": 1783981988000,
+      "commitHash": "b08eb66"
     }
   },
   "history": [
@@ -286,6 +293,23 @@
       },
       "timestamp": 1738078997000,
       "commitHash": "f9a2783"
+    },
+    {
+      "contracts": {
+        "ReservesLens": {
+          "address": "0x0000001b173C3bbF3984D417d8614E3eed34865B",
+          "proxy": false,
+          "deploymentTxn": "0xfaf359bc16235cd1f1e7f59e2818fd54c1897a2c4a22a4d8e4bc6601cc664b84",
+          "initcodeHash": "6c7ca10687a2f929c8c16fa6323306255526ef96fb820be2822bb7631af873f8",
+          "input": {
+            "constructor": {
+              "params": {}
+            }
+          }
+        }
+      },
+      "timestamp": 1783981988000,
+      "commitHash": "b08eb66"
     }
   ]
 }

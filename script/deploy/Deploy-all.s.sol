@@ -62,6 +62,7 @@ import {
 import {WETHHookDeployer} from '../../src/briefcase/deployers/v4-hooks-public/WETHHookDeployer.sol';
 import {WstETHHookDeployer} from '../../src/briefcase/deployers/v4-hooks-public/WstETHHookDeployer.sol';
 import {WstETHRoutingHookDeployer} from '../../src/briefcase/deployers/v4-hooks-public/WstETHRoutingHookDeployer.sol';
+import {ReservesLensDeployer} from '../../src/briefcase/deployers/v4-periphery/ReservesLensDeployer.sol';
 import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
 import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
 
@@ -281,6 +282,7 @@ contract Deploy is Script {
         bool deployPositionManager = config.readBoolOr('.protocols.v4.contracts.PositionManager.deploy', false);
         bool deployV4Quoter = config.readBoolOr('.protocols.v4.contracts.V4Quoter.deploy', false);
         bool deployStateView = config.readBoolOr('.protocols.v4.contracts.StateView.deploy', false);
+        bool deployReservesLens = config.readBoolOr('.protocols.v4.contracts.ReservesLens.deploy', false);
         bool deployPermissionsAdapterFactory =
             config.readBoolOr('.protocols.v4.contracts.PermissionsAdapterFactory.deploy', false);
         bool deployPermissionedPositionManager =
@@ -346,6 +348,15 @@ contract Deploy is Script {
             }
             console.log('deploying State View');
             StateViewDeployer.deploy(poolManager);
+        }
+
+        if (deployReservesLens) {
+            // ReservesLens is constructor-free: the PoolManager is passed per call, so its bytecode is
+            // identical on every chain and it deploys to a fixed canonical CREATE2 address via the
+            // deterministic factory (see ReservesLensDeployer / DeployReservesLens salt).
+            bytes32 salt = config.readBytes32('.protocols.v4.contracts.ReservesLens.params.salt.value');
+            console.log('deploying Reserves Lens');
+            ReservesLensDeployer.deploy(salt);
         }
 
         if (deployPermissionsAdapterFactory) {

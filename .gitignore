@@ -20,7 +20,9 @@ script/deploy/tasks/31337/**
 broadcast/V2SmokeTest.s.sol/**
 broadcast/V3SmokeTest.s.sol/**
 broadcast/V4SmokeTest.s.sol/**
-
 debug/
 Cargo.lock
 deploy-cli
+.rl_sp_pw
+.rl_st_pw
+scratchpad-*.txt

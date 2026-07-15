@@ -147,6 +147,13 @@
       "deploymentTxn": "0x8700849e19ff6f7cfa640428de6127e0c6ce5e072ed56f0ba5243064c3fdfe2b",
       "timestamp": 1780512131000,
       "commitHash": "484b405"
+    },
+    "ReservesLens": {
+      "address": "0x0000001b173C3bbF3984D417d8614E3eed34865B",
+      "proxy": false,
+      "deploymentTxn": "0x2a692737b1e561fc6d0f42f430bf50fdd9a0094272b2e571cae90bcdea70e220",
+      "timestamp": 1783981767000,
+      "commitHash": "b08eb66"
     }
   },
   "history": [
@@ -614,6 +621,23 @@
         }
       },
       "timestamp": 1636665399000
+    },
+    {
+      "contracts": {
+        "ReservesLens": {
+          "address": "0x0000001b173C3bbF3984D417d8614E3eed34865B",
+          "proxy": false,
+          "deploymentTxn": "0x2a692737b1e561fc6d0f42f430bf50fdd9a0094272b2e571cae90bcdea70e220",
+          "initcodeHash": "6c7ca10687a2f929c8c16fa6323306255526ef96fb820be2822bb7631af873f8",
+          "input": {
+            "constructor": {
+              "params": {}
+            }
+          }
+        }
+      },
+      "timestamp": 1783981767000,
+      "commitHash": "b08eb66"
     }
   ]
 }

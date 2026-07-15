@@ -184,6 +184,13 @@
       "deploymentTxn": "0x8368c4fdc9bdf5669a005f7d4432f7b4ef973f12a8253648d08fbec21b131673",
       "timestamp": 1780513158000,
       "commitHash": "484b405"
+    },
+    "ReservesLens": {
+      "address": "0x0000001b173C3bbF3984D417d8614E3eed34865B",
+      "proxy": false,
+      "deploymentTxn": "0x1c50a8395b386d7d1a81346e6dcf8f0d1a1b4c4bae7f54796f701367d241df0f",
+      "timestamp": 1783983371000,
+      "commitHash": "b08eb66"
     }
   },
   "history": [
@@ -397,7 +404,7 @@
       "commitHash": "56928a9"
     },
     {
-      "label": "UniversalRouter v2.1.0 (orphaned — replaced by v2.1.1; briefcase pin predated upstream v2.1.1 commit)",
+      "label": "UniversalRouter v2.1.0 (orphaned \u2014 replaced by v2.1.1; briefcase pin predated upstream v2.1.1 commit)",
       "contracts": {
         "UniversalRouter": {
           "address": "0x248a454ac3584c2a48d1fcb28d3910a6b6ea00af",
@@ -457,6 +464,23 @@
       },
       "timestamp": 1779834142000,
       "commitHash": "023196a"
+    },
+    {
+      "contracts": {
+        "ReservesLens": {
+          "address": "0x0000001b173C3bbF3984D417d8614E3eed34865B",
+          "proxy": false,
+          "deploymentTxn": "0x1c50a8395b386d7d1a81346e6dcf8f0d1a1b4c4bae7f54796f701367d241df0f",
+          "initcodeHash": "6c7ca10687a2f929c8c16fa6323306255526ef96fb820be2822bb7631af873f8",
+          "input": {
+            "constructor": {
+              "params": {}
+            }
+          }
+        }
+      },
+      "timestamp": 1783983371000,
+      "commitHash": "b08eb66"
     }
   ]
 }
