@@ -90,6 +90,14 @@ export interface CreationModule<TConfig = unknown> {
    */
   aggregatorEnvKey?: string;
 
+  /**
+   * Env var key (without chain suffix) holding the deployed aggregator hook
+   * factory address, e.g. "FLUID_DEX_T1_AGGREGATOR_FACTORY". Used by factory
+   * mode as a fallback when no factory address is passed on the CLI. Only
+   * meaningful for non-singleton types that support factory mode.
+   */
+  factoryEnvKey?: string;
+
   /** Resolve hook params with defaults */
   getHookParams(config: TConfig): HookParams;
 

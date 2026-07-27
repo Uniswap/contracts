@@ -32,6 +32,7 @@ export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
   factoryAbi: FLUIDDEXT1_FACTORY_ABI,
   contractIdentifier:
     'lib/v4-hooks-public/src/aggregator-hooks/implementations/FluidDexT1/FluidDexT1Aggregator.sol:FluidDexT1Aggregator',
+  factoryEnvKey: 'FLUID_DEX_T1_AGGREGATOR_FACTORY',
 
   getHookParams(config) {
     return {
@@ -86,10 +87,10 @@ export const fluiddext1Module: CreationModule<FluidDexT1PoolConfig> = {
       fluidDexResolver,
       fluidLiquidity,
     ] = await Promise.all([
-      factory.POOL_MANAGER(),
+      factory.poolManager(),
       factory.fluidDexReservesResolver(),
       factory.fluidDexResolver(),
-      factory.FLUID_LIQUIDITY(),
+      factory.fluidLiquidity(),
     ]);
     return {
       poolManager: poolManager as Address,

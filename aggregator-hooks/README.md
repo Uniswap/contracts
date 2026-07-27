@@ -142,6 +142,10 @@ npx tsx src/createPools.ts detected/1/fluiddexlite-pools-curated.json 0xFactoryA
 
 # createPools self-deploy with Blockscout verification (BLOCKSCOUT_API_URL_1 must be set in .env)
 npx tsx src/createPools.ts detected/1/fluiddext1-pools-curated.json --self-deploy --chain-id 1 --verify
+
+# createPools self-deploy for the curated LitePSM pools (mainnet USDS/USDC + DAI/USDC PSMs)
+# LitePSM has no deployed factory, so --self-deploy is required.
+npx tsx src/createPools.ts curated/litepsm-pools.json --self-deploy --chain-id 1
 ```
 
 ---

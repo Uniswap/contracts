@@ -1,7 +1,8 @@
 [
-  "function POOL_MANAGER() external view returns (address)",
+  "function poolManager() external view returns (address)",
   "function fluidDexReservesResolver() external view returns (address)",
   "function fluidDexResolver() external view returns (address)",
-  "function FLUID_LIQUIDITY() external view returns (address)",
-  "function createPool(bytes32 salt, address fluidPool, address currency0, address currency1, uint24 fee, int24 tickSpacing, uint160 sqrtPriceX96) external returns (address hook)"
+  "function fluidLiquidity() external view returns (address)",
+  "function createPool(bytes32 salt, address fluidPool, address currency0, address currency1, uint24 fee, int24 tickSpacing, uint160 sqrtPriceX96) external returns (address hook)",
+  "event HookDeployed(address indexed hook, address indexed fluidPool, (address currency0, address currency1, uint24 fee, int24 tickSpacing, address hooks) poolKey)"
 ]

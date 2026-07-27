@@ -2,5 +2,6 @@
   "function POOL_MANAGER() external view returns (address)",
   "function poolManager() external view returns (address)",
   "function metaRegistry() external view returns (address)",
-  "function createPool(bytes32 salt, address curvePool, address[] calldata tokens, uint24 fee, int24 tickSpacing, uint160 sqrtPriceX96) external returns (address hook)"
+  "function createPool(bytes32 salt, address curvePool, address[] calldata tokens, uint24 fee, int24 tickSpacing, uint160 sqrtPriceX96) external returns (address hook)",
+  "event HookDeployed(address indexed hook, address indexed curvePool, (address currency0, address currency1, uint24 fee, int24 tickSpacing, address hooks) poolKey)"
 ]

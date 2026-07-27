@@ -3,8 +3,9 @@
  *
  * One UniswapV2Aggregator is deployed per chain. Each pool config entry
  * registers a new V4 pool backed by an existing Uniswap V2 pair (resolved
- * by currency pair via the V2 factory).  Fee and tickSpacing on the V4
- * PoolKey do not affect routing — the pair is keyed by currency pair only.
+ * by currency pair via the V2 factory). The aggregator requires
+ * PoolKey.fee == 3000 (ppm) and PoolKey.tickSpacing == 1; routing is keyed
+ * by currency pair only.
  */
 import { ethers } from 'ethers';
 import { mustEnvForChain } from '../src/cli.js';
@@ -22,12 +23,17 @@ export interface UniswapV2PoolConfig {
   v2Pair: Address;
   currency0: Address;
   currency1: Address;
-  /** V4 PoolKey tickSpacing (fee is always 0 for V2 pools) */
-  tickSpacing?: number | null;
   sqrtPriceX96?: bigint | null;
 }
 
 const PROTOCOL_ID = 0x02;
+
+/**
+ * V2 swap fee in ppm (FEE_DENOMINATOR = 1_000_000 in UniswapV2Aggregator).
+ * The aggregator's _beforeInitialize requires PoolKey.fee == this value and
+ * PoolKey.tickSpacing == 1, so neither is configurable per pool.
+ */
+const V2_FEE_PPM = 3000;
 
 const AGGREGATOR_ABI = [
   'function poolManager() view returns (address)',
@@ -48,8 +54,8 @@ export const uniswapv2Module: CreationModule<UniswapV2PoolConfig> = {
 
   getHookParams(config) {
     return {
-      fee: 0,
-      tickSpacing: config.tickSpacing ?? 1,
+      fee: V2_FEE_PPM,
+      tickSpacing: 1,
       sqrtPriceX96: config.sqrtPriceX96 ?? DEFAULT_SQRT_PRICE_X96,
     };
   },
@@ -100,10 +106,11 @@ export const uniswapv2Module: CreationModule<UniswapV2PoolConfig> = {
 
   encodeConstructorArgs(_config, immutables) {
     const encoded = ethers.AbiCoder.defaultAbiCoder().encode(
-      ['address', 'address', 'string'],
+      ['address', 'address', 'uint256', 'string'],
       [
         immutables.poolManager,
         immutables.externalFactory,
+        V2_FEE_PPM,
         'UniswapV2Aggregator v1.0',
       ],
     );
@@ -113,6 +120,7 @@ export const uniswapv2Module: CreationModule<UniswapV2PoolConfig> = {
   buildSelfDeployEnvVars(_config, immutables) {
     return {
       EXTERNAL_FACTORY: immutables.externalFactory!,
+      V2_FEE: V2_FEE_PPM.toString(),
       HOOK_VERSION: 'UniswapV2Aggregator v1.0',
     };
   },

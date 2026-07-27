@@ -36,6 +36,7 @@ export const stableswapngModule: CreationModule<StableSwapNGPoolConfig> = {
   factoryAbi: STABLESWAPNG_FACTORY_ABI,
   contractIdentifier:
     'lib/v4-hooks-public/src/aggregator-hooks/implementations/StableSwapNG/StableSwapNGAggregator.sol:StableSwapNGAggregator',
+  factoryEnvKey: 'STABLESWAPNG_AGGREGATOR_FACTORY',
 
   getHookParams(config) {
     return {

@@ -9,6 +9,7 @@
     "fluiddext1": "tsx historical/FluidDexT1.ts",
     "fluiddexlite": "tsx historical/FluidDexLite.ts",
     "create-pools": "tsx src/createPools.ts",
+    "quote": "tsx src/quote.ts",
     "format": "prettier --write \"**/*.{ts,json}\""
   },
   "devDependencies": {

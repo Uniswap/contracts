@@ -32,6 +32,7 @@ export const fluiddexliteModule: CreationModule<FluidDexLitePoolConfig> = {
   factoryAbi: FLUIDDEXLITE_FACTORY_ABI,
   contractIdentifier:
     'lib/v4-hooks-public/src/aggregator-hooks/implementations/FluidDexLite/FluidDexLiteAggregator.sol:FluidDexLiteAggregator',
+  factoryEnvKey: 'FLUID_DEX_LITE_AGGREGATOR_FACTORY',
 
   getHookParams(config) {
     return {
@@ -78,9 +79,9 @@ export const fluiddexliteModule: CreationModule<FluidDexLitePoolConfig> = {
     );
     const [poolManager, fluidDexLite, fluidDexLiteResolver] = await Promise.all(
       [
-        factory.POOL_MANAGER(),
-        factory.FLUID_DEX_LITE(),
-        factory.FLUID_DEX_LITE_RESOLVER(),
+        factory.poolManager(),
+        factory.fluidDexLite(),
+        factory.fluidDexLiteResolver(),
       ],
     );
     return {

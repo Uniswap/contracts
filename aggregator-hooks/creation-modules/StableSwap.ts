@@ -33,6 +33,7 @@ export const stableswapModule: CreationModule<StableSwapPoolConfig> = {
   factoryAbi: STABLESWAP_FACTORY_ABI,
   contractIdentifier:
     'lib/v4-hooks-public/src/aggregator-hooks/implementations/StableSwap/StableSwapAggregator.sol:StableSwapAggregator',
+  factoryEnvKey: 'STABLESWAP_AGGREGATOR_FACTORY',
 
   getHookParams(config) {
     return {

@@ -47,6 +47,14 @@ function computePoolId(poolKey: PoolKeyRecord): string {
 // Foundry's default CREATE2 deployer
 const CREATE2_DEPLOYER = '0x4e59b44847b379578588920cA78FbF26c0B4956C';
 
+// All aggregator hook contractIdentifiers live under this submodule. `forge verify-contract`
+// cannot resolve source files that live inside a `lib/` submodule when invoked from the parent
+// project (https://github.com/foundry-rs/foundry/issues/7411) — its standard-json-input builder
+// assumes the target file is reachable from the *invoking* project's own root/cache. The fix is
+// to cd into the submodule (which is its own self-contained Foundry project) and pass a path
+// relative to it instead.
+const V4_HOOKS_PUBLIC_PREFIX = 'lib/v4-hooks-public/';
+
 interface VerifyOptions {
   enabled: boolean;
   etherscanApiKey: string | null;
@@ -125,7 +133,10 @@ function parseArgs(): ParsedArgs {
       "  jsonFile: Path to JSON file containing pool configurations (each config must have a 'poolType' field)",
     );
     console.error(
-      '  factoryAddress: Factory contract address (required unless --self-deploy)',
+      '  factoryAddress: Factory contract address (required unless --self-deploy or the pool',
+    );
+    console.error(
+      "                  type's factory env var is set, e.g. FLUID_DEX_T1_AGGREGATOR_FACTORY_<chainId>)",
     );
     console.error(
       '  --self-deploy: Deploy hooks directly from wallet instead of via factory',
@@ -199,13 +210,6 @@ function parseArgs(): ParsedArgs {
   ) {
     console.error(
       'Error: --self-deploy and factoryAddress are mutually exclusive',
-    );
-    process.exit(1);
-  }
-
-  if (!selfDeploy && (!factoryAddress || positionalArgs.length < 2)) {
-    console.error(
-      'Error: In factory mode, factoryAddress is required (e.g. createPools.ts pools.json 0xFactoryAddr)',
     );
     process.exit(1);
   }
@@ -474,14 +478,48 @@ function verifyContract(
     log.info(`  Compiler version: ${compilerVersion}`);
   }
 
+  // If the contract lives inside the v4-hooks-public submodule, verify from within it using a
+  // submodule-relative path — see V4_HOOKS_PUBLIC_PREFIX comment above for why.
+  const isV4HooksPublic = contractIdentifier.startsWith(V4_HOOKS_PUBLIC_PREFIX);
+  const verifyCwd = isV4HooksPublic
+    ? join(projectRoot, 'lib', 'v4-hooks-public')
+    : projectRoot;
+  const relativeIdentifier = isV4HooksPublic
+    ? contractIdentifier.slice(V4_HOOKS_PUBLIC_PREFIX.length)
+    : contractIdentifier;
+
   log.info(
     `Submitting ${contractIdentifier} at ${hookAddress} for verification (verifier: ${verifier})...`,
   );
 
+  if (isV4HooksPublic) {
+    // Ensure the submodule's own build cache has this contract compiled — verify-contract's
+    // standard-json-input builder needs it to already be in that project's cache.
+    const sourcePath = relativeIdentifier.split(':')[0];
+    try {
+      execFileSync('forge', ['build', '--contracts', sourcePath], {
+        encoding: 'utf-8',
+        cwd: verifyCwd,
+      });
+    } catch (buildError) {
+      const execErr = buildError as { stdout?: string; stderr?: string };
+      log.error(
+        `Warning: pre-verify build of ${sourcePath} in the submodule failed; verification will likely fail too.`,
+      );
+      if (execErr.stdout || execErr.stderr) {
+        log.dumpForgeOutput({
+          stdout: execErr.stdout,
+          stderr: execErr.stderr,
+          label: 'forge build (submodule pre-verify)',
+        });
+      }
+    }
+  }
+
   const forgeArgs = [
     'verify-contract',
     hookAddress,
-    contractIdentifier,
+    relativeIdentifier,
     '--constructor-args',
     constructorArgs,
     '--chain-id',
@@ -499,7 +537,7 @@ function verifyContract(
   try {
     const output = execFileSync('forge', forgeArgs, {
       encoding: 'utf-8',
-      cwd: projectRoot,
+      cwd: verifyCwd,
     });
     log.success(`Verification submitted successfully for ${hookAddress}`);
     if (output.trim())
@@ -1372,13 +1410,40 @@ async function main() {
     );
     log.info('');
 
+    const chainId =
+      parsedChainId ?? Number((await provider.getNetwork()).chainId);
+
+    // Factory address: CLI arg takes precedence, else fall back to the module's env key
+    let resolvedFactoryAddress = factoryAddress;
+    if (!resolvedFactoryAddress) {
+      const envKey = module.factoryEnvKey;
+      const fromEnv = envKey ? getEnvForChain(envKey, chainId) : undefined;
+      if (!envKey || !fromEnv) {
+        log.error(
+          envKey
+            ? `Error: factory address required — pass it on the CLI or set ${envKey}_${chainId} in .env`
+            : `Error: factory address required — pool type "${poolType}" has no factory env fallback; pass it on the CLI`,
+        );
+        process.exit(1);
+      }
+      try {
+        resolvedFactoryAddress = ethers.getAddress(fromEnv) as Address;
+      } catch {
+        log.error(
+          `Error: ${envKey}_${chainId} contains an invalid address (bad checksum?): ${fromEnv}`,
+        );
+        process.exit(1);
+      }
+      log.info(
+        `Using factory from ${envKey}_${chainId}: ${resolvedFactoryAddress}`,
+      );
+    }
+
     log.info('Reading factory immutables...');
     const factoryImmutables = await module.readFactoryImmutables(
       provider,
-      factoryAddress!,
+      resolvedFactoryAddress,
     );
-    const chainId =
-      parsedChainId ?? Number((await provider.getNetwork()).chainId);
     log.info(`POOL_MANAGER: ${factoryImmutables.poolManager}`);
     for (const [key, val] of Object.entries(factoryImmutables)) {
       if (key !== 'poolManager' && val) log.info(`${key}: ${val}`);
@@ -1400,12 +1465,12 @@ async function main() {
           constructorArgs,
           module.protocolId,
           log,
-          factoryAddress!,
+          resolvedFactoryAddress,
           jobs,
         );
         const result = await createPool(
           signer,
-          factoryAddress!,
+          resolvedFactoryAddress,
           poolConfig,
           poolType,
           salt,
