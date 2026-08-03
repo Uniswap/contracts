@@ -191,6 +191,14 @@
       "deploymentTxn": "0x1c50a8395b386d7d1a81346e6dcf8f0d1a1b4c4bae7f54796f701367d241df0f",
       "timestamp": 1783983371000,
       "commitHash": "b08eb66"
+    },
+    "MixedRouteQuoterV2": {
+      "address": "0x7edd862aa08dd5be664c21188e1a2a0e64e3a283",
+      "proxy": false,
+      "deploymentTxn": "0xf67f1663ddbb7dec8d0792a4571bf024bc6521a4fcf12e574342623c856c6075",
+      "initcodeHash": "50a98843e464b35961e16dbbda55b730381f38a1dea5aa222ae5955b52b7a67e",
+      "timestamp": 1785791720000,
+      "commitHash": "0ecb1fc"
     }
   },
   "history": [
