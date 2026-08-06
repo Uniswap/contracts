@@ -116,7 +116,7 @@ contract V4SmokeNativeIsERC20 is Script {
         permit2 = vm.parseJsonAddress(json, '.latest.Permit2.address');
         positionManager = vm.parseJsonAddress(json, '.latest.PositionManager.address');
         stateView = vm.parseJsonAddress(json, '.latest.StateView.address');
-        universalRouter = vm.parseJsonAddress(json, '.latest.UniversalRouter.address');
+        universalRouter = _resolveUniversalRouter(json);
 
         require(permit2 != address(0), 'Permit2 not in deployments JSON');
         require(positionManager != address(0), 'PositionManager not in deployments JSON');
@@ -152,6 +152,15 @@ contract V4SmokeNativeIsERC20 is Script {
         console.log('');
         console.log('SUCCESS: v4 (native-is-erc20 variant) pool init + position mint + UR swap completed');
         vm.stopBroadcast();
+    }
+
+    // On chains deployed before UR v2.1.1, `latest.UniversalRouter` points at a router whose
+    // ExactInputSingleParams has no minHopPriceX36 field, so the swap encoding below reverts.
+    // Those chains carry the modern router under `latest."UniversalRouter#v2.2"`, so prefer it.
+    function _resolveUniversalRouter(string memory json) internal view returns (address) {
+        string memory v22Key = '.latest.["UniversalRouter#v2.2"].address';
+        if (vm.keyExistsJson(json, v22Key)) return vm.parseJsonAddress(json, v22Key);
+        return vm.parseJsonAddress(json, '.latest.UniversalRouter.address');
     }
 
     function _approve(TestToken a, TestToken b) internal {
