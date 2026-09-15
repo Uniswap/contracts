@@ -26,3 +26,4 @@ deploy-cli
 .rl_sp_pw
 .rl_st_pw
 scratchpad-*.txt
+__pycache__/
