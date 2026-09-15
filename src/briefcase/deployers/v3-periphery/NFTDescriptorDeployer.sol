@@ -5,8 +5,18 @@ import {ISwapRouter} from '../../protocols/v3-periphery/interfaces/ISwapRouter.s
 import {DeployerHelper} from '../DeployerHelper.sol';
 
 library NFTDescriptorDeployer {
+    /// @dev forge routes script-context CREATE2 through the deterministic factory, so the library lands at the
+    ///      same address on every chain. NFTDescriptor has no constructor args, so if code already exists there
+    ///      (e.g. a prior deploy on the same chain) it is byte-identical and is reused instead of reverting with
+    ///      CreateCollision. Observed on HyperEVM testnet (998).
+    address private constant CREATE2_FACTORY = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
+
     function deploy() internal returns (address nftDescriptor) {
         bytes memory initcode_ = abi.encodePacked(initcode());
+        nftDescriptor = address(
+            uint160(uint256(keccak256(abi.encodePacked(hex'ff', CREATE2_FACTORY, bytes32(0), keccak256(initcode_)))))
+        );
+        if (nftDescriptor.code.length != 0) return nftDescriptor;
         nftDescriptor = DeployerHelper.create2(initcode_);
     }
 
