@@ -1,8 +1,7 @@
 # Uniswap on HyperEVM (chain 999) deployment runbook
 
-Status 2026-09-15: plan rehearsed end to end on an Anvil fork of HyperEVM mainnet (full Deploy-all broadcast,
-registry build, 7/7 fork tests, v2/v3/v4 smoke scripts). Dry-run also passes against the live mainnet and
-testnet (998) RPCs. Not yet broadcast anywhere real.
+Status 2026-09-15: **deployed and verified on mainnet.** 27 contracts live (see `deployments/json/999.json`),
+all verified on hyperevmscan + Sourcify, fork test 7/7 and v2/v3/v4 smoke swaps passed onchain. PR: Uniswap/contracts#164.
 
 Companion research: Notion "HyperEVM Security & Deployment Risk Review (Aug 2026)".
 
@@ -85,10 +84,15 @@ $H bigblocks-off         # flip the flag back so normal txs land in 1s blocks
 $H verify                # hyperevmscan via Etherscan v2 (needs source submodules, see verify.sh header)
 ```
 
-Deployer nonce is 0 today. If it stays 0 until deploy, CREATE addresses equal the fork rehearsal:
-v2 Factory `0x8bcEaA40B9AcdfAedF85AdF4FF01F5Ad6517937f`, v3 Factory `0x1f7d7550B1b028f7571E69A784071F0205FD2EfA`,
-PoolManager `0x12D4Fd9C5DeDd00ab8a0bCe2CF0167bbf94b6B1F`, PositionManager `0x0d7Ab5B3db668128Aff6F70C4eBC71D7d4DA9bf9`,
-UniversalRouter `0xC01397e3d679Ec979F012C55B01cEcfBf6E22715`. Don't rely on these, read them from the broadcast.
+Deployed addresses (full list in `deployments/json/999.json`): v2 Factory `0x89e5DB8B5aA49aA85AC63f691524311AEB649eba`,
+v3 Factory `0xf0db7b58379503491d857dB50AC9ece64c653918`, PoolManager `0x12D4Fd9C5DeDd00ab8a0bCe2CF0167bbf94b6B1F`,
+PositionManager `0x0d7Ab5B3db668128Aff6F70C4eBC71D7d4DA9bf9`, UniversalRouter `0x05498c32f8F4825BCD4e5c6325134431B12d492A`,
+FeeCollector `0xda7030C3A45EdF79421E8e7F8CcF4d7A3Fa4EeA3`.
+
+Lessons from the real run: smoke txs need `--gas-estimate-multiplier 250` (the simulation has warm state, each real
+tx lands in its own cold big block, the first v2 swap ran out of gas); the public RPC can drop a broadcast setup with
+`invalid block height` (retry on drpc); Etherscan refuses to re-verify addresses it already "similar-matched", so
+UniswapInterfaceMulticall and PositionManager show fork labels (Huskey/Claw) there, byte-identical code.
 
 ### If the broadcast halts midway
 Do not restart from scratch. Mark each landed contract `deploy:false` + `address` in
@@ -96,10 +100,10 @@ Do not restart from scratch. Mark each landed contract `deploy:false` + `address
 already landed (it ignores the per-contract flag), rerun `$H deploy`. Big blocks: the mempool holds max 8 pending
 nonces per address and drops txs after 24h, another reason for `--slow`.
 
-### Testnet (998) rehearsal, optional
-`script/deploy/tasks/998/task-pending.json` mirrors mainnet with testnet USDC, zero SpokePool, and ReservesLens
-pre-existing. Needs testnet HYPE on 0x9701… (faucet at app.hyperliquid-testnet.xyz needs a mainnet Core account).
-Then the same steps with `testnet` as the second arg. Dry-run already passes there.
+### Testnet (998)
+The driver accepts `testnet` as the second arg. A 998 task file is not committed; derive one from 999 with testnet
+USDC `0x2B3370eE501B4a559b57D449569354196457D8Ab`, zero SpokePool, and ReservesLens `deploy:false` (already at its
+canonical address there). Dry-run was confirmed passing during prep.
 
 ## Explorer verification plan (all 27 contracts, both explorers)
 
@@ -130,7 +134,7 @@ post-check table (Etherscan ContractName + Sourcify match). Filter with `verify.
 
 Fallbacks: indexer lag (wait 60s, rerun with the contract name filter); `--guess-constructor-args` if an arg
 is wrong; Sourcify partial match means metadata drift, re-run reproducibility check for that contract.
-Not yet exercised against a live deploy (nothing is deployed); the compile side is fully proven.
+Exercised on the real deploy: 27/27 verified on both explorers (SwapProxy via `verify_swapproxy.sh`, proxies linked via the `verifyproxycontract` API).
 
 ## Files
 - `script/deploy/tasks/999/task-pending.json`: task file

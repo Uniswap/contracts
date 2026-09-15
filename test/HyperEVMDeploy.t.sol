@@ -303,29 +303,29 @@ contract HyperEVMDeployTest is Test {
         INPM(d.npm).createAndInitializePoolIfNecessary(t0, t1, 3000, SQRT_PRICE_1_1);
         IWETH9(WHYPE).approve(d.npm, type(uint256).max);
         tok.approve(d.npm, type(uint256).max);
-        (, uint128 liq,,) = INPM(d.npm).mint(
-            INPM.MintParams({
-                token0: t0,
-                token1: t1,
-                fee: 3000,
-                tickLower: -887_220,
-                tickUpper: 887_220,
-                amount0Desired: 1 ether,
-                amount1Desired: 1 ether,
-                amount0Min: 0,
-                amount1Min: 0,
-                recipient: alice,
-                deadline: block.timestamp + 1
-            })
-        );
+        (, uint128 liq,,) = INPM(d.npm)
+            .mint(
+                INPM.MintParams({
+                    token0: t0,
+                    token1: t1,
+                    fee: 3000,
+                    tickLower: -887_220,
+                    tickUpper: 887_220,
+                    amount0Desired: 1 ether,
+                    amount1Desired: 1 ether,
+                    amount0Min: 0,
+                    amount1Min: 0,
+                    recipient: alice,
+                    deadline: block.timestamp + 1
+                })
+            );
         assertGt(liq, 0);
 
         // direct SwapRouter02
         tok.approve(d.swapRouter02, type(uint256).max);
         uint256 before = IERC20Min(WHYPE).balanceOf(alice);
-        ISwapRouter02(d.swapRouter02).exactInputSingle(
-            ISwapRouter02.ExactInputSingleParams(address(tok), WHYPE, 3000, alice, 0.01 ether, 0, 0)
-        );
+        ISwapRouter02(d.swapRouter02)
+            .exactInputSingle(ISwapRouter02.ExactInputSingleParams(address(tok), WHYPE, 3000, alice, 0.01 ether, 0, 0));
         assertGt(IERC20Min(WHYPE).balanceOf(alice), before, 'v3 direct swap');
 
         // via UR (path = tokenIn | fee | tokenOut). UR v2.1.1+ takes an extra minHopPriceX36[] arg.
@@ -355,7 +355,9 @@ contract HyperEVMDeployTest is Test {
         uint256 tokenId = IPositionManager(d.posm).nextTokenId();
         bytes memory actions = abi.encodePacked(MINT_POSITION, SETTLE_PAIR);
         bytes[] memory params = new bytes[](2);
-        params[0] = abi.encode(key, int24(-887_220), int24(887_220), uint256(1e18), type(uint128).max, type(uint128).max, alice, bytes(''));
+        params[0] = abi.encode(
+            key, int24(-887_220), int24(887_220), uint256(1e18), type(uint128).max, type(uint128).max, alice, bytes('')
+        );
         params[1] = abi.encode(key.currency0, key.currency1);
         IPositionManager(d.posm).modifyLiquidities(abi.encode(actions, params), block.timestamp + 1);
 

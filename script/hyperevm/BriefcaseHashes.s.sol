@@ -1,31 +1,39 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {Script, console2 as console} from 'forge-std/Script.sol';
+import {MixedRouteQuoterV2Deployer} from '../../src/briefcase/deployers/mixed-quoter/MixedRouteQuoterV2Deployer.sol';
+import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-contracts/SwapRouter02Deployer.sol';
+import {SwapProxyDeployer} from '../../src/briefcase/deployers/universal-router/SwapProxyDeployer.sol';
+import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-router/UniversalRouterDeployer.sol';
+import {FeeCollectorDeployer} from '../../src/briefcase/deployers/util-contracts/FeeCollectorDeployer.sol';
+import {
+    FeeOnTransferDetectorDeployer
+} from '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
 import {UniswapV2FactoryDeployer} from '../../src/briefcase/deployers/v2-core/UniswapV2FactoryDeployer.sol';
 import {UniswapV2Router02Deployer} from '../../src/briefcase/deployers/v2-periphery/UniswapV2Router02Deployer.sol';
 import {UniswapV3FactoryDeployer} from '../../src/briefcase/deployers/v3-core/UniswapV3FactoryDeployer.sol';
-import {UniswapInterfaceMulticallDeployer} from '../../src/briefcase/deployers/v3-periphery/UniswapInterfaceMulticallDeployer.sol';
-import {QuoterV2Deployer} from '../../src/briefcase/deployers/v3-periphery/QuoterV2Deployer.sol';
-import {TickLensDeployer} from '../../src/briefcase/deployers/v3-periphery/TickLensDeployer.sol';
 import {NFTDescriptorDeployer} from '../../src/briefcase/deployers/v3-periphery/NFTDescriptorDeployer.sol';
-import {NonfungiblePositionManagerDeployer} from '../../src/briefcase/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
-import {V3MigratorDeployer} from '../../src/briefcase/deployers/v3-periphery/V3MigratorDeployer.sol';
+import {
+    NonfungiblePositionManagerDeployer
+} from '../../src/briefcase/deployers/v3-periphery/NonfungiblePositionManagerDeployer.sol';
+import {QuoterV2Deployer} from '../../src/briefcase/deployers/v3-periphery/QuoterV2Deployer.sol';
 import {SwapRouterDeployer} from '../../src/briefcase/deployers/v3-periphery/SwapRouterDeployer.sol';
+import {TickLensDeployer} from '../../src/briefcase/deployers/v3-periphery/TickLensDeployer.sol';
+import {
+    UniswapInterfaceMulticallDeployer
+} from '../../src/briefcase/deployers/v3-periphery/UniswapInterfaceMulticallDeployer.sol';
+import {V3MigratorDeployer} from '../../src/briefcase/deployers/v3-periphery/V3MigratorDeployer.sol';
 import {PoolManagerDeployer} from '../../src/briefcase/deployers/v4-core/PoolManagerDeployer.sol';
+import {
+    PermissionsAdapterFactoryDeployer
+} from '../../src/briefcase/deployers/v4-periphery/PermissionsAdapterFactoryDeployer.sol';
 import {PositionDescriptorDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionDescriptorDeployer.sol';
 import {PositionManagerDeployer} from '../../src/briefcase/deployers/v4-periphery/PositionManagerDeployer.sol';
-import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
-import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
 import {ReservesLensDeployer} from '../../src/briefcase/deployers/v4-periphery/ReservesLensDeployer.sol';
-import {PermissionsAdapterFactoryDeployer} from '../../src/briefcase/deployers/v4-periphery/PermissionsAdapterFactoryDeployer.sol';
+import {StateViewDeployer} from '../../src/briefcase/deployers/v4-periphery/StateViewDeployer.sol';
+import {V4QuoterDeployer} from '../../src/briefcase/deployers/v4-periphery/V4QuoterDeployer.sol';
 import {QuoterDeployer} from '../../src/briefcase/deployers/view-quoter-v3/QuoterDeployer.sol';
-import {MixedRouteQuoterV2Deployer} from '../../src/briefcase/deployers/mixed-quoter/MixedRouteQuoterV2Deployer.sol';
-import {SwapRouter02Deployer} from '../../src/briefcase/deployers/swap-router-contracts/SwapRouter02Deployer.sol';
-import {UniversalRouterDeployer} from '../../src/briefcase/deployers/universal-router/UniversalRouterDeployer.sol';
-import {SwapProxyDeployer} from '../../src/briefcase/deployers/universal-router/SwapProxyDeployer.sol';
-import {FeeOnTransferDetectorDeployer} from '../../src/briefcase/deployers/util-contracts/FeeOnTransferDetectorDeployer.sol';
-import {FeeCollectorDeployer} from '../../src/briefcase/deployers/util-contracts/FeeCollectorDeployer.sol';
+import {Script, console2 as console} from 'forge-std/Script.sol';
 
 /// @notice Prints keccak256 of every briefcase initcode we deploy on HyperEVM, so it can be diffed against a
 ///         fresh `forge inspect <fqn> bytecode` compile (script/hyperevm/check_reproducibility.sh). Equal hashes
