@@ -7,19 +7,19 @@ Companion research: Notion "HyperEVM Security & Deployment Risk Review (Aug 2026
 
 ## Chain facts (all probed onchain, not assumed)
 
-| Item | Value |
-|---|---|
-| Chain id / gas token | 999 / HYPE (18 dec). Testnet 998. |
-| RPC | `https://rpc.hyperliquid.xyz/evm` (public, load-balanced, lags: pin blocks). Fallback `https://hyperliquid.drpc.org`. Testnet: `https://rpcs.chain.link/hyperevm/testnet` (the official testnet URL resets connections). |
-| Blocks | small: 1s / 3M gas. big: 60s / 30M gas, opt-in per sender via HyperCore `evmUserModify{usingBigBlocks}`. |
-| Fees | EIP-1559, base ~0.1-0.2 gwei, `eth_maxPriorityFeePerGas` = 0, tips are burned. `eth_bigBlockGasPrice` = 0.1 gwei. |
-| EVM | Cancun without blobs. PUSH0 + TSTORE confirmed. No EIP-7702, so no Calibur / ERC7914Detector. |
-| WHYPE (WETH9 role) | `0x5555555555555555555555555555555555555555` |
-| Native USDC (Circle) | `0xb88339CB7199b77E23DB6E890353E22632Ba630f` (6 dec). Testnet `0x2B3370eE501B4a559b57D449569354196457D8Ab`. |
-| Permit2 / Multicall3 / CREATE2 factory | all present at canonical addresses (pre-seeded in the task file) |
-| Across SpokePool | `0x35E63eA3eb0fb7A3bc543C71FB66412e1F6B0E04` (chainId()=999, wrappedNativeToken()=WHYPE) |
-| Canonical v3 factory address | squatted by an unrelated contract. We deploy fresh addresses (like Ink). |
-| Explorer | hyperevmscan.io (Etherscan v2, chainid 999, `ETHERSCAN_API_KEY` works). Blockscout: hyperscan.com |
+| Item                                   | Value                                                                                                                                                                                                                    |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Chain id / gas token                   | 999 / HYPE (18 dec). Testnet 998.                                                                                                                                                                                        |
+| RPC                                    | `https://rpc.hyperliquid.xyz/evm` (public, load-balanced, lags: pin blocks). Fallback `https://hyperliquid.drpc.org`. Testnet: `https://rpcs.chain.link/hyperevm/testnet` (the official testnet URL resets connections). |
+| Blocks                                 | small: 1s / 3M gas. big: 60s / 30M gas, opt-in per sender via HyperCore `evmUserModify{usingBigBlocks}`.                                                                                                                 |
+| Fees                                   | EIP-1559, base ~0.1-0.2 gwei, `eth_maxPriorityFeePerGas` = 0, tips are burned. `eth_bigBlockGasPrice` = 0.1 gwei.                                                                                                        |
+| EVM                                    | Cancun without blobs. PUSH0 + TSTORE confirmed. No EIP-7702, so no Calibur / ERC7914Detector.                                                                                                                            |
+| WHYPE (WETH9 role)                     | `0x5555555555555555555555555555555555555555`                                                                                                                                                                             |
+| Native USDC (Circle)                   | `0xb88339CB7199b77E23DB6E890353E22632Ba630f` (6 dec). Testnet `0x2B3370eE501B4a559b57D449569354196457D8Ab`.                                                                                                              |
+| Permit2 / Multicall3 / CREATE2 factory | all present at canonical addresses (pre-seeded in the task file)                                                                                                                                                         |
+| Across SpokePool                       | `0x35E63eA3eb0fb7A3bc543C71FB66412e1F6B0E04` (chainId()=999, wrappedNativeToken()=WHYPE)                                                                                                                                 |
+| Canonical v3 factory address           | squatted by an unrelated contract. We deploy fresh addresses (like Ink).                                                                                                                                                 |
+| Explorer                               | hyperevmscan.io (Etherscan v2, chainid 999, `ETHERSCAN_API_KEY` works). Blockscout: hyperscan.com                                                                                                                        |
 
 ## Ownership (baked into the deploy, deployer never owns anything)
 
@@ -28,13 +28,13 @@ Governance owner = `0x2d09d0c2f82c59b19b3c65a48ce2c550bf0921f9`, verified as `Un
 `0xf5F4496219F31CDCBa6130B5402873624585615a`; wormhole core `0x7C0f…3aB3` answers chainId 47,
 governanceChainId 1, guardian set 7).
 
-| Contract | How the owner is set |
-|---|---|
-| UniswapV2Factory.feeToSetter | constructor arg |
-| UniswapV3Factory.owner | `setOwner(owner)` two txs after creation in the same script run (after `enableFeeAmount(100,1)`) |
-| PoolManager.owner | constructor arg |
-| ProxyAdmin (v3 NFT descriptor, v4 PositionDescriptor) | TransparentUpgradeableProxy constructor arg |
-| FeeCollector.owner | `0xbE84D31B2eE049DCb1d8E7c798511632b44d1b55` (ops AWS-KMS EOA, same as every other chain; sweeps need a hot key) |
+| Contract                                              | How the owner is set                                                                                             |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| UniswapV2Factory.feeToSetter                          | constructor arg                                                                                                  |
+| UniswapV3Factory.owner                                | `setOwner(owner)` two txs after creation in the same script run (after `enableFeeAmount(100,1)`)                 |
+| PoolManager.owner                                     | constructor arg                                                                                                  |
+| ProxyAdmin (v3 NFT descriptor, v4 PositionDescriptor) | TransparentUpgradeableProxy constructor arg                                                                      |
+| FeeCollector.owner                                    | `0xbE84D31B2eE049DCb1d8E7c798511632b44d1b55` (ops AWS-KMS EOA, same as every other chain; sweeps need a hot key) |
 
 `test/HyperEVMDeploy.t.sol` asserts all of the above and that the deployer owns nothing.
 
@@ -49,16 +49,17 @@ Off: Calibur/ERC7914Detector (no 7702), hooks, UR 2.0, UnsupportedProtocol (Acro
 
 ## Gas and funding
 
-| | gas | at 0.15 gwei | at 1 gwei (worst case cap) |
-|---|---|---|---|
-| Deploy (measured on fork) | 72.2M | 0.011 HYPE | 0.072 HYPE |
-| Smoke scripts v2+v3+v4 | ~20M | 0.003 HYPE | 0.02 HYPE |
-| Core-account seed | | 0.1 HYPE (recoverable) | |
+|                           | gas   | at 0.15 gwei           | at 1 gwei (worst case cap) |
+| ------------------------- | ----- | ---------------------- | -------------------------- |
+| Deploy (measured on fork) | 72.2M | 0.011 HYPE             | 0.072 HYPE                 |
+| Smoke scripts v2+v3+v4    | ~20M  | 0.003 HYPE             | 0.02 HYPE                  |
+| Core-account seed         |       | 0.1 HYPE (recoverable) |                            |
 
 **Bring 1 HYPE (~$77 at $77/HYPE).** Realistic spend is ~0.02 HYPE; 1 HYPE is a ~10x buffer over the 1 gwei
 cap plus the Core seed. Absolute floor 0.3 HYPE.
 
 Gas is HYPE, not USDC. Across only delivers USDC/USDT to HyperEVM, so either:
+
 1. Across → destination "Hyperliquid" (HyperCore) with USDC, buy HYPE on Core spot, "Transfer to EVM". This also
    creates the Core account the big-block flag needs. Recommended.
 2. Across → HyperEVM USDC, swap to HYPE on a HyperEVM DEX, then run `core-seed` (0.1 HYPE to `0x2222…2222`).
@@ -95,12 +96,14 @@ tx lands in its own cold big block, the first v2 swap ran out of gas); the publi
 UniswapInterfaceMulticall and PositionManager show fork labels (Huskey/Claw) there, byte-identical code.
 
 ### If the broadcast halts midway
+
 Do not restart from scratch. Mark each landed contract `deploy:false` + `address` in
 `script/deploy/tasks/999/task-pending.json`, set `protocols.swap-router-contracts.deploy=false` if SwapRouter02
 already landed (it ignores the per-contract flag), rerun `$H deploy`. Big blocks: the mempool holds max 8 pending
 nonces per address and drops txs after 24h, another reason for `--slow`.
 
 ### Testnet (998)
+
 The driver accepts `testnet` as the second arg. A 998 task file is not committed; derive one from 999 with testnet
 USDC `0x2B3370eE501B4a559b57D449569354196457D8Ab`, zero SpokePool, and ReservesLens `deploy:false` (already at its
 canonical address there). Dry-run was confirmed passing during prep.
@@ -122,21 +125,22 @@ initcode, same bytes as every other chain.
 `deployments/json/999.json` to both explorers with constructor args derived from the task file, then prints a
 post-check table (Etherscan ContractName + Sourcify match). Filter with `verify.sh 999 etherscan PoolManager`.
 
-| Group | Contracts | Settings | Notes |
-|---|---|---|---|
-| v2 | Factory, Router02 | 0.5.16 / 0.6.6, 999999 runs, istanbul | |
-| v3 | Factory (800), Multicall/QuoterV2/TickLens/Migrator/SwapRouter (1000000), NPM (2000), NFTDescriptor lib + descriptor impl (1000) | 0.7.6, istanbul | descriptor impl links the lib at `0x2E9D…B3ED` via `--libraries` |
-| proxies | 2× TransparentUpgradeableProxy, 2× ProxyAdmin | 0.8.26, 200, cancun | Etherscan needs "Is this a proxy?" clicked on the UI afterwards to show the impl ABI |
-| v4 | PoolManager/V4Quoter/StateView/ReservesLens/PAF (44444444), PositionDescriptor (1), PositionManager (500) | 0.8.26, via-ir, cancun | PositionManager is 500 runs, not 30000 as older notes say |
-| routers/quoters | SwapRouter02 (0.7.6/1000000), Quoter (0.7.6/200), MixedRouteQuoterV2 (0.8.26/200/via-ir), UR v2.2 (0.8.26/1/via-ir) | | UR constructor is one RouterParameters struct (11 fields) |
-| utils | FeeOnTransferDetector, FeeCollector | 0.8.19, 200, paris | FeeCollector args = deploy-time owner (KMS EOA), UR, Permit2, USDC |
-| canonical | SwapProxy, ReservesLens | frozen / via-ir | Etherscan links by bytecode match once verified on any chain |
+| Group           | Contracts                                                                                                                        | Settings                              | Notes                                                                                |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------------------------------------------ |
+| v2              | Factory, Router02                                                                                                                | 0.5.16 / 0.6.6, 999999 runs, istanbul |                                                                                      |
+| v3              | Factory (800), Multicall/QuoterV2/TickLens/Migrator/SwapRouter (1000000), NPM (2000), NFTDescriptor lib + descriptor impl (1000) | 0.7.6, istanbul                       | descriptor impl links the lib at `0x2E9D…B3ED` via `--libraries`                     |
+| proxies         | 2× TransparentUpgradeableProxy, 2× ProxyAdmin                                                                                    | 0.8.26, 200, cancun                   | Etherscan needs "Is this a proxy?" clicked on the UI afterwards to show the impl ABI |
+| v4              | PoolManager/V4Quoter/StateView/ReservesLens/PAF (44444444), PositionDescriptor (1), PositionManager (500)                        | 0.8.26, via-ir, cancun                | PositionManager is 500 runs, not 30000 as older notes say                            |
+| routers/quoters | SwapRouter02 (0.7.6/1000000), Quoter (0.7.6/200), MixedRouteQuoterV2 (0.8.26/200/via-ir), UR v2.2 (0.8.26/1/via-ir)              |                                       | UR constructor is one RouterParameters struct (11 fields)                            |
+| utils           | FeeOnTransferDetector, FeeCollector                                                                                              | 0.8.19, 200, paris                    | FeeCollector args = deploy-time owner (KMS EOA), UR, Permit2, USDC                   |
+| canonical       | SwapProxy, ReservesLens                                                                                                          | frozen / via-ir                       | Etherscan links by bytecode match once verified on any chain                         |
 
 Fallbacks: indexer lag (wait 60s, rerun with the contract name filter); `--guess-constructor-args` if an arg
 is wrong; Sourcify partial match means metadata drift, re-run reproducibility check for that contract.
 Exercised on the real deploy: 27/27 verified on both explorers (SwapProxy via `verify_swapproxy.sh`, proxies linked via the `verifyproxycontract` API).
 
 ## Files
+
 - `script/deploy/tasks/999/task-pending.json`: task file
 - `script/hyperevm/hyperevm.sh`: step driver · `toggle_big_blocks.py`: HyperCore flag · `build_registry.py`:
   broadcast → deployments JSON with onchain checks · `verify.sh`: both-explorer verification ·
@@ -146,6 +150,7 @@ Exercised on the real deploy: 27/27 verified on both explorers (SwapProxy via `v
   collision on 998 where the lib already existed)
 
 ## After deploy
+
 PR stack: base deploy (this branch) → follow-ups. Record adopted Permit2 in the registry (done by build_registry).
 No ownership handover needed: governance owns everything from block one. Post a Foundation forum note that the
 canonical v3 factory address is squatted on HyperEVM and integrators must use the registry address.
