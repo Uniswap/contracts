@@ -119,11 +119,11 @@
       "timestamp": 1786464840000
     },
     "PermissionedPositionManager": {
-      "address": "0xf99d553912084c99f6299291b75fe9b7119aa1a7",
+      "address": "0x864c37908aa5e10b100cacee1c62e3954d76f5e1",
       "proxy": false,
-      "deploymentTxn": "0xf8c62935b39c81685964ad50e29f4d0b1236f7e80cc118209a250474cbdb960c",
-      "initcodeHash": "36216bd41d6557c5109cae74c87e76ac8a3bafb6efe16342c33f96ce2cc23b5c",
-      "timestamp": 1786464852000
+      "deploymentTxn": "0x4a913c5a00f8f5faa8a817c95c249f3e5214222a2528cbe0a5051093e0773203",
+      "initcodeHash": "83f8715271b3aff02ade1e10148be7fa71395f75af14dc621382a3edcc6abd3b",
+      "timestamp": 1789760832000
     },
     "PermissionedHooks": {
       "address": "0x51247e2291d290d17c08813a175ac86465ede8c0",
@@ -156,6 +156,28 @@
     }
   },
   "history": [
+    {
+      "contracts": {
+        "PermissionedPositionManager#83f87152": {
+          "address": "0x864c37908aa5e10b100cacee1c62e3954d76f5e1",
+          "proxy": false,
+          "deploymentTxn": "0x4a913c5a00f8f5faa8a817c95c249f3e5214222a2528cbe0a5051093e0773203",
+          "initcodeHash": "83f8715271b3aff02ade1e10148be7fa71395f75af14dc621382a3edcc6abd3b",
+          "input": {
+            "constructor": {
+              "_poolManager": "0xE03A1074c86CFeDd5C142C4F04F1a1536e203543",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "300000",
+              "_tokenDescriptor": "0x12570561f184C7Bf46C7EcA7D937db49861C7e61",
+              "_weth9": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
+              "_permissionsAdapterFactory": "0xE6B0d96919334C33d06266d1420F97f6f434fA2B",
+              "_deliveryGasLimit": "500000"
+            }
+          }
+        }
+      },
+      "timestamp": 1789760832000
+    },
     {
       "contracts": {
         "PermissionedHooks#63641618": {

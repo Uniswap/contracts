@@ -218,11 +218,11 @@
       "timestamp": 1786474295000
     },
     "PermissionedPositionManager": {
-      "address": "0x63bd7e5d4ecfaa74d82ae1de98f476c935a81973",
+      "address": "0xd7be746b6b29f6185a01013e944313e1704c971f",
       "proxy": false,
-      "deploymentTxn": "0x49f11b984f0d900aeeebec8eba63e2dc6e8b4e4472d09fe6d16d562a76d35b75",
-      "initcodeHash": "0147c73217c12008b63c0420d84fc3e27d6754c5436e65d42d64fd21de74960c",
-      "timestamp": 1786474307000
+      "deploymentTxn": "0xb09b30b817e5e6cba3deaf76bcf2f95fe3c01009f11e316ed564e04895e5a21b",
+      "initcodeHash": "cb38eb1a3fb1bd1fc5eeb9f22ca1b622d0815a27844dcc5b59e38140dc458a1a",
+      "timestamp": 1789760831000
     },
     "PermissionedHooks": {
       "address": "0x499a724ab630549f14c995ec41a8e04fa3fd28c0",
@@ -247,6 +247,28 @@
     }
   },
   "history": [
+    {
+      "contracts": {
+        "PermissionedPositionManager#cb38eb1a": {
+          "address": "0xd7be746b6b29f6185a01013e944313e1704c971f",
+          "proxy": false,
+          "deploymentTxn": "0xb09b30b817e5e6cba3deaf76bcf2f95fe3c01009f11e316ed564e04895e5a21b",
+          "initcodeHash": "cb38eb1a3fb1bd1fc5eeb9f22ca1b622d0815a27844dcc5b59e38140dc458a1a",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "150000",
+              "_tokenDescriptor": "0xd1428Ba554F4C8450b763a0B2040A4935c63f06C",
+              "_weth9": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+              "_permissionsAdapterFactory": "0x7DA911490Ca4663E572eA9C8154f3CdEbCE16452",
+              "_deliveryGasLimit": "500000"
+            }
+          }
+        }
+      },
+      "timestamp": 1789760831000
+    },
     {
       "contracts": {
         "PermissionedHooks#2973a7de": {
