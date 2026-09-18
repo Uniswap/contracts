@@ -1,0 +1,86 @@
+{
+  "rename": true,
+  "dependencies": {
+    "weth": {
+      "value": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14"
+    }
+  },
+  "protocols": {
+    "permit2": {
+      "name": "Permit 2",
+      "deploy": false,
+      "contracts": {
+        "Permit2": {
+          "deploy": false,
+          "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3"
+        }
+      }
+    },
+    "v2": {
+      "name": "Uniswap v2",
+      "deploy": false,
+      "contracts": {
+        "UniswapV2Factory": {
+          "deploy": false,
+          "address": "0xB7f907f7A9eBC822a80BD25E224be42Ce0A698A0"
+        }
+      }
+    },
+    "v3": {
+      "name": "Uniswap v3",
+      "deploy": false,
+      "contracts": {
+        "UniswapV3Factory": {
+          "deploy": false,
+          "address": "0x0227628f3F023bb0B980b67D528571c95c6DaC1c"
+        },
+        "NonfungiblePositionManager": {
+          "deploy": false,
+          "address": "0x1238536071E1c677A632429e3655c799b22cDA52"
+        }
+      }
+    },
+    "v4": {
+      "name": "Uniswap v4",
+      "deploy": false,
+      "contracts": {
+        "PoolManager": {
+          "deploy": false,
+          "address": "0xE03A1074c86CFeDd5C142C4F04F1a1536e203543"
+        },
+        "PositionManager": {
+          "deploy": false,
+          "address": "0x429ba70129df741B2Ca2a85BC3A2a3328e5c09b4"
+        },
+        "PermissionsAdapterFactory": {
+          "deploy": false,
+          "address": "0xe6B0d96919334C33d06266D1420f97F6F434fa2b"
+        }
+      }
+    },
+    "universal-router": {
+      "name": "Universal Router (Latest)",
+      "tag": "v2.2",
+      "deploy": true,
+      "contracts": {
+        "UniversalRouter": {
+          "deploy": true,
+          "params": {
+            "v2PairInitCodeHash": {
+              "type": "bytes32",
+              "value": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f"
+            },
+            "v3PoolInitCodeHash": {
+              "type": "bytes32",
+              "value": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54"
+            },
+            "acrossSpokePool": {
+              "type": "address",
+              "value": "0x5ef6C01E11889d86803e0B23e3cB3F9E9d97B662"
+            }
+          }
+        }
+      }
+    }
+  }
+}
