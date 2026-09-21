@@ -52,6 +52,14 @@
       "timestamp": 1763598501223,
       "commitHash": "2edf4c0"
     },
+    "UniversalRouter#v2.1.2": {
+      "address": "0xF025e0Fe9E331A0eF05c2ad3C4E9C64b625cda6f",
+      "proxy": false,
+      "deploymentTxn": "0x0e9564a1fd98e41f528ba960d593535c23824bedba61b4948d989a3b00b4dcdf",
+      "initcodeHash": "b5aa84ae42027ac902ae374f261599b44618949bd1723a6803654dfb9e76a4e4",
+      "timestamp": 1789681816000,
+      "commitHash": "802fe4c"
+    },
     "UniswapV2Router02": {
       "address": "0x541aB7c31A119441eF3575F6973277DE0eF460bd",
       "proxy": false,

@@ -52,6 +52,14 @@
       "timestamp": 1763598202363,
       "commitHash": "29383e6"
     },
+    "UniversalRouter#v2.1.2": {
+      "address": "0xF025e0Fe9E331A0eF05c2ad3C4E9C64b625cda6f",
+      "proxy": false,
+      "deploymentTxn": "0xbb0d2313e1a22d062e098b6f7a16d4df6b9b95f198d13355635b40a798c2bc51",
+      "initcodeHash": "7a2f8895bbfc6478b18793e4f7e799e1c7314d75af7bd08e59d17a7ced370813",
+      "timestamp": 1789681885000,
+      "commitHash": "802fe4c"
+    },
     "CaliburEntry": {
       "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
       "proxy": false,
