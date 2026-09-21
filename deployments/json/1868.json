@@ -87,6 +87,14 @@
       "timestamp": 1763599220737,
       "commitHash": "f9b945f"
     },
+    "UniversalRouter#v2.1.2": {
+      "address": "0x661E93cca42AfacB172121EF892830cA3b70F08d",
+      "proxy": false,
+      "deploymentTxn": "0x41cf66788eecb5e9804f31117bd3ad8e98441102767584b458e6c6035e1b5a1f",
+      "initcodeHash": "af7aeeab9aa082dddd6e87793c440753fd58309d080dbc261f9dddeb784cec78",
+      "timestamp": 1789681789000,
+      "commitHash": "802fe4c"
+    },
     "PoolManager": {
       "address": "0x360e68faccca8ca495c1b759fd9eee466db9fb32",
       "proxy": false,

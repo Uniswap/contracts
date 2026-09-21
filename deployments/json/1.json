@@ -80,6 +80,14 @@
       "initcodeHash": "db0a232c595e77655f35e5572e1805750acb832117524807669f3a2d58d9e5ad",
       "timestamp": 1786476491000
     },
+    "UniversalRouter#v2.1.2": {
+      "address": "0x23617e59A5925b2A4Bf75d73ff6711cD0b29De85",
+      "proxy": false,
+      "deploymentTxn": "0x350510f7398242ffc778c086ae6bbe9cc744c33a04468f1a7978e54164638257",
+      "initcodeHash": "7ac51bd61806bfc9a093d14441b6843e62c372e73f59aad77a56f6e1341a1b49",
+      "timestamp": 1789681571000,
+      "commitHash": "802fe4c"
+    },
     "PoolManager": {
       "address": "0x000000000004444c5dc75cB358380D2e3dE08A90",
       "proxy": false,
