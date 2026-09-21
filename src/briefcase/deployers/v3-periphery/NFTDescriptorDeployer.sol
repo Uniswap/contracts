@@ -1,12 +1,24 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.0;
+pragma solidity >=0.8.0;
 
 import {ISwapRouter} from '../../protocols/v3-periphery/interfaces/ISwapRouter.sol';
 import {DeployerHelper} from '../DeployerHelper.sol';
 
 library NFTDescriptorDeployer {
+    /// @dev In forge script context CREATE2 is routed through the default deterministic factory (0x4e59…956C), so
+    ///      the library lands at the same address on every chain. NFTDescriptor has no constructor args, so if code
+    ///      already exists there it is byte-identical and is reused instead of reverting with CreateCollision
+    ///      (observed on HyperEVM testnet, 998). The reuse only holds under that default factory: in a plain forge
+    ///      test, or with --create2-deployer pointing elsewhere, the lookup address and the actual CREATE2 address
+    ///      differ and this falls through to a normal create2.
+    address private constant CREATE2_FACTORY = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
+
     function deploy() internal returns (address nftDescriptor) {
         bytes memory initcode_ = abi.encodePacked(initcode());
+        nftDescriptor = address(
+            uint160(uint256(keccak256(abi.encodePacked(hex'ff', CREATE2_FACTORY, bytes32(0), keccak256(initcode_)))))
+        );
+        if (nftDescriptor.code.length != 0) return nftDescriptor;
         nftDescriptor = DeployerHelper.create2(initcode_);
     }
 

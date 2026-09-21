@@ -20,6 +20,7 @@ skip = [
   "src/pkgs/**/certora/**",
   "src/pkgs/**/lib/**",
   "src/pkgs/**/test/**",
+  "src/pkgs/**/node_modules/**",
   "src/pkgs/universal-router/permit2/**",
   "src/pkgs/universal-router/solmate/**",
   "src/pkgs/universal-router-2_0/permit2/**",
