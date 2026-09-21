@@ -178,6 +178,14 @@
         }
       }
     },
+    "UniversalRouter#v2.1.2": {
+      "address": "0x204FAca1764B154221e35c0d20aBb3c525710498",
+      "proxy": false,
+      "deploymentTxn": "0xf669b9a4b8c322f5992788f737ee5fd2a1a73fd44f17546c5ac8b2211b6da339",
+      "initcodeHash": "30985525e6007cf1aaed52a7e3a8b1345e888c0d08a1a3715da0bd42982bd539",
+      "timestamp": 1789684439000,
+      "commitHash": "802fe4c"
+    },
     "SwapProxy": {
       "address": "0x0000000085E102724e78eCd2F45DC9cA239Affad",
       "proxy": false,

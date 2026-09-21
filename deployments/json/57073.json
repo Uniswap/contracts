@@ -38,22 +38,6 @@
       "timestamp": 1738078997000,
       "commitHash": "f9a2783"
     },
-    "UniversalRouter#v2.2": {
-      "address": "0x8bbcaeb326ad590521a921c9e457ee09f336b48c",
-      "proxy": false,
-      "deploymentTxn": "0xd37e3e958e9c35d63b48bde9de8e7a01878f0881fa20b6e434a9f865244fc0db",
-      "initcodeHash": "06045ea8008b31c9edc532735c79252ed84498b7172e165ae1e54fa79ec82a28",
-      "timestamp": 1789760233353,
-      "commitHash": "e34ba78"
-    },
-    "UniversalRouter#v2.1.2": {
-      "address": "0x661E93cca42AfacB172121EF892830cA3b70F08d",
-      "proxy": false,
-      "deploymentTxn": "0x2b3bc3342634e3931177a86f49cb5a403f277251d1b5a1ba84cc11e2b5ebcca3",
-      "initcodeHash": "9c8ac59a2b76588bf32857c27596f099bc6f572c0080a372c42540b77e19998a",
-      "timestamp": 1789684453000,
-      "commitHash": "802fe4c"
-    },
     "PermissionsAdapterFactory": {
       "address": "0xd8eeBA7c373d612F24660e45Fa96f5d95B0C9d16",
       "proxy": false,
@@ -74,6 +58,22 @@
       "deploymentTxn": "0x684cff4eb0a5d841133bcb4945f897b943cbae220e2d5f553d39cf61c38ef1ee",
       "timestamp": 1781041163000,
       "commitHash": "cac8ac3"
+    },
+    "UniversalRouter#v2.2": {
+      "address": "0x8bbcaeb326ad590521a921c9e457ee09f336b48c",
+      "proxy": false,
+      "deploymentTxn": "0xd37e3e958e9c35d63b48bde9de8e7a01878f0881fa20b6e434a9f865244fc0db",
+      "initcodeHash": "06045ea8008b31c9edc532735c79252ed84498b7172e165ae1e54fa79ec82a28",
+      "timestamp": 1789760233353,
+      "commitHash": "e34ba78"
+    },
+    "UniversalRouter#v2.1.2": {
+      "address": "0x661E93cca42AfacB172121EF892830cA3b70F08d",
+      "proxy": false,
+      "deploymentTxn": "0x2b3bc3342634e3931177a86f49cb5a403f277251d1b5a1ba84cc11e2b5ebcca3",
+      "initcodeHash": "9c8ac59a2b76588bf32857c27596f099bc6f572c0080a372c42540b77e19998a",
+      "timestamp": 1789684453000,
+      "commitHash": "802fe4c"
     },
     "CaliburEntry": {
       "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",

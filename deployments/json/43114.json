@@ -8,6 +8,14 @@
       "timestamp": 1763597658826,
       "commitHash": "6ce39dd"
     },
+    "UniversalRouter#v2.1.2": {
+      "address": "0x661E93cca42AfacB172121EF892830cA3b70F08d",
+      "proxy": false,
+      "deploymentTxn": "0xcd31d502d5382c35b3e2f595e9d2cfa8f4fb9ec79e7c060ed4826f9ac4be7889",
+      "initcodeHash": "9cdf11594b104aa9b8876be0a6c8ba6cb1c09dae5c55722975f0f1fd6c28334e",
+      "timestamp": 1789681730000,
+      "commitHash": "802fe4c"
+    },
     "UniswapV2Factory": {
       "address": "0x9e5A52f57b3038F1B8EeE45F28b3C1967e22799C",
       "proxy": false,
