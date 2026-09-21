@@ -13,6 +13,7 @@ This repository contains deployment information for the following networks:
 | 143 | Monad Mainnet | [View Deployment](./143.md) |
 | 196 | X Layer Mainnet | [View Deployment](./196.md) |
 | 480 | World Chain | [View Deployment](./480.md) |
+| 999 | HyperEVM Mainnet | [View Deployment](./999.md) |
 | 1301 | Unichain Sepolia Testnet | [View Deployment](./1301.md) |
 | 1868 | Soneium | [View Deployment](./1868.md) |
 | 4217 | Chain 4217 | [View Deployment](./4217.md) |
