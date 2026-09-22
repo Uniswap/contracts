@@ -60,11 +60,12 @@
       "commitHash": "ac5ac65"
     },
     "UniversalRouter": {
-      "address": "0x96b2fd2f80e9428daa65d859653117d453981ab4",
+      "address": "0x2d01411773c8C24805306E89A41F7855C3c4Fe65",
       "proxy": false,
-      "deploymentTxn": "0xde24f0ec9dc554b2ca4dfc07d86e916f3f137c1c41b7804bdc904dee8bac023c",
-      "timestamp": 1763596641168,
-      "commitHash": "f13ad62"
+      "deploymentTxn": "0x42ed46c9b29461557ef12d2588165dffe4909f6f248a3564f904fbe1f1dc78a4",
+      "initcodeHash": "4e08bf9acab174054f1832ca291b6a5eff514fd741a9379ab7ca114b4e30fbdf",
+      "timestamp": 1789683131000,
+      "commitHash": "802fe4c"
     },
     "UniversalRouter#v2.1.2": {
       "address": "0x2d01411773c8C24805306E89A41F7855C3c4Fe65",

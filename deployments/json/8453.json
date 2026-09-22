@@ -57,6 +57,14 @@
       "deploymentTxn": "0x07554308e2650c4a0da846426322d62c2afc2ec05eacd0f383ab1a8524e1b8db",
       "timestamp": 1705003883000
     },
+    "UniversalRouter": {
+      "address": "0xd6145b2D3F379919E8CdEda7B97e37c4b2Ca9c40",
+      "proxy": false,
+      "deploymentTxn": "0x04d762023e68dd561a90af779bc4e4cd19c152f6f722977137024b9509f5e613",
+      "initcodeHash": "89e3fec0b5bc293659787bd37415cbe5f7f681a8b614bbbb428695a8c7f78fd2",
+      "timestamp": 1789683208000,
+      "commitHash": "802fe4c"
+    },
     "UniversalRouter#v2.1.2": {
       "address": "0xd6145b2D3F379919E8CdEda7B97e37c4b2Ca9c40",
       "proxy": false,

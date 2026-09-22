@@ -149,6 +149,14 @@
       "timestamp": 1784925506763,
       "commitHash": "999d561"
     },
+    "UniversalRouter": {
+      "address": "0x7E4f6c5e954Da5c61B3423D81E2277431Ac043f3",
+      "proxy": false,
+      "deploymentTxn": "0x319d4e70451a555e906fea6e5194ef7f116567a53d3df86947b7c94bd4187348",
+      "initcodeHash": "eee9ee2babe510254ea4af248d89c2c19450655a54cbf3f89b1eb3cf52a38d4e",
+      "timestamp": 1789680792000,
+      "commitHash": "802fe4c"
+    },
     "UniversalRouter#v2.1.2": {
       "address": "0x7E4f6c5e954Da5c61B3423D81E2277431Ac043f3",
       "proxy": false,

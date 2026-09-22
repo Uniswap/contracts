@@ -2,11 +2,12 @@
   "chainId": "43114",
   "latest": {
     "UniversalRouter": {
-      "address": "0x0cf1f86b331a03179646341d10a2a87515087221",
+      "address": "0x661E93cca42AfacB172121EF892830cA3b70F08d",
       "proxy": false,
-      "deploymentTxn": "0x817e32060d0ae01625bbd4e88590012453f4ad21a62e1d40d18ba967505e53d7",
-      "timestamp": 1763597658826,
-      "commitHash": "6ce39dd"
+      "deploymentTxn": "0xcd31d502d5382c35b3e2f595e9d2cfa8f4fb9ec79e7c060ed4826f9ac4be7889",
+      "initcodeHash": "9cdf11594b104aa9b8876be0a6c8ba6cb1c09dae5c55722975f0f1fd6c28334e",
+      "timestamp": 1789681730000,
+      "commitHash": "802fe4c"
     },
     "UniversalRouter#v2.1.2": {
       "address": "0x661E93cca42AfacB172121EF892830cA3b70F08d",
