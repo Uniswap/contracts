@@ -20,11 +20,12 @@
       "timestamp": 1707413277000
     },
     "UniversalRouter": {
-      "address": "0xde20eee5398d3790a4d356e8925bd21ea65d99af",
+      "address": "0xC09255D86DB563cBc11C2fCf4a0C512e160111B4",
       "proxy": false,
-      "deploymentTxn": "0x5413e69a593fecdb2958f3cf80893172ae24b16ba5bb8482c83814b199a7ece7",
-      "timestamp": 1763596337443,
-      "commitHash": "cc18617"
+      "deploymentTxn": "0xa19cfcc67d8103b20a05d4ac5528d56b60b10bf0ad5ddf5aff342878ea288893",
+      "initcodeHash": "ad880d0a25911a66397dd4f0cad9c5cafdbe592a8391cc04e01a3b625c5aeb1f",
+      "timestamp": 1789683163000,
+      "commitHash": "802fe4c"
     },
     "UniversalRouter#v2.1.2": {
       "address": "0xC09255D86DB563cBc11C2fCf4a0C512e160111B4",
