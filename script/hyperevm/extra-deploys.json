@@ -1,0 +1,112 @@
+{
+    "_comment": "Contracts forge-chronicles cannot record on chain 999, merged into deployments/json/999.json by merge_extra_deploys.py: the v3 NFT descriptor proxy (impl tx unnamed because of the NFTDescriptor library link), SwapProxy (canonical CREATE2, unnamed), Permit2 (pre-existing), and the routers deployed from the Uniswap/universal-router repo. Deploy-all's first-cut 2.2.0 router (0x0549...492A) is not recorded (agreed in review); never allowlist it in a permissioned hook. drop_addresses removes the superseded first-cut FeeCollector (and router, if chronicles ever names it) from history as agreed in review. patch_inputs fills constructor args chronicles could not decode (forge recorded arguments:null for the PermissionsAdapterFactory CREATE2). base_commit is the main commit the branch-based runs (2.1.2 / 2.2.0 routers, FeeCollector redeploy) were built on; pinned here rather than derived so reruns after merge do not rewrite it. deploy_all_run_timestamp identifies the original Deploy-all history entry that the unnamed CREATE2 extras belong to.",
+    "extra": [
+        {
+            "name": "NonfungibleTokenPositionDescriptor",
+            "address": "0x73991a25c818bf1f1128deaab1492d45638de0d3",
+            "deploymentTxn": "0x7615f0ba86fae838e40d47df79b987796bc6000f745ab6e9d1d9ac96f1cf9bba",
+            "proxy": true,
+            "proxyType": "TransparentUpgradeableProxy",
+            "implementation": "0x6f84dae9c064ff453e5c8af51efb819f8f610225",
+            "proxyAdmin": "0xc2a60f5f5815a4b35895938f7ca205e926a30267",
+            "run": "deploy-all",
+            "input": {
+                "constructor": {
+                    "_WETH9": "0x5555555555555555555555555555555555555555",
+                    "_nativeCurrencyLabelBytes": "0x4859504500000000000000000000000000000000000000000000000000000000"
+                },
+                "initializeData": "0x"
+            },
+            "implementationTxn": "0x1dc7374ea82ec9511e62d647ddcab761447624bbe6bad4da1949ffb670c20e07"
+        },
+        {
+            "name": "SwapProxy",
+            "address": "0x0000000085e102724e78ecd2f45dc9ca239affad",
+            "deploymentTxn": "0x9a4b69e17fe367914772c0ebc14d1e5262ad8285f06faa49e34bf06f0d423388",
+            "run": "deploy-all",
+            "input": {
+                "constructor": {}
+            }
+        },
+        {
+            "name": "Permit2",
+            "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+            "deploymentTxn": "0xb53a183abfae0bd1348b73e6505371d95be836bc6c6f5249b7d63f539eb2260b",
+            "run": "pre-existing canonical deployment; not deployed by this repo",
+            "nocommit": true,
+            "input": {
+                "constructor": {}
+            }
+        },
+        {
+            "name": "UnsupportedProtocol",
+            "address": "0xeee3aa3c0d6d6f4e702748deacb42991a0094bcf",
+            "deploymentTxn": "0xbc5218850f9c611b5835ed396f8f619e77510d7b2bf8550f4d7866c4f3eee5cb",
+            "run": "universal-router 2.1.2 (tag at 802fe4c, PR #515)",
+            "input": {
+                "constructor": {}
+            }
+        },
+        {
+            "name": "UniversalRouter#v2.1.2",
+            "address": "0xed270a1bcdc63cf1356d695e7f40961d4819d6bf",
+            "deploymentTxn": "0x3d4831363f66ca9f669df69b22d6d1748539344e65a7f2c0c98f1b7385bb5819",
+            "run": "universal-router 2.1.2 (tag at 802fe4c, PR #515)",
+            "check": ["SPOKE_POOL()(address)", "0x35E63eA3eb0fb7A3bc543C71FB66412e1F6B0E04"],
+            "input": {
+                "constructor": {
+                    "params": {
+                        "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                        "weth9": "0x5555555555555555555555555555555555555555",
+                        "v2Factory": "0x89e5DB8B5aA49aA85AC63f691524311AEB649eba",
+                        "v3Factory": "0xf0db7b58379503491d857dB50AC9ece64c653918",
+                        "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                        "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                        "v4PoolManager": "0x12D4Fd9C5DeDd00ab8a0bCe2CF0167bbf94b6B1F",
+                        "v3NFTPositionManager": "0x39654A85A4C05127f5Fd6ED22CAeC077A0fB1377",
+                        "v4PositionManager": "0x0d7Ab5B3db668128Aff6F70C4eBC71D7d4DA9bf9",
+                        "spokePool": "0x35E63eA3eb0fb7A3bc543C71FB66412e1F6B0E04"
+                    }
+                }
+            }
+        },
+        {
+            "name": "UniversalRouter",
+            "address": "0x9afe3c497e19501db228f28cdbdd29bc98f65dba",
+            "deploymentTxn": "0xd9eda6c912e49c0ce7e15bfd7a6d5dc91de796cc08231aec80df191341244f34",
+            "run": "universal-router 2.2.0 (re-cut, tag at 64027f3; #499 in, v4-periphery #564 in / #584 reverted)",
+            "check": ["PERMISSIONS_ADAPTER_FACTORY()(address)", "0x2a9049F60a1a42E82ba340eFe02b9Ba468Aff803"],
+            "input": {
+                "constructor": {
+                    "params": {
+                        "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                        "weth9": "0x5555555555555555555555555555555555555555",
+                        "v2Factory": "0x89e5DB8B5aA49aA85AC63f691524311AEB649eba",
+                        "v3Factory": "0xf0db7b58379503491d857dB50AC9ece64c653918",
+                        "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                        "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                        "v4PoolManager": "0x12D4Fd9C5DeDd00ab8a0bCe2CF0167bbf94b6B1F",
+                        "permissionsAdapterFactory": "0x2a9049F60a1a42E82ba340eFe02b9Ba468Aff803",
+                        "v3NFTPositionManager": "0x39654A85A4C05127f5Fd6ED22CAeC077A0fB1377",
+                        "v4PositionManager": "0x0d7Ab5B3db668128Aff6F70C4eBC71D7d4DA9bf9",
+                        "spokePool": "0x35E63eA3eb0fb7A3bc543C71FB66412e1F6B0E04"
+                    }
+                }
+            },
+            "note": "universal-router 2.2.0 (re-cut, tag at 64027f3; #499 in, v4-periphery #564 in / #584 reverted). Supersedes the first-cut 2.2.0 router 0x05498c32f8F4825BCD4e5c6325134431B12d492A (tag 020e1b78, lacks the #499 and #564 fixes), which is live but must not be used or allowlisted in a permissioned hook."
+        }
+    ],
+    "drop_addresses": ["0xda7030c3a45edf79421e8e7f8ccf4d7a3fa4eea3", "0x05498c32f8f4825bcd4e5c6325134431b12d492a"],
+    "patch_inputs": {
+        "PermissionsAdapterFactory": {
+            "constructor": {
+                "poolManager": "0x12D4Fd9C5DeDd00ab8a0bCe2CF0167bbf94b6B1F"
+            }
+        }
+    },
+    "latest_notes": {
+        "FeeCollector": "Redeployed 2026-09-18 pointing at the 2.2.0 router. Supersedes 0xda7030C3A45EdF79421E8e7F8CcF4d7A3Fa4EeA3, which is live but must not be used."
+    },
+    "base_commit": "58a1e67",
+    "deploy_all_run_timestamp": 1789501501114
+}
