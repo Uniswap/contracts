@@ -16,6 +16,7 @@ fs_permissions = [
 ]
 
 skip = [
+  "src/pkgs/liquidity-launcher/**",
   "src/pkgs/**/audits/**",
   "src/pkgs/**/certora/**",
   "src/pkgs/**/lib/**",

@@ -51,8 +51,13 @@ run_flatten_jobs() {
 
 # flatten packages
 pkgs=$(ls src/pkgs/);
+# liquidity-launcher has never been part of the briefcase and is not wired into
+# the briefcase path resolution (process_briefcase_files.py resolves its
+# @uniswap/v4-periphery imports against the top-level package, not its own lib)
+BRIEFCASE_SKIP_PKGS="${BRIEFCASE_SKIP_PKGS:-liquidity-launcher}"
 for pkg in $pkgs
 do
+    case " $BRIEFCASE_SKIP_PKGS " in *" $pkg "*) echo "skipping $pkg"; continue;; esac
     subpaths=$(find src/pkgs/$pkg -type d \( -path "src/pkgs/$pkg/lib" -o -path "src/pkgs/$pkg/test" \) -prune -o \( -name "interface" -o -name "interfaces" -o -name "libraries" -o -name "types" -o -name "util" -o -name "utils" \) -print | sed "s|src/pkgs/$pkg/||")
     for subpath in $subpaths
     do
