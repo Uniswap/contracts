@@ -228,13 +228,13 @@
       "note": "universal-router 2.1.2 (tag at 802fe4c, PR #515)"
     },
     "UniversalRouter": {
-      "address": "0x9afe3c497e19501db228f28cdbdd29bc98f65dba",
+      "address": "0xed270a1bcdc63cf1356d695e7f40961d4819d6bf",
       "proxy": false,
-      "deploymentTxn": "0xd9eda6c912e49c0ce7e15bfd7a6d5dc91de796cc08231aec80df191341244f34",
-      "initcodeHash": "f4f4064015201ad121278c7bdbff4218b71f46027deed0c51d85db223fb11d32",
-      "timestamp": 1789765620000,
+      "deploymentTxn": "0x3d4831363f66ca9f669df69b22d6d1748539344e65a7f2c0c98f1b7385bb5819",
+      "initcodeHash": "e3a7b781c475a55fdacaa3f33be9107dc7b0d289046915195466a4067a11734f",
+      "timestamp": 1789678140000,
       "commitHash": "58a1e67",
-      "note": "universal-router 2.2.0 (re-cut, tag at 64027f3; #499 in, v4-periphery #564 in / #584 reverted). Supersedes the first-cut 2.2.0 router 0x05498c32f8F4825BCD4e5c6325134431B12d492A (tag 020e1b78, lacks the #499 and #564 fixes), which is live but must not be used or allowlisted in a permissioned hook."
+      "note": "universal-router 2.1.2 (tag at 802fe4c, PR #515)"
     },
     "PermissionedPositionManager": {
       "address": "0xbbbcc62853a5fa27b93d6bab3e6f7ce841e25df2",
@@ -243,6 +243,15 @@
       "initcodeHash": "3b243df3749ec8f62ea3f31f9ad9cc9f3c5447a5e9881ad9d04425445e1e3340",
       "timestamp": 1790195400000,
       "commitHash": "9969eec"
+    },
+    "UniversalRouter#v2.2": {
+      "address": "0xe783de89a7f0408687f051e3e6d0beb62719ebad",
+      "proxy": false,
+      "deploymentTxn": "0x33904663b10e616494b83a3ea14983fe405fee03bf254c2d809a132a9c5047d3",
+      "initcodeHash": "4c28bc3f605dc86e6f717a73b03d115a2ebab26f166f57b15c63f74b08804e00",
+      "timestamp": 1790270940000,
+      "commitHash": "64027f3",
+      "note": "universal-router 2.2.0 (tag at 64027f3); permissionsAdapterFactory 0x8702463e73f74d0b6765aBceb314Ef07aCb92650; supersedes 0x9afe3c497e19501db228f28cdbdd29bc98f65dba (built against an older PermissionsAdapterFactory)"
     }
   },
   "history": [
@@ -656,6 +665,35 @@
       },
       "timestamp": 1790195400000,
       "commitHash": "9969eec"
+    },
+    {
+      "contracts": {
+        "UniversalRouter#v2.2": {
+          "address": "0xe783de89a7f0408687f051e3e6d0beb62719ebad",
+          "proxy": false,
+          "deploymentTxn": "0x33904663b10e616494b83a3ea14983fe405fee03bf254c2d809a132a9c5047d3",
+          "initcodeHash": "4c28bc3f605dc86e6f717a73b03d115a2ebab26f166f57b15c63f74b08804e00",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x5555555555555555555555555555555555555555",
+                "v2Factory": "0x89e5DB8B5aA49aA85AC63f691524311AEB649eba",
+                "v3Factory": "0xf0db7b58379503491d857dB50AC9ece64c653918",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x12D4Fd9C5DeDd00ab8a0bCe2CF0167bbf94b6B1F",
+                "permissionsAdapterFactory": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650",
+                "v3NFTPositionManager": "0x39654A85A4C05127f5Fd6ED22CAeC077A0fB1377",
+                "v4PositionManager": "0x0d7Ab5B3db668128Aff6F70C4eBC71D7d4DA9bf9",
+                "spokePool": "0x35E63eA3eb0fb7A3bc543C71FB66412e1F6B0E04"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1790270940000,
+      "commitHash": "64027f3"
     }
   ]
 }

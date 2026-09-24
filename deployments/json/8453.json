@@ -241,6 +241,15 @@
       "initcodeHash": "c336882211fec3fc47f69504ff2e1bc4a37098a977c33e9a83c6ebc14e554854",
       "timestamp": 1790189625000,
       "commitHash": "9969eec"
+    },
+    "UniversalRouter#v2.2": {
+      "address": "0xbe2257d1aafbe6b73f67a9ac971c2f0b344bb3c5",
+      "proxy": false,
+      "deploymentTxn": "0x4fea4ed6fa037c3edd81ca9f080d53ea631217140b3edc5c53b3795d238df98f",
+      "initcodeHash": "e70d7dbd5bc7a4da37e90156b18a79048fbae8a89b3040db3871b5b5f797b5aa",
+      "timestamp": 1790270893000,
+      "commitHash": "64027f3",
+      "note": "universal-router 2.2.0 (tag at 64027f3); permissionsAdapterFactory 0xDc264714F68d84CF29BC605589405E78bDBE7C9f"
     }
   },
   "history": [
@@ -859,6 +868,35 @@
       },
       "timestamp": 1790189625000,
       "commitHash": "9969eec"
+    },
+    {
+      "contracts": {
+        "UniversalRouter#v2.2": {
+          "address": "0xbe2257d1aafbe6b73f67a9ac971c2f0b344bb3c5",
+          "proxy": false,
+          "deploymentTxn": "0x4fea4ed6fa037c3edd81ca9f080d53ea631217140b3edc5c53b3795d238df98f",
+          "initcodeHash": "e70d7dbd5bc7a4da37e90156b18a79048fbae8a89b3040db3871b5b5f797b5aa",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x4200000000000000000000000000000000000006",
+                "v2Factory": "0x8909Dc15e40173Ff4699343b6eB8132c65e18eC6",
+                "v3Factory": "0x33128a8fC17869897dcE68Ed026d694621f6FDfD",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x498581fF718922c3f8e6A244956aF099B2652b2b",
+                "permissionsAdapterFactory": "0xDc264714F68d84CF29BC605589405E78bDBE7C9f",
+                "v3NFTPositionManager": "0x03a520b32C04BF3bEEf7BEb72E919cf822Ed34f1",
+                "v4PositionManager": "0x7C5f5A4bBd8fD63184577525326123B519429bDc",
+                "spokePool": "0x09aea4b2242abC8bb4BB78D537A67a245A7bEC64"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1790270893000,
+      "commitHash": "64027f3"
     }
   ]
 }
