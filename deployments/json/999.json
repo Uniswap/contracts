@@ -133,12 +133,13 @@
       "commitHash": "e34ba78"
     },
     "PermissionsAdapterFactory": {
-      "address": "0x2a9049f60a1a42e82ba340efe02b9ba468aff803",
+      "address": "0x8702463e73f74d0b6765abceb314ef07acb92650",
       "proxy": false,
-      "deploymentTxn": "0xda47dd9b609f16ebd472382f05af42f4009e8e9f010d09c330845f2362abab64",
-      "initcodeHash": "aac929ee778f1e905060d2ae89ddae50d8180eea4a1c2891da46d98e91bc9f42",
-      "timestamp": 1789501501114,
-      "commitHash": "e34ba78"
+      "deploymentTxn": "0x93413766eaddf979b47a6d802ca13b993e1d55f665c79037f26543f5467ac722",
+      "initcodeHash": "ae89c6bc5ac1bb21412f8d293a8f5788b298becc87c3f9599589e0b81313cda4",
+      "timestamp": 1790189593000,
+      "commitHash": "9969eec",
+      "note": "supersedes 0x2a9049f60a1a42e82ba340efe02b9ba468aff803 (built from an older PermissionsAdapterFactory revision)"
     },
     "Quoter": {
       "address": "0xe29df26bce7f7e691f37f2313ea6726fc2b481b3",
@@ -234,6 +235,14 @@
       "timestamp": 1789765620000,
       "commitHash": "58a1e67",
       "note": "universal-router 2.2.0 (re-cut, tag at 64027f3; #499 in, v4-periphery #564 in / #584 reverted). Supersedes the first-cut 2.2.0 router 0x05498c32f8F4825BCD4e5c6325134431B12d492A (tag 020e1b78, lacks the #499 and #564 fixes), which is live but must not be used or allowlisted in a permissioned hook."
+    },
+    "PermissionedPositionManager": {
+      "address": "0xbbbcc62853a5fa27b93d6bab3e6f7ce841e25df2",
+      "proxy": false,
+      "deploymentTxn": "0x689bc0ef6d8bb512c1b88e03d87745beda78f3368db60c9c45f86ae362f1d614",
+      "initcodeHash": "3b243df3749ec8f62ea3f31f9ad9cc9f3c5447a5e9881ad9d04425445e1e3340",
+      "timestamp": 1790195400000,
+      "commitHash": "9969eec"
     }
   },
   "history": [
@@ -613,6 +622,40 @@
       },
       "timestamp": 1739894100000,
       "note": "pre-existing canonical deployment; not deployed by this repo"
+    },
+    {
+      "contracts": {
+        "PermissionsAdapterFactory#ae89c6bc": {
+          "address": "0x8702463e73f74d0b6765abceb314ef07acb92650",
+          "proxy": false,
+          "deploymentTxn": "0x93413766eaddf979b47a6d802ca13b993e1d55f665c79037f26543f5467ac722",
+          "initcodeHash": "ae89c6bc5ac1bb21412f8d293a8f5788b298becc87c3f9599589e0b81313cda4",
+          "input": {
+            "constructor": {
+              "poolManager": "0x12D4Fd9C5DeDd00ab8a0bCe2CF0167bbf94b6B1F"
+            }
+          }
+        },
+        "PermissionedPositionManager#3b243df3": {
+          "address": "0xbbbcc62853a5fa27b93d6bab3e6f7ce841e25df2",
+          "proxy": false,
+          "deploymentTxn": "0x689bc0ef6d8bb512c1b88e03d87745beda78f3368db60c9c45f86ae362f1d614",
+          "initcodeHash": "3b243df3749ec8f62ea3f31f9ad9cc9f3c5447a5e9881ad9d04425445e1e3340",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x12D4Fd9C5DeDd00ab8a0bCe2CF0167bbf94b6B1F",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "300000",
+              "_tokenDescriptor": "0xfF0b85caDaC458D5aAcc22755e5107bfE31ED402",
+              "_weth9": "0x5555555555555555555555555555555555555555",
+              "_permissionsAdapterFactory": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650",
+              "_deliveryGasLimit": "500000"
+            }
+          }
+        }
+      },
+      "timestamp": 1790195400000,
+      "commitHash": "9969eec"
     }
   ]
 }

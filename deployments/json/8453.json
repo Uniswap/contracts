@@ -225,6 +225,22 @@
       "deploymentTxn": "0xd0500dce13afabdfe6aefce84217c498ce5c123442605c7efd67553b45214cfc",
       "timestamp": 1783981985000,
       "commitHash": "b08eb66"
+    },
+    "PermissionsAdapterFactory": {
+      "address": "0xdc264714f68d84cf29bc605589405e78bdbe7c9f",
+      "proxy": false,
+      "deploymentTxn": "0xd45c114f860c727d0aef94ee312d83e0d31a0d279369236533e81c22f0a2c3cd",
+      "initcodeHash": "0a530a31c50ae7e113e7cd2fdd2fc4ad3adc23399d96af00ae0e6c0502b1d45e",
+      "timestamp": 1790189591000,
+      "commitHash": "9969eec"
+    },
+    "PermissionedPositionManager": {
+      "address": "0xc09255d86db563cbc11c2fcf4a0c512e160111b4",
+      "proxy": false,
+      "deploymentTxn": "0x9e9b4c65c9f2a4a670467a3c848f9e896319ae34836375159910cf4e04480267",
+      "initcodeHash": "c336882211fec3fc47f69504ff2e1bc4a37098a977c33e9a83c6ebc14e554854",
+      "timestamp": 1790189625000,
+      "commitHash": "9969eec"
     }
   },
   "history": [
@@ -809,6 +825,40 @@
       },
       "timestamp": 1783981985000,
       "commitHash": "b08eb66"
+    },
+    {
+      "contracts": {
+        "PermissionsAdapterFactory#0a530a31": {
+          "address": "0xdc264714f68d84cf29bc605589405e78bdbe7c9f",
+          "proxy": false,
+          "deploymentTxn": "0xd45c114f860c727d0aef94ee312d83e0d31a0d279369236533e81c22f0a2c3cd",
+          "initcodeHash": "0a530a31c50ae7e113e7cd2fdd2fc4ad3adc23399d96af00ae0e6c0502b1d45e",
+          "input": {
+            "constructor": {
+              "poolManager": "0x498581fF718922c3f8e6A244956aF099B2652b2b"
+            }
+          }
+        },
+        "PermissionedPositionManager#c3368822": {
+          "address": "0xc09255d86db563cbc11c2fcf4a0c512e160111b4",
+          "proxy": false,
+          "deploymentTxn": "0x9e9b4c65c9f2a4a670467a3c848f9e896319ae34836375159910cf4e04480267",
+          "initcodeHash": "c336882211fec3fc47f69504ff2e1bc4a37098a977c33e9a83c6ebc14e554854",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x498581fF718922c3f8e6A244956aF099B2652b2b",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "300000",
+              "_tokenDescriptor": "0x25D093633990DC94BeDEeD76C8F3CDaa75f3E7D5",
+              "_weth9": "0x4200000000000000000000000000000000000006",
+              "_permissionsAdapterFactory": "0xDc264714F68d84CF29BC605589405E78bDBE7C9f",
+              "_deliveryGasLimit": "500000"
+            }
+          }
+        }
+      },
+      "timestamp": 1790189625000,
+      "commitHash": "9969eec"
     }
   ]
 }
