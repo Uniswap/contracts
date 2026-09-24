@@ -250,6 +250,14 @@
       "timestamp": 1790270893000,
       "commitHash": "64027f3",
       "note": "universal-router 2.2.0 (tag at 64027f3); permissionsAdapterFactory 0xDc264714F68d84CF29BC605589405E78bDBE7C9f"
+    },
+    "PermissionedHooks": {
+      "address": "0x5750be78fedfb2fa48faa6c6623400ba4538a8c0",
+      "proxy": false,
+      "deploymentTxn": "0x29ebdf6033449213cee5c68813dd4dd182caf0c7818af87c7e9fe06790b2588f",
+      "initcodeHash": "ccac45e12a0015323c17825ac613cf2b2bf226d070b84881751e774febea247a",
+      "timestamp": 1790275101000,
+      "commitHash": "f2aa843"
     }
   },
   "history": [
@@ -897,6 +905,24 @@
       },
       "timestamp": 1790270893000,
       "commitHash": "64027f3"
+    },
+    {
+      "contracts": {
+        "PermissionedHooks#ccac45e1": {
+          "address": "0x5750be78fedfb2fa48faa6c6623400ba4538a8c0",
+          "proxy": false,
+          "deploymentTxn": "0x29ebdf6033449213cee5c68813dd4dd182caf0c7818af87c7e9fe06790b2588f",
+          "initcodeHash": "ccac45e12a0015323c17825ac613cf2b2bf226d070b84881751e774febea247a",
+          "input": {
+            "constructor": {
+              "manager": "0x498581fF718922c3f8e6A244956aF099B2652b2b",
+              "permissionsAdapterFactory": "0xDc264714F68d84CF29BC605589405E78bDBE7C9f"
+            }
+          }
+        }
+      },
+      "timestamp": 1790275101000,
+      "commitHash": "f2aa843"
     }
   ]
 }
