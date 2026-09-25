@@ -39,11 +39,12 @@
       "commitHash": "f9a2783"
     },
     "PermissionsAdapterFactory": {
-      "address": "0xd8eeBA7c373d612F24660e45Fa96f5d95B0C9d16",
+      "address": "0xabfb859e6c3324fe522bfbb19cb41345003ced65",
       "proxy": false,
-      "deploymentTxn": "0x85a87d8886f08683247c710b097241624c848df7bc67be73ecd9d3c54ab876a2",
-      "timestamp": 1781041163000,
-      "commitHash": "cac8ac3"
+      "deploymentTxn": "0x77fea25d6b092073e7fa8c42bfb52265e027e66a61fd883afa9c5ad490509da0",
+      "initcodeHash": "7142696fb9a728ee92ea9c4ef6623a8ec375d725ed22fa2ca001d3fda207cfba",
+      "timestamp": 1790198215000,
+      "commitHash": "9969eec"
     },
     "Quoter": {
       "address": "0x89e5db8b5aa49aa85ac63f691524311aeb649eba",
@@ -60,12 +61,13 @@
       "commitHash": "cac8ac3"
     },
     "UniversalRouter#v2.2": {
-      "address": "0x8bbcaeb326ad590521a921c9e457ee09f336b48c",
+      "address": "0x315e413a11ab0df498ef83873012430ca36638ae",
       "proxy": false,
-      "deploymentTxn": "0xd37e3e958e9c35d63b48bde9de8e7a01878f0881fa20b6e434a9f865244fc0db",
-      "initcodeHash": "06045ea8008b31c9edc532735c79252ed84498b7172e165ae1e54fa79ec82a28",
-      "timestamp": 1789760233353,
-      "commitHash": "e34ba78"
+      "deploymentTxn": "0xb2c957dce438157e7b3d7dfc2be4358dc408666acec5d638c047b70e0221f73d",
+      "initcodeHash": "0ac2d5bb933535120c61a91187857d5f1354e34e9f33953e909344b85a51b46e",
+      "timestamp": 1790270892000,
+      "commitHash": "64027f3",
+      "note": "universal-router 2.2.0 (tag at 64027f3); permissionsAdapterFactory 0xABfb859E6c3324fE522bFbB19CB41345003ceD65; supersedes 0x8bbcaeb326ad590521a921c9e457ee09f336b48c (built against an older PermissionsAdapterFactory)"
     },
     "UniversalRouter": {
       "address": "0x661E93cca42AfacB172121EF892830cA3b70F08d",
@@ -216,6 +218,22 @@
       "deploymentTxn": "0xfaf359bc16235cd1f1e7f59e2818fd54c1897a2c4a22a4d8e4bc6601cc664b84",
       "timestamp": 1783981988000,
       "commitHash": "b08eb66"
+    },
+    "PermissionedPositionManager": {
+      "address": "0x003aa18c6e682db80cf4aa17261ccbffd28690ce",
+      "proxy": false,
+      "deploymentTxn": "0x7c2bd4f1eca18b5cf3da5891dac4b0f682300b2e7ee2dc4b655a930ebbd60bf7",
+      "initcodeHash": "4996be78df66682363fc05578676e6db55b4a17030b3d940cb7753584f297ab4",
+      "timestamp": 1790198251000,
+      "commitHash": "9969eec"
+    },
+    "PermissionedHooks": {
+      "address": "0x3c5903cea9f15e1e59758c8f9267d39c16ea28c0",
+      "proxy": false,
+      "deploymentTxn": "0xd6a9a18f44809a09bb788de4f07cf2d89427c1527cf0db8c302c8134c701d79e",
+      "initcodeHash": "f36d311bf7c533fae3e518ceec0dd8276d633b988f17ac7911371c65e05a14ff",
+      "timestamp": 1790275100000,
+      "commitHash": "f2aa843"
     }
   },
   "history": [
@@ -376,6 +394,87 @@
       },
       "timestamp": 1738078997000,
       "commitHash": "f9a2783"
+    },
+    {
+      "contracts": {
+        "PermissionsAdapterFactory#7142696f": {
+          "address": "0xabfb859e6c3324fe522bfbb19cb41345003ced65",
+          "proxy": false,
+          "deploymentTxn": "0x77fea25d6b092073e7fa8c42bfb52265e027e66a61fd883afa9c5ad490509da0",
+          "initcodeHash": "7142696fb9a728ee92ea9c4ef6623a8ec375d725ed22fa2ca001d3fda207cfba",
+          "input": {
+            "constructor": {
+              "poolManager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32"
+            }
+          }
+        },
+        "PermissionedPositionManager#4996be78": {
+          "address": "0x003aa18c6e682db80cf4aa17261ccbffd28690ce",
+          "proxy": false,
+          "deploymentTxn": "0x7c2bd4f1eca18b5cf3da5891dac4b0f682300b2e7ee2dc4b655a930ebbd60bf7",
+          "initcodeHash": "4996be78df66682363fc05578676e6db55b4a17030b3d940cb7753584f297ab4",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "300000",
+              "_tokenDescriptor": "0x42e3cCD9B7f67B5B2Ee0c12074B84cCF2a8E7f36",
+              "_weth9": "0x4200000000000000000000000000000000000006",
+              "_permissionsAdapterFactory": "0xABfb859E6c3324fE522bFbB19CB41345003ceD65",
+              "_deliveryGasLimit": "500000"
+            }
+          }
+        }
+      },
+      "timestamp": 1790198251000,
+      "commitHash": "9969eec"
+    },
+    {
+      "contracts": {
+        "UniversalRouter#v2.2": {
+          "address": "0x315e413a11ab0df498ef83873012430ca36638ae",
+          "proxy": false,
+          "deploymentTxn": "0xb2c957dce438157e7b3d7dfc2be4358dc408666acec5d638c047b70e0221f73d",
+          "initcodeHash": "0ac2d5bb933535120c61a91187857d5f1354e34e9f33953e909344b85a51b46e",
+          "input": {
+            "constructor": {
+              "params": {
+                "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "weth9": "0x4200000000000000000000000000000000000006",
+                "v2Factory": "0xfe57A6BA1951F69aE2Ed4abe23e0f095DF500C04",
+                "v3Factory": "0x640887A9ba3A9C53Ed27D0F7e8246A4F933f3424",
+                "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                "v4PoolManager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32",
+                "permissionsAdapterFactory": "0xABfb859E6c3324fE522bFbB19CB41345003ceD65",
+                "v3NFTPositionManager": "0xC0836E5B058BBE22ae2266e1AC488A1A0fD8DCE8",
+                "v4PositionManager": "0x1b35d13a2E2528f192637F14B05f0Dc0e7dEB566",
+                "spokePool": "0xeF684C38F94F48775959ECf2012D7E864ffb9dd4"
+              }
+            }
+          }
+        }
+      },
+      "timestamp": 1790270892000,
+      "commitHash": "64027f3"
+    },
+    {
+      "contracts": {
+        "PermissionedHooks#f36d311b": {
+          "address": "0x3c5903cea9f15e1e59758c8f9267d39c16ea28c0",
+          "proxy": false,
+          "deploymentTxn": "0xd6a9a18f44809a09bb788de4f07cf2d89427c1527cf0db8c302c8134c701d79e",
+          "initcodeHash": "f36d311bf7c533fae3e518ceec0dd8276d633b988f17ac7911371c65e05a14ff",
+          "input": {
+            "constructor": {
+              "manager": "0x360E68faCcca8cA495c1B759Fd9EEe466db9FB32",
+              "permissionsAdapterFactory": "0xABfb859E6c3324fE522bFbB19CB41345003ceD65"
+            }
+          }
+        }
+      },
+      "timestamp": 1790275100000,
+      "commitHash": "f2aa843"
     }
   ]
 }
