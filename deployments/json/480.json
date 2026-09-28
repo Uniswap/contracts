@@ -103,6 +103,7 @@
       "address": "0x693497d35E34F188b8dA1F5F952bE603e289Bf90",
       "proxy": false,
       "deploymentTxn": "0x8d1ede8b108d06bb68a328e588850402cdf4c451454f19f0dad0481685d8a8e0",
+      "initcodeHash": "bf0efe14ba1e3a52a9613b7cd12540fc419db52ee6cacf07bdcda574fa385103",
       "timestamp": 1790627791000,
       "commitHash": "047d585"
     }
@@ -334,6 +335,7 @@
           "address": "0x693497d35E34F188b8dA1F5F952bE603e289Bf90",
           "proxy": false,
           "deploymentTxn": "0x8d1ede8b108d06bb68a328e588850402cdf4c451454f19f0dad0481685d8a8e0",
+          "initcodeHash": "bf0efe14ba1e3a52a9613b7cd12540fc419db52ee6cacf07bdcda574fa385103",
           "input": {
             "constructor": {
               "_factoryV2": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
