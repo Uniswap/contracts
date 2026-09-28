@@ -184,6 +184,14 @@
       "deploymentTxn": "0xf7343e8a3327baa285b8b3da92e91b57fbe9960169716539f4021015cd68ad0f",
       "timestamp": 1783981989000,
       "commitHash": "b08eb66"
+    },
+    "FeeOnTransferDetector": {
+      "address": "0xB99894Da8066B106D66929Be879D3A05B4F595C4",
+      "proxy": false,
+      "deploymentTxn": "0xca06eb6f6dbfa35be2d91c9794bb7674932ffd5693dab375710b164d58e39fa2",
+      "initcodeHash": "1772a579c3ed360ed5ca49794afa823787bf326933268f1a95bc338a77654d3c",
+      "timestamp": 1790627725000,
+      "commitHash": "047d585"
     }
   },
   "history": [
@@ -458,6 +466,23 @@
       },
       "timestamp": 1783981989000,
       "commitHash": "b08eb66"
+    },
+    {
+      "contracts": {
+        "FeeOnTransferDetector": {
+          "address": "0xB99894Da8066B106D66929Be879D3A05B4F595C4",
+          "proxy": false,
+          "deploymentTxn": "0xca06eb6f6dbfa35be2d91c9794bb7674932ffd5693dab375710b164d58e39fa2",
+          "initcodeHash": "1772a579c3ed360ed5ca49794afa823787bf326933268f1a95bc338a77654d3c",
+          "input": {
+            "constructor": {
+              "_factoryV2": "0x89e5DB8B5aA49aA85AC63f691524311AEB649eba"
+            }
+          }
+        }
+      },
+      "timestamp": 1790627725000,
+      "commitHash": "047d585"
     }
   ]
 }
