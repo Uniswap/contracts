@@ -190,6 +190,13 @@
       "initcodeHash": "50a98843e464b35961e16dbbda55b730381f38a1dea5aa222ae5955b52b7a67e",
       "timestamp": 1785791720000,
       "commitHash": "0ecb1fc"
+    },
+    "FeeOnTransferDetector": {
+      "address": "0xFdf682F51FE81Aa4898F0AE2163d8A55c127fbC7",
+      "proxy": false,
+      "deploymentTxn": "0x136345c9867ee8e3901fa5e781dcbc33aaf544b5645291d605fa1f3c34261a98",
+      "timestamp": 1790627638000,
+      "commitHash": "047d585"
     }
   },
   "history": [
@@ -480,6 +487,22 @@
       },
       "timestamp": 1783983371000,
       "commitHash": "b08eb66"
+    },
+    {
+      "contracts": {
+        "FeeOnTransferDetector": {
+          "address": "0xFdf682F51FE81Aa4898F0AE2163d8A55c127fbC7",
+          "proxy": false,
+          "deploymentTxn": "0x136345c9867ee8e3901fa5e781dcbc33aaf544b5645291d605fa1f3c34261a98",
+          "input": {
+            "constructor": {
+              "_factoryV2": "0x8bcEaA40B9AcdfAedF85AdF4FF01F5Ad6517937f"
+            }
+          }
+        }
+      },
+      "timestamp": 1790627638000,
+      "commitHash": "047d585"
     }
   ]
 }

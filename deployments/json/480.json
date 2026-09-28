@@ -98,6 +98,13 @@
       "deploymentTxn": "0x04fd1eddebd2b4d6c9a1b4590f6fb2eff61aa93a2ba7b063c8adfe0a5593f0b5",
       "timestamp": 1783981931000,
       "commitHash": "b08eb66"
+    },
+    "FeeOnTransferDetector": {
+      "address": "0x693497d35E34F188b8dA1F5F952bE603e289Bf90",
+      "proxy": false,
+      "deploymentTxn": "0x8d1ede8b108d06bb68a328e588850402cdf4c451454f19f0dad0481685d8a8e0",
+      "timestamp": 1790627791000,
+      "commitHash": "047d585"
     }
   },
   "history": [
@@ -320,6 +327,22 @@
       },
       "timestamp": 1783981931000,
       "commitHash": "b08eb66"
+    },
+    {
+      "contracts": {
+        "FeeOnTransferDetector": {
+          "address": "0x693497d35E34F188b8dA1F5F952bE603e289Bf90",
+          "proxy": false,
+          "deploymentTxn": "0x8d1ede8b108d06bb68a328e588850402cdf4c451454f19f0dad0481685d8a8e0",
+          "input": {
+            "constructor": {
+              "_factoryV2": "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"
+            }
+          }
+        }
+      },
+      "timestamp": 1790627791000,
+      "commitHash": "047d585"
     }
   ]
 }
