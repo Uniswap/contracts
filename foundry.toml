@@ -27,6 +27,8 @@ skip = [
   "src/pkgs/universal-router-2_0/permit2/**",
   "src/pkgs/universal-router-2_0/solmate/**",
   "src/pkgs/v4-hooks-public/src/aggregator-hooks/**",
+  # alf hooks trip stack-too-deep under legacy codegen; upstream skips them in its default profile too
+  "src/pkgs/v4-hooks-public/src/alf/**",
   "src/pkgs/**/*.s.sol",
   "*.t.sol",
 ]
