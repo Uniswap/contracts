@@ -2,10 +2,11 @@
   "chainId": "1868",
   "latest": {
     "MixedRouteQuoterV2": {
-      "address": "0x42c14CE921e85bf14467A82fAf8182546cf7c604",
+      "address": "0xABfb859E6c3324fE522bFbB19CB41345003ceD65",
       "proxy": false,
-      "deploymentTxn": "0xce6db7cfe6921e5027d0538a0bca3f4c1abd865651cb59dd0620cb3b57bd82c8",
-      "timestamp": 1741130607000
+      "deploymentTxn": "0x539dc025de9e10a6eff5fd2cb183ece680c1afe48890831686bd454a0e289e18",
+      "timestamp": 1792176389000,
+      "commitHash": "143ebc1"
     },
     "FeeOnTransferDetector": {
       "address": "0x7a5299822b2cd9ac9a9f67756aa2d62140e9a66f",
@@ -121,11 +122,11 @@
       "commitHash": "f9a2783"
     },
     "V4Quoter": {
-      "address": "0x3972c00f7ed4885e145823eb7c655375d275a1c5",
+      "address": "0x8928074CA1b241D8Ec02815881c1Af11E8bC5219",
       "proxy": false,
-      "deploymentTxn": "0xd31aea1259848b30b0933785993a61359c9c1b0ba64bdfe727508fb9a8db291f",
-      "timestamp": 1738081525000,
-      "commitHash": "f9a2783"
+      "deploymentTxn": "0xbeb5ed696acbbaf8bd87b8cf16885b764c45e98466e707f4daa862cca4f76cf9",
+      "timestamp": 1792176383000,
+      "commitHash": "143ebc1"
     },
     "StateView": {
       "address": "0x76fd297e2d437cd7f76d50f01afe6160f86e9990",
@@ -465,6 +466,42 @@
       },
       "timestamp": 1783981935000,
       "commitHash": "b08eb66"
+    },
+    {
+      "timestamp": 1792176383000,
+      "contracts": {
+        "V4Quoter": {
+          "address": "0x8928074CA1b241D8Ec02815881c1Af11E8bC5219",
+          "proxy": false,
+          "deploymentTxn": "0xbeb5ed696acbbaf8bd87b8cf16885b764c45e98466e707f4daa862cca4f76cf9",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x360e68faccca8ca495c1b759fd9eee466db9fb32"
+            }
+          },
+          "commitHash": "143ebc1",
+          "note": "CREATE2 salt 0 via 0x4e59b44847b379578588920cA78FbF26c0B4956C, deployed with Ignite (run 15194478) from Uniswap/contracts 143ebc1; implements msgSender()."
+        }
+      }
+    },
+    {
+      "timestamp": 1792176389000,
+      "contracts": {
+        "MixedRouteQuoterV2": {
+          "address": "0xABfb859E6c3324fE522bFbB19CB41345003ceD65",
+          "proxy": false,
+          "deploymentTxn": "0x539dc025de9e10a6eff5fd2cb183ece680c1afe48890831686bd454a0e289e18",
+          "input": {
+            "constructor": {
+              "_uniswapV4PoolManager": "0x360e68faccca8ca495c1b759fd9eee466db9fb32",
+              "_uniswapV3Poolfactory": "0x42ae7ec7ff020412639d443e245d936429fbe717",
+              "_uniswapV2Poolfactory": "0x97febbc2adbd5644ba22736e962564b23f5828ce"
+            }
+          },
+          "commitHash": "143ebc1",
+          "note": "CREATE, deployed with Ignite (run 15194478) from Uniswap/contracts 143ebc1; implements msgSender()."
+        }
+      }
     }
   ]
 }
