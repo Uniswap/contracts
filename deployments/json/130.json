@@ -167,6 +167,13 @@
       "deploymentTxn": "0xacba311d1328ebbf54ee75d15aa38d5eab953d3ab609cce4ed66f6394a6d1b2c",
       "timestamp": 1783981928000,
       "commitHash": "b08eb66"
+    },
+    "MixedRouteQuoterV2": {
+      "address": "0x661E93cca42AfacB172121EF892830cA3b70F08d",
+      "proxy": false,
+      "deploymentTxn": "0x93aa115f96fb3bb95c619bbb493ce5f5879d8aed46dde8488bdeffcae3e50d0f",
+      "timestamp": 1792178312000,
+      "commitHash": "143ebc1"
     }
   },
   "history": [
@@ -519,6 +526,25 @@
             }
           },
           "note": "Pre-existing CREATE2 deployment (salt 0 via 0x4e59b44847b379578588920cA78FbF26c0B4956C), registered without a new broadcast; runtime bytecode matches the briefcase V4QuoterDeployer initcode run with this PoolManager, and the contract implements msgSender()."
+        }
+      }
+    },
+    {
+      "timestamp": 1792178312000,
+      "contracts": {
+        "MixedRouteQuoterV2": {
+          "address": "0x661E93cca42AfacB172121EF892830cA3b70F08d",
+          "proxy": false,
+          "deploymentTxn": "0x93aa115f96fb3bb95c619bbb493ce5f5879d8aed46dde8488bdeffcae3e50d0f",
+          "input": {
+            "constructor": {
+              "_uniswapV4PoolManager": "0x1F98400000000000000000000000000000000004",
+              "_uniswapV3Poolfactory": "0x1f98400000000000000000000000000000000003",
+              "_uniswapV2Poolfactory": "0x1f98400000000000000000000000000000000002"
+            }
+          },
+          "commitHash": "143ebc1",
+          "note": "CREATE, deployed with Ignite (run c69a3c7a) from Uniswap/contracts 143ebc1; implements msgSender()."
         }
       }
     }
