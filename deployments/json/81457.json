@@ -95,11 +95,10 @@
       "commitHash": "417770f"
     },
     "V4Quoter": {
-      "address": "0x6f71cdcb0d119ff72c6eb501abceb576fbf62bcf",
+      "address": "0x684576B24f70B93C645F03F23C8Ab4113f263d97",
       "proxy": false,
-      "deploymentTxn": "0x2754031f93ec1e505b9236cb24779b5688c2cae91188ed4067e0ec00fb0f5df2",
-      "timestamp": 1737564586000,
-      "commitHash": "417770f"
+      "deploymentTxn": "0xc73ff59d4ec4b45c83bae40afd348f9e24aae8185906348987b33a87e9e94df6",
+      "timestamp": 1746829913000
     },
     "StateView": {
       "address": "0x12a88ae16f46dce4e8b15368008ab3380885df30",
@@ -440,6 +439,22 @@
       },
       "timestamp": 1783982025000,
       "commitHash": "b08eb66"
+    },
+    {
+      "timestamp": 1746829913000,
+      "contracts": {
+        "V4Quoter": {
+          "address": "0x684576B24f70B93C645F03F23C8Ab4113f263d97",
+          "proxy": false,
+          "deploymentTxn": "0xc73ff59d4ec4b45c83bae40afd348f9e24aae8185906348987b33a87e9e94df6",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x1631559198A9e474033433b2958daBC135ab6446"
+            }
+          },
+          "note": "Pre-existing CREATE2 deployment (salt 0 via 0x4e59b44847b379578588920cA78FbF26c0B4956C), registered without a new broadcast; runtime bytecode matches the briefcase V4QuoterDeployer initcode run with this PoolManager, and the contract implements msgSender()."
+        }
+      }
     }
   ]
 }
