@@ -49,19 +49,20 @@ for hh in reg["history"]:
 runs = {}
 for x in cfg["extra"]:
     addr, tx = x["address"], x["deploymentTxn"]
-    rc = json.loads(sh("cast", "receipt", tx, "--json", "--rpc-url", rpc))
-    created = (rc.get("contractAddress") or "").lower()
-    if not created:  # CREATE2 through the deterministic factory: derive keccak(0xff ++ factory ++ salt ++ keccak(initcode))
-        txj = json.loads(sh("cast", "tx", tx, "--json", "--rpc-url", rpc))
-        data = txj["input"]
+    # field accessors print plain values on every cast version; --json output changed shape in cast 1.8
+    created = sh("cast", "receipt", tx, "contractAddress", "--rpc-url", rpc).lower()
+    block = int(sh("cast", "receipt", tx, "blockNumber", "--rpc-url", rpc))
+    if not created.startswith("0x") or len(created) != 42:  # CREATE2 through the deterministic factory
+        data = sh("cast", "tx", tx, "input", "--rpc-url", rpc)
+        factory = sh("cast", "tx", tx, "to", "--rpc-url", rpc)
         salt, initcode = "0x" + data[2:66], "0x" + data[66:]
         init_hash = sh("cast", "keccak", initcode)[2:]
-        created = "0x" + sh("cast", "keccak", "0xff" + txj["to"][2:] + salt[2:] + init_hash)[-40:].lower()
+        created = "0x" + sh("cast", "keccak", "0xff" + factory[2:] + salt[2:] + init_hash)[-40:].lower()
     if created != addr.lower():
         sys.exit(f"{x['name']}: tx {tx} created {created}, not {addr}")
     if sh("cast", "code", addr, "--rpc-url", rpc) == "0x":
         sys.exit(f"{x['name']}: no code at {addr}")
-    ts = int(sh("cast", "block", str(int(rc["blockNumber"], 16)), "-f", "timestamp", "--rpc-url", rpc)) * 1000
+    ts = int(sh("cast", "block", str(block), "-f", "timestamp", "--rpc-url", rpc)) * 1000
     # chronicles hashes the implementation's creation input for proxies, the contract's own otherwise
     hash_tx = x.get("implementationTxn", tx)
     h = sh("cast", "keccak", sh("cast", "tx", hash_tx, "input", "--rpc-url", rpc))[2:]

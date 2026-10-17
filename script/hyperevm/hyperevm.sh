@@ -72,7 +72,7 @@ case $STEP in
     forge build >/dev/null || exit 1
     # never lose the committed registry if a step fails: work on a backup and restore on any error
     cp "$J" "$J.bak" 2>/dev/null || true
-    trap '[ -f "$J.bak" ] && { echo "registry step failed, restoring $J"; mv "$J.bak" "$J"; }; cp broadcast/Deploy-all.s.sol/'$CHAIN'/run-1*.json /dev/null 2>&1' ERR
+    trap '[ -f "$J.bak" ] && { echo "registry step failed, restoring $J"; mv "$J.bak" "$J"; }; cp "$(ls broadcast/Deploy-all.s.sol/'$CHAIN'/run-1*.json | sort | tail -1)" broadcast/Deploy-all.s.sol/'$CHAIN'/run-latest.json' ERR
     set -e
     rm -f "$J"
     for b in $(ls broadcast/Deploy-all.s.sol/$CHAIN/run-1*.json | sort); do
