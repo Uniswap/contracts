@@ -60,8 +60,8 @@ jobs:
             echo "changes=false" >> $GITHUB_OUTPUT
           fi
 
-      # The push is authorized by a GitHub App installed on Uniswap/briefcase, not a
-      # deploy key: a deploy key's pushes are attributed to the person who created it,
+      # The push is authorized by the contracts-briefcase-syncer GitHub App, installed on
+      # Uniswap/briefcase only, not a deploy key: a deploy key's pushes are attributed to the person who created it,
       # and the App is a bypass actor on the briefcase main ruleset (bypass mode
       # "always", since the runner's commits are unsigned and the ruleset requires
       # signatures). The App's slug and installation id are printed before each push.
