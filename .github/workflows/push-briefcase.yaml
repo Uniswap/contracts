@@ -55,16 +55,26 @@ jobs:
             echo "changes=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
+      # The push is authorized by a GitHub App installed on Uniswap/briefcase, not a
+      # deploy key: a deploy key's pushes are attributed to the person who created it,
+      # and the briefcase main ruleset only lets the App bypass the pull-request rule.
+      - name: Mint a push token for the briefcase repo
+        id: briefcase-token
+        if: steps.git-check.outputs.changes == 'true'
+        uses: actions/create-github-app-token@fee1f7d63c2ff003460e3d139729b119787bc349 # v2.2.2
         with:
-          ssh-private-key: ${{ secrets.DEPLOY_KEY_INTERFACES }}
+          client-id: ${{ secrets.BRIEFCASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.BRIEFCASE_APP_PRIVATE_KEY }}
+          owner: Uniswap
+          repositories: briefcase
 
       - name: Commit and Push to briefcase repo if changes are present
         if: steps.git-check.outputs.changes == 'true'
+        env:
+          BRIEFCASE_TOKEN: ${{ steps.briefcase-token.outputs.token }}
         run: |
           cd tmp_briefcase_repo
-          git remote set-url origin git@github.com:Uniswap/briefcase.git
+          git remote set-url origin "https://x-access-token:${BRIEFCASE_TOKEN}@github.com/Uniswap/briefcase.git"
           git add .
           git commit -m "Update briefcase
 
