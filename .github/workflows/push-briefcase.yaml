@@ -16,7 +16,7 @@ jobs:
   push-briefcase:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -67,6 +67,7 @@ jobs:
           private-key: ${{ secrets.BRIEFCASE_APP_PRIVATE_KEY }}
           owner: Uniswap
           repositories: briefcase
+          permission-contents: write
 
       - name: Commit and Push to briefcase repo if changes are present
         if: steps.git-check.outputs.changes == 'true'
@@ -74,7 +75,6 @@ jobs:
           BRIEFCASE_TOKEN: ${{ steps.briefcase-token.outputs.token }}
         run: |
           cd tmp_briefcase_repo
-          git remote set-url origin "https://x-access-token:${BRIEFCASE_TOKEN}@github.com/Uniswap/briefcase.git"
           git add .
           git commit -m "Update briefcase
 
@@ -82,4 +82,5 @@ jobs:
           $(git diff --cached --name-status)
           "
           git pull --rebase origin main
-          git push
+          # The token goes on the push command only, so it is never written to .git/config.
+          git push "https://x-access-token:${BRIEFCASE_TOKEN}@github.com/Uniswap/briefcase.git" HEAD:main
