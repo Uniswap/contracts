@@ -2,6 +2,11 @@ name: Push changes to Briefcase repo
 
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Mint the token and run git push --dry-run; nothing lands on briefcase"
+        type: boolean
+        default: false
   push:
     branches:
       - main
@@ -16,7 +21,7 @@ jobs:
   push-briefcase:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -55,16 +60,31 @@ jobs:
             echo "changes=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
+      # The push is authorized by the contracts-briefcase-syncer GitHub App, installed on
+      # Uniswap/briefcase only, not a deploy key: a deploy key's pushes are attributed to the person who created it,
+      # and the App is a bypass actor on the briefcase main ruleset (bypass mode
+      # "always", since the runner's commits are unsigned and the ruleset requires
+      # signatures). The App's slug and installation id are printed before each push.
+      - name: Mint a push token for the briefcase repo
+        id: briefcase-token
+        if: steps.git-check.outputs.changes == 'true'
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          ssh-private-key: ${{ secrets.DEPLOY_KEY_INTERFACES }}
+          client-id: ${{ secrets.BRIEFCASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.BRIEFCASE_APP_PRIVATE_KEY }}
+          owner: Uniswap
+          repositories: briefcase
+          permission-contents: write
 
       - name: Commit and Push to briefcase repo if changes are present
         if: steps.git-check.outputs.changes == 'true'
+        env:
+          BRIEFCASE_TOKEN: ${{ steps.briefcase-token.outputs.token }}
+          BRIEFCASE_APP_SLUG: ${{ steps.briefcase-token.outputs.app-slug }}
+          BRIEFCASE_INSTALLATION_ID: ${{ steps.briefcase-token.outputs.installation-id }}
+          DRY_RUN: ${{ inputs.dry_run == true && '--dry-run' || '' }}
         run: |
           cd tmp_briefcase_repo
-          git remote set-url origin git@github.com:Uniswap/briefcase.git
           git add .
           git commit -m "Update briefcase
 
@@ -72,4 +92,6 @@ jobs:
           $(git diff --cached --name-status)
           "
           git pull --rebase origin main
-          git push
+          echo "pushing as ${BRIEFCASE_APP_SLUG}[bot] (installation ${BRIEFCASE_INSTALLATION_ID})${DRY_RUN:+ with $DRY_RUN}"
+          # The token goes on the push command only, so it is never written to .git/config.
+          git push $DRY_RUN "https://x-access-token:${BRIEFCASE_TOKEN}@github.com/Uniswap/briefcase.git" HEAD:main
