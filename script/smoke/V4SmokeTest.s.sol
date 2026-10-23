@@ -151,7 +151,7 @@ contract V4SmokeTest is Script {
         e.poolManager = vm.parseJsonAddress(json, '.latest.PoolManager.address');
         e.positionManager = vm.parseJsonAddress(json, '.latest.PositionManager.address');
         e.stateView = vm.parseJsonAddress(json, '.latest.StateView.address');
-        e.universalRouter = vm.parseJsonAddress(json, '.latest.UniversalRouter.address');
+        e.universalRouter = _resolveUniversalRouter(json);
 
         address v3npm = vm.parseJsonAddress(json, '.latest.NonfungiblePositionManager.address');
         e.weth = INonfungiblePositionManagerV3(v3npm).WETH9();
@@ -162,6 +162,15 @@ contract V4SmokeTest is Script {
         require(e.stateView != address(0), 'StateView not in deployments JSON');
         require(e.universalRouter != address(0), 'UniversalRouter not in deployments JSON');
         require(e.weth != address(0), 'WETH not derivable from v3 NPM');
+    }
+
+    // On chains deployed before UR v2.1.1, `latest.UniversalRouter` points at a router whose
+    // ExactInputSingleParams has no minHopPriceX36 field, so the swap encoding below reverts.
+    // Those chains carry the modern router under `latest."UniversalRouter#v2.2"`, so prefer it.
+    function _resolveUniversalRouter(string memory json) internal view returns (address) {
+        string memory v22Key = '.latest.["UniversalRouter#v2.2"].address';
+        if (vm.keyExistsJson(json, v22Key)) return vm.parseJsonAddress(json, v22Key);
+        return vm.parseJsonAddress(json, '.latest.UniversalRouter.address');
     }
 
     function _logEnv(Env memory e) internal pure {
