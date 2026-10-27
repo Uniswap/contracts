@@ -228,15 +228,25 @@ echo "---------------------------------------"
 echo "Gas Measurements (init code execution)"
 echo "---------------------------------------"
 
-# Ethereum mainnet baseline values (measured via eth_estimateGas)
-ETH_BASELINE_GAS=53943 # NOPs only baseline
-ETH_SSTORE_GAS=22176   # cold SSTORE new value
-ETH_SLOAD_GAS=2097     # cold SLOAD
-ETH_TSTORE_GAS=89      # transient store
-ETH_TLOAD_GAS=89       # transient load
+# Ethereum reference values, measured with the probes below via eth_estimateGas.
+# Osaka: Ethereum mainnet (Geth v1.17.9), block 26256691, 2026-10-23.
+# Amsterdam (Glamsterdam): Sepolia (Geth v1.17.8, reth v2.8.1), block 11978031, 2026-10-23.
+# The SSTORE, SLOAD, TSTORE and TLOAD values are the difference to the baseline estimate.
+# Amsterdam adds state gas for the new contract account (EIP-8037), so the baseline is higher.
+ETH_OSAKA_BASELINE_GAS=53943 # NOPs only baseline
+ETH_OSAKA_SSTORE_GAS=22176   # cold SSTORE new value
+ETH_OSAKA_SLOAD_GAS=2097     # cold SLOAD
+ETH_OSAKA_TSTORE_GAS=89      # transient store
+ETH_OSAKA_TLOAD_GAS=89       # transient load
+ETH_AMSTERDAM_BASELINE_GAS=210565
+ETH_AMSTERDAM_SSTORE_GAS=110882
+ETH_AMSTERDAM_SLOAD_GAS=2106
+ETH_AMSTERDAM_TSTORE_GAS=90
+ETH_AMSTERDAM_TLOAD_GAS=90
 
 # All init codes are exactly 10 bytes and return empty (deploy 0-byte contract)
-# This ensures calldata cost and deployment cost are identical
+# This keeps the deployment cost identical. The calldata cost differs a little:
+# the baseline has 2 zero bytes, the other probes have 3.
 
 # Baseline: 5 JUMPDESTs (NOPs) then RETURN(0,0)
 # 5b 5b 5b 5b 5b 60 00 60 00 f3
@@ -244,7 +254,7 @@ echo -n "Baseline (NOPs only)...     "
 BASELINE_GAS=$(cast estimate --rpc-url "$RPC_URL" --create 0x5b5b5b5b5b60006000f3 2>&1)
 if [[ $BASELINE_GAS =~ ^[0-9]+$ ]]; then
   echo "$BASELINE_GAS gas"
-  echo "                            (Ethereum baseline: ≈$ETH_BASELINE_GAS gas)"
+  echo "                            (Ethereum Osaka: ≈$ETH_OSAKA_BASELINE_GAS gas, Amsterdam: ≈$ETH_AMSTERDAM_BASELINE_GAS gas)"
 else
   echo "❌ Failed ($BASELINE_GAS)"
   BASELINE_GAS=0
@@ -258,7 +268,7 @@ if [[ $SSTORE_GAS =~ ^[0-9]+$ ]]; then
   if [[ $BASELINE_GAS -gt 0 ]]; then
     SSTORE_DIFF=$((SSTORE_GAS - BASELINE_GAS))
     echo "≈$SSTORE_DIFF gas"
-    echo "                            (Ethereum baseline: ≈$ETH_SSTORE_GAS gas, $SSTORE_GAS gas total)"
+    echo "                            (Ethereum Osaka: ≈$ETH_OSAKA_SSTORE_GAS gas, Amsterdam: ≈$ETH_AMSTERDAM_SSTORE_GAS gas, $SSTORE_GAS gas total)"
   else
     echo "$SSTORE_GAS gas total"
   fi
@@ -274,7 +284,7 @@ if [[ $SLOAD_GAS =~ ^[0-9]+$ ]]; then
   if [[ $BASELINE_GAS -gt 0 ]]; then
     SLOAD_DIFF=$((SLOAD_GAS - BASELINE_GAS))
     echo "≈$SLOAD_DIFF gas"
-    echo "                            (Ethereum baseline: ≈$ETH_SLOAD_GAS gas, $SLOAD_GAS gas total)"
+    echo "                            (Ethereum Osaka: ≈$ETH_OSAKA_SLOAD_GAS gas, Amsterdam: ≈$ETH_AMSTERDAM_SLOAD_GAS gas, $SLOAD_GAS gas total)"
   else
     echo "$SLOAD_GAS gas total"
   fi
@@ -290,7 +300,7 @@ if [[ $TSTORE_GAS =~ ^[0-9]+$ ]]; then
   if [[ $BASELINE_GAS -gt 0 ]]; then
     TSTORE_DIFF=$((TSTORE_GAS - BASELINE_GAS))
     echo "≈$TSTORE_DIFF gas"
-    echo "                            (Ethereum baseline: ≈$ETH_TSTORE_GAS gas, $TSTORE_GAS gas total)"
+    echo "                            (Ethereum Osaka: ≈$ETH_OSAKA_TSTORE_GAS gas, Amsterdam: ≈$ETH_AMSTERDAM_TSTORE_GAS gas, $TSTORE_GAS gas total)"
   else
     echo "$TSTORE_GAS gas total"
   fi
@@ -306,7 +316,7 @@ if [[ $TLOAD_GAS =~ ^[0-9]+$ ]]; then
   if [[ $BASELINE_GAS -gt 0 ]]; then
     TLOAD_DIFF=$((TLOAD_GAS - BASELINE_GAS))
     echo "≈$TLOAD_DIFF gas"
-    echo "                            (Ethereum baseline: ≈$ETH_TLOAD_GAS gas, $TLOAD_GAS gas total)"
+    echo "                            (Ethereum Osaka: ≈$ETH_OSAKA_TLOAD_GAS gas, Amsterdam: ≈$ETH_AMSTERDAM_TLOAD_GAS gas, $TLOAD_GAS gas total)"
   else
     echo "$TLOAD_GAS gas total"
   fi
