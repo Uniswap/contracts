@@ -1,0 +1,53 @@
+{
+  "chainId": "84532",
+  "latest": {
+    "PoolManager": {
+      "address": "0x05E73354cFDd6745C338b50BcFDfA3Aa6fA03408",
+      "proxy": false,
+      "deploymentTxn": "0xc603b9d6bf7a9d97deee46643648fe06c6911c4de9e4660a239d4ba824ee9d33",
+      "timestamp": 1733944682000
+    },
+    "V4Quoter": {
+      "address": "0x5e6B8B8AFA7e5CEF6C09dd2A67aBA9FB12C75623",
+      "proxy": false,
+      "deploymentTxn": "0x19c9da6c977ace17e0a875500baf8186808f45e8e2bde2e670ed591e2c6bfa16",
+      "timestamp": 1793738112000,
+      "commitHash": "143ebc1"
+    }
+  },
+  "history": [
+    {
+      "timestamp": 1733944682000,
+      "contracts": {
+        "PoolManager": {
+          "address": "0x05E73354cFDd6745C338b50BcFDfA3Aa6fA03408",
+          "proxy": false,
+          "deploymentTxn": "0xc603b9d6bf7a9d97deee46643648fe06c6911c4de9e4660a239d4ba824ee9d33",
+          "input": {
+            "constructor": {
+              "initialOwner": "0x5b73C5498c1E3b4dbA84de0F1833c4a029d90519"
+            }
+          },
+          "note": "Pre-existing deployment (2024-12-11, deployer 0x7024cc7e60D6560f0B5877DA2bb921FCbF1f4375) that sdk-core and the developer docs publish; registered without a new broadcast."
+        }
+      }
+    },
+    {
+      "timestamp": 1793738112000,
+      "contracts": {
+        "V4Quoter": {
+          "address": "0x5e6B8B8AFA7e5CEF6C09dd2A67aBA9FB12C75623",
+          "proxy": false,
+          "deploymentTxn": "0x19c9da6c977ace17e0a875500baf8186808f45e8e2bde2e670ed591e2c6bfa16",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x05E73354cFDd6745C338b50BcFDfA3Aa6fA03408"
+            }
+          },
+          "commitHash": "143ebc1",
+          "note": "CREATE2 salt 0 via 0x4e59b44847b379578588920cA78FbF26c0B4956C, deployed with Ignite (run a1535eb5) from Uniswap/contracts 143ebc1; implements msgSender()."
+        }
+      }
+    }
+  ]
+}

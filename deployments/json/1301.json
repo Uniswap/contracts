@@ -57,11 +57,11 @@
       "timestamp": 1793737644000
     },
     "V4Quoter": {
-      "address": "0xb2b34025a07af3925313b6b46f8046ee8ffba30b",
+      "address": "0x572B9cDBcd8c2b8F3Fe849B9d250F35284455d7f",
       "proxy": false,
-      "deploymentTxn": "0x78146adcc717333a2b38865e840ecf2b984dfb8a7f22f8d16764c52b7416a446",
-      "timestamp": 1737578658000,
-      "commitHash": "77d52a7"
+      "deploymentTxn": "0x8f2ef97009df29936c15c4a71a497921941dfb8bc4ab52207c4ec26be2219efb",
+      "timestamp": 1793738113000,
+      "commitHash": "143ebc1"
     },
     "StateView": {
       "address": "0xc199f1072a74d4e905aba1a84d9a45e2546b6222",
@@ -547,6 +547,23 @@
             }
           },
           "note": "Pre-existing deployment (2024-12-11, CREATE2 via 0x4e59b44847b379578588920cA78FbF26c0B4956C, deployer 0x7024cc7e60D6560f0B5877DA2bb921FCbF1f4375) that sdk-core and the developer docs publish for Unichain Sepolia; registered without a new broadcast and replaces the PoolManager 0x9cb26a7183b2f4515945dc52cb4195b0d2d06c95 stack as latest."
+        }
+      }
+    },
+    {
+      "timestamp": 1793738113000,
+      "contracts": {
+        "V4Quoter": {
+          "address": "0x572B9cDBcd8c2b8F3Fe849B9d250F35284455d7f",
+          "proxy": false,
+          "deploymentTxn": "0x8f2ef97009df29936c15c4a71a497921941dfb8bc4ab52207c4ec26be2219efb",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x00B036B58a818B1BC34d502D3fE730Db729e62AC"
+            }
+          },
+          "commitHash": "143ebc1",
+          "note": "CREATE2 salt 0 via 0x4e59b44847b379578588920cA78FbF26c0B4956C, deployed with Ignite (run a1535eb5) from Uniswap/contracts 143ebc1; implements msgSender()."
         }
       }
     }
