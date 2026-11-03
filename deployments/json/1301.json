@@ -517,7 +517,7 @@
             "constructor": {
               "_poolManager": "0x00B036B58a818B1BC34d502D3fE730Db729e62AC",
               "_wrappedNative": "0x4200000000000000000000000000000000000006",
-              "_nativeCurrencyLabelBytes": "0x4554480000000000000000000000000000000000000000000000000000000000"
+              "_nativeCurrencyLabel": "ETH"
             }
           },
           "note": "Pre-existing deployment (2024-12-11, CREATE2 via 0x4e59b44847b379578588920cA78FbF26c0B4956C, deployer 0x7024cc7e60D6560f0B5877DA2bb921FCbF1f4375) that sdk-core and the developer docs publish for Unichain Sepolia; registered without a new broadcast and replaces the PoolManager 0x9cb26a7183b2f4515945dc52cb4195b0d2d06c95 stack as latest."
