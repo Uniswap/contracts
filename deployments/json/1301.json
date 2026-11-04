@@ -38,50 +38,36 @@
       "timestamp": 1737578658000,
       "commitHash": "77d52a7"
     },
-    "NFTDescriptor": {
-      "address": "0x2e9d45bb7b30549f5216813ada9a6b7982c5b3ed",
-      "proxy": false,
-      "deploymentTxn": "0x4c6469b634c0bf639d5378f34b3921036ebfc8325b2f7ea72035b989baa645c4",
-      "timestamp": 1737578658000,
-      "commitHash": "77d52a7"
-    },
     "PoolManager": {
-      "address": "0x9cb26a7183b2f4515945dc52cb4195b0d2d06c95",
+      "address": "0x00b036b58a818b1bc34d502d3fe730db729e62ac",
       "proxy": false,
-      "deploymentTxn": "0x80dc9fcf2bf641b132aa848faf58fa1b2ae325bbe52ce49b2b339d8eaf35f392",
-      "timestamp": 1737578658000,
-      "commitHash": "77d52a7"
+      "deploymentTxn": "0xedf798170abac5e1bf0a4a3b3ec6ad846a43b53316d2bf34a0f4207c962ed10d",
+      "timestamp": 1793737644000
     },
     "PositionDescriptor": {
-      "address": "0xc4fe8f6cc445fb3f8921cee75830f248a1d1da2f",
-      "implementation": "0x06e356052ae91916fc95a1e65544d0ed60a49632",
-      "proxy": true,
-      "proxyType": "TransparentUpgradeableProxy",
-      "deploymentTxn": "0x8e2dea22951b012a77ebd82b3dac1c95db7f1686ebf3c13bd68fe08448bd7bb8",
-      "proxyAdmin": null,
-      "timestamp": 1737578658000,
-      "commitHash": "77d52a7"
+      "address": "0x4df053553a53d976f82fbcf2a5c7a343e4eb84fa",
+      "proxy": false,
+      "deploymentTxn": "0x24a288750f4195b78df74e96108d9c9deab618a7cce5c01569c3fbcc712675be",
+      "timestamp": 1793737644000
     },
     "PositionManager": {
-      "address": "0x12a98709bb5d0641d61458f85dcafbe17ac2d05c",
+      "address": "0xf969aee60879c54baaed9f3ed26147db216fd664",
       "proxy": false,
-      "deploymentTxn": "0x12e8bb585f23cc0eccf248918c93f2c4acc771f993db4c0a850c744dad5509fa",
-      "timestamp": 1737578658000,
-      "commitHash": "77d52a7"
+      "deploymentTxn": "0x5ca7582035697c5c7dbd398315ad9fafeddcbad64cf298c7eb8ba3408ec5e5ab",
+      "timestamp": 1793737644000
     },
     "V4Quoter": {
-      "address": "0xb2b34025a07af3925313b6b46f8046ee8ffba30b",
+      "address": "0x572B9cDBcd8c2b8F3Fe849B9d250F35284455d7f",
       "proxy": false,
-      "deploymentTxn": "0x78146adcc717333a2b38865e840ecf2b984dfb8a7f22f8d16764c52b7416a446",
-      "timestamp": 1737578658000,
-      "commitHash": "77d52a7"
+      "deploymentTxn": "0x8f2ef97009df29936c15c4a71a497921941dfb8bc4ab52207c4ec26be2219efb",
+      "timestamp": 1793738113000,
+      "commitHash": "143ebc1"
     },
     "StateView": {
-      "address": "0x792d13207744f132943cdde4d37ec89f20ae3b0d",
+      "address": "0xc199f1072a74d4e905aba1a84d9a45e2546b6222",
       "proxy": false,
-      "deploymentTxn": "0x0a50102128ad120a0d1b87e3aee576bf0de2133f1d7c2bf548bcb6a301103945",
-      "timestamp": 1737578658000,
-      "commitHash": "77d52a7"
+      "deploymentTxn": "0xe7600bafed08a3571fe77d38a840efa78e493787511929a88f86bb7b225cec00",
+      "timestamp": 1793737644000
     },
     "Quoter": {
       "address": "0x81efdb2af4fb1a556c33a5dd4ecfeedb970fc034",
@@ -508,6 +494,78 @@
       },
       "timestamp": 1783981690000,
       "commitHash": "b08eb66"
+    },
+    {
+      "timestamp": 1793737644000,
+      "contracts": {
+        "PoolManager": {
+          "address": "0x00b036b58a818b1bc34d502d3fe730db729e62ac",
+          "proxy": false,
+          "deploymentTxn": "0xedf798170abac5e1bf0a4a3b3ec6ad846a43b53316d2bf34a0f4207c962ed10d",
+          "input": {
+            "constructor": {
+              "initialOwner": "0x5b73C5498c1E3b4dbA84de0F1833c4a029d90519"
+            }
+          },
+          "note": "Pre-existing deployment (2024-12-11, deployer 0x7024cc7e60D6560f0B5877DA2bb921FCbF1f4375) that sdk-core and the developer docs publish for Unichain Sepolia; registered without a new broadcast and replaces the PoolManager 0x9cb26a7183b2f4515945dc52cb4195b0d2d06c95 stack as latest."
+        },
+        "PositionDescriptor": {
+          "address": "0x4df053553a53d976f82fbcf2a5c7a343e4eb84fa",
+          "proxy": false,
+          "deploymentTxn": "0x24a288750f4195b78df74e96108d9c9deab618a7cce5c01569c3fbcc712675be",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x00B036B58a818B1BC34d502D3fE730Db729e62AC",
+              "_wrappedNative": "0x4200000000000000000000000000000000000006",
+              "_nativeCurrencyLabel": "ETH"
+            }
+          },
+          "note": "Pre-existing deployment (2024-12-11, CREATE2 via 0x4e59b44847b379578588920cA78FbF26c0B4956C, deployer 0x7024cc7e60D6560f0B5877DA2bb921FCbF1f4375) that sdk-core and the developer docs publish for Unichain Sepolia; registered without a new broadcast and replaces the PoolManager 0x9cb26a7183b2f4515945dc52cb4195b0d2d06c95 stack as latest."
+        },
+        "PositionManager": {
+          "address": "0xf969aee60879c54baaed9f3ed26147db216fd664",
+          "proxy": false,
+          "deploymentTxn": "0x5ca7582035697c5c7dbd398315ad9fafeddcbad64cf298c7eb8ba3408ec5e5ab",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x00B036B58a818B1BC34d502D3fE730Db729e62AC",
+              "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+              "_unsubscribeGasLimit": "300000",
+              "_tokenDescriptor": "0x4DF053553A53d976f82FBCF2A5C7A343e4eB84fA",
+              "_weth9": "0x4200000000000000000000000000000000000006"
+            }
+          },
+          "note": "Pre-existing deployment (2024-12-11, CREATE2 via 0x4e59b44847b379578588920cA78FbF26c0B4956C, deployer 0x7024cc7e60D6560f0B5877DA2bb921FCbF1f4375) that sdk-core and the developer docs publish for Unichain Sepolia; registered without a new broadcast and replaces the PoolManager 0x9cb26a7183b2f4515945dc52cb4195b0d2d06c95 stack as latest."
+        },
+        "StateView": {
+          "address": "0xc199f1072a74d4e905aba1a84d9a45e2546b6222",
+          "proxy": false,
+          "deploymentTxn": "0xe7600bafed08a3571fe77d38a840efa78e493787511929a88f86bb7b225cec00",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x00B036B58a818B1BC34d502D3fE730Db729e62AC"
+            }
+          },
+          "note": "Pre-existing deployment (2024-12-11, CREATE2 via 0x4e59b44847b379578588920cA78FbF26c0B4956C, deployer 0x7024cc7e60D6560f0B5877DA2bb921FCbF1f4375) that sdk-core and the developer docs publish for Unichain Sepolia; registered without a new broadcast and replaces the PoolManager 0x9cb26a7183b2f4515945dc52cb4195b0d2d06c95 stack as latest."
+        }
+      }
+    },
+    {
+      "timestamp": 1793738113000,
+      "contracts": {
+        "V4Quoter": {
+          "address": "0x572B9cDBcd8c2b8F3Fe849B9d250F35284455d7f",
+          "proxy": false,
+          "deploymentTxn": "0x8f2ef97009df29936c15c4a71a497921941dfb8bc4ab52207c4ec26be2219efb",
+          "input": {
+            "constructor": {
+              "_poolManager": "0x00B036B58a818B1BC34d502D3fE730Db729e62AC"
+            }
+          },
+          "commitHash": "143ebc1",
+          "note": "CREATE2 salt 0 via 0x4e59b44847b379578588920cA78FbF26c0B4956C, deployed with Ignite (run a1535eb5) from Uniswap/contracts 143ebc1; implements msgSender()."
+        }
+      }
     }
   ]
 }
