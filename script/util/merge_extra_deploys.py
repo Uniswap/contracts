@@ -12,10 +12,16 @@ ran from and never the record commit, and it survives every merge mode.
 
 The base commit is pinned in the config (base_commit) so reruns after merge do not rewrite it. An extra built from
 another repository (a router from Uniswap/universal-router, a factory from Uniswap/v4-periphery) can instead cite that
-repository's commit with its own "commitHash"; it is kept as is. "aliases" points extra latest keys at an existing
-one (e.g. the unversioned UniversalRouter key at UniversalRouter#v2.1.2).
+repository's commit with its own "commitHash" plus "repo" (e.g. Uniswap/universal-router); the commit must exist there
+and is kept as is. An extra whose name is already a history key elsewhere is recorded in its own history entry as
+<name>#<initcodeHash[:8]>, as chronicles does. "aliases" points extra latest keys at an existing one (e.g. the
+unversioned UniversalRouter key at UniversalRouter#v2.1.2).
+
+--relink-md runs after chronicles has regenerated deployments/<chain>.md and points the commit links of those extras
+at their own repository instead of this one.
 
 Usage: merge_extra_deploys.py <rpc-url> <chainId> <extra-deploys.json>
+       merge_extra_deploys.py --relink-md <chainId> <extra-deploys.json>
 """
 import json, os, subprocess, sys
 
@@ -35,6 +41,15 @@ def on_main(c):
 
 if len(sys.argv) != 4:
     sys.exit(__doc__)
+if sys.argv[1] == "--relink-md":
+    chain, cfg_path = sys.argv[2:4]
+    md = f"deployments/{chain}.md"
+    text = open(md).read()
+    for x in json.load(open(cfg_path))["extra"]:
+        if x.get("commitHash"):
+            text = text.replace(f"https://github.com/Uniswap/contracts/commit/{x['commitHash']}", f"https://github.com/{x['repo']}/commit/{x['commitHash']}")
+    open(md, "w").write(text)
+    sys.exit(0)
 rpc, chain, cfg_path = sys.argv[1:4]
 if subprocess.run(["git", "rev-parse", "--verify", "-q", "origin/main"], capture_output=True).returncode != 0:
     sys.exit("origin/main not available; fetch it first")
@@ -48,8 +63,9 @@ if not on_main(commit):
 # idempotent: strip anything a previous run of this script added before re-adding it
 extra_addrs = {x["address"].lower() for x in cfg["extra"]}
 extra_runs = {x["run"] for x in cfg["extra"] if x.get("run") != "deploy-all"}
-for k in [k for k, e in reg["latest"].items() if e["address"].lower() in extra_addrs]:
-    del reg["latest"][k]
+extra_names = {x["name"] for x in cfg["extra"]}
+for k in [k for k, e in reg["latest"].items() if e["address"].lower() in extra_addrs and k not in extra_names]:
+    del reg["latest"][k]  # keys that are re-added below are overwritten in place, so reruns keep the key order
 for k in cfg.get("aliases", {}):
     reg["latest"].pop(k, None)
 reg["history"] = [hh for hh in reg["history"] if hh.get("note") not in extra_runs]
@@ -95,6 +111,8 @@ for x in cfg["extra"]:
         latest["timestamp"] = target["timestamp"]  # chronicles stamps latest with the run timestamp
     else:
         if x.get("commitHash"):
+            if subprocess.run(["gh", "api", f"repos/{x['repo']}/commits/{x['commitHash']}"], capture_output=True).returncode != 0:
+                sys.exit(f"{x['name']}: commit {x['commitHash']} not found in {x.get('repo')}")
             latest["commitHash"] = x["commitHash"]
             own_commits.add(x["commitHash"])
         elif not x.get("nocommit"):
@@ -103,12 +121,16 @@ for x in cfg["extra"]:
     reg["latest"][x["name"]] = latest
     if x.get("run") == "deploy-all":
         continue
-    r = runs.setdefault(x["run"], {"contracts": {}, "timestamp": 0, "nocommit": x.get("nocommit", False), "commit": x.get("commitHash", commit)})
-    r["contracts"][x["name"]] = hist
+    r = runs.setdefault(x["run"], {"contracts": {}, "timestamp": 0, "nocommit": x.get("nocommit", False), "commit": x.get("commitHash", commit), "names": []})
+    hkey = x["name"]
+    if any(hkey in hh["contracts"] for hh in reg["history"]):
+        hkey = f"{hkey}#{h[:8]}"
+    r["contracts"][hkey] = hist
+    r["names"].append(x["name"])
     r["timestamp"] = max(r["timestamp"], ts)
 
 for label, r in runs.items():
-    for k in r["contracts"]:  # latest and history carry the same run timestamp, as chronicles does
+    for k in r["names"]:  # latest and history carry the same run timestamp, as chronicles does
         reg["latest"][k]["timestamp"] = r["timestamp"]
     h = {"contracts": r["contracts"], "timestamp": r["timestamp"], "note": label}
     if not r["nocommit"]:
