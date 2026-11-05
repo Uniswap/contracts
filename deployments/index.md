@@ -6,7 +6,6 @@ This repository contains deployment information for the following networks:
 |----------|--------------|-------------------|
 | 1 | Ethereum Mainnet | [View Deployment](./1.md) |
 | 10 | OP Mainnet | [View Deployment](./10.md) |
-| 30 | Rootstock Mainnet | [View Deployment](./30.md) |
 | 56 | BNB Smart Chain Mainnet | [View Deployment](./56.md) |
 | 130 | Unichain | [View Deployment](./130.md) |
 | 137 | Polygon Mainnet | [View Deployment](./137.md) |
