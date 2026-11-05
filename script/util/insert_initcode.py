@@ -473,9 +473,10 @@ def read_initcode_function(sol_file_path: str) -> str:
 
 def canonical_initcode(function_code: str) -> Tuple[frozenset, str]:
     """
-    Reduces an initcode() function to (parameter set, body without whitespace), so a
-    forge-fmt'd deployer compares equal to freshly generated code. Parameters are a set
-    because generate_solidity_initcode_function does not order them deterministically.
+    Reduces an initcode() function to (parameter set, body without whitespace and with
+    lowercase hex), so a forge-fmt'd deployer compares equal to freshly generated code.
+    Parameters are a set because generate_solidity_initcode_function does not order them
+    deterministically.
     """
     match = INITCODE_PARTS_PATTERN.search(function_code)
     if not match:
@@ -483,7 +484,10 @@ def canonical_initcode(function_code: str) -> Tuple[frozenset, str]:
     params = frozenset(
         " ".join(param.split()) for param in match.group(1).split(",") if param.strip()
     )
-    return params, re.sub(r"\s+", "", match.group(2))
+    body = re.sub(r"\s+", "", match.group(2))
+    # hex digit case does not change the bytes
+    body = HEX_LITERAL_PATTERN.sub(lambda m: f"hex'{m.group(1).lower()}'", body)
+    return params, body
 
 
 def describe_mismatch(current_function: str, expected_function: str) -> str:
@@ -620,7 +624,8 @@ def process_directory(
                         error_count += 1
                         error_files[relative_path] = (
                             "initcode differs from the build, regenerate it with "
-                            "./script/util/create_briefcase.sh"
+                            "`forge build && python3 script/util/insert_initcode.py "
+                            "src/briefcase/deployers out`"
                         )
                 except (ValueError, RuntimeError) as e:
                     # Catch errors specific to processing logic (already logged in functions)
@@ -691,6 +696,10 @@ if __name__ == "__main__":
     logging.info("-" * 60)
 
     processed_count, error_count = process_directory(src_dir, json_dir, args.check)
+    if args.check and processed_count == 0:
+        # a check that compared nothing must not pass
+        logging.critical(f"Error: no deployers were checked under {src_dir}")
+        sys.exit(1)
     if error_count > 0:
         sys.exit(1)
     else:

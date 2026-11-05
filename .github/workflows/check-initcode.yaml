@@ -1,5 +1,6 @@
-# fails a PR when a briefcase deployer's initcode() no longer matches what the pinned sources compile
-# to, so Deploy-all cannot ship a stale build; frozen deployers are listed in insert_initcode.py
+# flags a PR when a briefcase deployer's initcode() no longer matches what the pinned sources compile
+# to, which is how Deploy-all would ship a stale build; skipped deployers (FROZEN_DEPLOYERS and
+# CHECK_EXEMPT_DEPLOYERS) are listed with their reasons in script/util/insert_initcode.py
 
 name: check-initcode
 on:
