@@ -147,7 +147,7 @@
       "initcodeHash": "5e3e169b289f974497fbaa9f4bc1149e29890e04bb61828a6a8ee12ab666cc07",
       "timestamp": 1793680972000,
       "commitHash": "9969eec",
-      "note": "v4-periphery 9969eec; supersedes 0x3fedad0abb1ee1066672e93999b672036fd98a10 (Deploy-all, built from stale briefcase initcode)"
+      "note": "v4-periphery 9969eec; supersedes 0x3fedad0abb1ee1066672e93999b672036fd98a10 (Deploy-all, built from stale briefcase initcode), which must not be used or allowlisted"
     },
     "MixedRouteQuoterV2": {
       "address": "0x976183ac3d09840d243a88c0268badb3b3e3259f",
@@ -224,7 +224,7 @@
       "initcodeHash": "80ffc424c97e5c71f6c31eb18d44d04d7292c8c3c5b380cdf0c32ae5ee8e7f31",
       "timestamp": 1793681074000,
       "commitHash": "64027f3",
-      "note": "universal-router 2.2.0 (tag at 64027f3); permissionsAdapterFactory 0xdCD9f4e8972F619B325B0C3109412dFC4D184734; supersedes 0x1bd4d69bfb8927a045f20518a08390cee3913b0d (Deploy-all, built against the superseded factory)"
+      "note": "universal-router 2.2.0 (tag at 64027f3); permissionsAdapterFactory 0xdCD9f4e8972F619B325B0C3109412dFC4D184734; supersedes 0x1bd4d69bfb8927a045f20518a08390cee3913b0d (Deploy-all, built against the superseded factory), which must not be used or allowlisted in a permissioned hook"
     },
     "UniversalRouter": {
       "address": "0xa13f7611115752deb2b13813bdde16a5073e4b45",
@@ -269,7 +269,7 @@
     },
     {
       "contracts": {
-        "PermissionsAdapterFactory": {
+        "PermissionsAdapterFactory#5e3e169b": {
           "address": "0xdcd9f4e8972f619b325b0c3109412dfc4d184734",
           "proxy": false,
           "deploymentTxn": "0x361f9e915174ed749d3f0bfc04e133fc920824b4c59b4ee803501ab2aa0d5db8",

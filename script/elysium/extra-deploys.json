@@ -57,6 +57,7 @@
             "deploymentTxn": "0x73e48145f1764a76e4be4b2b04306e93c4744bda57d4515e17e1e1f378318f9f",
             "run": "universal-router 2.1.2 (tag at 802fe4c)",
             "commitHash": "802fe4c",
+            "repo": "Uniswap/universal-router",
             "check": ["SPOKE_POOL()(address)", "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"],
             "input": {
                 "constructor": {
@@ -81,8 +82,9 @@
             "deploymentTxn": "0x361f9e915174ed749d3f0bfc04e133fc920824b4c59b4ee803501ab2aa0d5db8",
             "run": "v4-periphery PermissionsAdapterFactory (9969eec)",
             "commitHash": "9969eec",
+            "repo": "Uniswap/v4-periphery",
             "check": ["POOL_MANAGER()(address)", "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"],
-            "note": "v4-periphery 9969eec; supersedes 0x3fedad0abb1ee1066672e93999b672036fd98a10 (Deploy-all, built from stale briefcase initcode)",
+            "note": "v4-periphery 9969eec; supersedes 0x3fedad0abb1ee1066672e93999b672036fd98a10 (Deploy-all, built from stale briefcase initcode), which must not be used or allowlisted",
             "input": {
                 "constructor": {
                     "poolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"
@@ -95,8 +97,9 @@
             "deploymentTxn": "0x6f153f218048b782a6e92f4fe6f7bf9f7443bc9d37114a391773734efa54bbeb",
             "run": "universal-router 2.2.0 (tag at 64027f3)",
             "commitHash": "64027f3",
+            "repo": "Uniswap/universal-router",
             "check": ["PERMISSIONS_ADAPTER_FACTORY()(address)", "0xdCD9f4e8972F619B325B0C3109412dFC4D184734"],
-            "note": "universal-router 2.2.0 (tag at 64027f3); permissionsAdapterFactory 0xdCD9f4e8972F619B325B0C3109412dFC4D184734; supersedes 0x1bd4d69bfb8927a045f20518a08390cee3913b0d (Deploy-all, built against the superseded factory)",
+            "note": "universal-router 2.2.0 (tag at 64027f3); permissionsAdapterFactory 0xdCD9f4e8972F619B325B0C3109412dFC4D184734; supersedes 0x1bd4d69bfb8927a045f20518a08390cee3913b0d (Deploy-all, built against the superseded factory), which must not be used or allowlisted in a permissioned hook",
             "input": {
                 "constructor": {
                     "params": {
