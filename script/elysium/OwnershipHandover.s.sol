@@ -30,14 +30,19 @@ interface IWormholeCore {
 
 /// @title Elysium ownership handover
 /// @notice Moves the five admin roles of the Elysium (chain 99901) deployment from the deployer to the Uniswap
-///         governance UniswapWormholeMessageReceiver. Every transfer is single step and irreversible, so the script
-///         checks everything before sending anything:
-///           - the receiver has code, trusts the canonical Ethereum UniswapWormholeMessageSender, accepts Wormhole
-///             chain id 74 (Elysium) and is bound to the Elysium Wormhole core
+///         governance UniswapWormholeMessageReceiver. Every transfer is single step and cannot be undone by the
+///         deployer, so the script checks everything before sending anything:
+///           - the receiver has code, its messageSender is the canonical Ethereum UniswapWormholeMessageSender, its
+///             chainId is 74 (Elysium), and its runtime code embeds the Elysium Wormhole core address
 ///           - each descriptor ProxyAdmin still matches the ERC1967 admin slot of its proxy
+///           - every constant below matches deployments/json/99901.json, when that file exists
 ///           - each role is held by the deployer (pending) or already by the receiver (skipped); any other holder
 ///             aborts the run before the first transaction
-///         and after broadcasting asserts that the receiver holds all five roles. A second run is a no-op.
+///         and then asserts the simulated post-state: the receiver holds all five roles. A second run is a no-op, so
+///         rerunning the simulation after the broadcast confirms the onchain result.
+///
+///         The getter checks cannot tell a UniswapWormholeMessageReceiver from another contract exposing the same
+///         values, so also confirm the receiver is exact-match verified on the Elysium explorer before broadcasting.
 ///
 ///         Roles:
 ///           v2 Factory                  setFeeToSetter(receiver)
@@ -49,9 +54,13 @@ interface IWormholeCore {
 ///         Usage (GOVERNANCE_RECEIVER is the deployed UniswapWormholeMessageReceiver on Elysium):
 ///           Simulate:  GOVERNANCE_RECEIVER=<receiver> forge script script/elysium/OwnershipHandover.s.sol \
 ///                        --rpc-url <elysium-rpc> --sender 0x2179a60856E37dfeAacA0ab043B931fE224b27B6
-///           Broadcast: add --broadcast --legacy and the deployer signer (e.g. --account <keystore>)
+///           Broadcast: add --broadcast --slow --legacy and the deployer signer (e.g. --account <keystore>);
+///                      Elysium has no eth_feeHistory, hence --legacy
+///           Confirm:   rerun Simulate; expect 'Nothing to do' and the all-five assertion against chain state
 ///           Manual:    GOVERNANCE_RECEIVER=<receiver> forge script script/elysium/OwnershipHandover.s.sol \
 ///                        --rpc-url <elysium-rpc> --sig 'printCalldata()'
+///                      then `cast send --legacy <to> <data>` from the deployer for each printed role
+///         Fork test: test/ElysiumOwnershipHandover.t.sol
 contract ElysiumOwnershipHandover is Script {
     struct Role {
         string name;
@@ -67,7 +76,7 @@ contract ElysiumOwnershipHandover is Script {
     /// @dev deployer of the Elysium Deploy-all broadcast and current holder of every role
     address internal constant EXPECTED_DEPLOYER = 0x2179a60856E37dfeAacA0ab043B931fE224b27B6;
 
-    // Deploy-all broadcast on Elysium, verified on the Elysium Blockscout explorer
+    // Deploy-all broadcast on Elysium; cross-checked against deployments/json/99901.json by _checkRecords
     address internal constant V2_FACTORY = 0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2;
     address internal constant V3_FACTORY = 0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f;
     address internal constant POOL_MANAGER = 0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1;
@@ -81,16 +90,20 @@ contract ElysiumOwnershipHandover is Script {
     /// @dev bytes32(uint256(keccak256('eip1967.proxy.admin')) - 1)
     bytes32 internal constant ERC1967_ADMIN_SLOT = 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103;
 
-    /// @dev Wormhole core bridge on Elysium
+    /// @dev Wormhole core bridge on Elysium, the address the receiver's DeployReceiver args use; answers chainId() 74
     address internal constant WORMHOLE_CORE = 0xC8aD24fC6063c41cB5C12a8e3851AafC3b3CF027;
     uint16 internal constant WORMHOLE_ELYSIUM_CHAIN_ID = 74;
     uint16 internal constant WORMHOLE_ETHEREUM_CHAIN_ID = 2;
 
-    /// @dev UniswapWormholeMessageSender on Ethereum (called by the Uniswap Timelock), in Wormhole format
+    /// @dev UniswapWormholeMessageSender on Ethereum (called by the Uniswap Timelock), in Wormhole format; the same
+    ///      sender the HyperEVM receiver trusts (script/hyperevm/README.md)
     bytes32 internal constant MESSAGE_SENDER = bytes32(uint256(uint160(0xf5F4496219F31CDCBa6130B5402873624585615a)));
 
     function run() public {
-        address receiver = vm.envAddress('GOVERNANCE_RECEIVER');
+        run(vm.envAddress('GOVERNANCE_RECEIVER'));
+    }
+
+    function run(address receiver) public {
         _preflight(receiver);
 
         Role[] memory roles = _roles(receiver);
@@ -115,26 +128,32 @@ contract ElysiumOwnershipHandover is Script {
         }
 
         _assertHandedOver(roles, receiver);
-        console.log('All five roles are held by the receiver:', receiver);
+        console.log('Simulated post-state: all five roles are held by the receiver', receiver);
     }
 
     /// @notice Prints target and calldata for every role still held by the deployer, for sending by hand
-    ///         (e.g. `cast send <target> <calldata>` from the deployer). Runs the same checks as `run()`.
+    ///         (e.g. `cast send <target> <calldata>` from the deployer). Runs the same pre-checks as `run()`.
     function printCalldata() public view {
-        address receiver = vm.envAddress('GOVERNANCE_RECEIVER');
+        printCalldata(vm.envAddress('GOVERNANCE_RECEIVER'));
+    }
+
+    function printCalldata(address receiver) public view {
         _preflight(receiver);
 
         Role[] memory roles = _roles(receiver);
         bool[] memory pending = _pendingRoles(roles, receiver);
 
         console.log('From:', EXPECTED_DEPLOYER);
+        uint256 count;
         for (uint256 i; i < roles.length; i++) {
             if (!pending[i]) continue;
+            count++;
             console.log('');
             console.log(roles[i].name);
             console.log('  to:  ', roles[i].target);
             console.log('  data:', vm.toString(roles[i].data));
         }
+        if (count == 0) console.log('Nothing to do: the receiver already holds every role');
     }
 
     /// @notice Chain, receiver and ProxyAdmin checks shared by `run()` and `printCalldata()`
@@ -143,12 +162,14 @@ contract ElysiumOwnershipHandover is Script {
         _checkReceiver(receiver);
         _checkProxyAdmin(V3_NFT_DESCRIPTOR_PROXY, V3_NFT_DESCRIPTOR_PROXY_ADMIN);
         _checkProxyAdmin(V4_POSITION_DESCRIPTOR_PROXY, V4_POSITION_DESCRIPTOR_PROXY_ADMIN);
+        _checkRecords();
         console.log('Chain:', block.chainid);
         console.log('Receiver:', receiver);
     }
 
-    /// @notice Rejects any receiver that could not execute governance proposals on Elysium
+    /// @notice Rejects receivers whose sender, chain ids or Wormhole core do not match
     function _checkReceiver(address receiver) internal view {
+        // receiver == deployer would make every role look handed over and turn the run into a silent no-op
         require(receiver != address(0) && receiver != EXPECTED_DEPLOYER, 'Receiver is zero or the deployer');
         require(receiver.code.length > 0, 'Receiver has no code');
 
@@ -163,6 +184,27 @@ contract ElysiumOwnershipHandover is Script {
             _codeContainsWord(receiver.code, bytes32(uint256(uint160(WORMHOLE_CORE)))),
             'Receiver is not bound to the Elysium Wormhole core'
         );
+    }
+
+    /// @notice Keeps the constants and the deployment record from drifting apart once the record lands
+    function _checkRecords() internal view {
+        string memory json;
+        try vm.readFile('deployments/json/99901.json') returns (string memory contents) {
+            json = contents;
+        } catch {
+            return;
+        }
+        _checkRecord(json, '.latest.UniswapV2Factory.address', V2_FACTORY);
+        _checkRecord(json, '.latest.UniswapV3Factory.address', V3_FACTORY);
+        _checkRecord(json, '.latest.PoolManager.address', POOL_MANAGER);
+        _checkRecord(json, '.latest.NonfungibleTokenPositionDescriptor.address', V3_NFT_DESCRIPTOR_PROXY);
+        _checkRecord(json, '.latest.NonfungibleTokenPositionDescriptor.proxyAdmin', V3_NFT_DESCRIPTOR_PROXY_ADMIN);
+        _checkRecord(json, '.latest.PositionDescriptor.address', V4_POSITION_DESCRIPTOR_PROXY);
+        _checkRecord(json, '.latest.PositionDescriptor.proxyAdmin', V4_POSITION_DESCRIPTOR_PROXY_ADMIN);
+    }
+
+    function _checkRecord(string memory json, string memory key, address expected) internal pure {
+        require(vm.parseJsonAddress(json, key) == expected, string.concat('Deployment record mismatch at ', key));
     }
 
     function _checkProxyAdmin(address proxy, address expectedAdmin) internal view {
