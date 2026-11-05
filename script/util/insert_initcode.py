@@ -30,21 +30,15 @@ VERSION_KEY = "version"
 
 # Deployers whose initcode() is intentionally not generated from the current source build,
 # keyed by path relative to the deployers directory. Both insert and --check skip them and log
-# the reason. Frozen bytes that live in a separate function (UniswapV2FactoryDeployer's
-# legacyInitcode()) need no entry: only initcode() is ever generated or checked.
+# the reason.
 FROZEN_DEPLOYERS: Dict[str, str] = {
     "universal-router/SwapProxyDeployer.sol": (
         "canonical CREATE2 address is locked to the standalone universal-router build "
         "(bytecode_hash = ipfs), which this repo's bytecode_hash = none build cannot reproduce"
     ),
-}
-
-# Deployers that create_briefcase.sh still regenerates but --check cannot compare, keyed like
-# FROZEN_DEPLOYERS. Their build output differs per machine, so a byte comparison would always fail.
-CHECK_EXEMPT_DEPLOYERS: Dict[str, str] = {
     "v2-core/UniswapV2FactoryDeployer.sol": (
-        "solc 0.5.16 ignores bytecode_hash = none, so the trailing metadata hash depends on the "
-        "checkout path; deploy() uses the frozen legacyInitcode() instead"
+        "deploy() uses the frozen legacyInitcode(); initcode() cannot be reproduced because "
+        "solc 0.5.16 ignores bytecode_hash = none and its metadata hash depends on the checkout path"
     ),
 }
 
@@ -608,9 +602,7 @@ def process_directory(
                 deployer_file_path = os.path.join(root, file)
                 relative_path = os.path.relpath(deployer_file_path, src_directory)
                 deployer_key = relative_path.replace(os.sep, "/")
-                skip_reason = FROZEN_DEPLOYERS.get(deployer_key) or (
-                    CHECK_EXEMPT_DEPLOYERS.get(deployer_key) if check else None
-                )
+                skip_reason = FROZEN_DEPLOYERS.get(deployer_key)
                 if skip_reason:
                     logging.info(f"Skipping {relative_path}: {skip_reason}")
                     logging.info("-" * 60)
@@ -625,7 +617,7 @@ def process_directory(
                         error_files[relative_path] = (
                             "initcode differs from the build, regenerate it with "
                             "`forge build && python3 script/util/insert_initcode.py "
-                            "src/briefcase/deployers out`"
+                            "src/briefcase/deployers out && forge fmt src/briefcase/deployers`"
                         )
                 except (ValueError, RuntimeError) as e:
                     # Catch errors specific to processing logic (already logged in functions)

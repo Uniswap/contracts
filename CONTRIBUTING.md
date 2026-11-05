@@ -135,7 +135,7 @@ After creating the deployer file, it's important to update the `Source Contract`
 
 Finally, run `./script/util/create_briefcase.sh` to generate the initcode for the deployer and populate the bytecode in the initcode function.
 
-The `check-initcode` workflow reports a failing check on a pull request when any deployer's `initcode()` differs from what the pinned sources compile to (run it locally with `forge build && python3 script/util/insert_initcode.py --check src/briefcase/deployers out`). To refresh only the deployers, run `forge build && python3 script/util/insert_initcode.py src/briefcase/deployers out`. A deployer whose bytes must not follow the source build goes in `FROZEN_DEPLOYERS` in `script/util/insert_initcode.py` (skipped by both modes); one whose build output differs per machine goes in `CHECK_EXEMPT_DEPLOYERS` (still regenerated, not checked). Give the reason in either case.
+The `check-initcode` workflow reports a failing check on a pull request when any deployer's `initcode()` differs from what the pinned sources compile to (run it locally with `forge build && python3 script/util/insert_initcode.py --check src/briefcase/deployers out`). To regenerate only the deployers, run `forge build && python3 script/util/insert_initcode.py src/briefcase/deployers out && forge fmt src/briefcase/deployers`. A deployer whose bytes must not follow the source build goes in `FROZEN_DEPLOYERS` in `script/util/insert_initcode.py` with the reason; both modes skip it.
 
 ### 2. Add the contract to the task template
 
