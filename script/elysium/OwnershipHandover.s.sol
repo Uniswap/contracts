@@ -100,10 +100,11 @@ contract ElysiumOwnershipHandover is Script {
     bytes32 internal constant MESSAGE_SENDER = bytes32(uint256(uint160(0xf5F4496219F31CDCBa6130B5402873624585615a)));
 
     function run() public {
-        run(vm.envAddress('GOVERNANCE_RECEIVER'));
+        handover(vm.envAddress('GOVERNANCE_RECEIVER'));
     }
 
-    function run(address receiver) public {
+    /// @notice Same as `run()` with the receiver passed in, e.g. `--sig 'handover(address)' <receiver>`
+    function handover(address receiver) public {
         _preflight(receiver);
 
         Role[] memory roles = _roles(receiver);
@@ -134,10 +135,10 @@ contract ElysiumOwnershipHandover is Script {
     /// @notice Prints target and calldata for every role still held by the deployer, for sending by hand
     ///         (e.g. `cast send <target> <calldata>` from the deployer). Runs the same pre-checks as `run()`.
     function printCalldata() public view {
-        printCalldata(vm.envAddress('GOVERNANCE_RECEIVER'));
+        printCalldataFor(vm.envAddress('GOVERNANCE_RECEIVER'));
     }
 
-    function printCalldata(address receiver) public view {
+    function printCalldataFor(address receiver) public view {
         _preflight(receiver);
 
         Role[] memory roles = _roles(receiver);

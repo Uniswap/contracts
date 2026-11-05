@@ -49,81 +49,81 @@ contract ElysiumOwnershipHandoverTest is Test {
     address constant V3_NFT_DESCRIPTOR_PROXY_ADMIN = 0x740eE255852f114b18B9B94aE754Ae6f8413897d;
     address constant V4_POSITION_DESCRIPTOR_PROXY_ADMIN = 0x031B9Eb5d9E5610f57b095C1003346b9928e1566;
 
-    ElysiumOwnershipHandover handover;
+    ElysiumOwnershipHandover handoverScript;
     address receiver;
 
     function setUp() public {
         require(block.chainid == CHAIN_ID, 'run with --fork-url pointing at Elysium (chain 99901)');
         require(IHolders(V2_FACTORY).feeToSetter() == DEPLOYER, 'fork must predate the handover');
-        handover = new ElysiumOwnershipHandover();
+        handoverScript = new ElysiumOwnershipHandover();
         receiver = address(new MockWormholeReceiver(WORMHOLE_CORE, MESSAGE_SENDER, 74));
     }
 
-    function test_run_handsAllFiveRolesToReceiver() public {
-        handover.run(receiver);
+    function test_handover_handsAllFiveRolesToReceiver() public {
+        handoverScript.handover(receiver);
         _assertHolders(receiver);
     }
 
-    function test_run_secondRunIsNoOp() public {
-        handover.run(receiver);
+    function test_handover_secondRunIsNoOp() public {
+        handoverScript.handover(receiver);
         vm.recordLogs();
-        handover.run(receiver);
+        handoverScript.handover(receiver);
         // the second run broadcasts nothing, so no OwnershipTransferred-style events are emitted
         assertEq(vm.getRecordedLogs().length, 0, 'second run emitted events');
         _assertHolders(receiver);
     }
 
-    function test_run_skipsRolesAlreadyHeldByReceiver() public {
+    function test_handover_skipsRolesAlreadyHeldByReceiver() public {
         vm.prank(DEPLOYER);
         IHolders(V3_FACTORY).setOwner(receiver);
-        handover.run(receiver);
+        handoverScript.handover(receiver);
         _assertHolders(receiver);
     }
 
-    function test_run_revertsOnUnexpectedHolderBeforeAnyTransfer() public {
+    function test_handover_revertsOnUnexpectedHolderBeforeAnyTransfer() public {
         address stranger = makeAddr('stranger');
         vm.prank(DEPLOYER);
         IHolders(POOL_MANAGER).transferOwnership(stranger);
 
         vm.expectRevert(bytes(string.concat('Unexpected holder of v4 PoolManager owner: ', vm.toString(stranger))));
-        handover.run(receiver);
+        handoverScript.handover(receiver);
         assertEq(IHolders(V2_FACTORY).feeToSetter(), DEPLOYER, 'v2 moved before the abort');
     }
 
-    function test_run_revertsOnReceiverWithWrongChainId() public {
+    function test_handover_revertsOnReceiverWithWrongChainId() public {
         address bad = address(new MockWormholeReceiver(WORMHOLE_CORE, MESSAGE_SENDER, 47));
         vm.expectRevert(bytes('Receiver chainId is not 74'));
-        handover.run(bad);
+        handoverScript.handover(bad);
     }
 
-    function test_run_revertsOnReceiverWithWrongSender() public {
+    function test_handover_revertsOnReceiverWithWrongSender() public {
         address bad = address(new MockWormholeReceiver(WORMHOLE_CORE, bytes32(uint256(1)), 74));
         vm.expectRevert(bytes('Receiver messageSender is not the Ethereum sender'));
-        handover.run(bad);
+        handoverScript.handover(bad);
     }
 
-    function test_run_revertsOnReceiverWithWrongWormholeCore() public {
+    function test_handover_revertsOnReceiverWithWrongWormholeCore() public {
         address bad = address(new MockWormholeReceiver(makeAddr('otherCore'), MESSAGE_SENDER, 74));
         vm.expectRevert(bytes('Receiver is not bound to the Elysium Wormhole core'));
-        handover.run(bad);
+        handoverScript.handover(bad);
     }
 
-    function test_run_revertsOnReceiverWithoutCode() public {
+    function test_handover_revertsOnReceiverWithoutCode() public {
         address bad = makeAddr('eoa');
         vm.expectRevert(bytes('Receiver has no code'));
-        handover.run(bad);
+        handoverScript.handover(bad);
     }
 
-    function test_run_revertsOnZeroOrDeployerReceiver() public {
+    function test_handover_revertsOnZeroOrDeployerReceiver() public {
         vm.expectRevert(bytes('Receiver is zero or the deployer'));
-        handover.run(address(0));
+        handoverScript.handover(address(0));
 
         vm.expectRevert(bytes('Receiver is zero or the deployer'));
-        handover.run(DEPLOYER);
+        handoverScript.handover(DEPLOYER);
     }
 
-    function test_printCalldata_passesPreChecks() public view {
-        handover.printCalldata(receiver);
+    function test_printCalldataFor_passesPreChecks() public view {
+        handoverScript.printCalldataFor(receiver);
     }
 
     function _assertHolders(address expected) internal view {
