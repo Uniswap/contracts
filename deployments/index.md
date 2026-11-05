@@ -29,6 +29,8 @@ This repository contains deployment information for the following networks:
 | 59144 | Linea | [View Deployment](./59144.md) |
 | 81457 | Blast | [View Deployment](./81457.md) |
 | 84532 | Base Sepolia Testnet | [View Deployment](./84532.md) |
+| 99901 | Elysium Mainnet | [View Deployment](./99901.md) |
+| 99901 | Elysium Mainnet | [View Deployment](./99901.md) |
 | 421614 | Arbitrum Sepolia | [View Deployment](./421614.md) |
 | 7777777 | Zora | [View Deployment](./7777777.md) |
 | 11155111 | Sepolia | [View Deployment](./11155111.md) |
