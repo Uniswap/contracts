@@ -135,6 +135,8 @@ After creating the deployer file, it's important to update the `Source Contract`
 
 Finally, run `./script/util/create_briefcase.sh` to generate the initcode for the deployer and populate the bytecode in the initcode function.
 
+The `check-initcode` workflow fails a pull request when any deployer's `initcode()` differs from what the pinned sources compile to (run it locally with `forge build && python3 script/util/insert_initcode.py --check src/briefcase/deployers out`). A deployer whose bytes must not follow the source build goes in `FROZEN_DEPLOYERS` in `script/util/insert_initcode.py`, with the reason.
+
 ### 2. Add the contract to the task template
 
 Modify the `script/deploy/tasks/task_template.json` file to add the new contract to the task template. The contract can either be added to a new protocol or to an existing protocol where appropriate.

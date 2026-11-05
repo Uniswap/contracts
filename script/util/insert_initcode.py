@@ -1,3 +1,4 @@
+import argparse
 import os
 import json
 import re
@@ -27,6 +28,26 @@ VIA_IR_KEY = "viaIR"
 EVM_VERSION_KEY = "evmVersion"
 VERSION_KEY = "version"
 
+# Deployers whose initcode() is intentionally not generated from the current source build,
+# keyed by path relative to the deployers directory. Both insert and --check skip them and log
+# the reason. Frozen bytes that live in a separate function (UniswapV2FactoryDeployer's
+# legacyInitcode()) need no entry: only initcode() is ever generated or checked.
+FROZEN_DEPLOYERS: Dict[str, str] = {
+    "universal-router/SwapProxyDeployer.sol": (
+        "canonical CREATE2 address is locked to the standalone universal-router build "
+        "(bytecode_hash = ipfs), which this repo's bytecode_hash = none build cannot reproduce"
+    ),
+}
+
+# Deployers that create_briefcase.sh still regenerates but --check cannot compare, keyed like
+# FROZEN_DEPLOYERS. Their build output differs per machine, so a byte comparison would always fail.
+CHECK_EXEMPT_DEPLOYERS: Dict[str, str] = {
+    "v2-core/UniswapV2FactoryDeployer.sol": (
+        "solc 0.5.16 ignores bytecode_hash = none, so the trailing metadata hash depends on the "
+        "checkout path; deploy() uses the frozen legacyInitcode() instead"
+    ),
+}
+
 # --- Pre-compiled Regex Patterns ---
 
 # Pattern to find the initcode function in Solidity source
@@ -38,6 +59,14 @@ INITCODE_FUNC_PATTERN = re.compile(
     """,
     flags=re.DOTALL | re.VERBOSE | re.MULTILINE,
 )
+
+# Splits an initcode() function into its parameter list and body, for the --check comparison
+INITCODE_PARTS_PATTERN = re.compile(
+    r"function\s+initcode\s*\(([^)]*)\)[^{]*\{(.*)\}", flags=re.DOTALL
+)
+
+# Hex literals inside an initcode() body
+HEX_LITERAL_PATTERN = re.compile(r"hex'([0-9a-fA-F]*)'")
 
 # Pattern to extract the source contract path from deployer comments
 SRC_PATH_PATTERN = re.compile(
@@ -431,10 +460,57 @@ def extract_deployer_metadata(deployer_file_path: str) -> Dict[str, Any]:
 # --- Main Processing Logic ---
 
 
-def process_deployer_file(deployer_file_path: str, json_directory: str) -> None:
+def read_initcode_function(sol_file_path: str) -> str:
+    """Returns the initcode() function currently in a deployer file."""
+    with open(sol_file_path, "r", encoding="utf-8") as sol_file:
+        match = INITCODE_FUNC_PATTERN.search(sol_file.read())
+    if not match:
+        raise ValueError(
+            f"Could not find standard initcode() function signature in {sol_file_path}"
+        )
+    return match.group(0)
+
+
+def canonical_initcode(function_code: str) -> Tuple[frozenset, str]:
+    """
+    Reduces an initcode() function to (parameter set, body without whitespace), so a
+    forge-fmt'd deployer compares equal to freshly generated code. Parameters are a set
+    because generate_solidity_initcode_function does not order them deterministically.
+    """
+    match = INITCODE_PARTS_PATTERN.search(function_code)
+    if not match:
+        raise ValueError("Could not parse initcode() function")
+    params = frozenset(
+        " ".join(param.split()) for param in match.group(1).split(",") if param.strip()
+    )
+    return params, re.sub(r"\s+", "", match.group(2))
+
+
+def describe_mismatch(current_function: str, expected_function: str) -> str:
+    """Summarises how two initcode() functions differ, by their concatenated hex literals."""
+    current_hex = "".join(HEX_LITERAL_PATTERN.findall(current_function)).lower()
+    expected_hex = "".join(HEX_LITERAL_PATTERN.findall(expected_function)).lower()
+    first_diff = next(
+        (
+            i // 2
+            for i in range(0, min(len(current_hex), len(expected_hex)), 2)
+            if current_hex[i : i + 2] != expected_hex[i : i + 2]
+        ),
+        min(len(current_hex), len(expected_hex)) // 2,
+    )
+    return (
+        f"deployer has {len(current_hex) // 2} bytes, build has {len(expected_hex) // 2} bytes, "
+        f"first difference at byte {first_diff}"
+    )
+
+
+def process_deployer_file(
+    deployer_file_path: str, json_directory: str, check: bool = False
+) -> bool:
     """
     Processes a single deployer file: extracts metadata, finds matching JSON,
-    generates new initcode, and updates the deployer file.
+    generates new initcode, and updates the deployer file. With check=True the file
+    is left untouched and the return value says whether its initcode matches the build.
 
     Raises exceptions from underlying functions on failure.
     """
@@ -479,6 +555,19 @@ def process_deployer_file(deployer_file_path: str, json_directory: str) -> None:
         f"  - Generated code:\n{textwrap.indent(updated_initcode_function, '    ')}"
     )
 
+    if check:
+        current_initcode_function = read_initcode_function(deployer_file_path)
+        if canonical_initcode(current_initcode_function) == canonical_initcode(
+            updated_initcode_function
+        ):
+            logging.info("  ✅ initcode matches the current build.")
+            return True
+        logging.error(
+            "  ❌ initcode does not match the current build: "
+            + describe_mismatch(current_initcode_function, updated_initcode_function)
+        )
+        return False
+
     # 5. Update the initcode() function in the deployer file
     logging.info("  - Updating initcode in deployer file...")
     update_initcode_in_file(deployer_file_path, updated_initcode_function)
@@ -486,11 +575,15 @@ def process_deployer_file(deployer_file_path: str, json_directory: str) -> None:
     logging.info(
         f"  ✅ Successfully updated initcode for {os.path.basename(deployer_file_path)}."
     )
+    return True
 
 
-def process_directory(src_directory: str, json_directory: str) -> Tuple[int, int]:
+def process_directory(
+    src_directory: str, json_directory: str, check: bool = False
+) -> Tuple[int, int]:
     """
     Walks through the source directory, finds deployer files, and processes them.
+    With check=True, deployers whose initcode does not match the build count as errors.
 
     Returns:
         Tuple[int, int]: (processed_count, error_count)
@@ -499,6 +592,7 @@ def process_directory(src_directory: str, json_directory: str) -> Tuple[int, int
     error_count = 0
     processed_files: List[str] = []
     error_files: Dict[str, str] = {}  # Store filename -> error message
+    skipped_files: List[str] = []
 
     for root, dirs, files in os.walk(src_directory):
         # Skip hidden directories (like .git, .vscode, etc.) more robustly
@@ -509,10 +603,25 @@ def process_directory(src_directory: str, json_directory: str) -> Tuple[int, int
             if file.endswith(DEPLOYER_SUFFIX):
                 deployer_file_path = os.path.join(root, file)
                 relative_path = os.path.relpath(deployer_file_path, src_directory)
+                deployer_key = relative_path.replace(os.sep, "/")
+                skip_reason = FROZEN_DEPLOYERS.get(deployer_key) or (
+                    CHECK_EXEMPT_DEPLOYERS.get(deployer_key) if check else None
+                )
+                if skip_reason:
+                    logging.info(f"Skipping {relative_path}: {skip_reason}")
+                    logging.info("-" * 60)
+                    skipped_files.append(relative_path)
+                    continue
                 try:
-                    process_deployer_file(deployer_file_path, json_directory)
-                    processed_count += 1
-                    processed_files.append(relative_path)
+                    if process_deployer_file(deployer_file_path, json_directory, check):
+                        processed_count += 1
+                        processed_files.append(relative_path)
+                    else:
+                        error_count += 1
+                        error_files[relative_path] = (
+                            "initcode differs from the build, regenerate it with "
+                            "./script/util/create_briefcase.sh"
+                        )
                 except (ValueError, RuntimeError) as e:
                     # Catch errors specific to processing logic (already logged in functions)
                     logging.error(f"❌ FAILED processing {relative_path}: {e}")
@@ -534,6 +643,8 @@ def process_directory(src_directory: str, json_directory: str) -> Tuple[int, int
     if processed_files:
         logging.debug("Processed files:\n - " + "\n - ".join(processed_files))
 
+    if skipped_files:
+        logging.info(f"Skipped deployers: {', '.join(skipped_files)}")
     logging.info(f"Errors encountered: {error_count}")
     if error_files:
         logging.error("Files with errors:")
@@ -546,15 +657,20 @@ def process_directory(src_directory: str, json_directory: str) -> Tuple[int, int
 
 # --- Script Entry Point ---
 if __name__ == "__main__":
-    # Basic argument handling
-    if len(sys.argv) != 3:
-        print(
-            "Usage: python script_name.py <path_to_src_directory> <path_to_json_directory>"
-        )
-        sys.exit(2)
+    parser = argparse.ArgumentParser(
+        description="Insert build initcode into briefcase deployers, or check that it is current."
+    )
+    parser.add_argument("src_dir", help="directory containing the *Deployer.sol files")
+    parser.add_argument("json_dir", help="forge artifacts directory (out)")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="do not modify deployers; exit 1 if any initcode differs from the build",
+    )
+    args = parser.parse_args()
 
-    src_dir = sys.argv[1]
-    json_dir = sys.argv[2]
+    src_dir = args.src_dir
+    json_dir = args.json_dir
 
     if not os.path.isdir(src_dir):
         logging.critical(
@@ -570,9 +686,11 @@ if __name__ == "__main__":
     logging.info("-" * 60)
     logging.info(f"Scanning source directory for deployers: {src_dir}")
     logging.info(f"Searching for JSON artifacts in:        {json_dir}")
+    if args.check:
+        logging.info("Check mode: deployers are compared, not modified")
     logging.info("-" * 60)
 
-    processed_count, error_count = process_directory(src_dir, json_dir)
+    processed_count, error_count = process_directory(src_dir, json_dir, args.check)
     if error_count > 0:
         sys.exit(1)
     else:
