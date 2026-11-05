@@ -1,20 +1,7 @@
 {
     "schemaVersion": 1,
-    "description": "Permissioned pools add-on for a chain that already runs v4: PermissionedPositionManager and a salt-mined PermissionedHooks (address flags 0x28c0). If the core deployment already includes a PermissionsAdapterFactory, exclude that step and resolve its pointers to the existing factory, so the position manager and hook share it with the UniversalRouter. Enter the chain's PoolManager, PositionDescriptor proxy and WETH9 for each chain.",
+    "description": "Deploys PermissionedPositionManager and a salt-mined PermissionedHooks (address flags 0x28c0) on a chain that already runs v4 and UniversalRouter 2.2.0. Per chain inputs: the PoolManager and the PermissionsAdapterFactory the UniversalRouter uses (the same values for both contracts), the PositionDescriptor proxy, WETH9 and the unsubscribe gas limit of the chain's PositionManager.",
     "sources": [
-        {
-            "id": "permissions-adapter-factory",
-            "origin": "repo",
-            "repo": {
-                "url": "https://github.com/Uniswap/v4-periphery",
-                "commit": "9969eec44cfdf07e24b41de47f40276a58401976"
-            },
-            "frameworkId": "foundry",
-            "sourcePath": "src/hooks/permissionedPools/PermissionsAdapterFactory.sol",
-            "contractName": "PermissionsAdapterFactory",
-            "artifactPath": "foundry-out/PermissionsAdapterFactory.sol/PermissionsAdapterFactory.json",
-            "artifactHash": "3f31d7c542714d3c9cc97cdd32802a8022fc6264431f876412e0e3639240c55a"
-        },
         {
             "id": "permissioned-position-manager",
             "origin": "repo",
@@ -44,27 +31,11 @@
     ],
     "steps": [
         {
-            "id": "permissions-adapter-factory",
-            "kind": "deploy",
-            "contractId": "permissions-adapter-factory",
-            "strategy": {
-                "kind": "create2",
-                "salt": "0x0000000000000000000000000000000000000000000000000000000000000000"
-            }
-        },
-        {
             "id": "permissioned-position-manager",
             "kind": "deploy",
             "contractId": "permissioned-position-manager",
             "args": {
                 "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
-                "_unsubscribeGasLimit": "300000",
-                "_permissionsAdapterFactory": {
-                    "$ref": {
-                        "kind": "step",
-                        "stepId": "permissions-adapter-factory"
-                    }
-                },
                 "_deliveryGasLimit": "500000"
             },
             "strategy": {
@@ -76,14 +47,6 @@
             "id": "permissioned-hooks",
             "kind": "deploy",
             "contractId": "permissioned-hooks",
-            "args": {
-                "permissionsAdapterFactory": {
-                    "$ref": {
-                        "kind": "step",
-                        "stepId": "permissions-adapter-factory"
-                    }
-                }
-            },
             "strategy": {
                 "kind": "plugin",
                 "pluginId": "hook-deployer"
