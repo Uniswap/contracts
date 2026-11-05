@@ -133,7 +133,7 @@ contract ElysiumOwnershipHandover is Script {
     }
 
     /// @notice Prints target and calldata for every role still held by the deployer, for sending by hand
-    ///         (e.g. `cast send <target> <calldata>` from the deployer). Runs the same pre-checks as `run()`.
+    ///         (e.g. `cast send --legacy <target> <calldata>` from the deployer). Runs the same pre-checks as `run()`.
     function printCalldata() public view {
         printCalldataFor(vm.envAddress('GOVERNANCE_RECEIVER'));
     }
@@ -193,6 +193,7 @@ contract ElysiumOwnershipHandover is Script {
         try vm.readFile('deployments/json/99901.json') returns (string memory contents) {
             json = contents;
         } catch {
+            console.log('Record cross-check skipped: cannot read deployments/json/99901.json');
             return;
         }
         _checkRecord(json, '.latest.UniswapV2Factory.address', V2_FACTORY);
@@ -202,6 +203,7 @@ contract ElysiumOwnershipHandover is Script {
         _checkRecord(json, '.latest.NonfungibleTokenPositionDescriptor.proxyAdmin', V3_NFT_DESCRIPTOR_PROXY_ADMIN);
         _checkRecord(json, '.latest.PositionDescriptor.address', V4_POSITION_DESCRIPTOR_PROXY);
         _checkRecord(json, '.latest.PositionDescriptor.proxyAdmin', V4_POSITION_DESCRIPTOR_PROXY_ADMIN);
+        console.log('Record cross-check passed: constants match deployments/json/99901.json');
     }
 
     function _checkRecord(string memory json, string memory key, address expected) internal pure {
