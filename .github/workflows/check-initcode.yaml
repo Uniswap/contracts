@@ -1,0 +1,33 @@
+# flags a PR when a briefcase deployer's initcode() no longer matches what the pinned sources compile
+# to, which is how Deploy-all would ship a stale build; skipped deployers are listed with their
+# reasons in FROZEN_DEPLOYERS in script/util/insert_initcode.py
+
+name: check-initcode
+on:
+  pull_request:
+    branches: [main]
+
+permissions: {}
+jobs:
+  check-initcode:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@50d5a8956f2e319df19e6b57539d7e2acb9f8c1e # v1.5.0
+        with:
+          version: v1.5.0
+      - name: Build
+        run: |
+          # solc's via-IR optimizer recurses deeply and segfaults under the runner's default 8 MB stack
+          ulimit -s unlimited
+          forge --version
+          forge build
+      - name: Check deployer initcode against the build
+        run: python3 script/util/insert_initcode.py --check src/briefcase/deployers out
