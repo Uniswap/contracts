@@ -10,7 +10,7 @@ jobs:
   update-submodules:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -54,15 +54,30 @@ jobs:
             echo "changes=" >> $GITHUB_OUTPUT
           fi
 
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387
+      # The push is authorized by the contracts-briefcase-syncer GitHub App, not a deploy key: a deploy
+      # key's pushes are attributed to the person who created it, and the App is a bypass actor on the
+      # contracts main ruleset (bypass mode "always", since the ruleset requires pull requests and status
+      # checks). The App's slug and installation id are printed before each push.
+      - name: Mint a push token for the contracts repo
+        id: contracts-token
+        if: steps.git-check.outputs.changes != ''
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          ssh-private-key: ${{ secrets.DEPLOY_KEY }}
+          client-id: ${{ secrets.BRIEFCASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.BRIEFCASE_APP_PRIVATE_KEY }}
+          owner: Uniswap
+          repositories: contracts
+          permission-contents: write
 
       - name: Commit and Push if changes are present
         if: steps.git-check.outputs.changes != ''
+        env:
+          CONTRACTS_TOKEN: ${{ steps.contracts-token.outputs.token }}
+          CONTRACTS_APP_SLUG: ${{ steps.contracts-token.outputs.app-slug }}
+          CONTRACTS_INSTALLATION_ID: ${{ steps.contracts-token.outputs.installation-id }}
         run: |
-          git remote set-url origin git@github.com:${{ github.repository }}.git
           git add .
           git commit -m "Update submodules"
-          git push
+          echo "pushing as ${CONTRACTS_APP_SLUG}[bot] (installation ${CONTRACTS_INSTALLATION_ID})"
+          # The token goes on the push command only, so it is never written to .git/config.
+          git push "https://x-access-token:${CONTRACTS_TOKEN}@github.com/Uniswap/contracts.git" HEAD:main
