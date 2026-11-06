@@ -25,6 +25,8 @@ jobs:
           version: v1.5.0
       - name: Build
         run: |
+          # solc's via-IR optimizer recurses deeply and segfaults under the runner's default 8 MB stack
+          ulimit -s unlimited
           forge --version
           forge build
       - name: Check deployer initcode against the build
