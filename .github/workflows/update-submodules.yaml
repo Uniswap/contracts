@@ -8,6 +8,8 @@ on:
 
 jobs:
   update-submodules:
+    # workflow_dispatch can target any branch, and the push below goes to main; only run from main
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -78,6 +80,7 @@ jobs:
         run: |
           git add .
           git commit -m "Update submodules"
+          git pull --rebase origin main
           echo "pushing as ${CONTRACTS_APP_SLUG}[bot] (installation ${CONTRACTS_INSTALLATION_ID})"
           # The token goes on the push command only, so it is never written to .git/config.
           git push "https://x-access-token:${CONTRACTS_TOKEN}@github.com/Uniswap/contracts.git" HEAD:main
