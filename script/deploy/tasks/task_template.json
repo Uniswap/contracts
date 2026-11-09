@@ -260,6 +260,10 @@
                         "permissionsAdapterFactory": {
                             "name": "Permissions Adapter Factory",
                             "pointer": "protocols.v4.contracts.PermissionsAdapterFactory"
+                        },
+                        "deliveryGasLimit": {
+                            "name": "Delivery gas limit",
+                            "type": "uint256"
                         }
                     },
                     "dependencies": ["weth"]
