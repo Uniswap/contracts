@@ -1,0 +1,127 @@
+{
+    "_comment": "Contracts forge-chronicles cannot record on chain 99901, merged into deployments/json/99901.json by script/util/merge_extra_deploys.py: the v3 NFT descriptor proxy (impl tx unnamed because of the NFTDescriptor library link), the view-only Quoter (unnamed), SwapProxy (canonical CREATE2, unnamed), Permit2 (pre-existing), the PermissionsAdapterFactory rebuilt from Uniswap/v4-periphery source, and the routers deployed from Uniswap/universal-router. Deploy-all's PermissionsAdapterFactory (0x3feDaD0Abb1EE1066672e93999b672036FD98A10) was built from stale briefcase initcode and its UniversalRouter (0x1bd4d69BfB8927a045F20518a08390ceE3913B0D) points at it; both stay in history and latest points at their replacements. Never allowlist either in a permissioned hook. Router and factory extras cite the commit of the repository they were built from (the creation code matches the HyperEVM deployments built from the same commits). deploy_all_run_timestamp identifies the Deploy-all history entry the unnamed extras belong to.",
+    "extra": [
+        {
+            "name": "NonfungibleTokenPositionDescriptor",
+            "address": "0x661e93cca42afacb172121ef892830ca3b70f08d",
+            "deploymentTxn": "0x3e792d700f66f0488ae65830cab553ed1780da8eeeb65ac83c6f5515437ffd19",
+            "proxy": true,
+            "proxyType": "TransparentUpgradeableProxy",
+            "implementation": "0xd1b797d92d87b688193a2b976efc8d577d204343",
+            "proxyAdmin": "0x740ee255852f114b18b9b94ae754ae6f8413897d",
+            "run": "deploy-all",
+            "check": ["WETH9()(address)", "0xbA876237B0F021A6c6D852d6c26E107997cC5E81"],
+            "input": {
+                "constructor": {
+                    "_WETH9": "0xbA876237B0F021A6c6D852d6c26E107997cC5E81",
+                    "_nativeCurrencyLabelBytes": "0x4859504500000000000000000000000000000000000000000000000000000000"
+                },
+                "initializeData": "0x"
+            },
+            "implementationTxn": "0xedceda13ad10f1359b8370ed98f306ff0f933e7967cea4a61c668ead4b7b9b36"
+        },
+        {
+            "name": "Quoter",
+            "address": "0x94a7d36e2ae728d6a2b2ee533b0a260385596d8b",
+            "deploymentTxn": "0xede0305d9014fc2c21b7d5808d5e3515061da5ea5ca3c2955caaaa60d6752bbf",
+            "run": "deploy-all",
+            "check": ["factory()(address)", "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f"],
+            "input": {
+                "constructor": {
+                    "_factory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f"
+                }
+            }
+        },
+        {
+            "name": "SwapProxy",
+            "address": "0x0000000085e102724e78ecd2f45dc9ca239affad",
+            "deploymentTxn": "0x4ee3fc3535c7a095f0964faf922e62acb50cc5a6301da1eb7d704305360f4d41",
+            "run": "deploy-all",
+            "input": {
+                "constructor": {}
+            }
+        },
+        {
+            "name": "Permit2",
+            "address": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+            "deploymentTxn": "0x135f2a5cf09d39191f5b6d27f02f58ef2d56a311322b659f35a4eec5e7b69455",
+            "run": "pre-existing canonical deployment; not deployed by this repo",
+            "nocommit": true,
+            "input": {
+                "constructor": {}
+            }
+        },
+        {
+            "name": "UniversalRouter#v2.1.2",
+            "address": "0xa13f7611115752deb2b13813bdde16a5073e4b45",
+            "deploymentTxn": "0x73e48145f1764a76e4be4b2b04306e93c4744bda57d4515e17e1e1f378318f9f",
+            "run": "universal-router 2.1.2 (tag at 802fe4c)",
+            "commitHash": "802fe4c",
+            "repo": "Uniswap/universal-router",
+            "check": ["SPOKE_POOL()(address)", "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"],
+            "input": {
+                "constructor": {
+                    "params": {
+                        "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                        "weth9": "0xbA876237B0F021A6c6D852d6c26E107997cC5E81",
+                        "v2Factory": "0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2",
+                        "v3Factory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f",
+                        "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                        "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                        "v4PoolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1",
+                        "v3NFTPositionManager": "0xF025e0Fe9E331A0eF05c2ad3C4E9C64b625cda6f",
+                        "v4PositionManager": "0x1d1C51b9d07fD27d36412A2b66CC23D19Eb3E518",
+                        "spokePool": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"
+                    }
+                }
+            }
+        },
+        {
+            "name": "PermissionsAdapterFactory",
+            "address": "0xdcd9f4e8972f619b325b0c3109412dfc4d184734",
+            "deploymentTxn": "0x361f9e915174ed749d3f0bfc04e133fc920824b4c59b4ee803501ab2aa0d5db8",
+            "run": "v4-periphery PermissionsAdapterFactory (9969eec)",
+            "commitHash": "9969eec",
+            "repo": "Uniswap/v4-periphery",
+            "check": ["POOL_MANAGER()(address)", "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"],
+            "note": "v4-periphery 9969eec; supersedes 0x3fedad0abb1ee1066672e93999b672036fd98a10 (Deploy-all, built from stale briefcase initcode), which must not be used or allowlisted",
+            "input": {
+                "constructor": {
+                    "poolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"
+                }
+            }
+        },
+        {
+            "name": "UniversalRouter#v2.2",
+            "address": "0x1b341fdd55d56f8e08409a2c25ddfad93eb03c1a",
+            "deploymentTxn": "0x6f153f218048b782a6e92f4fe6f7bf9f7443bc9d37114a391773734efa54bbeb",
+            "run": "universal-router 2.2.0 (tag at 64027f3)",
+            "commitHash": "64027f3",
+            "repo": "Uniswap/universal-router",
+            "check": ["PERMISSIONS_ADAPTER_FACTORY()(address)", "0xdCD9f4e8972F619B325B0C3109412dFC4D184734"],
+            "note": "universal-router 2.2.0 (tag at 64027f3); permissionsAdapterFactory 0xdCD9f4e8972F619B325B0C3109412dFC4D184734; supersedes 0x1bd4d69bfb8927a045f20518a08390cee3913b0d (Deploy-all, built against the superseded factory), which must not be used or allowlisted in a permissioned hook",
+            "input": {
+                "constructor": {
+                    "params": {
+                        "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                        "weth9": "0xbA876237B0F021A6c6D852d6c26E107997cC5E81",
+                        "v2Factory": "0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2",
+                        "v3Factory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f",
+                        "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                        "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                        "v4PoolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1",
+                        "permissionsAdapterFactory": "0xdCD9f4e8972F619B325B0C3109412dFC4D184734",
+                        "v3NFTPositionManager": "0xF025e0Fe9E331A0eF05c2ad3C4E9C64b625cda6f",
+                        "v4PositionManager": "0x1d1C51b9d07fD27d36412A2b66CC23D19Eb3E518",
+                        "spokePool": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"
+                    }
+                }
+            }
+        }
+    ],
+    "aliases": {
+        "UniversalRouter": "UniversalRouter#v2.1.2"
+    },
+    "base_commit": "ac1f0be",
+    "deploy_all_run_timestamp": 1793678997020
+}
