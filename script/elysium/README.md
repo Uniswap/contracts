@@ -29,4 +29,5 @@ node lib/forge-chronicles -c 99901 --skip-json -e $EXPLORER
 python3 script/util/merge_extra_deploys.py --relink-md 99901 script/elysium/extra-deploys.json
 ```
 
-Chronicles also rewrites other rows of `deployments/index.md`; keep only the 99901 row.
+Chronicles also rewrites other rows of `deployments/index.md` and appends the 99901 row on every run; keep exactly one 99901 row
+(`grep -c "^| 99901 |" deployments/index.md` prints 1).
