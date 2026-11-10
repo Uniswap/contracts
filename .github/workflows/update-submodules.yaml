@@ -60,13 +60,15 @@ jobs:
       # key's pushes are attributed to the person who created it, and the App is a bypass actor on the
       # contracts main ruleset (bypass mode "always", since the ruleset requires pull requests and status
       # checks). The App's slug and installation id are printed before each push.
+      # This job signs with its own App private key, separate from update-briefcase.yaml's, so either key
+      # can be rotated or revoked without breaking the other job.
       - name: Mint a push token for the contracts repo
         id: contracts-token
         if: steps.git-check.outputs.changes != ''
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           client-id: ${{ secrets.BRIEFCASE_APP_CLIENT_ID }}
-          private-key: ${{ secrets.BRIEFCASE_APP_PRIVATE_KEY }}
+          private-key: ${{ secrets.SUBMODULES_APP_PRIVATE_KEY }}
           owner: Uniswap
           repositories: contracts
           permission-contents: write
