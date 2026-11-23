@@ -26,6 +26,15 @@ StateView `0x21B954fBa3F5ddEbe77Ef2D47A3100c066908B2A` and UniversalRouter 2.1
 mainnet's constructor args, that router points at v2/v3 factory addresses with no code here, and its wrapped-native
 (`0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2`) is this chain's V2Factory. Don't integrate them.
 
+## Permissioned pools (2026-11-23)
+
+The dev wallet deployed the permissioned pools stack with the Ignite `permissioned-pools` workflow (#185), nonces 29 to 32:
+PermissionsAdapterFactory `0xA13f7611115752DEB2B13813BDDE16A5073e4b45` (v4-periphery `9969eec`), UniversalRouter 2.2.0
+`0xDcD9F4e8972F619b325b0c3109412DFC4D184734` (universal-router `64027f3`, under `UniversalRouter#v2.2`; the unversioned
+key stays on 2.1), PermissionedPositionManager `0xf766926318cCc034E140B54595e2102831a0D02e` (v4-periphery `9969eec`) and
+PermissionedHooks `0x7Ae9d25F90D2592bB7cB09acBeE10Be912a028C0` (v4-hooks-public `f2aa843`, flags `0x28c0`). The router,
+posm and hook all use that factory. The posm's `unsubscribeGasLimit` and `deliveryGasLimit` are both 2000000.
+
 ## Rebuilding the registry
 
 Needs `origin/main` fetched. Start from an empty file so the run is reproducible:
