@@ -383,9 +383,17 @@ contract Deploy is Script {
                 permissionsAdapterFactory =
                     config.readAddress('.protocols.v4.contracts.PermissionsAdapterFactory.address');
             }
+            uint256 deliveryGasLimit =
+                config.readUint('.protocols.v4.contracts.PermissionedPositionManager.params.deliveryGasLimit.value');
             console.log('deploying Permissioned Position Manager');
             permissionedPositionManager = PermissionedPositionManagerDeployer.deploy(
-                poolManager, permit2, unsubscribeGasLimit, positionDescriptor, weth(), permissionsAdapterFactory
+                poolManager,
+                permit2,
+                unsubscribeGasLimit,
+                positionDescriptor,
+                weth(),
+                permissionsAdapterFactory,
+                deliveryGasLimit
             );
         }
     }

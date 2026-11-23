@@ -192,8 +192,8 @@ and only their txs remain in `broadcast/Deploy-all.s.sol/999/run-1789501501114.j
 - `script/deploy/tasks/999/task-<ts>.json`: the task files as deployed (Deploy-all reads `task-pending.json`; write it
   deliberately from a copy, the driver refuses to guess; the deploy run archives it back as `task-<ts>.json`)
 - `script/hyperevm/hyperevm.sh`: step driver · `toggle_big_blocks.py`: HyperCore big-block flag ·
-  `merge_extra_deploys.py` + `extra-deploys.json`: registry entries chronicles cannot produce · `verify.sh`:
-  both-explorer verification
+  `extra-deploys.json`: registry entries chronicles cannot produce, merged by `script/util/merge_extra_deploys.py` ·
+  `verify.sh`: both-explorer verification
 - `test/HyperEVMDeploy.t.sol`: fork test (ownership, wiring, fake-token pools + swaps on v2/v3/v4 via routers and UR)
 - `src/briefcase/deployers/v3-periphery/NFTDescriptorDeployer.sol`: library deploy made idempotent (CREATE2
   collision on 998 where the lib already existed)

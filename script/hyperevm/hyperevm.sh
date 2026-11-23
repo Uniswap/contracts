@@ -79,7 +79,7 @@ case $STEP in
       cp "$b" broadcast/Deploy-all.s.sol/$CHAIN/run-latest.json
       node lib/forge-chronicles Deploy-all.s.sol -c $CHAIN -e https://hyperevmscan.io -r $RPC --force
     done
-    $PY script/hyperevm/merge_extra_deploys.py $RPC $CHAIN
+    $PY script/util/merge_extra_deploys.py $RPC $CHAIN script/hyperevm/extra-deploys.json
     node lib/forge-chronicles -c $CHAIN --skip-json -e https://hyperevmscan.io
     # two chronicles quirks until forge-chronicles#7 merges: blank heading with an ssh remote, stale chainid.network label
     sed -i '' '1s/^# $/# contracts/' deployments/$CHAIN.md

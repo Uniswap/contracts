@@ -10,7 +10,6 @@ import {Test} from 'forge-std/Test.sol';
 ///         re-pin deliberately) or the canonical address moved. The salt mirrors the default in
 ///         script/deploy/tasks/task_template.json (protocols.v4.contracts.ReservesLens).
 contract ReservesLensDeployerTest is Test {
-    address internal constant CREATE2_FACTORY = 0x4e59b44847b379578588920cA78FbF26c0B4956C;
     bytes32 internal constant SALT = 0xbe3a44816031cf9fa9b3de006cfe808c702e82029e5fa5325d99a4b177f1414f;
     bytes32 internal constant INITCODE_HASH = 0x6c7ca10687a2f929c8c16fa6323306255526ef96fb820be2822bb7631af873f8;
     address internal constant CANONICAL_ADDRESS = 0x0000001b173C3bbF3984D417d8614E3eed34865B;
