@@ -1,0 +1,145 @@
+{
+    "schemaVersion": 1,
+    "description": "Deploys the permissioned pools stack on a chain that already runs v4: PermissionsAdapterFactory, UniversalRouter 2.2.0, PermissionedPositionManager and a salt-mined PermissionedHooks (address flags 0x28c0), all wired to the new factory. If the chain already runs UniversalRouter 2.2.0, uncheck the factory and router steps and enter the factory that router uses. Per chain inputs: the PoolManager (factory and hook), the router parameters, and the PositionDescriptor proxy, WETH9 and unsubscribe gas limit of the chain's PositionManager.",
+    "sources": [
+        {
+            "id": "permissions-adapter-factory",
+            "origin": "repo",
+            "repo": {
+                "url": "https://github.com/Uniswap/v4-periphery",
+                "commit": "9969eec44cfdf07e24b41de47f40276a58401976"
+            },
+            "frameworkId": "foundry",
+            "sourcePath": "src/hooks/permissionedPools/PermissionsAdapterFactory.sol",
+            "contractName": "PermissionsAdapterFactory",
+            "artifactPath": "foundry-out/PermissionsAdapterFactory.sol/PermissionsAdapterFactory.json",
+            "artifactHash": "3f31d7c542714d3c9cc97cdd32802a8022fc6264431f876412e0e3639240c55a"
+        },
+        {
+            "id": "universal-router",
+            "origin": "repo",
+            "repo": {
+                "url": "https://github.com/Uniswap/contracts",
+                "commit": "036160f74ad4477ae958772ee4b460d1e683a365"
+            },
+            "frameworkId": "foundry",
+            "sourcePath": "src/pkgs/universal-router/contracts/UniversalRouter.sol",
+            "contractName": "UniversalRouter",
+            "artifactPath": "out/UniversalRouter.sol/UniversalRouter.json",
+            "artifactHash": "05c3cab60351af0b7ae33f3eccbf61d7fb06f585c1907f2c1cd7f122ba1c99d0"
+        },
+        {
+            "id": "permissioned-position-manager",
+            "origin": "repo",
+            "repo": {
+                "url": "https://github.com/Uniswap/v4-periphery",
+                "commit": "9969eec44cfdf07e24b41de47f40276a58401976"
+            },
+            "frameworkId": "foundry",
+            "sourcePath": "src/hooks/permissionedPools/PermissionedPositionManager.sol",
+            "contractName": "PermissionedPositionManager",
+            "artifactPath": "foundry-out/PermissionedPositionManager.sol/PermissionedPositionManager.json",
+            "artifactHash": "492ad0226b93e31fa49404c3cec03c2d8c03db3bdbe41bbd83769e2bba20f60d"
+        },
+        {
+            "id": "permissioned-hooks",
+            "origin": "repo",
+            "repo": {
+                "url": "https://github.com/Uniswap/v4-hooks-public",
+                "commit": "f2aa843e266f8f9b34fdaf94ffb72eda5d9204f9"
+            },
+            "frameworkId": "foundry",
+            "sourcePath": "src/permissioned-pools/PermissionedHooks.sol",
+            "contractName": "PermissionedHooks",
+            "artifactPath": "foundry-out/PermissionedHooks.sol/PermissionedHooks.json",
+            "artifactHash": "eb598d87384f5afdfaffdbd27320e900f6e516987bfcc00a296985f8d9f8907b"
+        }
+    ],
+    "steps": [
+        {
+            "id": "permissions-adapter-factory",
+            "kind": "deploy",
+            "contractId": "permissions-adapter-factory",
+            "strategy": {
+                "kind": "create"
+            }
+        },
+        {
+            "id": "universal-router",
+            "kind": "deploy",
+            "contractId": "universal-router",
+            "args": {
+                "params": {
+                    "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                    "permissionsAdapterFactory": {
+                        "$ref": {
+                            "kind": "step",
+                            "stepId": "permissions-adapter-factory"
+                        }
+                    }
+                }
+            },
+            "strategy": {
+                "kind": "create"
+            }
+        },
+        {
+            "id": "permissioned-position-manager",
+            "kind": "deploy",
+            "contractId": "permissioned-position-manager",
+            "args": {
+                "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "_permissionsAdapterFactory": {
+                    "$ref": {
+                        "kind": "step",
+                        "stepId": "permissions-adapter-factory"
+                    }
+                },
+                "_deliveryGasLimit": "2000000"
+            },
+            "strategy": {
+                "kind": "create2",
+                "salt": "0x0000000000000000000000000000000000000000000000000000000000000000"
+            }
+        },
+        {
+            "id": "permissioned-hooks",
+            "kind": "deploy",
+            "contractId": "permissioned-hooks",
+            "args": {
+                "permissionsAdapterFactory": {
+                    "$ref": {
+                        "kind": "step",
+                        "stepId": "permissions-adapter-factory"
+                    }
+                }
+            },
+            "strategy": {
+                "kind": "plugin",
+                "pluginId": "hook-deployer"
+            }
+        }
+    ],
+    "requiredPlugins": [
+        {
+            "id": "foundry",
+            "version": "1.0.0"
+        },
+        {
+            "id": "hook-deployer",
+            "version": "0.2.0",
+            "source": {
+                "kind": "git",
+                "url": "https://github.com/gretzke/ignite-v4-hook-deployer-plugin",
+                "ref": "acf64b07f8fed34a3b4f0c42943e05ac6af76543",
+                "track": {
+                    "mode": "commit"
+                },
+                "commit": "acf64b07f8fed34a3b4f0c42943e05ac6af76543"
+            }
+        }
+    ],
+    "outputs": {
+        "hooks": []
+    }
+}
