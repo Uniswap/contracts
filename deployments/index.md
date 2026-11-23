@@ -24,6 +24,7 @@ This repository contains deployment information for the following networks:
 | 10143 | Monad Testnet | [View Deployment](./10143.md) |
 | 42161 | Arbitrum One | [View Deployment](./42161.md) |
 | 42220 | Celo Mainnet | [View Deployment](./42220.md) |
+| 42431 | Tempo Testnet Moderato | [View Deployment](./42431.md) |
 | 43114 | Avalanche C-Chain | [View Deployment](./43114.md) |
 | 57073 | Ink | [View Deployment](./57073.md) |
 | 59144 | Linea | [View Deployment](./59144.md) |
