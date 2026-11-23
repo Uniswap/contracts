@@ -1,0 +1,440 @@
+{
+    "_comment": "Tempo testnet Moderato (42431). The dev wallet 0x2179a60856E37dfeAacA0ab043B931fE224b27B6 ran Deploy-all here on 2026-01-13 (blocks 848755-850185, nonces 0-28) but its broadcast was never committed, so every contract is recorded from its onchain creation tx by script/util/merge_extra_deploys.py. Constructor inputs are decoded from each creation tx. nocommit: the source commit of that run is unknown. Tempo has no native token, so wrapped-native and spokePool point at UnsupportedProtocol (0x8702463e73f74d0b6765aBceb314Ef07aCb92650). The v4-only stack at the Tempo mainnet addresses on this chain (PoolManager 0x33620f62C5b9B2086dD6b62F4A297A9f30347029) was deployed by a third party and is deliberately not recorded; see README.md.",
+    "base_commit": "335ff39",
+    "aliases": {
+        "UniversalRouter": "UniversalRouter#v2.1"
+    },
+    "extra": [
+        {
+            "name": "UnsupportedProtocol",
+            "address": "0x8702463e73f74d0b6765abceb314ef07acb92650",
+            "deploymentTxn": "0x0a82ac4af5471fa2885240e3be81a7b5d5f00c5ebe8ff8cb29a4d89d760d876a",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "input": {
+                "constructor": {}
+            }
+        },
+        {
+            "name": "UniswapV2Factory",
+            "address": "0xbbbcc62853a5fa27b93d6bab3e6f7ce841e25df2",
+            "deploymentTxn": "0x359f70017517d05ea873ce1c423da8f8fd4ee7d9676a687c2502202333cba28a",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["feeToSetter()(address)", "0x2179a60856E37dfeAacA0ab043B931fE224b27B6"],
+            "input": {
+                "constructor": {
+                    "_feeToSetter": "0x2179a60856E37dfeAacA0ab043B931fE224b27B6"
+                }
+            }
+        },
+        {
+            "name": "UniswapV2Router02",
+            "address": "0xe783de89a7f0408687f051e3e6d0beb62719ebad",
+            "deploymentTxn": "0x4ef4cfae80caf89d7c1a5aa817e3c1a232060a2757e47af1134b5de6cd33df70",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["factory()(address)", "0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2"],
+            "input": {
+                "constructor": {
+                    "_factory": "0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2",
+                    "_WETH": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"
+                }
+            }
+        },
+        {
+            "name": "UniswapV3Factory",
+            "address": "0x1707327f626496a7b5b3872e7e4d2879df7d7a9f",
+            "deploymentTxn": "0xbf38af579d85edb7a42c24b82d7d9c4dd360aa6ebda31fb74c69cfdda5b527b4",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["owner()(address)", "0x2179a60856E37dfeAacA0ab043B931fE224b27B6"],
+            "input": {
+                "constructor": {}
+            }
+        },
+        {
+            "name": "UniswapInterfaceMulticall",
+            "address": "0x4b2ab38dbf28d31d467aa8993f6c2585981d6804",
+            "deploymentTxn": "0xe4851552bb3984762b648da4030e98ebf439e1b439dedad41e3ed6fb1a9227d4",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "input": {
+                "constructor": {}
+            }
+        },
+        {
+            "name": "QuoterV2",
+            "address": "0x204faca1764b154221e35c0d20abb3c525710498",
+            "deploymentTxn": "0x55ed97486f78f62614321381e9404398cd7d5344a5fc2de79b2b69bee6f3a1f4",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["factory()(address)", "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f"],
+            "input": {
+                "constructor": {
+                    "_factory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f",
+                    "_WETH9": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"
+                }
+            }
+        },
+        {
+            "name": "TickLens",
+            "address": "0x58ead433ea99708604c4dd7c9b7e80c70976e202",
+            "deploymentTxn": "0xa9c1950b5fce5bd383910900c55463cb7f1ffdb2a55358bcb6d8810b2217155b",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "input": {
+                "constructor": {}
+            }
+        },
+        {
+            "name": "NFTDescriptor",
+            "address": "0x2e9d45bb7b30549f5216813ada9a6b7982c5b3ed",
+            "deploymentTxn": "0x143481c907182c006d01fd156c7d75c58b85bea7e74069cbadf3e89d3baf208f",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "input": {
+                "constructor": {}
+            }
+        },
+        {
+            "name": "NonfungibleTokenPositionDescriptor",
+            "address": "0x661e93cca42afacb172121ef892830ca3b70f08d",
+            "deploymentTxn": "0x77c4b81dfc437e4de4d22c753e6b31c7e083068212f58255b431707ac3a30609",
+            "proxy": true,
+            "proxyType": "TransparentUpgradeableProxy",
+            "implementation": "0xd1b797d92d87b688193a2b976efc8d577d204343",
+            "proxyAdmin": "0x740ee255852f114b18b9b94ae754ae6f8413897d",
+            "implementationTxn": "0x9b94f21e5cd9cb577164d909a6697c08614de36c30c6fd1bebfab71e4c9bf898",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["WETH9()(address)", "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"],
+            "input": {
+                "constructor": {
+                    "_WETH9": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650",
+                    "_nativeCurrencyLabelBytes": "0x7061746855534400000000000000000000000000000000000000000000000000"
+                },
+                "initializeData": "0x"
+            }
+        },
+        {
+            "name": "NonfungiblePositionManager",
+            "address": "0xf025e0fe9e331a0ef05c2ad3c4e9c64b625cda6f",
+            "deploymentTxn": "0xfa22f47dc6522c5dac22c70b418a83481c4b6f65f0d973e096aa0f8c16e29ec9",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["factory()(address)", "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f"],
+            "input": {
+                "constructor": {
+                    "_factory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f",
+                    "_WETH9": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650",
+                    "_tokenDescriptor_": "0x661E93cca42AfacB172121EF892830cA3b70F08d"
+                }
+            }
+        },
+        {
+            "name": "V3Migrator",
+            "address": "0xabfb859e6c3324fe522bfbb19cb41345003ced65",
+            "deploymentTxn": "0x155fbe57c0576394d0a6ffde1ef710afbf36e272f114fc8d0f87b0d9d939de88",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["factory()(address)", "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f"],
+            "input": {
+                "constructor": {
+                    "_factory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f",
+                    "_WETH9": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650",
+                    "_nonfungiblePositionManager": "0xF025e0Fe9E331A0eF05c2ad3C4E9C64b625cda6f"
+                }
+            }
+        },
+        {
+            "name": "SwapRouter",
+            "address": "0x003aa18c6e682db80cf4aa17261ccbffd28690ce",
+            "deploymentTxn": "0xbd161effa1766321a83b75469eeec7a62d6adfc16d7f83253bc8b62797b3b32d",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["factory()(address)", "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f"],
+            "input": {
+                "constructor": {
+                    "_factory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f",
+                    "_WETH9": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"
+                }
+            }
+        },
+        {
+            "name": "PoolManager",
+            "address": "0xe2e105d3f7209a9da11f83ccf3e7398a753823f1",
+            "deploymentTxn": "0xf0b547d5f485bcda4de917d46d72b6093ba4e9fbd635a10b053bec1b2e343151",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["owner()(address)", "0x2179a60856E37dfeAacA0ab043B931fE224b27B6"],
+            "input": {
+                "constructor": {
+                    "initialOwner": "0x2179a60856E37dfeAacA0ab043B931fE224b27B6"
+                }
+            }
+        },
+        {
+            "name": "PositionDescriptor",
+            "address": "0xec3f033130afa22ec9186e2e2b72d5dd1c756e95",
+            "deploymentTxn": "0x8b99cc481fb9851a2d3e753caba6c4f03feed66d6b32c32b9fd9651e546b3f8b",
+            "proxy": true,
+            "proxyType": "TransparentUpgradeableProxy",
+            "implementation": "0xc3ecb86266ef84db4ff6e091944180e937e1d4da",
+            "proxyAdmin": "0xb0a039ce7b1e7c111aaf03b022e50635b4cab6b4",
+            "implementationTxn": "0x4879cfa27e2497ae6c54c9d181fbb6daccd3766e5808fb5292661e2f56683cf6",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["poolManager()(address)", "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"],
+            "input": {
+                "constructor": {
+                    "_poolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1",
+                    "_wrappedNative": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650",
+                    "_nativeCurrencyLabelBytes": "0x2d00000000000000000000000000000000000000000000000000000000000000"
+                },
+                "initializeData": "0x"
+            }
+        },
+        {
+            "name": "PositionManager",
+            "address": "0xcca81ef93ed5449f33fca3087d984352ca611367",
+            "deploymentTxn": "0x9b5f2cabb35aeb1a6d65fbcc6c61634b163b813cafda6a3174017e3850ea3dae",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["poolManager()(address)", "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"],
+            "input": {
+                "constructor": {
+                    "_poolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1",
+                    "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                    "_unsubscribeGasLimit": "300000",
+                    "_tokenDescriptor": "0xEC3F033130aFa22EC9186E2E2b72D5DD1c756E95",
+                    "_weth9": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"
+                }
+            }
+        },
+        {
+            "name": "V4Quoter",
+            "address": "0x379f556c5a748bd7cc9baf0f7a344094ac1814f5",
+            "deploymentTxn": "0x9d883e2b719deaffdb8dde1ef01353f395dca3cd1c3190df1a20fb722b2b79e2",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["poolManager()(address)", "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"],
+            "input": {
+                "constructor": {
+                    "_poolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"
+                }
+            }
+        },
+        {
+            "name": "StateView",
+            "address": "0x27ed73ae0652fdcf71d6793412a7525f32be9dfe",
+            "deploymentTxn": "0xa4fd934a7830d92b19a950313004781cc933a9153491ebdc445aced563a0bcc0",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["poolManager()(address)", "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"],
+            "input": {
+                "constructor": {
+                    "_poolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"
+                }
+            }
+        },
+        {
+            "name": "Quoter",
+            "address": "0xbe2257d1aafbe6b73f67a9ac971c2f0b344bb3c5",
+            "deploymentTxn": "0xd56946af884295290efb10f94084d0e7220b8d6d143baf1406aa7512d02011b6",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["factory()(address)", "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f"],
+            "input": {
+                "constructor": {
+                    "_factory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f"
+                }
+            }
+        },
+        {
+            "name": "MixedRouteQuoterV2",
+            "address": "0x56efbc91e588bdb8987a94e3d61ff7686b2a61a2",
+            "deploymentTxn": "0x999f57dcf8a91ed5ba63f0bc103516bd25921f158743bc4fe4a1787a6a7fbc9d",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["poolManager()(address)", "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"],
+            "input": {
+                "constructor": {
+                    "_uniswapV4PoolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1",
+                    "_uniswapV3Poolfactory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f",
+                    "_uniswapV2Poolfactory": "0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2"
+                }
+            }
+        },
+        {
+            "name": "SwapRouter02",
+            "address": "0x94a7d36e2ae728d6a2b2ee533b0a260385596d8b",
+            "deploymentTxn": "0x3188d444f7cd00d46a216c14eb1fcdc5409a6ac857c546cf28c1ed34f99ba9d1",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "check": ["factoryV2()(address)", "0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2"],
+            "input": {
+                "constructor": {
+                    "_factoryV2": "0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2",
+                    "factoryV3": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f",
+                    "_positionManager": "0xF025e0Fe9E331A0eF05c2ad3C4E9C64b625cda6f",
+                    "_WETH9": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"
+                }
+            }
+        },
+        {
+            "name": "UniversalRouter#v2.1",
+            "address": "0xdb3140333202846c976d5928b850a676f78c29b4",
+            "deploymentTxn": "0xa3a5ad3eee463bdcc949a99a06b44562ba2446c7fc91c3550760780e2a9267ec",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "input": {
+                "constructor": {
+                    "params": {
+                        "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                        "weth9": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650",
+                        "v2Factory": "0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2",
+                        "v3Factory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f",
+                        "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                        "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                        "v4PoolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1",
+                        "v3NFTPositionManager": "0xF025e0Fe9E331A0eF05c2ad3C4E9C64b625cda6f",
+                        "v4PositionManager": "0xcCa81ef93ed5449f33FCa3087D984352ca611367",
+                        "spokePool": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"
+                    }
+                }
+            }
+        },
+        {
+            "name": "UniversalRouter#v2.0",
+            "address": "0x2d01411773c8c24805306e89a41f7855c3c4fe65",
+            "deploymentTxn": "0x13077f08cb4990c60aa8110dd5463d9db696964318d11da4d96dfe4a8fa1bdac",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "input": {
+                "constructor": {
+                    "params": {
+                        "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                        "weth9": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650",
+                        "v2Factory": "0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2",
+                        "v3Factory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f",
+                        "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                        "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                        "v4PoolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1",
+                        "v3NFTPositionManager": "0xF025e0Fe9E331A0eF05c2ad3C4E9C64b625cda6f",
+                        "v4PositionManager": "0xcCa81ef93ed5449f33FCa3087D984352ca611367"
+                    }
+                }
+            }
+        },
+        {
+            "name": "CaliburEntry",
+            "address": "0x000000009b1d0af20d8c6d0a44e162d11f9b8f00",
+            "deploymentTxn": "0xecf4dfc70af6cff8999aa2e6005fe25bb5b00dec9cb84f1f672c02377c86eb7e",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "input": {
+                "constructor": {}
+            }
+        },
+        {
+            "name": "FeeOnTransferDetector",
+            "address": "0x5c834b6cac4173bfe288c5722a38e04b9e366e30",
+            "deploymentTxn": "0x44955d3c41568cce4da8d39380a24de57a88b90cb0af8124bcabfc78325352f2",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "input": {
+                "constructor": {
+                    "_factoryV2": "0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2"
+                }
+            }
+        },
+        {
+            "name": "ERC7914Detector",
+            "address": "0xc470458fc6a7e43471b31e6a2eb2612215a7102e",
+            "deploymentTxn": "0x42bb2520a161daff452871e3c9e85b3399c4150cf8987fa423778cf66ec3ecd6",
+            "run": "dev wallet Deploy-all run on 2026-01-13 (broadcast not in this repo)",
+            "nocommit": true,
+            "input": {
+                "constructor": {
+                    "_caliburAddress": "0x000000009B1D0aF20D8C6d0A44e162d11F9b8f00"
+                }
+            }
+        },
+        {
+            "name": "PermissionsAdapterFactory",
+            "address": "0xa13f7611115752deb2b13813bdde16a5073e4b45",
+            "deploymentTxn": "0xfb1a5358df1d2c22aad91e8b9d82398367d24282189b7cb75826131c451d8505",
+            "run": "Ignite permissioned-pools workflow run on 2026-11-23 (contracts#185)",
+            "commitHash": "9969eec",
+            "repo": "Uniswap/v4-periphery",
+            "check": ["POOL_MANAGER()(address)", "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"],
+            "input": {
+                "constructor": {
+                    "poolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1"
+                }
+            }
+        },
+        {
+            "name": "UniversalRouter#v2.2",
+            "address": "0xdcd9f4e8972f619b325b0c3109412dfc4d184734",
+            "deploymentTxn": "0x01441a577d3f41fe57be3eaea13d3994f278ffd86d5cd9c8b955072fef07d1f6",
+            "run": "Ignite permissioned-pools workflow run on 2026-11-23 (contracts#185)",
+            "commitHash": "64027f3",
+            "repo": "Uniswap/universal-router",
+            "check": ["PERMISSIONS_ADAPTER_FACTORY()(address)", "0xA13f7611115752DEB2B13813BDDE16A5073e4b45"],
+            "input": {
+                "constructor": {
+                    "params": {
+                        "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                        "weth9": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650",
+                        "v2Factory": "0xBbBcC62853a5fA27b93d6Bab3E6F7ce841E25Df2",
+                        "v3Factory": "0x1707327F626496A7b5b3872e7E4d2879Df7d7a9f",
+                        "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+                        "poolInitCodeHash": "0xe34f199b19b2b4f47f68442619d555527d244f78a3297ea89325f843f87b8b54",
+                        "v4PoolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1",
+                        "permissionsAdapterFactory": "0xA13f7611115752DEB2B13813BDDE16A5073e4b45",
+                        "v3NFTPositionManager": "0xF025e0Fe9E331A0eF05c2ad3C4E9C64b625cda6f",
+                        "v4PositionManager": "0xcCa81ef93ed5449f33FCa3087D984352ca611367",
+                        "spokePool": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650"
+                    }
+                }
+            }
+        },
+        {
+            "name": "PermissionedPositionManager",
+            "address": "0xf766926318ccc034e140b54595e2102831a0d02e",
+            "deploymentTxn": "0x96da973ab1a9120cfc8357fa2d79b3fd516418d7eb93f1d119327e10d68450f0",
+            "run": "Ignite permissioned-pools workflow run on 2026-11-23 (contracts#185)",
+            "commitHash": "9969eec",
+            "repo": "Uniswap/v4-periphery",
+            "check": ["PERMISSIONS_ADAPTER_FACTORY()(address)", "0xA13f7611115752DEB2B13813BDDE16A5073e4b45"],
+            "input": {
+                "constructor": {
+                    "_poolManager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1",
+                    "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                    "_unsubscribeGasLimit": "2000000",
+                    "_tokenDescriptor": "0xEC3F033130aFa22EC9186E2E2b72D5DD1c756E95",
+                    "_weth9": "0x8702463e73f74d0b6765aBceb314Ef07aCb92650",
+                    "_permissionsAdapterFactory": "0xA13f7611115752DEB2B13813BDDE16A5073e4b45",
+                    "_deliveryGasLimit": "2000000"
+                }
+            }
+        },
+        {
+            "name": "PermissionedHooks",
+            "address": "0x7ae9d25f90d2592bb7cb09acbee10be912a028c0",
+            "deploymentTxn": "0x9c209420223ac2c7813048107bd1484d3469baf963876c5cdb197d3115661009",
+            "run": "Ignite permissioned-pools workflow run on 2026-11-23 (contracts#185)",
+            "commitHash": "f2aa843",
+            "repo": "Uniswap/v4-hooks-public",
+            "check": ["PERMISSIONS_ADAPTER_FACTORY()(address)", "0xA13f7611115752DEB2B13813BDDE16A5073e4b45"],
+            "input": {
+                "constructor": {
+                    "manager": "0xE2e105d3F7209A9DA11f83cCf3E7398a753823F1",
+                    "permissionsAdapterFactory": "0xA13f7611115752DEB2B13813BDDE16A5073e4b45"
+                }
+            }
+        }
+    ]
+}
