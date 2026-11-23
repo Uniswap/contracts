@@ -5,6 +5,12 @@ The dev wallet `0x2179a60856E37dfeAacA0ab043B931fE224b27B6` ran Deploy-all on Te
 from its onchain creation tx through `extra-deploys.json`, and the constructor inputs are decoded from those txs.
 The commit that run was built from isn't known, so the entries carry no `commitHash`.
 
+The code is still the reviewed build, though: the inputs of the transactions at nonces 1 to 28 (26 deploys plus the v3
+factory's `enableFeeAmount` and `setOwner` calls) are byte-identical to the matching transactions in the Tempo mainnet
+Deploy-all broadcast (`broadcast/Deploy-all.s.sol/4217/`, built from `db65edc`) except for the constructor and call
+argument words, and the CREATE2 salts match too. `src/briefcase` didn't change between `1868754` (main when this run
+happened) and `db65edc`. Nonce 0 is `UnsupportedProtocol`, which mainnet deployed separately.
+
 Tempo has no native token, so the wrapped-native and spokePool params point at `UnsupportedProtocol`
 (`0x8702463e73f74d0b6765aBceb314Ef07aCb92650`). Every admin role (v2 feeToSetter, v3 factory owner, PoolManager
 owner and both descriptor ProxyAdmins) is still held by the dev wallet.
