@@ -1,7 +1,33 @@
 {
     "schemaVersion": 1,
-    "description": "Deploys PermissionedPositionManager and a salt-mined PermissionedHooks (address flags 0x28c0) on a chain that already runs v4 and UniversalRouter 2.2.0. Per chain inputs: the PoolManager and the PermissionsAdapterFactory the UniversalRouter uses (the same values for both contracts), the PositionDescriptor proxy, WETH9 and the unsubscribe gas limit of the chain's PositionManager.",
+    "description": "Deploys the permissioned pools stack on a chain that already runs v4: PermissionsAdapterFactory, UniversalRouter 2.2.0, PermissionedPositionManager and a salt-mined PermissionedHooks (address flags 0x28c0), all wired to the new factory. If the chain already runs UniversalRouter 2.2.0, uncheck the factory and router steps and enter the factory that router uses. Per chain inputs: the PoolManager (factory and hook), the router parameters, and the PositionDescriptor proxy, WETH9 and unsubscribe gas limit of the chain's PositionManager.",
     "sources": [
+        {
+            "id": "permissions-adapter-factory",
+            "origin": "repo",
+            "repo": {
+                "url": "https://github.com/Uniswap/v4-periphery",
+                "commit": "9969eec44cfdf07e24b41de47f40276a58401976"
+            },
+            "frameworkId": "foundry",
+            "sourcePath": "src/hooks/permissionedPools/PermissionsAdapterFactory.sol",
+            "contractName": "PermissionsAdapterFactory",
+            "artifactPath": "foundry-out/PermissionsAdapterFactory.sol/PermissionsAdapterFactory.json",
+            "artifactHash": "3f31d7c542714d3c9cc97cdd32802a8022fc6264431f876412e0e3639240c55a"
+        },
+        {
+            "id": "universal-router",
+            "origin": "repo",
+            "repo": {
+                "url": "https://github.com/Uniswap/contracts",
+                "commit": "036160f74ad4477ae958772ee4b460d1e683a365"
+            },
+            "frameworkId": "foundry",
+            "sourcePath": "src/pkgs/universal-router/contracts/UniversalRouter.sol",
+            "contractName": "UniversalRouter",
+            "artifactPath": "out/UniversalRouter.sol/UniversalRouter.json",
+            "artifactHash": "05c3cab60351af0b7ae33f3eccbf61d7fb06f585c1907f2c1cd7f122ba1c99d0"
+        },
         {
             "id": "permissioned-position-manager",
             "origin": "repo",
@@ -31,11 +57,44 @@
     ],
     "steps": [
         {
+            "id": "permissions-adapter-factory",
+            "kind": "deploy",
+            "contractId": "permissions-adapter-factory",
+            "strategy": {
+                "kind": "create"
+            }
+        },
+        {
+            "id": "universal-router",
+            "kind": "deploy",
+            "contractId": "universal-router",
+            "args": {
+                "params": {
+                    "permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                    "permissionsAdapterFactory": {
+                        "$ref": {
+                            "kind": "step",
+                            "stepId": "permissions-adapter-factory"
+                        }
+                    }
+                }
+            },
+            "strategy": {
+                "kind": "create"
+            }
+        },
+        {
             "id": "permissioned-position-manager",
             "kind": "deploy",
             "contractId": "permissioned-position-manager",
             "args": {
                 "_permit2": "0x000000000022D473030F116dDEE9F6B43aC78BA3",
+                "_permissionsAdapterFactory": {
+                    "$ref": {
+                        "kind": "step",
+                        "stepId": "permissions-adapter-factory"
+                    }
+                },
                 "_deliveryGasLimit": "500000"
             },
             "strategy": {
@@ -47,6 +106,14 @@
             "id": "permissioned-hooks",
             "kind": "deploy",
             "contractId": "permissioned-hooks",
+            "args": {
+                "permissionsAdapterFactory": {
+                    "$ref": {
+                        "kind": "step",
+                        "stepId": "permissions-adapter-factory"
+                    }
+                }
+            },
             "strategy": {
                 "kind": "plugin",
                 "pluginId": "hook-deployer"
