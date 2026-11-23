@@ -95,7 +95,7 @@
                         "stepId": "permissions-adapter-factory"
                     }
                 },
-                "_deliveryGasLimit": "500000"
+                "_deliveryGasLimit": "2000000"
             },
             "strategy": {
                 "kind": "create2",
