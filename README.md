@@ -27,6 +27,18 @@ Follow these steps to set up your local environment:
   - run `just install` to install the cli to your local bin and run `deploy-cli`
   - or run `just build` to build the cli, copy it to the project root, and run `./deploy-cli` from the project root
 
+## Docs
+
+Protocol documentation lives in the [Uniswap Docs](https://docs.uniswap.org/).
+
+To generate Solidity NatSpec reference docs locally with Foundry:
+
+```bash
+./script/util/doc_gen.sh
+```
+
+That writes into `docs/autogen`.
+
 ## Contributing
 
 If you want to contribute to this project, please check [CONTRIBUTING.md](CONTRIBUTING.md) first.
